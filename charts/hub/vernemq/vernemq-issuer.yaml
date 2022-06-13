@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: vernemq-letsencrypt-iss
+spec:
+  acme:
+    email: xxx@xxx.io
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: vernemq-letsencrypt-iss-key
+    solvers:
+      - selector: {}
+        dns01:
+          cloudflare:
+            email: xxx@xxx.io
+            apiKeySecretRef:
+              name: cloudflare-api-key-secret
+              key: api-key
