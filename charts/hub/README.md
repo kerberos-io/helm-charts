@@ -13,7 +13,7 @@ The Kerberos Hub installation makes use of the Hub chart. Therefore, we will add
 
     helm repo add kerberos https://charts.kerberos.io
     helm repo update
-
+§
 ## Prerequisites
 
 Go and follow the Kerberos Hub installation at the [hub repository](https://github.com/kerberos-io/hub). Once you have [installed all prerequisites](https://github.com/kerberos-io/helm-charts/tree/main/charts/hub#lets-give-it-a-try) come back here.
@@ -137,7 +137,6 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.stripe.apikey`          | If using the public version, `stripe` can be used for automated billing and subscriptions.                                | `""`  |
 | `kerberoshub.frontend.googlemaps.apikey`      | Within Kerberos Hub frontend a couple of maps are being used, the google maps is leveraged for that.                      | `""`  |
 | `kerberoshub.frontend.zendesk.url`            | No longer used.                                                                                                           | `""`  |
-
 | `kerberoshub.frontend.zendesk.url`            | No longer used.                                                                                                           | `""`  |
 | `kerberoshub.cleanup.repository`              | The Docker container that is responsible for cleaning up the Kerberos Hub API content and related MongoDB collections.    | `""`  |
 | `kerberoshub.cleanup.pullPolicy`              | The Docker registry pull policy.                                                                                          | `""`  |
