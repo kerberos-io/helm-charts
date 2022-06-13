@@ -9,31 +9,22 @@ To use Kerberos Hub a license is required. This license will grant access the Ke
 
 ## Add helm repos
 
-The Kerberos Hub installation makes use of the Hub chart. Therefore, we will add those repos to our Kubernetes cluster.
+The Kerberos Hub installation makes use of this Helm chart. Therefore, we will add those repos to our Kubernetes cluster.
 
     helm repo add kerberos https://charts.kerberos.io
     helm repo update
-§
+
 ## Prerequisites
 
 Go and follow the Kerberos Hub installation at the [hub repository](https://github.com/kerberos-io/hub). Once you have [installed all prerequisites](https://github.com/kerberos-io/helm-charts/tree/main/charts/hub#lets-give-it-a-try) come back here.
 
 ## Kerberos Hub 
 
-So once you hit this step, you should have installed all required dependencies. Hopefully you didn't had too much pain with the certificates :). Before starting, it's important to have a look at the `values.yaml` file. This includes the different parameters to configure the different deployments.
-Reach out to us if you would need any help with this.
+So once you hit this step, you should have installed all required dependencies. Hopefully you didn't had too much pain with the certificates. Before starting, it's important to have a look at the `values.yaml` file. This includes the different parameters to configure the different deployments. Reach out to us if you would need any help with this.
 
-As previously mentioned a couple of times, we should also create a kerberos namespace.
+Install the Kerberos Hub chart in a specific namespace and take into the values.yaml file.
 
-    kubectl create namespace kerberos-hub
-
-Install the `registry credentials` to download the Kerberos Hub and Kerberos Pipeline. You'll need to request the `regcred.yaml` from the Kerberos team, to be able to download the Kerberos Hub images.
-
-    kubectl apply -f regcred.yaml -n kerberos-hub
-
-Install the Kerberos Hub chart and take into the values.yaml file.
-
-    helm install hub kerberos/hub --values values.yaml -n kerberos-hub
+    helm install hub kerberos/hub --values values.yaml -n kerberos-hub --create-namespace
 
 Uninstall the Kerberos Hub chart
 
@@ -187,7 +178,7 @@ After the installation you'll need to initialise the Mongodb with some objects. 
 
 Open your favourite Mongodb client (or cli) and connect to your Mongodb database as previously created (or have already installed). Import the previous mentioned `.nosql` files into a new database called `Kerberos`.
 
-<img width="1037" alt="Screenshot 2021-05-24 at 16 01 24" src="assets/images/mongodb-client.png">
+![Open the Mongodb client](assets/images/mongodb-client.png)
 
 Once done you should be able to sign in with following credentials:
 
@@ -228,7 +219,7 @@ The first argument is the helm project name, you could find this out by running 
 
 # Building
 
-To build a new release the following steps needs to be executed.
+To build a new release the following steps needs to be executed. Please note that this repository has a Github action which automatically releases new a Helm chart version.
 
     cd hub
     helm lint 
@@ -237,7 +228,7 @@ To build a new release the following steps needs to be executed.
     helm package hub
     mv hub-*.tgz hub
 
-    helm repo index hub --url https://kerberos-io.github.io/hub
+    helm repo index hub --url https://charts.kerberos.io/hub
     cd hub
     cat index.yaml
     
