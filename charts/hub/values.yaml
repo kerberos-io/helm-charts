@@ -112,9 +112,9 @@ email:
 
 kerberoshub:
   api:
-    repository: registry.gitlab.com/kerberos-io/kerberos-cloud-api
+    repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.561814049"
+    tag: "1.0.562703947"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
