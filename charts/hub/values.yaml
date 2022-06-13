@@ -11,8 +11,9 @@ license: "---ENTER-YOUR-LICENSE-HERE---"
 licenseServer:
   url: "https://license.kerberos.io/verify"
   token: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM" # do not change otherwise Kerberos Hub will not work.
-# The registry secret to be able to download all the Docker images.
-# Needs to be delivered after license purchase.
+  
+# Private Docker Registry: The registry secret is required if you have your Docker images behind a private registry.
+# By default it will pull from Docker hub (https://hub.docker.com/r/kerberos).
 imagePullSecrets:
   - name: regcred
   
@@ -173,9 +174,9 @@ kerberoshub:
       clientSecret: "" # UksvZ-QKGdB1W2mOu5l_Jg3R"
       redirectUrl: "/sso/response"
   frontend:
-    repository: registry.gitlab.com/kerberos-io/kerberos-cloud-ng
+    repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.562012749"
+    tag: "1.0.562688819"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
