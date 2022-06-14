@@ -68,7 +68,7 @@ turn:
 # recordings. Kerberos vault is queried to retrieve the recordings
 # from the appropriate provider.
 kerberosvault:
-  uri: "https://api.storage.yourdomain.com"
+  uri: "https://api.vault.yourdomain.com"
   accesskey: "xxx"
   secretkey: "xxx"
   provider: "a-provider"
