@@ -337,9 +337,12 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "1.0.906298340"
   thumbnail:
-    repository: registry.gitlab.com/kerberos-io/kcloud-thumbnail-queue
+    repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.1294067330"
+    tag: "1.0.2606231254"
+    quality: "70"
+    width: "250"
+    height: "250"
   counting:
     repository: kerberos/hub-pipe-counting
     pullPolicy: IfNotPresent
