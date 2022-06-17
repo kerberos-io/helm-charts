@@ -22,6 +22,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberoshub.monitordevice.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: hub-monitor-device
           image: "{{ .Values.kerberoshub.monitordevice.repository }}:{{ .Values.kerberoshub.monitordevice.tag }}"
@@ -30,6 +34,10 @@ spec:
             requests:
               memory: 10Mi
               cpu: 10m
+          {{- with .Values.kerberoshub.monitordevice.volumeMounts}}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             # Mongodb
             - name: MONGODB_DATABASE_CLOUD
@@ -64,3 +72,10 @@ spec:
               value: "{{ .Values.email.smtp.username }}"
             - name: SMTP_PASSWORD
               value: "{{ .Values.email.smtp.password }}"
+          
+            # Mailgun
+            - name: MAILGUN_DOMAIN
+              value: "{{ .Values.email.mailgun.domain }}"
+            - name: MAILGUN_API_KEY
+              value: "{{ .Values.email.mailgun.apikey }}"
+

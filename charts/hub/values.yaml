@@ -274,9 +274,17 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "1.0.1613962421"
   monitordevice:
-    repository: registry.gitlab.com/kerberos-io/kerberos-monitor-device
+    repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "1.0.1919848645"
+    tag: "1.0.2606477703"
+    # E-mail templates
+    #volumeMounts:
+    #  - name: custom-email-templates
+    #    mountPath: /mail
+    #volumes:
+    #  - name: custom-email-templates
+    #    persistentVolumeClaim:
+    #      claimName: custom-layout-claim
   reactivate:
     repository: registry.gitlab.com/kerberos-io/kerberos-reactivate
     pullPolicy: IfNotPresent
