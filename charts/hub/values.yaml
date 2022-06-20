@@ -315,7 +315,7 @@ kerberospipeline:
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.2605449910"
+    tag: "1.0.2610840061"
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
