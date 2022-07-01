@@ -357,6 +357,6 @@ kerberospipeline:
     width: "250"
     height: "250"
   counting:
-    repository: kerberos/hub-pipe-counting
+    repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
     tag: "1.0.2661742582"
