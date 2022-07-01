@@ -190,6 +190,10 @@ spec:
             - name: STRIPE_KEY
               value: "{{ .Values.kerberoshub.api.stripe.privateKey }}"
 
+            # MFA Issuer name (Will be shown when scanning in)
+            - name: MFA_ISSUER
+              value: "{{ .Values.kerberoshub.api.mfaIssuer }}"
+
             # AWS (Legacy, use Kerberos Vault instead)
             - name: AWS_REGION
               value: "{{ .Values.kerberoshub.api.aws.region }}"
