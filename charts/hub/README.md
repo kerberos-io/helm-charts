@@ -95,6 +95,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.api.jwtSecret`                   | A secret that is for generating JWT tokens.                                                                               | `""`  |
 | `kerberoshub.api.schema`                      | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`.                                                        | `""`  |
 | `kerberoshub.api.url`                         | The Kerberos Hub API ingress to access the API.                                                                           | `""`  |
+| `kerberoshub.api.mfaIssuer`                   | When enabling the MFA access, this is the name that will be shown in the MFA app.                                         | `""`  |
 | `kerberoshub.api.tls`                         | Bring your own TLS certificates for Kerberos Hub API ingress.                                                             | `""`  |
 | `kerberoshub.api.language`                    | The language of Kerberos Hub API responses, error messages will be communicated in the specified language.                | `""`  |
 | `kerberoshub.api.fallbackLanguage`            | The fallback language, if a specific translation is not available.                                                        | `""`  |
