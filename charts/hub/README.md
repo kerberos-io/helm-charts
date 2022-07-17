@@ -214,6 +214,7 @@ Following indexes should be executed on the MongoDB database (Kerberos) to impro
 #### Analysis collection
 
     db.getCollection("analysis").createIndex({userid:1, key:1})
+    db.getCollection("analysis").createIndex({userid:1, start:1})
 
 # Upgrade
 
