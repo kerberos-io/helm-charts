@@ -39,11 +39,6 @@ spec:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:
-        - name: QUEUE_SYSTEM
-          value: "{{ .Values.queueProvider }}"
-        - name: MAIL_PROVIDER
-          value: "{{ .Values.email.provider }}"
-
         # Database
         - name: MONGODB_HOST
           value: "{{ .Values.mongodb.host }}"
@@ -53,6 +48,10 @@ spec:
           value: "{{ .Values.mongodb.username }}"
         - name: MONGODB_PASSWORD
           value: "{{ .Values.mongodb.password }}"
+
+        # Queue
+        - name: QUEUE_SYSTEM
+          value: "{{ .Values.queueProvider }}"
 
         # Kafka settings
         - name: KAFKA_BROKER

@@ -166,7 +166,7 @@ kerberoshub:
       hook: "yourslackhook" # https://hooks.slack.com/services/T08Q2Q9V5/xxKT/JALxxAk26bHtuqTfZ
       username: "Kerberos Hub" # The slack username
     elasticsearch: # Logs of the kerberos hub will be send to an elastic search cluster.
-      enabled: "true"
+      enabled: "false"
       protocol: "http"
       host: "yourelasticsearchinstance.com"
       port: "9200"
@@ -271,13 +271,9 @@ kerberoshub:
     objectsDetectedDescription: ""
 
   cleanup:
-    repository: registry.gitlab.com/kerberos-io/kerberos-cloud-cleanup
+    repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "1.0.2547054620"
-  forwarder:
-    repository: registry.gitlab.com/kerberos-io/vault-forwarder
-    pullPolicy: IfNotPresent
-    tag: "1.0.1613962421"
+    tag: "1.0.2732327371"
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
@@ -291,30 +287,34 @@ kerberoshub:
     #    persistentVolumeClaim:
     #      claimName: custom-layout-claim
   reactivate:
-    repository: registry.gitlab.com/kerberos-io/kerberos-reactivate
+    repository: kerberos/hub-reactivate
     pullPolicy: IfNotPresent
-    tag: "1.0.2041756405"
+    tag: "1.0.2732384534"
+  forwarder:
+    repository: kerberos/vault-forwarder
+    pullPolicy: IfNotPresent
+    tag: "1.0.2732389692"
   # This proxy is legacy for the old agent, will be migrated in the new Hub API.
   proxy:
-    repository: registry.gitlab.com/kerberos-io/kerberos-cloud-proxy
+    repository: kerberos/vault-proxy
     pullPolicy: IfNotPresent
-    tag: "1.0.2041838648"
+    tag: "1.0.2733724812"
 
 kerberospipeline:
   event:
-    repository: registry.gitlab.com/kerberos-io/kcloud-event-queue
+    repository: kerberos/pipe-event
     pullPolicy: IfNotPresent
     tag: "1.0.766190255"
   monitor:
-    repository: registry.gitlab.com/kerberos-io/kcloud-monitor-queue
+    repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.2040627860"
+    tag: "1.0.2734717562"
   sequence:
-    repository: registry.gitlab.com/kerberos-io/kcloud-sequence-queue
+    repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.2314347527"
+    tag: "1.0.2734819573"
   throttler:
-    repository: registry.gitlab.com/kerberos-io/kcloud-throttler-queue
+    repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
     tag: "1.0.1613950978"
   notify:
@@ -330,9 +330,9 @@ kerberospipeline:
     #    persistentVolumeClaim:
     #      claimName: custom-layout-claim
   notifyTest:
-    repository: registry.gitlab.com/kerberos-io/kcloud-notify-test-queue
+    repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.2552881172"
+    tag: "1.0.2734880220"
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -342,13 +342,13 @@ kerberospipeline:
     #    persistentVolumeClaim:
     #      claimName: custom-layout-claim
   analysis:
-    repository: registry.gitlab.com/kerberos-io/kcloud-analysis-queue
+    repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.2664270838"
+    tag: "1.0.2734946665"
   dominantColor:
-    repository: registry.gitlab.com/kerberos-io/kcloud-dominantcolor-queue
+    repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.906298340"
+    tag: "1.0.2734980393"
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
