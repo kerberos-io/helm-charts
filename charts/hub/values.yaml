@@ -3,8 +3,7 @@
 # Declare variables to be passed into your templates.
 
 ###########################################################################
-# LICENSING information: you will need both a license to run Kerberos Hub,
-# and a Registry Key to pull the Kerberos Hub docker images from our private Gitlab repository.
+# LICENSING information: you will a license to run Kerberos Hub.
 # ----
 # Get your license from support@kerberos.io
 license: "---ENTER-YOUR-LICENSE-HERE---"
