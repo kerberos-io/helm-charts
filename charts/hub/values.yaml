@@ -312,7 +312,7 @@ kerberospipeline:
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.2734819573"
+    tag: "1.0.2734777341"
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
