@@ -210,6 +210,7 @@ Following indexes should be executed on the MongoDB database (Kerberos) to impro
 
     db.getCollection("notifications").createIndex({userid:1})
     db.getCollection("notifications").createIndex({userid:1, timestamp:1})
+    db.getCollection("notifications").createIndex({alert_master_user:1, media_key: 1})
 
 #### Analysis collection
 
