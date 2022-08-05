@@ -62,6 +62,8 @@ spec:
             # Mail templates
             - name: DEVICE_TEMPLATE
               value: "{{ .Values.email.templates.device }}"
+            - name: DEVICE_TITLE
+              value: "{{ .Values.email.templates.deviceTitle }}"
               
             # - Plain SMTP
             - name: SMTP_SERVER

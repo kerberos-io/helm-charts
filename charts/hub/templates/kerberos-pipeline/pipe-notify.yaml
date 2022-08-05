@@ -84,6 +84,8 @@ spec:
         # Mail templates 
         - name: DETECT_TEMPLATE
           value: "{{ .Values.email.templates.detection }}"
+        - name: ALERT_TITLE
+          value: "{{ .Values.email.templates.alertTitle }}"
 
         # SMTP
         - name: SMTP_SERVER

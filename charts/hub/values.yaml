@@ -105,6 +105,8 @@ email:
     disabled: "disabled"
     highupload: "highupload"
     device: "device"
+    alertTitle: "[Alert] Kerberos Hub detected something an event"
+    deviceTitle: "[Device] A Kerberos Agent's status has been changed"
 
 # Following are all the different deployments needed to make
 # Kerberos hub properly working.
@@ -113,7 +115,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.577460512"
+    tag: "1.0.605309110"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -180,7 +182,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.577464381"
+    tag: "1.0.605605509"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -276,7 +278,7 @@ kerberoshub:
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "1.0.2606477703"
+    tag: "1.0.2818471126"
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -319,7 +321,7 @@ kerberospipeline:
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.2664007628"
+    tag: "1.0.2818480530"
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
