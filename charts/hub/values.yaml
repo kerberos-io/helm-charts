@@ -182,7 +182,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.605605509"
+    tag: "1.0.606489487"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -274,7 +274,7 @@ kerberoshub:
   cleanup:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "1.0.2732327371"
+    tag: "1.0.2823236249"
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
@@ -345,7 +345,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.2757710727"
+    tag: "1.0.2823241657"
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
