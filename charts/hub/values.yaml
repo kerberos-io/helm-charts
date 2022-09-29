@@ -115,7 +115,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.605309110"
+    tag: "1.0.653371842"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -182,10 +182,11 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.630886788"
+    tag: "1.0.653968564"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
+    
     # The front-end but in read-only mode
     #demoUrl: "demo.yourdomain.com"
     # When migrating to another url, this might help migrating.
@@ -216,6 +217,11 @@ kerberoshub:
     posthog: # Posthog is used for auditing and user interaction logging
       key: "xxx"
       url: "https://posthog.domain.com"
+
+
+    # You can disable the Kerberos agent buttons, this make sense
+    # in a white-label setup, or where you are managing the Kerberos Agents for your customers.
+    hideAddAgent: "false"
 
     # Multi tenancy (domains)
     # By default the Kerberos Hub allows multi-tenancy through the concept
