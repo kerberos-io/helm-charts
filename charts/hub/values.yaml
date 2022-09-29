@@ -182,7 +182,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.653968564"
+    tag: "1.0.654004369"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
