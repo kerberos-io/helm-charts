@@ -115,7 +115,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.653371842"
+    tag: "1.0.673041169"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -182,7 +182,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.654004369"
+    tag: "1.0.673039614"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -311,23 +311,23 @@ kerberospipeline:
   event:
     repository: kerberos/pipe-event
     pullPolicy: IfNotPresent
-    tag: "1.0.2734120903"
+    tag: "1.0.3191609458"
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.2734717562"
+    tag: "1.0.3195789460"
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.2734777341"
+    tag: "1.0.3191651407"
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.2734819573"
+    tag: "1.0.3196725301"
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.2818480530"
+    tag: "1.0.3196743592"
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -339,7 +339,7 @@ kerberospipeline:
   notifyTest:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.2734880220"
+    tag: "1.0.3197238761"
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -351,19 +351,19 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.2823241657"
+    tag: "1.0.3199039408"
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.2734980393"
+    tag: "1.0.3188380441"
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.2990045444"
+    tag: "1.0.3199244931"
     quality: "70"
     width: "250"
     height: "250"
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.2661742582"
+    tag: "1.0.3188680646"
