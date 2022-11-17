@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pipe-analysis
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberospipeline.analysis.replicas }}
   selector:
     matchLabels:
       app: pipe-analysis

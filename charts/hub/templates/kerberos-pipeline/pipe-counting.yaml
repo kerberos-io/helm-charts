@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pipe-counting
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberospipeline.counting.replicas }}
   selector:
     matchLabels:
       app: pipe-counting

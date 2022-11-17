@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pipe-dominantcolor
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberospipeline.dominantColor.replicas }}
   selector:
     matchLabels:
       app: pipe-dominantcolor

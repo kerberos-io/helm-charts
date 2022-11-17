@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pipe-notify-test
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberospipeline.notifyTest.replicas }}
   selector:
     matchLabels:
       app: pipe-notify-test

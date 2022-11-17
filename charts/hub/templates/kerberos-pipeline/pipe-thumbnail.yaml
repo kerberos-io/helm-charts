@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pipe-thumbnail
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberospipeline.thumbnail.replicas }}
   selector:
     matchLabels:
       app: pipe-thumbnail
@@ -55,3 +55,14 @@ spec:
           value: "{{ .Values.kerberospipeline.thumbnail.width }}"
         - name: THUMBNAIL_HEIGHT
           value: "{{ .Values.kerberospipeline.thumbnail.height }}"
+
+        # There is an option to store the thumbnails in a storage provider in Kerberos Vault.
+        # This will lower storage in mongodb.
+        - name: THUMBNAIL_VAULT_ENABLED
+          value: "{{ .Values.kerberospipeline.thumbnail.kerberosvault.enabled }}"
+        - name: VAULT_THUMBNAIL_PROVIDER
+          value: "{{ .Values.kerberosvault.thumbnail.provider }}"
+        - name: VAULT_THUMBNAIL_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.thumbnail.accessKey }}"
+        - name: VAULT_THUMBNAIL_SECRET_KEY
+          value: "{{ .Values.kerberosvault.thumbnail.secretKey }}"

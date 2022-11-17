@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pipe-event
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberospipeline.event.replicas }}
   selector:
     matchLabels:
       app: pipe-event

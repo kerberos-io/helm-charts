@@ -68,17 +68,21 @@ turn:
 # from the appropriate provider.
 kerberosvault:
   uri: "https://api.vault.yourdomain.com"
+  provider: "a-provider"
   accesskey: "xxx"
   secretkey: "xxx"
-  provider: "a-provider"
 
   # Archiving is used when creating a task. The underlying recording of the task will be copied from its
   # existing provider to the below archived provider. Seperate credentials are used, as it makes possible to
   # specify another retention period.
   archive:
+    provider: "an-archive-provider"
     accesskey: "xxx"
     secretkey: "xxx"
-    provider: "an-archive-provider"
+  thumbnail:
+    provider: "a-thumbnail-provider"
+    accessKey: "xxx"
+    secretKey: "xxx"
 
 email:
   provider: "mailgun"
@@ -115,7 +119,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.673041169"
+    tag: "1.0.696303981"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -182,7 +186,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.673039614"
+    tag: "1.0.695825186"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -280,7 +284,7 @@ kerberoshub:
   cleanup:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "1.0.2823236249"
+    tag: "1.0.3292003489"
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
@@ -312,22 +316,27 @@ kerberospipeline:
     repository: kerberos/pipe-event
     pullPolicy: IfNotPresent
     tag: "1.0.3191609458"
+    replicas: 1
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.3195789460"
+    tag: "1.0.3304604809"
+    replicas: 1
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.3191651407"
+    tag: "1.0.3306931581"
+    replicas: 1
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
     tag: "1.0.3196725301"
+    replicas: 1
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.3196743592"
+    tag: "1.0.3318765103"
+    replicas: 1
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -340,6 +349,7 @@ kerberospipeline:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
     tag: "1.0.3197238761"
+    replicas: 1
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -351,19 +361,25 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.3199039408"
+    tag: "1.0.3330995159"
+    replicas: 1
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
     tag: "1.0.3188380441"
+    replicas: 1
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.3199244931"
+    tag: "1.0.3330845977"
+    replicas: 1
     quality: "70"
     width: "250"
     height: "250"
+    kerberosvault:
+      enabled: "false"
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
     tag: "1.0.3188680646"
+    replicas: 1
