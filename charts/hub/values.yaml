@@ -119,7 +119,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.700502397"
+    tag: "1.0.709248197"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
