@@ -186,7 +186,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.697054603"
+    tag: "1.0.703608763"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -330,12 +330,12 @@ kerberospipeline:
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.3196725301"
+    tag: "1.0.3408769097"
     replicas: 1
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.3318765103"
+    tag: "1.0.3412992931"
     replicas: 1
     # E-mail templates
     #volumeMounts:
