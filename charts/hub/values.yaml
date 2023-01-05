@@ -119,7 +119,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.718929560"
+    tag: "1.0.739022389"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -186,7 +186,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.703608763"
+    tag: "1.0.738955285"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -361,7 +361,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.3454723234"
+    tag: "1.0.3557846227"
     replicas: 1
   dominantColor:
     repository: kerberos/pipe-dominantcolor
