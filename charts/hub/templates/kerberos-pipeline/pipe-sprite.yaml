@@ -1,0 +1,67 @@
+{{ if eq .Values.kerberospipeline.sprite.enabled true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipe-sprite
+spec:
+  replicas: {{ .Values.kerberospipeline.sprite.replicas }}
+  selector:
+    matchLabels:
+      app: pipe-sprite
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: pipe-sprite
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: pipe-sprite
+        image: "{{ .Values.kerberospipeline.sprite.repository }}:{{ .Values.kerberospipeline.sprite.tag }}"
+        imagePullPolicy: {{ .Values.kerberospipeline.sprite.pullPolicy }}
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 500m
+        env:
+        - name: CLOUD_PROVIDER
+          value: "{{ .Values.cloudProvider }}"
+        - name: QUEUE_SYSTEM
+          value: "{{ .Values.queueProvider }}"
+
+        # Kafka settings
+        - name: KAFKA_BROKER
+          value: "{{ .Values.kafka.broker }}"
+        - name: KAFKA_USERNAME
+          value: "{{ .Values.kafka.username }}"
+        - name: KAFKA_PASSWORD
+          value: "{{ .Values.kafka.password }}"
+        - name: KAFKA_MECHANISM
+          value: "{{ .Values.kafka.mechanism }}"
+        - name: KAFKA_SECURITY
+          value: "{{ .Values.kafka.security }}"
+
+        # There is an option to store the sprites in a storage provider in Kerberos Vault.
+        - name: VAULT_SPRITE_ENABLED
+          value: "{{ .Values.kerberospipeline.sprite.enabled }}"
+        - name: VAULT_SPRITE_PROVIDER
+          value: "{{ .Values.kerberosvault.sprite.provider }}"
+        - name: VAULT_SPRITE_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.sprite.accessKey }}"
+        - name: VAULT_SPRITE_SECRET_KEY
+          value: "{{ .Values.kerberosvault.sprite.secretKey }}"
+        - name: VAULT_SPRITE_INTERVAL
+          value: "{{ .Values.kerberospipeline.sprite.interval }}"
+        - name: VAULT_SPRITE_WIDTH
+          value: "{{ .Values.kerberospipeline.sprite.width }}"
+        - name: VAULT_SPRITE_HEIGHT
+          value: "{{ .Values.kerberospipeline.sprite.height }}"
+{{ end }}

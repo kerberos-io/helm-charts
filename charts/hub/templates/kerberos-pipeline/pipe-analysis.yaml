@@ -65,3 +65,7 @@ spec:
           value: "{{ .Values.kerberosvault.accesskey }}"
         - name: KERBEROS_STORAGE_SECRET
           value: "{{ .Values.kerberosvault.secretkey }}"
+
+        # Sprites
+        - name: SPRITE_ENABLED
+          value: "{{ .Values.kerberospipeline.sprite.enabled }}"
