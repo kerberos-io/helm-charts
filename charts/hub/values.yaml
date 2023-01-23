@@ -375,7 +375,7 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.3330845977"
+    tag: "1.0.3641795021"
     replicas: 1
     quality: "70"
     width: "250"
