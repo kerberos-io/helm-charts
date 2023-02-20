@@ -230,3 +230,25 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.objectsDetectedDescription }}"
         - name: HIDE_ADD_AGENT
           value: "{{ .Values.kerberoshub.frontend.hideAddAgent }}"
+
+        # Navigation links
+        - name: NAVIGATION_LINK_TITLE_1
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle1 }}"
+        - name: NAVIGATION_LINK_URL_1
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl1 }}"
+        - name: NAVIGATION_LINK_TITLE_2
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle2 }}"
+        - name: NAVIGATION_LINK_URL_2
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl2 }}"
+        - name: NAVIGATION_LINK_TITLE_3
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle3 }}"
+        - name: NAVIGATION_LINK_URL_3
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl3 }}"
+        - name: NAVIGATION_LINK_TITLE_4
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle4 }}"
+        - name: NAVIGATION_LINK_URL_4
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl4 }}"
+        - name: NAVIGATION_LINK_TITLE_5
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle5 }}"
+        - name: NAVIGATION_LINK_URL_5 
+          value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl5 }}"

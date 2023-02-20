@@ -123,7 +123,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.747782470"
+    tag: "1.0.782949015"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -190,7 +190,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.747784257"
+    tag: "1.0.782975080"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -285,6 +285,18 @@ kerberoshub:
     mlaUtilizationDescription: ""
     objectsDetectedDescription: ""
 
+    # You can add custom links to the navigation bar.
+    navigationLinkTitle1: ""
+    navigationLinkUrl1: ""
+    navigationLinkTitle2: ""
+    navigationLinkUrl2: ""
+    navigationLinkTitle3: ""
+    navigationLinkUrl3: ""
+    navigationLinkTitle4: ""
+    navigationLinkUrl4: ""
+    navigationLinkTitle5: ""
+    navigationLinkUrl5: ""
+
   cleanup:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
@@ -375,7 +387,7 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.3641795021"
+    tag: "1.0.3776128311"
     replicas: 1
     quality: "70"
     width: "250"
@@ -391,7 +403,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.3603970757"
+    tag: "1.0.3776993202"
     replicas: 3
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)

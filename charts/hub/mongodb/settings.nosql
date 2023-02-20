@@ -65,4 +65,22 @@ db.settings.insertMany([
             "dayLimit" : NumberInt(30)
         }
     }
+},
+{ 
+    "_id" : ObjectId("63f346ec64011a574161cf99"), 
+    "key" : "classifications", 
+    "map" : {
+        "objects" : [
+            {
+                "text" : "Car", 
+                "value" : "car", 
+                "icon" : "car"
+            }, 
+            {
+                "text" : "Person", 
+                "value" : "pedestrian", 
+                "icon" : "pedestrian"
+            }
+        ]
+    }
 }])

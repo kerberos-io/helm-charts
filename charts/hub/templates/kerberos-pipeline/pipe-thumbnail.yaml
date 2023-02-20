@@ -31,6 +31,13 @@ spec:
             memory: 10Mi
             cpu: 10m
         env:
+        {{ if .Values.isPrivate }}
+        - name: KERBEROS_PRIVATE_CLOUD
+          value: "true"
+        {{ else }}
+        - name: KERBEROS_PRIVATE_CLOUD
+          value: "false"
+        {{ end }}
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
         - name: QUEUE_SYSTEM
