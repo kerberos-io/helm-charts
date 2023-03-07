@@ -220,6 +220,10 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.mediaTitle }}"
         - name: PAGE_MEDIA_SUB_TITLE
           value: "{{ .Values.kerberoshub.frontend.mediaSubTitle }}"
+        - name: PAGE_DAY_TITLE
+          value: "{{ .Values.kerberoshub.frontend.dayTitle }}"
+        - name: PAGE_DAY_SUB_TITLE
+          value: "{{ .Values.kerberoshub.frontend.daySubTitle }}"
         - name: PAGE_DASHBOARD_CPU_USAGE
           value: "{{ .Values.kerberoshub.frontend.cpuUsageDescription }}"
         - name: PAGE_DASHBOARD_FPS
