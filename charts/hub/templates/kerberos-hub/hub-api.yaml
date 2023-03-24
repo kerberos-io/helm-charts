@@ -233,6 +233,16 @@ spec:
             - name: KAFKA_SECURITY
               value: "{{ .Values.kafka.security }}"
 
+            # RabbitMQ settings
+            - name: RABBITMQ_HOST
+              value: "{{ .Values.rabbitmq.host }}"
+            - name: RABBITMQ_EXCHANGE
+              value: "{{ .Values.rabbitmq.exchange }}"
+            - name: RABBITMQ_USERNAME
+              value: "{{ .Values.rabbitmq.username }}"
+            - name: RABBITMQ_PASSWORD
+              value: "{{ .Values.rabbitmq.password }}"
+
             # Mongodb
             - name: MONGODB_DATABASE_CLOUD
               value: "Kerberos"
