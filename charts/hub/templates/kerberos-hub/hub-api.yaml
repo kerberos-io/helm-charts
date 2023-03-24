@@ -124,10 +124,10 @@ spec:
         - name: hub-api
           image: "{{ .Values.kerberoshub.api.repository }}:{{ .Values.kerberoshub.api.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.api.pullPolicy }}
+          {{- with .Values.kerberoshub.api.resources }}
           resources:
-            requests:
-              memory: 100Mi
-              cpu: 50m
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - containerPort: 80
               name: http  

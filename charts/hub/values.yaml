@@ -46,16 +46,23 @@ mqtt:
     host: ""
     port: ""
 
-# We are using a pipeline that is orchestrated through Kafka topics
+# We are using a pipeline that is orchestrated through Kafka topics or RabbitMQ queues
 # Events are send back and forth until the processing is done.
-queueProvider: "KAFKA"
+queueProvider: "KAFKA" # or "RABBITMQ"
 queueName: "kcloud-event-queue" # This is the topic to which all events are send.
+
 kafka:
   broker: "kafka1.yourdomain.com:9094,kafka2.yourdomain.com:9094"
   username: "yourusername"
   password: "yourpassword"
   mechanism: "PLAIN"
   security: "SASL_PLAINTEXT"
+
+rabbitmq:
+  host: "rabbitmq.yourdomain.com:5671"
+  username: "yourusername"
+  password: "yourpassword"
+  exchange: ""
 
 # For allowing WEBRTC a STUN and TURN server is required.
 turn:
@@ -123,11 +130,15 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.798442581"
+    tag: "1.0.816826043"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
     url: "api.yourdomain.com"
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 250m
 
     # E-mail templates
     #volumeMounts:
@@ -190,10 +201,14 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.798632013"
+    tag: "1.0.816620898"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
+    resources:
+      requests:
+        memory: 50Mi
+        cpu: 50m
     
     # The front-end but in read-only mode
     #demoUrl: "demo.yourdomain.com"
@@ -301,10 +316,18 @@ kerberoshub:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
     tag: "1.0.3292003489"
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
     tag: "1.0.2818471126"
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -317,42 +340,74 @@ kerberoshub:
     repository: kerberos/hub-reactivate
     pullPolicy: IfNotPresent
     tag: "1.0.2732384534"
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   forwarder:
     repository: kerberos/vault-forwarder
     pullPolicy: IfNotPresent
     tag: "1.0.2732389692"
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   # This proxy is legacy for the old agent, will be migrated in the new Hub API.
   proxy:
     repository: kerberos/vault-proxy
     pullPolicy: IfNotPresent
     tag: "1.0.2733724812"
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
 
 kerberospipeline:
   event:
     repository: kerberos/pipe-event
     pullPolicy: IfNotPresent
-    tag: "1.0.3191609458"
+    tag: "1.0.3991346363"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.3304604809"
+    tag: "1.0.3991795688"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.3306931581"
+    tag: "1.0.3991781193"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.3408769097"
+    tag: "1.0.3991949379"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.3454814999"
+    tag: "1.0.3991958425"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -364,8 +419,12 @@ kerberospipeline:
   notifyTest:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.3197238761"
+    tag: "1.0.3992084459"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -377,35 +436,64 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.3575269979"
+    tag: "1.0.3992243033"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
     tag: "1.0.3188380441"
     replicas: 1
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.3776128311"
+    tag: "1.0.3992081537"
     replicas: 1
     quality: "70"
     width: "250"
     height: "250"
     kerberosvault:
       enabled: false # If you want to use Kerberos Vault to store the thumbnails
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
     tag: "1.0.3188680646"
     replicas: 1
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   sprite:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.3955233514"
+    tag: "1.0.3992166189"
     replicas: 3
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
     height: "135" # Should not be changed for the moment (hard coded in UI)
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
 

@@ -26,10 +26,10 @@ spec:
         - name: hub-cleanup
           image: "{{ .Values.kerberoshub.cleanup.repository }}:{{ .Values.kerberoshub.cleanup.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.cleanup.pullPolicy }}
+          {{- with .Values.kerberoshub.cleanup.resources }}
           resources:
-            requests:
-              memory: 10Mi
-              cpu: 10m
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: MAX_DAYS
               value: "30"

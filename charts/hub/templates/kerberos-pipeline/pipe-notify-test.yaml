@@ -30,10 +30,10 @@ spec:
       - name: pipe-notify-test
         image: "{{ .Values.kerberospipeline.notifyTest.repository }}:{{ .Values.kerberospipeline.notifyTest.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.notifyTest.pullPolicy }}
+        {{- with .Values.kerberospipeline.notifyTest.resources }}
         resources:
-          requests:
-            memory: 10Mi
-            cpu: 10m
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         {{- with .Values.kerberospipeline.notifyTest.volumeMounts}}
         volumeMounts:
           {{- toYaml . | nindent 12 }}
@@ -71,6 +71,16 @@ spec:
           value: "{{ .Values.kafka.mechanism }}"
         - name: KAFKA_SECURITY
           value: "{{ .Values.kafka.security }}"
+
+        # RabbitMQ settings
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.rabbitmq.host }}"
+        - name: RABBITMQ_EXCHANGE
+          value: "{{ .Values.rabbitmq.exchange }}"
+        - name: RABBITMQ_USERNAME
+          value: "{{ .Values.rabbitmq.username }}"
+        - name: RABBITMQ_PASSWORD
+          value: "{{ .Values.rabbitmq.password }}"
 
         # Mail settings
         - name: MAIL_PROVIDER

@@ -30,10 +30,10 @@ spec:
         - name: hub-monitor-device
           image: "{{ .Values.kerberoshub.monitordevice.repository }}:{{ .Values.kerberoshub.monitordevice.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.monitordevice.pullPolicy }}
+          {{- with .Values.kerberoshub.monitordevice.resources }}
           resources:
-            requests:
-              memory: 10Mi
-              cpu: 10m
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.kerberoshub.monitordevice.volumeMounts}}
           volumeMounts:
             {{- toYaml . | nindent 12 }}

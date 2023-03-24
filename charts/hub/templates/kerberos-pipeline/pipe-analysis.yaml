@@ -26,10 +26,10 @@ spec:
       - name: pipe-analysis
         image: "{{ .Values.kerberospipeline.analysis.repository }}:{{ .Values.kerberospipeline.analysis.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.analysis.pullPolicy }}
+        {{- with .Values.kerberospipeline.analysis.resources }}
         resources:
-          requests:
-            memory: 10Mi
-            cpu: 10m
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         env:
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
@@ -58,6 +58,16 @@ spec:
         - name: KAFKA_SECURITY
           value: "{{ .Values.kafka.security }}"
 
+        # RabbitMQ settings
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.rabbitmq.host }}"
+        - name: RABBITMQ_EXCHANGE
+          value: "{{ .Values.rabbitmq.exchange }}"
+        - name: RABBITMQ_USERNAME
+          value: "{{ .Values.rabbitmq.username }}"
+        - name: RABBITMQ_PASSWORD
+          value: "{{ .Values.rabbitmq.password }}"
+          
         # Kerberos Vault
         - name: KERBEROS_STORAGE_URI
           value: "{{ .Values.kerberosvault.uri }}"

@@ -26,11 +26,11 @@ spec:
       containers:
       - name: pipe-sprite
         image: "{{ .Values.kerberospipeline.sprite.repository }}:{{ .Values.kerberospipeline.sprite.tag }}"
-        imagePullPolicy: {{ .Values.kerberospipeline.sprite.pullPolicy }}
+        imagePullPolicy: {{ .Values.kerberospipeline.sprite.pullPolicy }}        
+        {{- with .Values.kerberospipeline.sprite.resources }}
         resources:
-          requests:
-            memory: 512Mi
-            cpu: 500m
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         env:
         {{ if .Values.isPrivate }}
         - name: KERBEROS_PRIVATE_CLOUD
@@ -55,6 +55,16 @@ spec:
           value: "{{ .Values.kafka.mechanism }}"
         - name: KAFKA_SECURITY
           value: "{{ .Values.kafka.security }}"
+
+        # RabbitMQ settings
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.rabbitmq.host }}"
+        - name: RABBITMQ_EXCHANGE
+          value: "{{ .Values.rabbitmq.exchange }}"
+        - name: RABBITMQ_USERNAME
+          value: "{{ .Values.rabbitmq.username }}"
+        - name: RABBITMQ_PASSWORD
+          value: "{{ .Values.rabbitmq.password }}"
 
         # There is an option to store the sprites in a storage provider in Kerberos Vault.
         - name: VAULT_SPRITE_ENABLED
