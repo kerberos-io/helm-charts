@@ -16,8 +16,9 @@ licenseServer:
 imagePullSecrets:
   - name: regcred
   
+# Environment: set to 'production', 'develop', 'demo', 'staging' or 'acceptance'.
 # Set to 'true' if this is a private deployment.
-isPrivate: true
+environment: 'production'
 
 # If you plan a migration or doing maintenance, you can enable readonly.
 # This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline.
@@ -201,7 +202,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.816620898"
+    tag: "1.0.817959632"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -445,7 +446,7 @@ kerberospipeline:
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.3999171261"
+    tag: "1.0.4000824200"
     replicas: 1
     resources:
       requests:
@@ -474,7 +475,7 @@ kerberospipeline:
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.3999310089"
+    tag: "1.0.4000858040"
     replicas: 1
     resources:
       requests:
