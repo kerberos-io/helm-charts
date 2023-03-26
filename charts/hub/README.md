@@ -64,7 +64,7 @@ Below all configuration options and parameters are listed.
 | `rabbitmq.host`                             | RabbitMQ host, by default `'rabbitmq.yourdomain.com:5671'`                                                                 | `""`  |
 | `rabbitmq.username`                         | RabbitMQ username, by default `'yourusername'`                                                                             | `""`  |
 | `rabbitmq.password`                         | RabbitMQ password, by default `'yourpassword'`                                                                             | `""`  |
-| `rabbitmq.exchange`                         | RabbitMQ mechanism, by default `''`                                                                                        | `""`  |
+| `rabbitmq.exchange`                         | RabbitMQ exchange, by default `''`                                                                                         | `""`  |
 | `turn.host`                                 | TURN/STUN hostname, by default `'turn:turn.yourdomain.com:8443'`                                                           | `""`  |
 | `turn.username`                             | TURN/STUN username, by default `'username1'`                                                                               | `""`  |
 | `turn.password`                             | TURN/STUN password, by default `'password1'`                                                                               | `""`  |
