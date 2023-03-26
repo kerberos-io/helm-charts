@@ -108,6 +108,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.title }}"
         - name: LOGO_NAME
           value: "{{ .Values.kerberoshub.frontend.logo }}"
+        - name: ENVIRONMENT
+          value: "demo"
         - name: API_URL
           value: "" # legacy
         - name: NEW_API_URL
