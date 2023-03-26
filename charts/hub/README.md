@@ -42,6 +42,7 @@ Below all configuration options and parameters are listed.
 | `licenseServer.token`                       | The license server API token to sign the license validation by default `'214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM'`.      | `""`  |
 | `imagePullSecrets.name`                     | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images.        | `""`  |
 | `isPrivate`                                 | Global StorageClass for Persistent Volume(s)                                                                               | `""`  |
+| `environment`                               | A colored banner will be shown on top of the application to illustrate a non-production environment: `staging`, `demo`, .. | `""`  |
 | `readOnly`                                  | This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline.                           | `""`  |
 | `ingress`                                   | The ingress being used for `kerberoshub.api.url` and `kerberoshub.frontend.url`.                                           | `""`  |
 | `mongodb.host`                              | MongoDB hostname (`'mongodb:27017'`) or mongodb replicas (`'mongodb-0:27017,mongodb-1:27017'`).                            | `""`  |
@@ -53,13 +54,17 @@ Below all configuration options and parameters are listed.
 | `mqtt.protocol`                             | MQTT (Vernemq) protocol, by default `'wss'`.                                                                               | `""`  |
 | `mqtt.username`                             | MQTT (Vernemq) username, by default `'yourusername'`.                                                                      | `""`  |
 | `mqtt.password`                             | MQTT (Vernemq) password, by default `'yourpassword'`.                                                                      | `""`  |
-| `queueProvider`                             | The queue we are using for the [Kerberos Hub pipeline](https://doc.kerberos.io/hub/pipeline/), can be 'SQS' or 'KAFKA'.    | `""`  |
+| `queueProvider`                             | The queue we are using for the [pipeline](https://doc.kerberos.io/hub/pipeline/): 'SQS', 'KAFKA' or `RABBITMQ`.            | `""`  |
 | `queueName`                                 | The event queue which is propagating messages in the [Kerberos Hub pipeline](https://doc.kerberos.io/hub/pipeline/).       | `""`  |
 | `kafka.broker`                              | Kafka brokers, by default `'kafka1.yourdomain.com:9094,kafka2.yourdomain.com:9094'`                                        | `""`  |
 | `kafka.username`                            | Kafka username, by default `'yourusername'`                                                                                | `""`  |
 | `kafka.password`                            | Kafka password, by default `'yourpassword'`                                                                                | `""`  |
 | `kafka.mechanism`                           | Kafka mechanism, by default `'PLAIN'`                                                                                      | `""`  |
 | `kafka.security`                            | Kafka security, by default `'SASL_PLAINTEXT'`                                                                              | `""`  |
+| `rabbitmq.host`                             | RabbitMQ host, by default `'rabbitmq.yourdomain.com:5671'`                                                                 | `""`  |
+| `rabbitmq.username`                         | RabbitMQ username, by default `'yourusername'`                                                                             | `""`  |
+| `rabbitmq.password`                         | RabbitMQ password, by default `'yourpassword'`                                                                             | `""`  |
+| `rabbitmq.exchange`                         | RabbitMQ mechanism, by default `''`                                                                                        | `""`  |
 | `turn.host`                                 | TURN/STUN hostname, by default `'turn:turn.yourdomain.com:8443'`                                                           | `""`  |
 | `turn.username`                             | TURN/STUN username, by default `'username1'`                                                                               | `""`  |
 | `turn.password`                             | TURN/STUN password, by default `'password1'`                                                                               | `""`  |
