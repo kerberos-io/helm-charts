@@ -446,7 +446,7 @@ kerberospipeline:
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.4000824200"
+    tag: "1.0.4005173747"
     replicas: 1
     resources:
       requests:
@@ -458,7 +458,7 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.3997949096"
+    tag: "1.0.4005255540"
     replicas: 1
     quality: "70"
     width: "250"
@@ -475,7 +475,7 @@ kerberospipeline:
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.4000858040"
+    tag: "1.0.4005270506"
     replicas: 1
     resources:
       requests:
@@ -485,7 +485,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.3997945443"
+    tag: "1.0.4005315888"
     replicas: 3
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
@@ -497,4 +497,3 @@ kerberospipeline:
       limits:
         memory: 2Gi
         cpu: 1000m
-
