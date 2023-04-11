@@ -123,3 +123,19 @@ spec:
           value: "{{ .Values.kerberosvault.thumbnail.accessKey }}"
         - name: VAULT_THUMBNAIL_SECRET_KEY
           value: "{{ .Values.kerberosvault.thumbnail.secretKey }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-notify
+    service: pipe
+  name: pipe-notify
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-notify

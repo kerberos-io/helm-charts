@@ -30,6 +30,8 @@ spec:
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
+        ports:
+          - containerPort: 8080
         env:
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
@@ -67,3 +69,19 @@ spec:
           value: "{{ .Values.rabbitmq.username }}"
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-event
+    service: pipe
+  name: pipe-event
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-event

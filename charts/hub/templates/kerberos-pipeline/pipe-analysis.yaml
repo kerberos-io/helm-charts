@@ -79,3 +79,19 @@ spec:
         # Sprites
         - name: SPRITE_ENABLED
           value: "{{ .Values.kerberospipeline.sprite.enabled }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-analysis
+    service: pipe
+  name: pipe-analysis
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-analysis

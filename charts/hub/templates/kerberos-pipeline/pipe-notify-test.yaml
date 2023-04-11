@@ -103,3 +103,19 @@ spec:
           value: "{{ .Values.email.smtp.username }}"
         - name: SMTP_PASSWORD
           value: "{{ .Values.email.smtp.password }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-notify-test
+    service: pipe
+  name: pipe-notify-test
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-notify-test

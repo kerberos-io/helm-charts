@@ -57,3 +57,19 @@ spec:
           value: "{{ .Values.rabbitmq.username }}"
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-dominantcolor
+    service: pipe
+  name: pipe-dominantcolor
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-dominantcolor

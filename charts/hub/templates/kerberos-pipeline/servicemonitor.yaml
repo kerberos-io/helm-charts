@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hub-metrics-servicemonitor
+  labels:
+    service: pipe
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      service: pipe
+  endpoints:
+    - port: hub-metrics
+      interval: 15s
+      path: /metrics

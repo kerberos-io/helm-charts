@@ -81,4 +81,20 @@ spec:
           value: "{{ .Values.kerberospipeline.sprite.width }}"
         - name: VAULT_SPRITE_HEIGHT
           value: "{{ .Values.kerberospipeline.sprite.height }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-sprite
+    service: pipe
+  name: pipe-sprite
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-sprite
 {{ end }}
