@@ -242,6 +242,10 @@ Following indexes should be executed on the MongoDB database (Kerberos) to impro
     db.getCollection("analysis").createIndex({userid:1, key:1})
     db.getCollection("analysis").createIndex({userid:1, start:1})
 
+#### Heatmap collection
+
+    db.getCollection("heatmap").createIndex({user_id:1, timestamp: 1})
+
 # Upgrade
 
 After installation, you might want to upgrade Kerberos Hub to the latest version, or change some settings. With Helm charts all settings are configured through the `values.yaml` file. After you made modifications to the `values.yaml` file, for example the version tag, or a new DNS name, you can run the `helm upgrade` command as following.
