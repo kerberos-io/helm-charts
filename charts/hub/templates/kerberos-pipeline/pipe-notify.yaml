@@ -123,6 +123,16 @@ spec:
           value: "{{ .Values.kerberosvault.thumbnail.accessKey }}"
         - name: VAULT_THUMBNAIL_SECRET_KEY
           value: "{{ .Values.kerberosvault.thumbnail.secretKey }}"
+      
+        # There is an option to store the sprites in a storage provider in Kerberos Vault.
+        - name: VAULT_SPRITE_ENABLED
+          value: "{{ .Values.kerberospipeline.sprite.enabled }}"
+        - name: VAULT_SPRITE_PROVIDER
+          value: "{{ .Values.kerberosvault.sprite.provider }}"
+        - name: VAULT_SPRITE_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.sprite.accessKey }}"
+        - name: VAULT_SPRITE_SECRET_KEY
+          value: "{{ .Values.kerberosvault.sprite.secretKey }}"
 ---
 apiVersion: v1
 kind: Service
