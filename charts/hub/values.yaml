@@ -134,7 +134,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.850643360"
+    tag: "1.0.886916466"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -205,7 +205,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.834697556"
+    tag: "1.0.887598362"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -379,7 +379,7 @@ kerberospipeline:
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.4040996006"
+    tag: "1.0.4315201434"
     replicas: 1
     resources:
       requests:
@@ -423,7 +423,7 @@ kerberospipeline:
   notifyTest:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.4040099761"
+    tag: "1.0.4291938177"
     replicas: 1
     resources:
       requests:
@@ -440,7 +440,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.4100212321"
+    tag: "1.0.4300379952"
     replicas: 1
     resources:
       requests:
@@ -449,7 +449,7 @@ kerberospipeline:
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.4021128527"
+    tag: "1.0.4304099905"
     replicas: 1
     resources:
       requests:
@@ -461,7 +461,7 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.4061885672"
+    tag: "1.0.4216458235"
     replicas: 1
     quality: "70"
     width: "250"
@@ -478,7 +478,7 @@ kerberospipeline:
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.4021203633"
+    tag: "1.0.4311489363"
     replicas: 1
     resources:
       requests:
@@ -488,7 +488,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.4095867847"
+    tag: "1.0.4307157569"
     replicas: 3
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
