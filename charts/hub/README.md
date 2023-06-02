@@ -223,13 +223,14 @@ Within the Kerberos Hub front-end you'll see the option to filter through classi
 
 ### Indexing
 
-Following indexes should be executed on the MongoDB database (Kerberos) to improve future performance.
+Following indexes should be executed on the MongoDB database (Kerberos) to improve future performance. Within Kerberos Hub several queries are executed, following indexes will improve the loading times. If not applied you might experience application timeouts or reduced performance when storing lots of data.
 
 #### Sequences collection
 
+    db.getCollection('sequences').createIndex({start:1})
+    db.getCollection('sequences').createIndex({user_id:1, "images.key":1})
     db.getCollection('sequences').createIndex({user_id:1, end:1, start: -1, devices: 1})
     db.getCollection('sequences').createIndex({user_id:1, end:1, start: 1, "images.instanceName": 1})
-    db.getCollection('sequences').createIndex({user_id:1, "images.key":1})
 
 #### Notifications collection
 
@@ -239,11 +240,13 @@ Following indexes should be executed on the MongoDB database (Kerberos) to impro
 
 #### Analysis collection
 
+    db.getCollection("analysis").createIndex({start:1})
     db.getCollection("analysis").createIndex({userid:1, key:1})
     db.getCollection("analysis").createIndex({userid:1, start:1})
 
 #### Heatmap collection
 
+    db.getCollection("heatmap").createIndex({timestamp:1})
     db.getCollection("heatmap").createIndex({user_id:1, timestamp: 1})
 
 # Upgrade
