@@ -30,6 +30,7 @@ metadata:
     {{- if eq .Values.ingress "nginx" }}
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 200m # This might throw a 413 Entity Too Large when uploading large recordings.
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     {{- end }}
 spec:
