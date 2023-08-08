@@ -1,3 +1,31 @@
+package templates
+
+var TEMPLATE_DETECTION_TEXT = `
+Kerberos.io
+------------
+
+Hey, {{user}}
+Welcome to Kerberos Hub
+Activate your account ->
+{{link}}
+
+Kerberos Hub in a nutshell
+With Kerberos Hub you can access your surveillance media remotely. By subscribing to a plan, you get access to a set of features, from advanced filtering, notifications to machine learning.
+
+However before you get started this amazing applications, please activate your account.
+
+Get in touch
+------------
+support@kerberos.io
+9000 Ghent, BE
+https://kerberos.io
+
+About Kerberos
+------------
+Welcome to the revolutionary video analytics and video management platform. Open, modular, and extensible for everyone, anywhere.
+`
+
+var TEMPLATE_DETECTION = `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -275,9 +303,24 @@
                                         letter-spacing: 0em;
                                         text-align: left;
                                         color: #6D6666;
-                                        margin-top: 12px;">An alert was send to your e-mail as one of the conditions was triggered. Please watch the recording, by clicking on below button. 
+                                        margin-top: 12px;">An alert was send to your e-mail as one of the conditions was triggered for your device <b>{{devicename}}</b>. Please watch the recording, by clicking on below button. 
 If you believe this event is a false positive, go to your Kerberos Hub account and change the alert settings accordingly.</p>
 
+
+                        <p style=" font-family: Inter;
+                        font-size: 14px;
+                        font-style: normal;
+                        font-weight: 400;
+                        line-height: 24px;
+                        mso-line-height-rule:exactly;
+                        letter-spacing: 0em;
+                        text-align: left;
+                        color: #6D6666;
+                        margin-top: 12px;">Following event was detected at {{datetime}}.</p>
+
+						<a style="text-decoration: none;color: none;" href="{{link}}">
+                            {{thumbnail}}
+                        </a>
 
 						<a style="text-decoration: none;color: none;" href="{{link}}">
                             <p style="font-family: Inter;
@@ -429,4 +472,4 @@ If you believe this event is a false positive, go to your Kerberos Hub account a
     </tr>
 </table>
 </body>
-</html>
+</html>`
