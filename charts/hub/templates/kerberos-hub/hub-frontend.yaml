@@ -167,6 +167,10 @@ spec:
         - name: MQTT_LEGACY_PORT
           value: "{{ .Values.mqtt.legacy.port }}"
 
+        # OpenAI
+        - name: OPENAI_ENABLED
+          value: "{{ .Values.openai.enabled }}"
+
         # Turn (Pion)
         - name: TURN_SERVER
           value: "{{ .Values.turn.host }}"
