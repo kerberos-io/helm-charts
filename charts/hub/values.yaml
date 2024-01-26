@@ -13,8 +13,8 @@ licenseServer:
   
 # Private Docker Registry: The registry secret is required if you have your Docker images behind a private registry.
 # By default it will pull from Docker hub (https://hub.docker.com/r/kerberos).
-imagePullSecrets:
-  - name: regcred
+#imagePullSecrets:
+#  - name: regcred
   
 # Environment: set to 'production', 'develop', 'demo', 'staging' or 'acceptance'.
 # Set to 'true' if this is a private deployment.
