@@ -18,8 +18,10 @@ spec:
       labels:
         app: vault-proxy
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: regcred
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: vault-proxy
           image: "{{ .Values.kerberoshub.proxy.repository }}:{{ .Values.kerberoshub.proxy.tag }}"

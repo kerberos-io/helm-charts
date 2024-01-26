@@ -18,8 +18,10 @@ spec:
       labels:
         app: hub-reactivate-subscription
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: regcred
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: hub-reactivate-subscription
           image: "{{ .Values.kerberoshub.reactivate.repository }}:{{ .Values.kerberoshub.reactivate.tag }}"
