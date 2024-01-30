@@ -123,8 +123,9 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
         env:
-        - name: SSO_DOMAIN
-          value: "{{ .Values.kerberoshub.frontend.ssoDomain }}"
+        - name: SSO_DOMAINS
+          # get the domain attribute from the list of sso domains
+          value: "{{- range .Values.kerberoshub.api.sso }}{{ .domain }};{{- end }}"
         - name: TITLE
           value: "{{ .Values.kerberoshub.frontend.title }}"
         - name: LOGO_NAME
