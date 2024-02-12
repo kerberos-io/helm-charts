@@ -1,3 +1,5 @@
+# If .Values.kerberoshub.forwarder.enabled is set to true 
+{{- if .Values.kerberoshub.forwarder.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,3 +56,4 @@ spec:
               value: "{{ .Values.mqtt.username }}"
             - name: MQTT_PASSWORD
               value: "{{ .Values.mqtt.password }}"
+{{- end }}

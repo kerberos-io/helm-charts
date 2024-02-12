@@ -182,6 +182,8 @@ spec:
               value: "{{- range .Values.kerberoshub.api.sso }}{{ .clientId }};{{- end }}"
             - name: SSO_CLIENTSECRETS
               value: "{{- range .Values.kerberoshub.api.sso }}{{ .clientSecret }};{{- end }}"
+            - name: SSO_CLIENTVERIFICATIONIDS
+              value: "{{- range .Values.kerberoshub.api.sso }}{{ .clientVerificationId }};{{- end }}"
 
             # Kerberos pipeline
             - name: QUEUE_SYSTEM

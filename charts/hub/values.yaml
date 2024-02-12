@@ -139,7 +139,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.1158276216"
+    tag: "1.0.1172734310"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -208,15 +208,17 @@ kerberoshub:
         issuer: "https://xxx.eu.auth0.com/"
         clientId: "xxx"
         clientSecret: "xxx"
+        clientVerificationId: "" # This is only required for SSO chaining.
       - domain: "kerberos.io"
         redirectUrl: "https://api.cloud.kerberos.io/sso/callback/kerberos.io"
         issuer: "https://accounts.google.com"
         clientId: "xxx"
         clientSecret: "xxx"
+        clientVerificationId: "" # This is only required for SSO chaining.
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.1158265189"
+    tag: "1.0.1172733722"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -336,7 +338,7 @@ kerberoshub:
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "1.0.2818471126"
+    tag: "1.0.6145720181"
     resources:
       requests:
         memory: 10Mi
@@ -352,12 +354,13 @@ kerberoshub:
   reactivate:
     repository: kerberos/hub-reactivate
     pullPolicy: IfNotPresent
-    tag: "1.0.2732384534"
+    tag: "1.0.6146029956"
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
   forwarder:
+    enabled: false # Enable or disable the forwarder
     repository: kerberos/vault-forwarder
     pullPolicy: IfNotPresent
     tag: "1.0.2732389692"
@@ -388,7 +391,7 @@ kerberospipeline:
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.5199995278"
+    tag: "1.0.6146006860"
     replicas: 1
     resources:
       requests:
@@ -397,7 +400,7 @@ kerberospipeline:
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.4092937753"
+    tag: "1.0.6047229195"
     replicas: 1
     resources:
       requests:
@@ -406,7 +409,7 @@ kerberospipeline:
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.4041064593"
+    tag: "1.0.6146059801"
     replicas: 1
     resources:
       requests:
@@ -415,7 +418,7 @@ kerberospipeline:
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.4826924937"
+    tag: "1.0.6146008429"
     replicas: 1
     resources:
       requests:
@@ -432,7 +435,7 @@ kerberospipeline:
   notifyTest:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.4421831666"
+    tag: "1.0.6070463107"
     replicas: 1
     resources:
       requests:
@@ -449,7 +452,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.4421858000"
+    tag: "1.0.6145921814"
     replicas: 1
     resources:
       requests:
@@ -470,11 +473,11 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.5413452408"
-    replicas: 3
+    tag: "1.0.6146803050"
+    replicas: 2
     quality: "70"
     width: "600"
-    height: "600"
+    height: "-1"
     kerberosvault:
       enabled: false # If you want to use Kerberos Vault to store the thumbnails
     resources:
@@ -487,7 +490,7 @@ kerberospipeline:
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.4311489363"
+    tag: "1.0.6091018056"
     replicas: 1
     resources:
       requests:
@@ -497,7 +500,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.5413452673"
+    tag: "1.0.6131439084"
     replicas: 5
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
