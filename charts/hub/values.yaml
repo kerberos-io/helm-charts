@@ -38,7 +38,7 @@ mongodb:
   username: yourusername
   password: "yourpassword"
 
-# A MQTT broker (vernemq) is used to have a bi-directional
+# A MQTT broker (vernemq or other like mosquitto) is used to have a bi-directional
 # communication between enterprise agents and kerberos hub.
 mqtt:
   host: "mqtt.yourdomain.com"
@@ -62,8 +62,10 @@ kafka:
   mechanism: "PLAIN"
   security: "SASL_PLAINTEXT"
 
+# RabbitMQ can be installed in the same cluster using a helm chart, or you can
+# use a cloud provider like AWS, GCP, Azure, etc.
 rabbitmq:
-  host: "rabbitmq.yourdomain.com:5671"
+  host: "rabbitmq.yourdomain.com:5671"  # or for AWS:  "amqps://b-xxx-xxx-xxx-xxx-xxx.mq.eu-central-1.amazonaws.com:5671"
   username: "yourusername"
   password: "yourpassword"
   exchange: ""
@@ -139,7 +141,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.1172734310"
+    tag: "1.0.1189595608"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -330,7 +332,7 @@ kerberoshub:
   cleanup:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "1.0.5360016926"
+    tag: "1.0.6252172854"
     resources:
       requests:
         memory: 10Mi
@@ -338,7 +340,7 @@ kerberoshub:
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "1.0.6145720181"
+    tag: "1.0.6161311627"
     resources:
       requests:
         memory: 10Mi
@@ -354,20 +356,20 @@ kerberoshub:
   reactivate:
     repository: kerberos/hub-reactivate
     pullPolicy: IfNotPresent
-    tag: "1.0.6146029956"
+    tag: "1.0.6198888192"
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
   forwarder:
-    enabled: false # Enable or disable the forwarder
-    repository: kerberos/vault-forwarder
-    pullPolicy: IfNotPresent
-    tag: "1.0.2732389692"
-    resources:
-      requests:
-        memory: 10Mi
-        cpu: 10m
+    enabled: false
+    #repository: kerberos/vault-forwarder
+    #pullPolicy: IfNotPresent
+    #tag: "1.0.2732389692"
+    #resources:
+    #  requests:
+    #    memory: 10Mi
+    #    cpu: 10m
   # This proxy is legacy for the old agent, will be migrated in the new Hub API.
   proxy:
     repository: kerberos/vault-proxy
@@ -382,7 +384,7 @@ kerberospipeline:
   event:
     repository: kerberos/pipe-event
     pullPolicy: IfNotPresent
-    tag: "1.0.4061811730"
+    tag: "1.0.6243407695"
     replicas: 1
     resources:
       requests:
@@ -391,7 +393,7 @@ kerberospipeline:
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.6146006860"
+    tag: "1.0.6250441079"
     replicas: 1
     resources:
       requests:
@@ -400,7 +402,7 @@ kerberospipeline:
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.6047229195"
+    tag: "1.0.6250386893"
     replicas: 1
     resources:
       requests:
@@ -409,7 +411,7 @@ kerberospipeline:
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.6146059801"
+    tag: "1.0.6243448935"
     replicas: 1
     resources:
       requests:
@@ -418,7 +420,7 @@ kerberospipeline:
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.6146008429"
+    tag: "1.0.6243450279"
     replicas: 1
     resources:
       requests:
@@ -435,7 +437,7 @@ kerberospipeline:
   notifyTest:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.6070463107"
+    tag: "1.0.6243455322"
     replicas: 1
     resources:
       requests:
@@ -452,7 +454,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.6145921814"
+    tag: "1.0.6243406549"
     replicas: 1
     resources:
       requests:
@@ -461,7 +463,7 @@ kerberospipeline:
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.4304099905"
+    tag: "1.0.6250017149"
     replicas: 3
     resources:
       requests:
@@ -473,7 +475,7 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.6146803050"
+    tag: "1.0.6243398712"
     replicas: 2
     quality: "70"
     width: "600"
@@ -490,7 +492,7 @@ kerberospipeline:
   counting:
     repository: kerberos/pipe-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.6091018056"
+    tag: "1.0.6251572994"
     replicas: 1
     resources:
       requests:
@@ -500,7 +502,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.6131439084"
+    tag: "1.0.6243419216"
     replicas: 5
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
