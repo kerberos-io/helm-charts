@@ -39,9 +39,13 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
+            - name: READ_ONLY
+              value: "{{ .Values.readonly }}"
             # Mongodb
             - name: MONGODB_DATABASE_CLOUD
               value: "Kerberos"
+            - name: MONGODB_URI
+              value: "{{ .Values.mongodb.uri }}"
             - name: MONGODB_HOST
               value: "{{ .Values.mongodb.host }}"
             - name: MONGODB_DATABASE_CREDENTIALS

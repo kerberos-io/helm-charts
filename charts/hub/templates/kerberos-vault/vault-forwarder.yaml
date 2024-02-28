@@ -38,6 +38,8 @@ spec:
             - name: BUFFER_TIME
               value: "3"
             # Mongodb
+            - name: MONGODB_URI
+              value: "{{ .Values.mongodb.uri }}"
             - name: MONGODB_DATABASE_CLOUD
               value: "Kerberos"
             - name: MONGODB_HOST

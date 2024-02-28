@@ -30,18 +30,23 @@ readOnly: false
 # Which network ingress you are using in your Kubernetes Cluster
 ingress: "nginx" # or "traefik"
 
-# A mongodb instance is required to store all the relevant metadata.
+# A mongodb instance is required to store all the relevant metadata (this can be standalone or in a cluster).
 mongodb:
+  # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
+  # If uri is set, the below properties are not used (host, adminDatabase, username, password)
+  #uri: "mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+
+  # Self-hosted mongodb, you could also use the uri property above.
   host: mongodb.mongodb
-  #host: "mongodb-0.mongodb-headless.mongodb:27017,mongodb-1.mongodb-headless.mongodb:27017"
   adminDatabase: admin
   username: yourusername
   password: "yourpassword"
 
 # A MQTT broker (vernemq or other like mosquitto) is used to have a bi-directional
-# communication between enterprise agents and kerberos hub.
+# communication between Kerberos Agents and Kerberos Hub.
+# we recommend to use vernemq (as part of this installation), but a stand-alone mosquitto broker is also possible.
 mqtt:
-  host: "mqtt.yourdomain.com"
+  host: "mqtt.yourdomain.com" # this needs to be a public accessible DNS name (it's used to communicate between Kerberos Agents and Kerberos Hub)
   port: "8443"
   protocol: "wss"
   username: "yourusername"
@@ -52,31 +57,36 @@ mqtt:
 
 # We are using a pipeline that is orchestrated through Kafka topics or RabbitMQ queues
 # Events are send back and forth until the processing is done.
-queueProvider: "KAFKA" # or "RABBITMQ"
+queueProvider: "RABBITMQ" # or "KAFKA"
 queueName: "kcloud-event-queue" # This is the topic to which all events are send.
 
+# RabbitMQ can be installed in the same cluster using a helm chart, or you can
+# use a service on  cloud provider like AWS, GCP, Azure, etc.
+rabbitmq:
+  host: "rabbitmq.rabbitmq:5672" # can be internal dns name or external
+  #host: "amqps://b-xxx-xxx-xxx-xxx-xxx.mq.eu-central-1.amazonaws.com:5671"
+  username: "yourusername"
+  password: "yourpassword"
+  exchange: ""
+
+# If you already have a Kafka cluster you might use this instead of RabbitMQ.
 kafka:
-  broker: "kafka1.yourdomain.com:9094,kafka2.yourdomain.com:9094"
+  broker: "kafka1.yourdomain.com:9094" # can be internal dns name or external
   username: "yourusername"
   password: "yourpassword"
   mechanism: "PLAIN"
   security: "SASL_PLAINTEXT"
 
-# RabbitMQ can be installed in the same cluster using a helm chart, or you can
-# use a cloud provider like AWS, GCP, Azure, etc.
-rabbitmq:
-  host: "rabbitmq.yourdomain.com:5671"  # or for AWS:  "amqps://b-xxx-xxx-xxx-xxx-xxx.mq.eu-central-1.amazonaws.com:5671"
-  username: "yourusername"
-  password: "yourpassword"
-  exchange: ""
-
 # For allowing WEBRTC a STUN and TURN server is required.
+# You might want to install coturn in a seperate VM.
+# -> https://help.hcltechsw.com/sametime/11.6/admin/turnserver_ubuntu.html
 turn:
-  host: "turn:turn.yourdomain.com:8443"
+  host: "turn:turn.yourdomain.com:8443" # this needs to be a public accessible DNS name.
   username: "username1"
   password: "password1"
 
-# OpenAI integration, used for semantic search
+# (optional) OpenAI integration, used for semantic search
+# Langchain is used to translate text to a filter on the media page
 openai:
   enabled: false
   apikey: "xxx"
@@ -85,7 +95,7 @@ openai:
 # recordings. Kerberos vault is queried to retrieve the recordings
 # from the appropriate provider.
 kerberosvault:
-  uri: "https://api.vault.yourdomain.com"
+  uri: "https://api.vault.yourdomain.com" # this needs to be a public accessible DNS name.
   provider: "a-provider"
   accesskey: "xxx"
   secretkey: "xxx"
@@ -141,7 +151,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.1189595608"
+    tag: "1.0.1190745862"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -332,7 +342,7 @@ kerberoshub:
   cleanup:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "1.0.6252172854"
+    tag: "1.0.6256539569"
     resources:
       requests:
         memory: 10Mi
@@ -340,7 +350,7 @@ kerberoshub:
   monitordevice:
     repository: kerberos/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "1.0.6161311627"
+    tag: "1.0.6256190978"
     resources:
       requests:
         memory: 10Mi
@@ -356,7 +366,7 @@ kerberoshub:
   reactivate:
     repository: kerberos/hub-reactivate
     pullPolicy: IfNotPresent
-    tag: "1.0.6198888192"
+    tag: "1.0.6256184527"
     resources:
       requests:
         memory: 10Mi
@@ -384,7 +394,7 @@ kerberospipeline:
   event:
     repository: kerberos/pipe-event
     pullPolicy: IfNotPresent
-    tag: "1.0.6243407695"
+    tag: "1.0.6256042211"
     replicas: 1
     resources:
       requests:
@@ -393,7 +403,7 @@ kerberospipeline:
   monitor:
     repository: kerberos/pipe-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.6250441079"
+    tag: "1.0.6256044005"
     replicas: 1
     resources:
       requests:
@@ -402,7 +412,7 @@ kerberospipeline:
   sequence:
     repository: kerberos/pipe-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.6250386893"
+    tag: "1.0.6256054139"
     replicas: 1
     resources:
       requests:
@@ -411,7 +421,7 @@ kerberospipeline:
   throttler:
     repository: kerberos/pipe-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.6243448935"
+    tag: "1.0.6256059962"
     replicas: 1
     resources:
       requests:
@@ -420,7 +430,7 @@ kerberospipeline:
   notify:
     repository: kerberos/pipe-notify
     pullPolicy: IfNotPresent
-    tag: "1.0.6243450279"
+    tag: "1.0.6256093837"
     replicas: 1
     resources:
       requests:
@@ -437,7 +447,7 @@ kerberospipeline:
   notifyTest:
     repository: kerberos/pipe-notify-test
     pullPolicy: IfNotPresent
-    tag: "1.0.6243455322"
+    tag: "1.0.6256094666"
     replicas: 1
     resources:
       requests:
@@ -454,7 +464,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.6243406549"
+    tag: "1.0.6256066045"
     replicas: 1
     resources:
       requests:

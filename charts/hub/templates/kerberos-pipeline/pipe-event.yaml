@@ -33,12 +33,16 @@ spec:
         ports:
           - containerPort: 8080
         env:
+        - name: READ_ONLY
+          value: "{{ .Values.readonly }}"
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
 
         # Database
+        - name: MONGODB_URI
+          value: "{{ .Values.mongodb.uri }}"
         - name: MONGODB_HOST
           value: "{{ .Values.mongodb.host }}"
         - name: MONGODB_DATABASE_CREDENTIALS

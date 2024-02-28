@@ -40,6 +40,8 @@ spec:
         {{- end }}
         env:
         # Database
+        - name: MONGODB_URI
+          value: "{{ .Values.mongodb.uri }}"
         - name: MONGODB_HOST
           value: "{{ .Values.mongodb.host }}"
         - name: MONGODB_DATABASE_CREDENTIALS
