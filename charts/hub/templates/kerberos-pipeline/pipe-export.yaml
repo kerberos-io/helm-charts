@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipe-export
+spec:
+  replicas: {{ .Values.kerberospipeline.export.replicas }}
+  selector:
+    matchLabels:
+      app: pipe-export
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: pipe-export
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: pipe-export
+        image: "{{ .Values.kerberospipeline.export.repository }}:{{ .Values.kerberospipeline.export.tag }}"
+        imagePullPolicy: {{ .Values.kerberospipeline.export.pullPolicy }}
+        {{- with .Values.kerberospipeline.export.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        env:
+        - name: CLOUD_PROVIDER
+          value: "{{ .Values.cloudProvider }}"
+        - name: QUEUE_SYSTEM
+          value: "{{ .Values.queueProvider }}"
+
+        # Database
+        - name: MONGODB_DATABASE_CLOUD
+          value: "Kerberos"
+        - name: MONGODB_URI
+          value: "{{ .Values.mongodb.uri }}"
+        - name: MONGODB_HOST
+          value: "{{ .Values.mongodb.host }}"
+        - name: MONGODB_DATABASE_CREDENTIALS
+          value: "{{ .Values.mongodb.adminDatabase }}"
+        - name: MONGODB_USERNAME
+          value: "{{ .Values.mongodb.username }}"
+        - name: MONGODB_PASSWORD
+          value: "{{ .Values.mongodb.password }}"
+
+        # Kafka settings
+        - name: KAFKA_BROKER
+          value: "{{ .Values.kafka.broker }}"
+        - name: KAFKA_USERNAME
+          value: "{{ .Values.kafka.username }}"
+        - name: KAFKA_PASSWORD
+          value: "{{ .Values.kafka.password }}"
+        - name: KAFKA_MECHANISM
+          value: "{{ .Values.kafka.mechanism }}"
+        - name: KAFKA_SECURITY
+          value: "{{ .Values.kafka.security }}"
+
+        # RabbitMQ settings
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.rabbitmq.host }}"
+        - name: RABBITMQ_EXCHANGE
+          value: "{{ .Values.rabbitmq.exchange }}"
+        - name: RABBITMQ_USERNAME
+          value: "{{ .Values.rabbitmq.username }}"
+        - name: RABBITMQ_PASSWORD
+          value: "{{ .Values.rabbitmq.password }}"
+          
+        # Kerberos Vault (Main instance, within Kerberos Hub you can assign additional Vaults to sites).
+        - name: STORAGE_URI
+          value: "{{ .Values.kerberosvault.uri }}"
+        - name: STORAGE_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.accesskey }}"
+        - name: STORAGE_SECRET_KEY
+          value: "{{ .Values.kerberosvault.secretkey }}"
+
+        # Kerberos Vault: archiving credentials. When creating a task, the underlying recording will be
+        # copied to this storage provider, using the specific account credentials, for deletion/retention.
+        - name: STORAGE_ARCHIVE_PROVIDER
+          value: "{{ .Values.kerberosvault.archive.provider }}"
+        - name: STORAGE_ARCHIVE_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.archive.accesskey }}"
+        - name: STORAGE_ARCHIVE_SECRET_KEY
+          value: "{{ .Values.kerberosvault.archive.secretkey }}"
+
+        # Sprites
+        - name: SPRITE_ENABLED
+          value: "{{ .Values.kerberospipeline.sprite.enabled }}"
+        - name: VAULT_SPRITE_PROVIDER
+          value: "{{ .Values.kerberosvault.sprite.provider }}"
+        - name: VAULT_SPRITE_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.sprite.accessKey }}"
+        - name: VAULT_SPRITE_SECRET_KEY
+          value: "{{ .Values.kerberosvault.sprite.secretKey }}"
+        # Thumbnails
+        - name: THUMBNAIL_VAULT_ENABLED
+          value: "{{ .Values.kerberospipeline.thumbnail.kerberosvault.enabled }}"
+        - name: VAULT_THUMBNAIL_PROVIDER
+          value: "{{ .Values.kerberosvault.thumbnail.provider }}"
+        - name: VAULT_THUMBNAIL_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.thumbnail.accessKey }}"
+        - name: VAULT_THUMBNAIL_SECRET_KEY
+          value: "{{ .Values.kerberosvault.thumbnail.secretKey }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pipe-export
+    service: pipe
+  name: pipe-export
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-export
