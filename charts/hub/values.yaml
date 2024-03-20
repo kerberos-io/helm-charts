@@ -527,7 +527,7 @@ kerberospipeline:
   export:
     repository: kerberos/pipe-export
     pullPolicy: IfNotPresent
-    tag: "1.0.6427528901"
+    tag: "1.0.6429153392"
     replicas: 2
     resources:
       requests:
