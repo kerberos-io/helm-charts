@@ -176,6 +176,8 @@ spec:
               value:  "{{- range .Values.kerberoshub.api.sso }}{{ .domain }};{{- end }}"
             - name: SSO_REDIRECTURLS
               value: "{{- range .Values.kerberoshub.api.sso }}{{ .redirectUrl }};{{- end }}"
+            - name: SSO_CLAIMIDS
+              value:  "{{- range .Values.kerberoshub.api.sso }}{{ .claimId }};{{- end }}"
             - name: SSO_ISSUERS
               value:  "{{- range .Values.kerberoshub.api.sso }}{{ .issuer }};{{- end }}"
             - name: SSO_CLIENTIDS
