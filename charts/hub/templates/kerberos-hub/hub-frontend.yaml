@@ -53,6 +53,15 @@ spec:
               serviceName: hub-frontend-svc
               servicePort: 80
     {{- end }}
+    {{- range .Values.kerberoshub.frontend.domains }}
+    - host: "{{ . }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: hub-frontend-svc
+              servicePort: 80
+    {{- end }}
   {{- else }}
   rules:
     - host: "{{ .Values.kerberoshub.frontend.url }}"
@@ -67,6 +76,18 @@ spec:
                 number: 80
     {{- if .Values.kerberoshub.frontend.legacyUrl }}
     - host: "{{ .Values.kerberoshub.frontend.legacyUrl }}"
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: hub-frontend-svc
+              port:
+                number: 80
+    {{- end }}
+    {{- range .Values.kerberoshub.frontend.domains }}
+    - host: "{{ . }}"
       http:
         paths:
         - path: /
