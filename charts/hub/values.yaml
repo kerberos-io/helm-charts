@@ -489,9 +489,9 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.6243398712"
+    tag: "1.0.6858435144"
     replicas: 2
-    quality: "70"
+    quality: "1" # 1 (best) - 31 (worst)
     width: "600"
     height: "-1"
     kerberosvault:
