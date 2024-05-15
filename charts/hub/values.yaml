@@ -151,7 +151,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.1279136252"
+    tag: "1.0.1282370992"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -217,6 +217,7 @@ kerberoshub:
     sso: # OIDC settings for allowing SSO.
       - domain: "uug.ai"
         redirectUrl: "https://api.cloud.kerberos.io/sso/callback/uug.ai"
+        forceSSO: "false"
         issuer: "https://xxx.eu.auth0.com/"
         claimId: "email" # claim which is used to identify the user
         clientId: "xxx"
@@ -224,6 +225,7 @@ kerberoshub:
         clientVerificationId: "" # This is only required for SSO chaining.
       - domain: "kerberos.io"
         redirectUrl: "https://api.cloud.kerberos.io/sso/callback/kerberos.io"
+        forceSSO: "false"
         issuer: "https://accounts.google.com"
         claimId: "email" # claim which is used to identify the user
         clientId: "xxx"
@@ -232,7 +234,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.1265984636"
+    tag: "1.0.1290881823"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"

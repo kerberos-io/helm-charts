@@ -147,6 +147,9 @@ spec:
         - name: SSO_DOMAINS
           # get the domain attribute from the list of sso domains
           value: "{{- range .Values.kerberoshub.api.sso }}{{ .domain }};{{- end }}"
+        - name: SSO_FORCE_DOMAINS
+          # get the domain attribute from the list of sso domains
+          value: "{{- range .Values.kerberoshub.api.sso }}{{ .forceSSO }};{{- end }}"
         - name: TITLE
           value: "{{ .Values.kerberoshub.frontend.title }}"
         - name: LOGO_NAME
