@@ -151,7 +151,7 @@ kerberoshub:
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent
-    tag: "1.0.1282370992"
+    tag: "1.0.1326710591"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -234,7 +234,7 @@ kerberoshub:
   frontend:
     repository: kerberos/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "1.0.1290881823"
+    tag: "1.0.1326087775"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -468,7 +468,7 @@ kerberospipeline:
   analysis:
     repository: kerberos/pipe-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.6436402988"
+    tag: "1.0.6897439184"
     replicas: 1
     resources:
       requests:
@@ -477,7 +477,7 @@ kerberospipeline:
   dominantColor:
     repository: kerberos/pipe-dominantcolor
     pullPolicy: IfNotPresent
-    tag: "1.0.6250017149"
+    tag: "1.0.6971463620"
     replicas: 3
     resources:
       requests:
@@ -489,7 +489,7 @@ kerberospipeline:
   thumbnail:
     repository: kerberos/pipe-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.6858435144"
+    tag: "1.0.6962799851"
     replicas: 2
     quality: "1" # 1 (best) - 31 (worst)
     width: "600"
@@ -516,7 +516,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: kerberos/pipe-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.6243419216"
+    tag: "1.0.6962998738"
     replicas: 5
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
