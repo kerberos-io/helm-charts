@@ -39,25 +39,7 @@ spec:
     {{- toYaml . | nindent 8 }}
   {{- end }}
 
-  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
-  rules:
-    - host: "{{ .Values.kerberoshub.api.url }}"
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: hub-api-svc
-              servicePort: 8081
-    {{- if .Values.kerberoshub.api.legacyUrl }}
-    - host: "{{ .Values.kerberoshub.api.legacyUrl }}"
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: hub-api-svc
-              servicePort: 8081
-    {{- end }}
-  {{- else }}
+  {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
   rules:
     - host: "{{ .Values.kerberoshub.api.url }}"
       http:
@@ -91,7 +73,25 @@ spec:
                 name: hub-api-svc
                 port:
                   number: 80
-  {{- end }}
+  {{ else }}
+    rules:
+    - host: "{{ .Values.kerberoshub.api.url }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: hub-api-svc
+              servicePort: 8081
+    {{- if .Values.kerberoshub.api.legacyUrl }}
+    - host: "{{ .Values.kerberoshub.api.legacyUrl }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: hub-api-svc
+              servicePort: 8081
+    {{- end }}
+  {{ end }}
 ---
 apiVersion: apps/v1
 kind: Deployment

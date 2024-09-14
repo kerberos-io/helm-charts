@@ -35,16 +35,9 @@ spec:
     {{- toYaml . | nindent 8 }}
   {{- end }}
 
-  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
-  rules:
-    - host: "{{ .Values.kerberoshub.frontend.demoUrl }}"
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: hub-frontend-demo-svc
-              servicePort: 80
-  {{- else }}
+
+  
+  {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
   rules:
     - host: "{{ .Values.kerberoshub.frontend.demoUrl }}"
       http:
@@ -56,7 +49,16 @@ spec:
               name: hub-frontend-demo-svc
               port:
                 number: 80
-  {{- end }}
+  {{ else }}
+  rules:
+    - host: "{{ .Values.kerberoshub.frontend.demoUrl }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: hub-frontend-demo-svc
+              servicePort: 80
+  {{ end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
