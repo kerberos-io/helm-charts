@@ -150,6 +150,8 @@ email:
 # Kerberos hub properly working.
 
 kerberoshub:
+  # Enables the support environment.
+  support: false
   api:
     repository: kerberos/hub-api
     pullPolicy: IfNotPresent

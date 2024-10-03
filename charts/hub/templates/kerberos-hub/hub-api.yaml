@@ -139,6 +139,8 @@ spec:
           env:
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
+            - name: SUPPORT_ENABLED
+              value: "{{ .Values.kerberoshub.support }}"
             - name: CLOUD_API_URL
               value: "{{ .Values.kerberoshub.api.url }}"
             - name: API_URL
