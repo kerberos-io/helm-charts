@@ -24,15 +24,15 @@ spec:
             - --http-address=0.0.0.0:4180
           env:
             - name: OAUTH2_PROXY_CLIENT_ID
-              value: "{{ .Values.kerberoshub.oauth2Proxy.clientId }}"
+              value: "{{ .Values.kerberoshub.oauth2Proxy.github.clientId }}"
             - name: OAUTH2_PROXY_CLIENT_SECRET
-              value: "{{ .Values.kerberoshub.oauth2Proxy.clientSecret }}"
+              value: "{{ .Values.kerberoshub.oauth2Proxy.github.clientSecret }}"
             - name: OAUTH2_PROXY_COOKIE_SECRET
-              value: "{{ .Values.kerberoshub.oauth2Proxy.cookieSecret }}"
+              value: "{{ .Values.kerberoshub.oauth2Proxy.github.cookieSecret }}"
             - name: OAUTH2_PROXY_GITHUB_ORG
-              value: "{{ .Values.kerberoshub.oauth2Proxy.githubOrg }}"
+              value: "{{ .Values.kerberoshub.oauth2Proxy.github.organization }}"
             - name: OAUTH2_PROXY_GITHUB_TEAM
-              value: "{{ .Values.kerberoshub.oauth2Proxy.githubTeam }}"
+              value: "{{ .Values.kerberoshub.oauth2Proxy.github.team }}"
           image: quay.io/oauth2-proxy/oauth2-proxy:latest
           imagePullPolicy: Always
           name: oauth2-proxy
