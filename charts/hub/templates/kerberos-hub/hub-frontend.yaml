@@ -13,17 +13,17 @@ spec:
   selector:
     app: hub-frontend
 ---
-{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
 apiVersion: networking.k8s.io/v1
-{{ else }}
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
-{{ end }}
+{{- end }}
 kind: Ingress
 metadata:
   name: hub-frontend-ingress
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress }}
-    {{ if .Values.kerberoshub.oauth2Proxy.enabled }}
+    {{- if .Values.kerberoshub.oauth2Proxy.enabled }}
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
     {{- end }}
@@ -38,7 +38,7 @@ spec:
   tls:
     {{- toYaml . | nindent 8 }}
   {{- end }}
-  {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
   rules:
     - host: "{{ .Values.kerberoshub.frontend.url }}"
       http:
@@ -75,7 +75,7 @@ spec:
                 number: 80
     {{- end }}
   
-  {{ else }}
+  {{- else }}
   rules:
     - host: "{{ .Values.kerberoshub.frontend.url }}"
       http:
@@ -102,7 +102,7 @@ spec:
               serviceName: hub-frontend-svc
               servicePort: 80
     {{- end }}
-  {{ end }}
+  {{- end }}
 {{- if .Values.kerberoshub.oauth2Proxy.enabled -}}
 ---
 apiVersion: networking.k8s.io/v1
