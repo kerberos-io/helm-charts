@@ -23,6 +23,10 @@ metadata:
   name: hub-frontend-ingress
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress }}
+    {{ if .Values.kerberoshub.oauth2Proxy.enabled }}
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    {{- end }}
     {{- if eq .Values.ingress "nginx" }}
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -99,6 +103,38 @@ spec:
               servicePort: 80
     {{- end }}
   {{ end }}
+{{- if .Values.kerberoshub.oauth2Proxy.enabled -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+  namespace: kube-system
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress }}
+    {{- if eq .Values.ingress "nginx" }}
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    {{- end }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.kerberoshub.frontend.url }}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: Prefix
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 4180
+  tls:
+    - hosts:
+        - {{ .Values.kerberoshub.frontend.url }}
+      secretName: oauth2-proxy-tls
+{{- end -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
