@@ -30,7 +30,6 @@ metadata:
     {{- if eq .Values.kerberoshub.oauth2Proxy.enabled true  }}
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
     {{- end }}
     {{- if eq .Values.ingress "nginx" }}
     kubernetes.io/tls-acme: "true"
@@ -109,6 +108,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
     {{- end }}
 spec:
   ingressClassName: nginx
