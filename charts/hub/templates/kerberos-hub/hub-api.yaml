@@ -27,6 +27,10 @@ metadata:
   name: hub-api-ingress
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress }}
+    {{- if eq .Values.kerberoshub.oauth2Proxy.enabled true  }}
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    {{- end }}
     {{- if eq .Values.ingress "nginx" }}
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
