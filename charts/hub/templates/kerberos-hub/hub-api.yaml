@@ -96,6 +96,7 @@ spec:
               servicePort: 8081
     {{- end }}
   {{ end }}
+{{- if eq .Values.kerberoshub.oauth2Proxy.enabled true  }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -109,6 +110,10 @@ metadata:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      if ($request_method = "OPTIONS") {
+        return 200;
+      }
     {{- end }}
 spec:
   ingressClassName: nginx
@@ -127,6 +132,7 @@ spec:
     - hosts:
         - "{{ .Values.kerberoshub.api.url }}"
       secretName: 
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
