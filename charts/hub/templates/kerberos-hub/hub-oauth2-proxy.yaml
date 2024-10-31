@@ -22,6 +22,7 @@ spec:
             - --email-domain=*
             - --upstream=file:///dev/null
             - --http-address=0.0.0.0:4180
+            - --skip-auth-preflight=true
           env:
             - name: OAUTH2_PROXY_CLIENT_ID
               value: "{{ .Values.kerberoshub.oauth2Proxy.github.clientId }}"
