@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-export
-        image: "{{ .Values.kerberospipeline.export.repository }}:{{ .Values.kerberospipeline.export.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.export.repository }}:{{ .Values.kerberospipeline.export.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.export.pullPolicy }}
         {{- with .Values.kerberospipeline.export.resources }}
         resources:

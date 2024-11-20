@@ -123,7 +123,7 @@ spec:
       {{- end }}
       containers:
         - name: hub-api
-          image: "{{ .Values.kerberoshub.api.repository }}:{{ .Values.kerberoshub.api.tag }}"
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.api.repository }}:{{ .Values.kerberoshub.api.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.api.pullPolicy }}
           {{- with .Values.kerberoshub.api.resources }}
           resources:

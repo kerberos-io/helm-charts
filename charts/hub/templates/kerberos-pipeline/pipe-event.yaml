@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-event
-        image: "{{ .Values.kerberospipeline.event.repository }}:{{ .Values.kerberospipeline.event.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.event.repository }}:{{ .Values.kerberospipeline.event.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.event.pullPolicy }}
         {{- with .Values.kerberospipeline.event.resources }}
         resources:

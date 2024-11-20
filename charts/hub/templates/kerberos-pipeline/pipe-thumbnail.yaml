@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-thumbnail
-        image: "{{ .Values.kerberospipeline.thumbnail.repository }}:{{ .Values.kerberospipeline.thumbnail.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.thumbnail.repository }}:{{ .Values.kerberospipeline.thumbnail.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.thumbnail.pullPolicy }}
         {{- with .Values.kerberospipeline.thumbnail.resources }}
         resources:

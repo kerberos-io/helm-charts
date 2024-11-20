@@ -26,7 +26,7 @@ spec:
       {{- end }}
       containers:
         - name: vault-forwarder
-          image: "{{ .Values.kerberoshub.forwarder.repository }}:{{ .Values.kerberoshub.forwarder.tag }}"
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.forwarder.repository }}:{{ .Values.kerberoshub.forwarder.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.forwarder.pullPolicy }}
           resources:
             requests:

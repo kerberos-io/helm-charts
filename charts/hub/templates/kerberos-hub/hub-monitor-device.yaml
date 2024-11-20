@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
         - name: hub-monitor-device
-          image: "{{ .Values.kerberoshub.monitordevice.repository }}:{{ .Values.kerberoshub.monitordevice.tag }}"
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.monitordevice.repository }}:{{ .Values.kerberoshub.monitordevice.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.monitordevice.pullPolicy }}
           {{- with .Values.kerberoshub.monitordevice.resources }}
           resources:

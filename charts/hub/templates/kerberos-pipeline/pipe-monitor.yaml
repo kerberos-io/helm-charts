@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-monitor
-        image: "{{ .Values.kerberospipeline.monitor.repository }}:{{ .Values.kerberospipeline.monitor.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.monitor.repository }}:{{ .Values.kerberospipeline.monitor.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.monitor.pullPolicy }}
         {{- with .Values.kerberospipeline.monitor.resources }}
         resources:
