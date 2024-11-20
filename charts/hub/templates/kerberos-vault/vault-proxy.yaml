@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
         - name: vault-proxy
-          image: "{{ .Values.kerberoshub.proxy.repository }}:{{ .Values.kerberoshub.proxy.tag }}"
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.proxy.repository }}:{{ .Values.kerberoshub.proxy.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.proxy.pullPolicy }}
           ports:
             - containerPort: 8080

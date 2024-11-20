@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
         - name: hub-cleanup
-          image: "{{ .Values.kerberoshub.cleanup.repository }}:{{ .Values.kerberoshub.cleanup.tag }}"
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.cleanup.repository }}:{{ .Values.kerberoshub.cleanup.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.cleanup.pullPolicy }}
           {{- with .Values.kerberoshub.cleanup.resources }}
           resources:

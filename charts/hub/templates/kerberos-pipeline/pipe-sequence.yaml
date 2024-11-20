@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-sequence
-        image: "{{ .Values.kerberospipeline.sequence.repository }}:{{ .Values.kerberospipeline.sequence.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.sequence.repository }}:{{ .Values.kerberospipeline.sequence.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.sequence.pullPolicy }}
         {{- with .Values.kerberospipeline.sequence.resources }}
         resources:

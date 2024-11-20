@@ -28,7 +28,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-notify-test
-        image: "{{ .Values.kerberospipeline.notifyTest.repository }}:{{ .Values.kerberospipeline.notifyTest.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.notifyTest.repository }}:{{ .Values.kerberospipeline.notifyTest.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.notifyTest.pullPolicy }}
         {{- with .Values.kerberospipeline.notifyTest.resources }}
         resources:

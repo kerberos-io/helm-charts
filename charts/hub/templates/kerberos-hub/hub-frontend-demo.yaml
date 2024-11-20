@@ -86,7 +86,7 @@ spec:
       {{- end }}
       containers:
       - name: hub-frontend-demo
-        image: "{{ .Values.kerberoshub.frontend.repository }}:{{ .Values.kerberoshub.frontend.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.frontend.repository }}:{{ .Values.kerberoshub.frontend.tag }}"
         imagePullPolicy: {{ .Values.kerberoshub.frontend.pullPolicy }}
         {{- with .Values.kerberoshub.frontend.resources }}
         resources:

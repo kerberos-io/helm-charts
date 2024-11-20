@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-throttler
-        image: "{{ .Values.kerberospipeline.throttler.repository }}:{{ .Values.kerberospipeline.throttler.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.throttler.repository }}:{{ .Values.kerberospipeline.throttler.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.throttler.pullPolicy }}
         {{- with .Values.kerberospipeline.throttler.resources }}
         resources:

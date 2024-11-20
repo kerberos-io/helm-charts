@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: pipe-dominantcolor
-        image: "{{ .Values.kerberospipeline.dominantColor.repository }}:{{ .Values.kerberospipeline.dominantColor.tag }}"
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.dominantColor.repository }}:{{ .Values.kerberospipeline.dominantColor.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.dominantColor.pullPolicy }}
         {{- with .Values.kerberospipeline.dominantColor.resources }}
         resources:
