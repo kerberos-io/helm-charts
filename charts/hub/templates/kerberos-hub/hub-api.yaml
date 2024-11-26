@@ -321,6 +321,10 @@ spec:
               value: "{{ .Values.email.templates.share }}"
             - name: SHARE_TITLE
               value: "{{ .Values.email.templates.shareTitle }}"
+            - name: ASSIGN_TASK_TEMPLATE
+              value: "{{ .Values.email.templates.assignTask }}"
+            - name: ASSIGN_TASK_TITLE
+              value: "{{ .Values.email.templates.assignTaskTitle }}"
 
             # SMTP
             - name: SMTP_SERVER
