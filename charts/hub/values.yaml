@@ -130,6 +130,8 @@ email:
     forgotTitle: "Password reset Kerberos Hub. You forgot your password"
     share: "share"
     shareTitle: "[Action] You received a recording from Kerberos Hub"
+    assignTask: "assign_task"
+    assignTaskTitle: "[Action] You've been assigned to a task"
     detection: "detection"
     disabled: "disabled"
     highupload: "highupload"
