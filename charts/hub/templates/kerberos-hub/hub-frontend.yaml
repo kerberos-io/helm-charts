@@ -12,6 +12,7 @@ spec:
     name: http
   selector:
     app: hub-frontend
+{{ if ne .Values.ingress "" }}
 ---
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
 apiVersion: networking.k8s.io/v1
@@ -103,6 +104,7 @@ spec:
               servicePort: 80
     {{- end }}
   {{- end }}
+{{- end }}
 {{- if eq .Values.kerberoshub.oauth2Proxy.enabled true  }}
 ---
 apiVersion: networking.k8s.io/v1
