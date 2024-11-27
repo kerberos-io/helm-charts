@@ -1,0 +1,19 @@
+Kerberos.io
+------------
+
+Hey, {{assignee}}
+You have been assigned to a new task on Kerberos Hub.
+Task Details:
+- Task Name: {{task_name}}
+- Assigned By: {{user}}
+- Link: {{link}}
+
+Get in touch
+------------
+support@kerberos.io
+9000 Ghent, BE
+https://kerberos.io
+
+About Kerberos
+------------
+Welcome to the revolutionary video analytics and video management platform. Open, modular, and extensible for everyone, anywhere.
