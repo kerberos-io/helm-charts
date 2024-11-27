@@ -25,6 +25,13 @@ jobs:
           kubectl get sc
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Install Prometheus operator
+        id: install-prometheus-operator
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.48.1/bundle.yaml
+          echo "Sleeping for 30 seconds, give time for the operator to create the CRDs" && sleep 30
+          kubectl get crd
+          kubectl get po -A -o wide
       - name: Install Kerberos Hub helm chart
         id: install-kerberos-hub
         run: |
