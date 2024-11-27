@@ -1,0 +1,36 @@
+name: Deploy on Microk8s
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  deploy-microk8s:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+    name: MicroK8s
+    steps:
+      - uses: balchua/microk8s-actions@v0.4.3
+        with:
+          channel: "1.30/stable"
+          addons: '["dns", "dashboard", "hostpath-storage", "nvidia"]'
+      - name: Set permissions
+        run: |
+          sudo chown -f -R $USER $HOME/.kube $HOME/.config
+      - name: Test MicroK8s
+        id: list-pods
+        run: |
+          kubectl get no
+          kubectl get pods -A -o wide
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install Kerberos Hub helm chart
+        id: install-kerberos-hub
+        run: |
+          kubectl create namespace kerberos-hub
+          helm install hub ./ --values kerberos-hub-values.yaml -n kerberos-hub --create-namespace
+          echo "Sleeping for 300 seconds, give time for the helm chart to create the pods" && sleep 300
+          kubectl get pods -A -o wide
+          kubectl get pods -A -o wide | grep hub-frontend | awk '{print $3}' | grep -q '1/1' && echo "hub-frontend pod is running with status 1/1" || (echo "kerberos-hub pod is not running with status 1/1" && exit 1)

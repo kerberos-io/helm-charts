@@ -16,6 +16,7 @@ spec:
       protocol: TCP
   selector:
     app: hub-api
+{{ if ne .Values.ingress "" }}
 ---
 {{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
 apiVersion: networking.k8s.io/v1
@@ -92,6 +93,7 @@ spec:
               servicePort: 8081
     {{- end }}
   {{ end }}
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
