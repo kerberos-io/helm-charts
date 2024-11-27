@@ -62,16 +62,16 @@ queueName: "kcloud-event-queue" # This is the topic to which all events are send
 # RabbitMQ can be installed in the same cluster using a helm chart, or you can
 # use a service on  cloud provider like AWS, GCP, Azure, etc.
 rabbitmq:
-  host: "<rabbitmq.rabbitmq:5672>" # can be internal dns name or external
+  host: "rabbitmq.rabbitmq:5672" # can be internal dns name or external
   #host: "amqps://b-xxx-xxx-xxx-xxx-xxx.mq.eu-central-1.amazonaws.com:5671"
-  username: "<yourusername>"
-  password: "<yourpassword>"
+  username: "yourusername"
+  password: "yourpassword"
   exchange: ""
 # If you already have a Kafka cluster you might use this instead of RabbitMQ.
 kafka:
-  broker: "<kafka1.yourdomain.com:9094>" # can be internal dns name or external
-  username: "<yourusername>"
-  password: "<yourpassword>"
+  broker: "kafka1.yourdomain.com:9094" # can be internal dns name or external
+  username: "yourusername"
+  password: "yourpassword"
   mechanism: "PLAIN"
   security: "SASL_PLAINTEXT"
 # For allowing WEBRTC a STUN and TURN server is required.
@@ -166,35 +166,35 @@ kerberoshub:
     #legacyUrl: "api.legacy.yourdomain.com"
 
     # MFA issuer name
-    mfaIssuer: "<yourdomain.com>"
+    mfaIssuer: "yourdomain.com"
     # Admin API's are made available for automation of Kerberos Hub.
     # To access those API's (e.g. creation of owner users), an API key needs to be provided.
-    apiKey: "<a-random-admin-api-key>"
+    apiKey: "a-random-admin-api-key"
     ## Certificates
     tls:
       - hosts:
-          - "<api.yourdomain.com>"
+          - "api.yourdomain.com"
         secretName: kerberoshub-api
       #- hosts:
       #    - "api.legacy.yourdomain.com"
       #  secretName: kerberoshub-api-legacy
       - hosts:
-          - "<admin.api.yourdomain.com>"
+          - "admin.api.yourdomain.com"
         secretName: kerberoshub-admin
     language: "english"
     fallbackLanguage: "english"
     # Legacy (reseller) it is possible to link to AWS S3 and IAM (however Kerberos Vault is now the recommended option).
     # This is primarily used for creation of subscriptions, and not needed if you are using mainly Kerberos Vault.
     aws:
-      region: "<xxx>"
-      bucket: "<xxx>"
-      accessKey: "<xxx>"
-      secretKey: "<xxx>"
+      region: "xxx"
+      bucket: "xxx"
+      accessKey: "xxx"
+      secretKey: "xxx"
     stripe: # We use stripe for billing, so it's possible to resell Kerberos Hub if agreed.
-      privateKey: "<xxx>"
+      privateKey: "xxx"
     slack: # Slack is used in the api, to send logs to a specific Slack channel.
       enabled: "true"
-      hook: "<yourslackhook>" # https://hooks.slack.com/services/T08Q2Q9V5/xxKT/JALxxAk26bHtuqTfZ
+      hook: "yourslackhook" # https://hooks.slack.com/services/T08Q2Q9V5/xxKT/JALxxAk26bHtuqTfZ
       username: "Kerberos Hub" # The slack username
     elasticsearch: # Logs of the kerberos hub will be send to an elastic search cluster.
       enabled: "false"
@@ -331,11 +331,11 @@ kerberoshub:
   oauth2Proxy:
     enabled: false
     github:
-      clientId: "<github-client-id>"
-      clientSecret: "<github-client-secret>"
-      cookieSecret: "<generate-a-random-cookie-secret>"
-      organization: "<github-organization>"
-      team: "<github-team>"
+      clientId: "github-client-id"
+      clientSecret: "github-client-secret"
+      cookieSecret: "generate-a-random-cookie-secret"
+      organization: "github-organization"
+      team: "github-team"
   cleanup:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
