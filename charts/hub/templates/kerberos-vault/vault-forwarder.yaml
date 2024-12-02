@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vault-forwarder
+  namespace: {{ include "common.names.namespace" . | quote }}
 spec:
   replicas: 1
   selector:

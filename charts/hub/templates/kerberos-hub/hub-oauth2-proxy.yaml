@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    k8s-app: oauth2-proxy
   name: oauth2-proxy
   namespace: kube-system
+  labels:
+    k8s-app: oauth2-proxy
 spec:
   replicas: 1
   selector:

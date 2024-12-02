@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hub-api-svc
+  namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     app: hub-api-svc
 spec:
