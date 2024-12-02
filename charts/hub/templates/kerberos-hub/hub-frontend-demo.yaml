@@ -23,6 +23,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: hub-frontend-demo-ingress
+  namespace: {{ .Release.Namespace }}
   annotations:
     {{- if eq .Values.ingress "nginx" }}
     kubernetes.io/tls-acme: "true"
@@ -63,6 +64,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hub-frontend-demo
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.kerberoshub.frontend.replicas }}
   selector:

@@ -74,10 +74,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-throttler
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-throttler
     service: pipe
-  name: pipe-throttler
 spec:
   ports:
     - name: hub-metrics

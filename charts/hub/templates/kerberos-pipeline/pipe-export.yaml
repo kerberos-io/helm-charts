@@ -112,10 +112,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-export
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-export
     service: pipe
-  name: pipe-export
 spec:
   ports:
     - name: hub-metrics

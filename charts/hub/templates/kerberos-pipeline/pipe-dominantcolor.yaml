@@ -62,10 +62,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-dominantcolor
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-dominantcolor
     service: pipe
-  name: pipe-dominantcolor
 spec:
   ports:
     - name: hub-metrics

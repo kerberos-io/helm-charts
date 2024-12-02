@@ -62,10 +62,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-counting
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-counting
     service: pipe
-  name: pipe-counting
 spec:
   ports:
     - name: hub-metrics

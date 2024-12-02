@@ -78,10 +78,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-event
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-event
     service: pipe
-  name: pipe-event
 spec:
   ports:
     - name: hub-metrics
