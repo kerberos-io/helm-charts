@@ -340,6 +340,7 @@ kerberoshub:
     repository: kerberos/hub-cleanup
     pullPolicy: IfNotPresent
     tag: "1.0.6436406806"
+    maxDays: "365" # The maximum number of days to keep orphaned recordings.
     resources:
       requests:
         memory: 10Mi

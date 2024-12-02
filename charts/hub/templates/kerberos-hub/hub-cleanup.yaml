@@ -35,7 +35,7 @@ spec:
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
             - name: MAX_DAYS
-              value: "30"
+              value: "{{ .Values.kerberoshub.cleanup.maxDays }}"
             - name: MONGODB_DATABASE_CLOUD
               value: "Kerberos"
             - name: MONGODB_URI
