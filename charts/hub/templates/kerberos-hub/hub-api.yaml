@@ -28,7 +28,6 @@ kind: Ingress
 metadata:
   name: hub-api-ingress
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress }}
     {{- if eq .Values.ingress "nginx" }}
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -36,6 +35,7 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     {{- end }}
 spec:
+  ingressClassName: {{ .Values.ingress }}
   {{- with .Values.kerberoshub.api.tls }}
   tls:
     {{- toYaml . | nindent 8 }}
