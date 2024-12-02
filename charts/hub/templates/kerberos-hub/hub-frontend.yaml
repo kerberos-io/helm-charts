@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hub-frontend-svc
+  namespace: {{ .Release.Namespace }}
   labels:
     app: hub-frontend-svc
 spec:
@@ -23,7 +24,6 @@ kind: Ingress
 metadata:
   name: hub-frontend-ingress
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress }}
     {{- if eq .Values.kerberoshub.oauth2Proxy.enabled true  }}
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
@@ -34,7 +34,7 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     {{- end }}
 spec:
-
+  ingressClassName: {{ .Values.ingress }}
   {{- with .Values.kerberoshub.frontend.tls }}
   tls:
     {{- toYaml . | nindent 8 }}
@@ -113,7 +113,6 @@ metadata:
   name: oauth2-proxy-frontend
   namespace: kube-system
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress }}
     {{- if eq .Values.ingress "nginx" }}
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
@@ -121,7 +120,7 @@ metadata:
     nginx.ingress.kubernetes.io/enable-cors: "true"
     {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress }}
   rules:
     - host: "{{ .Values.kerberoshub.frontend.url }}"
       http:
