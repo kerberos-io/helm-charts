@@ -110,10 +110,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-notify-test
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-notify-test
     service: pipe
-  name: pipe-notify-test
 spec:
   ports:
     - name: hub-metrics

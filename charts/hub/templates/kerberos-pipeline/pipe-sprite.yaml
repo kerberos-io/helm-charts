@@ -86,10 +86,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: pipe-sprite
+  namespace: {{ .Release.Namespace }}
   labels:
     app: pipe-sprite
     service: pipe
-  name: pipe-sprite
 spec:
   ports:
     - name: hub-metrics
