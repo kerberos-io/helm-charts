@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pipe-sprite
-  namespace: {{ include "common.names.namespace" . | quote }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.kerberospipeline.sprite.replicas }}
   selector:

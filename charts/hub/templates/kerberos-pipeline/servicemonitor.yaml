@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: hub-metrics-servicemonitor
-  namespace: {{ include "common.names.namespace" . | quote }}
+  namespace: { { .Release.Namespace } }
   labels:
     service: pipe
     release: prometheus
