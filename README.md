@@ -2,7 +2,7 @@
 
 Kerberos.io ecosystem can be deployed through Helm charts. Use one of the following charts to boost the installation:
 
-- [Hub](https://github.com/kerberos-io/helm-charts/tree/main/charts/hub) chart
+- [Hub](https://github.com/kerberos-io/helm-charts/tree/main/charts/hub)
 
 ## Prerequisite
 
