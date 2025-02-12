@@ -12,10 +12,8 @@ license: "L/+FAwEBB2xpY2Vuc2UB/4YAAQIBB1BheWxvYWQBCgABCVNpZ25hdHVyZQEKAAAA/gMw/4
 licenseServer:
   url: "https://license.kerberos.io/verify"
   token: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM" # do not change otherwise Kerberos Hub will not work.
-
 global:
   imageRegistry: "docker.io/"
-
 # Private Docker Registry: The registry secret is required if you have your Docker images behind a private registry.
 # By default it will pull from Docker hub (https://hub.docker.com/r/kerberos).
 #imagePullSecrets:
@@ -144,7 +142,7 @@ kerberoshub:
   api:
     repository: uugai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.0.7"
+    tag: "v1.0.16"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -224,7 +222,7 @@ kerberoshub:
   frontend:
     repository: uugai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.0.17"
+    tag: "v1.0.35"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -398,18 +396,18 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   monitor:
-    repository: kerberos/pipe-monitor
+    repository: uugai/hub-pipeline-monitor
     pullPolicy: IfNotPresent
-    tag: "1.0.6256044005"
+    tag: "v1.1.0"
     replicas: 1
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
   sequence:
-    repository: kerberos/pipe-sequence
+    repository: uugai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "1.0.6256054139"
+    tag: "v1.0.1"
     replicas: 1
     resources:
       requests:
@@ -427,7 +425,7 @@ kerberospipeline:
   notify:
     repository: uugai/hub-pipeline-notification
     pullPolicy: IfNotPresent
-    tag: "v1.0.8"
+    tag: "v1.0.11"
     replicas: 1
     resources:
       requests:
@@ -459,9 +457,9 @@ kerberospipeline:
         #    persistentVolumeClaim:
         #      claimName: custom-layout-claim
   analysis:
-    repository: kerberos/pipe-analysis
+    repository: uugai/hub-pipeline-analysis
     pullPolicy: IfNotPresent
-    tag: "1.0.6897439184"
+    tag: "v1.0.1"
     replicas: 1
     resources:
       requests:
@@ -507,9 +505,9 @@ kerberospipeline:
         cpu: 10m
   sprite:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
-    repository: kerberos/pipe-sprite
+    repository: uugai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
-    tag: "1.0.7190736361"
+    tag: "v1.0.4"
     replicas: 5
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
