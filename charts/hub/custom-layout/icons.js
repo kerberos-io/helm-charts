@@ -886,4 +886,22 @@
     <path fill-rule="evenodd" clip-rule="evenodd" d="M3.9981 11.3995C5.29471 9.88675 7.08937 9 9 9C10.9106 9 12.7053 9.88675 14.0019 11.3995C15.2944 12.9074 16 14.9238 16 17C16 17.5523 15.5523 18 15 18L3 18C2.44772 18 2 17.5523 2 17C2 14.9238 2.70558 12.9074 3.9981 11.3995ZM9 11C7.72803 11 6.47044 11.5882 5.51662 12.701C4.75666 13.5877 4.24797 14.743 4.07017 16L13.9298 16C13.752 14.743 13.2433 13.5877 12.4834 12.701C11.5296 11.5882 10.272 11 9 11Z" fill="currentColor"/>
     </svg>`
 
+  /* Light mode */
+  window["env"]["svg"]["lightmode"] = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M14.667 8H15.3337" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M8 1.33268V0.666016" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M8 15.3327V14.666" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M13.3337 13.3327L12.667 12.666" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M13.3337 2.66602L12.667 3.33268" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M2.66699 13.3327L3.33366 12.666" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M2.66699 2.66602L3.33366 3.33268" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill="currentColor" d="M0.666992 8H1.33366" stroke="black" stroke-linecap="currentColor" stroke-linejoin="round"/>
+  </svg>`;
+
+  /* Dark mode */
+  window["env"]["svg"]["darkmode"] = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M2 7.67107C2 11.1665 4.83356 14 8.32893 14C10.8139 14 12.9644 12.5679 14 10.4839C8.32893 10.4839 5.51607 7.67107 5.51607 2C3.43214 3.03563 2 5.1861 2 7.67107Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+  
 })(this);
