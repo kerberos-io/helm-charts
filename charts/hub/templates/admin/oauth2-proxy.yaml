@@ -28,4 +28,69 @@ spec:
     - hosts:
         - "{{ .Values.admin.url }}"
       secretName: 
-{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy-admin
+  namespace: kube-system
+  labels:
+    k8s-app: oauth2-proxy-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oauth2-proxy-admin
+  template:
+    metadata:
+      labels:
+        k8s-app: oauth2-proxy-admin
+    spec:
+      containers:
+        - args:
+            - --provider=github
+            - --email-domain=*
+            - --upstream=file:///dev/null
+            - --http-address=0.0.0.0:4180
+            - --skip-auth-preflight=true
+          env:
+            - name: OAUTH2_PROXY_CLIENT_ID
+              value: "{{ .Values.admin.oauth2Proxy.github.clientId }}"
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              value: "{{ .Values.admin.oauth2Proxy.github.clientSecret }}"
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              value: "{{ .Values.admin.oauth2Proxy.github.cookieSecret }}"
+            - name: OAUTH2_PROXY_GITHUB_ORG
+              value: "{{ .Values.admin.oauth2Proxy.github.organization }}"
+            - name: OAUTH2_PROXY_GITHUB_TEAM
+              value: "{{ .Values.admin.oauth2Proxy.github.team }}"
+          image: quay.io/oauth2-proxy/oauth2-proxy:latest
+          imagePullPolicy: Always
+          name: oauth2-proxy
+          ports:
+            - containerPort: 4180
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: oauth2-proxy-admin
+  name: oauth2-proxy-admin
+  namespace: kube-system
+spec:
+  ports:
+    - name: http
+      port: 4180
+      protocol: TCP
+      targetPort: 4180
+  selector:
+    k8s-app: oauth2-proxy-admin
+{{- end -}}
