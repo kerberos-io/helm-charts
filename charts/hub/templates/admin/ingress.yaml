@@ -1,0 +1,50 @@
+
+{{ if ne .Values.ingress "" }}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: admin-ingress
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if eq .Values.admin.oauth2Proxy.enabled true  }}
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    {{- end }}
+    {{- if eq .Values.ingress "nginx" }}
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress }}
+  {{- with .Values.admin.tls }}
+  tls:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+  rules:
+    - host: "{{ .Values.admin.url }}"
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: hub-frontend-svc
+              port:
+                number: 80
+  {{- else }}
+  rules:
+    - host: "{{ .Values.admin.url }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: admin-svc
+              servicePort: 80
+  {{- end }}
+{{- end }}

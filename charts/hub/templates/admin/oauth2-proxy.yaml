@@ -1,0 +1,31 @@
+{{- if eq .Values.admin.oauth2Proxy.enabled true  }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth2-proxy-admin
+  namespace: kube-system
+  annotations:
+    {{- if eq .Values.ingress "nginx" }}
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress }}
+  rules:
+    - host: "{{ .Values.admin.url }}"
+      http:
+        paths:
+          - path: /oauth2
+            pathType: Prefix
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 4180
+  tls:
+    - hosts:
+        - "{{ .Values.admin.url }}"
+      secretName: 
+{{- end }}
