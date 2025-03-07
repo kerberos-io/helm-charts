@@ -1,36 +1,48 @@
-# Default values for kerberoshub.
+# Default values for hub.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-###########################################################################
-# LICENSING information: you will a license to run Kerberos Hub.
-# ----
-# Get your license from support@kerberos.io
-#license: "---ENTER-YOUR-LICENSE-HERE---"
-# License for 8 cameras (for more cameras, please contact us for a private license)
+#######################################################
+# LICENSING information: you will a license to run Hub.
+# Get your license from support@kerberos.io or 
+# use the 8 camera license for testing.
+#######################################################
 license: "L/+FAwEBB2xpY2Vuc2UB/4YAAQIBB1BheWxvYWQBCgABCVNpZ25hdHVyZQEKAAAA/gMw/4YB/gEl/8wQACxnaXRodWIuY29tL3V1Zy1haS9odWItbGljZW5zZS9tb2RlbHMuTGljZW5zZf+BAwEBB0xpY2Vuc2UB/4IAAQwBAklkAf+EAAEDS2V5AQwAAQdDb21wYW55AQwAAQdFeHBUaW1lAQQAAQREYXlzAQQAAQdDYW1lcmFzAQQAAQVTaXRlcwEEAAEGVmF1bHRzAQQAAQpNZWRpYUxpbWl0AQQAAQlQZXJwZXR1YWwBAgABBkFjdGl2ZQECAAEJSXBBZGRyZXNzAQwAAAAY/4MBAQEIT2JqZWN0SUQB/4QAAQYBGAAAPf+COgEMAAAAAAAAAAAAAAAAAg9nZW5lcmljLWxpY2Vuc2UB+AJl6LAHsRMYAfoB0alKIAABEAEUARQDAQAB/gIAFlQqo9yJj1a3OH1+5iGjCPcz9VtrRuGfz/iuQEFohbCfSiZGAdHh16gEc59Z2kPaey+eJcwY0BQsBoipW7SwFRmcHkrWLuxt+Yzi2kvwmL4TN0quWqM4xxBzH1sejS6kZpPm7bw11JBsBuaNOYMbl5lgpPCFajWUH6GzfmuQlptNQKosocacI/9PaaqEUUM0ALjDZNSqqFwZPPsFh9WTeaHGbRbmwQRMPFDgaPCxiHnCCUagbvuVZeOQbKaR5gPTUfPQY/L4mrN9QnMxdzwUJgqm7FbTH4UhoZn6EEzNGTN6DbHhpx8lezzCRW8dzMNuK8R1igiORV5gdWOPzBMZlTgodIZRD07e8iAo2XqT/BWcqaJXutdqXltaiJKshh2QzStdv2WZUynVTguYIQJyBNhrXEkewKZA0UftcSemDPkCmp6VovMMveV4X3Cpzkm7ZHtE7j39At/kpuqY/icTEzRWYuQqEDtqXMVar84VOpgVhxeNrrqZniLq8o3ezRdwy0BJG5xT9cuMxq13ZB3Am9iqTSjx2mh5VZZeB33GjLVAtLscj8NoKWy7BThchXB9xwoiy2RLO8nE+EI8wPbg+ajb2Ta7AFyxHgJJU6cea+zEpiBMARwjPKqk2nn02xdfdqMzQ+E9e115sIqhotBM5RI7uBIf8DDwT93HLsJZRBAA"
 licenseServer:
-  url: "https://license.kerberos.io/verify"
-  token: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM" # do not change otherwise Kerberos Hub will not work.
+  url: ""
+  token: ""
+
+
+###########################################################################
+# # Environment: set to 'production', 'develop', 'demo', 'staging' or 'acceptance'.
+# Change the environment to 'staging' or 'acceptance' will add a banner on the 
+# front-end, to indicate the environment.
+###########################################################################
+environment: "production"
+isPrivate: true # Set to 'true' if this is a private deployment.
+readOnly: false # Set to 'true' to halt all write operations to the database (e.g. migration, etc).
+
+
+###########################################################################
+# Global configuration
+###########################################################################
 global:
   imageRegistry: "docker.io/"
+
+
 # Private Docker Registry: The registry secret is required if you have your Docker images behind a private registry.
 # By default it will pull from Docker hub (https://hub.docker.com/r/kerberos).
 #imagePullSecrets:
 #  - name: regcred
 
-# Environment: set to 'production', 'develop', 'demo', 'staging' or 'acceptance'.
-# Change the environment to 'staging' or 'acceptance' will add a banner on the 
-# front-end, to indicate the environment.
-environment: "production"
-# Set to 'true' if this is a private deployment.
-isPrivate: true
-# If you plan a migration or doing maintenance, you can enable readonly.
-# This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline.
-readOnly: false
 # Which network ingress you are using in your Kubernetes Cluster
 ingress: "nginx" # or "traefik"
 # A mongodb instance is required to store all the relevant metadata (this can be standalone or in a cluster).
+
+
+#########################################
+# Database configuration (metadata store)
+#########################################
 mongodb:
   # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
   # If uri is set, the below properties are not used (host, adminDatabase, username, password)
@@ -43,9 +55,12 @@ mongodb:
   username: yourusername
   password: "yourpassword"
   
-# A MQTT broker (vernemq or other like mosquitto) is used to have a bi-directional
-# communication between Kerberos Agents and Kerberos Hub.
-# we recommend to use vernemq (as part of this installation), but a stand-alone mosquitto broker is also possible.
+
+###################################################
+# MQTT configuration (bi-directional communication)
+###################################################
+# A MQTT broker (vernemq or other like mosquitto) is used to have a bi-directional communication between Agents and Hub.
+# We recommend to use VernemQ (as part of this installation), but a stand-alone mosquitto broker is also possible.
 mqtt:
   host: "mqtt.yourdomain.com" # this needs to be a public accessible DNS name (it's used to communicate between Kerberos Agents and Kerberos Hub)
   port: "8443"
@@ -55,6 +70,15 @@ mqtt:
   legacy:
     host: ""
     port: ""
+
+
+################################################################
+# AMQP configuration (asynchronous processing for microservices)
+# 
+# Usecases:
+# - Hub pipeline: each time a recording is created, a message is 
+#                 send to the pipeline to process the recording.
+################################################################
 # We are using a pipeline that is orchestrated through Kafka topics or RabbitMQ queues
 # Events are send back and forth until the processing is done.
 queueProvider: "RABBITMQ" # or "KAFKA"
@@ -74,18 +98,35 @@ kafka:
   password: "yourpassword"
   mechanism: "PLAIN"
   security: "SASL_PLAINTEXT"
+
+
+############################################
+# TURN/STUN configuration (live streaming)
+# 
+# Usecases:
+# - WebRTC: for live streaming in full HD.
+############################################
 # For allowing WEBRTC a STUN and TURN server is required.
 # You might want to install coturn in a seperate VM.
 # -> https://help.hcltechsw.com/sametime/11.6/admin/turnserver_ubuntu.html
+
 turn:
   host: "turn:turn.yourdomain.com:8443" # this needs to be a public accessible DNS name.
   username: "username1"
   password: "password1"
-# (optional) OpenAI integration, used for semantic search
-# Langchain is used to translate text to a filter on the media page
+
+
+############################################
+# OpenAI configuration (semantic search)
+#
+# Usecases:
+# - Semantic search: search for recordings based on text.
+############################################
 openai:
   enabled: false
   apikey: "xxx"
+
+
 # We have a kerberos vault component installed which contains all the
 # recordings. Kerberos vault is queried to retrieve the recordings
 # from the appropriate provider.
@@ -109,35 +150,35 @@ kerberosvault:
     provider: "a-sprite-provider"
     accessKey: "xxx"
     secretKey: "xxx"
-email:
-  provider: "mailgun"
-  from: "support@yourdomain.com"
-  displayName: "yourdomain.com"
-  mailgun:
-    domain: "mg.yourdomain.com"
-    apikey: "xxxx"
-  smtp:
-    server: "smtp.yourdomain.com"
-    port: "465"
-    username: "yourusername"
-    password: "yourpassword"
-  templates:
-    welcome: "welcome"
-    welcomeTitle: "Welcome to Kerberos Hub"
-    activate: "activate"
-    activateTitle: "Wonderful! Your Kerberos Hub is now active"
-    forgot: "forgot"
-    forgotTitle: "Password reset Kerberos Hub. You forgot your password"
-    share: "share"
-    shareTitle: "[Action] You received a recording from Kerberos Hub"
-    assignTask: "assign_task"
-    assignTaskTitle: "[Action] You've been assigned to a task"
-    detection: "detection"
-    disabled: "disabled"
-    highupload: "highupload"
-    device: "device"
-    alertTitle: "[Alert] Kerberos Hub detected something an event"
-    deviceTitle: "[Device] A Kerberos Agent's status has been changed"
+
+###########################################################################
+# Administration panel for managing the Hub database (and more in future).
+# For now it's used to create, edit users for Hub.
+###########################################################################
+admin:
+  repository: uugai/admin
+  pullPolicy: IfNotPresent
+  tag: "v1.1.0"
+  replicas: 2
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 250m
+  url: "admin.yourdomain.com"
+  tls:
+    - hosts:
+        - "admin.yourdomain.com"
+      secretName: admin
+  oauth2Proxy:
+    enabled: false
+    github:
+      clientId: "github-client-id"
+      clientSecret: "github-client-secret"
+      cookieSecret: "generate-a-random-cookie-secret"
+      organization: "github-organization"
+      team: "github-team"
+
+
 # Following are all the different deployments needed to make
 # Kerberos hub properly working.
 kerberoshub:
@@ -387,6 +428,11 @@ kerberoshub:
       requests:
         memory: 10Mi
         cpu: 10m
+
+# The Kerberos Hub pipeline is a series of microservices that process the recordings.
+# Each microservice is responsible for a specific task, like counting objects, generating thumbnails, etc.
+# The pipeline is orchestrated through Kafka topics or RabbitMQ queues.
+# The pipeline is a critical component of Kerberos Hub, and should be monitored closely.
 kerberospipeline:
   event:
     repository: kerberos/pipe-event
@@ -530,3 +576,41 @@ kerberospipeline:
       requests:
         memory: 10Mi
         cpu: 10m
+
+
+###########################################################################
+# Email configuration
+#
+# Preferred email provider, we support mailgun and smtp.
+# Email templates are used to send out emails to users.
+###########################################################################
+
+email:
+  provider: "mailgun"
+  from: "support@yourdomain.com"
+  displayName: "yourdomain.com"
+  mailgun:
+    domain: "mg.yourdomain.com"
+    apikey: "xxxx"
+  smtp:
+    server: "smtp.yourdomain.com"
+    port: "465"
+    username: "yourusername"
+    password: "yourpassword"
+  templates:
+    welcome: "welcome"
+    welcomeTitle: "Welcome to Kerberos Hub"
+    activate: "activate"
+    activateTitle: "Wonderful! Your Kerberos Hub is now active"
+    forgot: "forgot"
+    forgotTitle: "Password reset Kerberos Hub. You forgot your password"
+    share: "share"
+    shareTitle: "[Action] You received a recording from Kerberos Hub"
+    assignTask: "assign_task"
+    assignTaskTitle: "[Action] You've been assigned to a task"
+    detection: "detection"
+    disabled: "disabled"
+    highupload: "highupload"
+    device: "device"
+    alertTitle: "[Alert] Kerberos Hub detected something an event"
+    deviceTitle: "[Device] A Kerberos Agent's status has been changed"

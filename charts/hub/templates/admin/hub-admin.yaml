@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-svc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: admin-svc
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http
+  selector:
+    app: admin
+{{ if ne .Values.ingress "" }}
+---
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: admin-ingress
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- if eq .Values.admin.oauth2Proxy.enabled true  }}
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    {{- end }}
+    {{- if eq .Values.ingress "nginx" }}
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress }}
+  {{- with .Values.admin.tls }}
+  tls:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+  rules:
+    - host: "{{ .Values.admin.url }}"
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: hub-frontend-svc
+              port:
+                number: 80
+  {{- else }}
+  rules:
+    - host: "{{ .Values.admin.url }}"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: admin-svc
+              servicePort: 80
+  {{- end }}
+{{- end }}
+{{- if eq .Values.kerberoshub.oauth2Proxy.enabled true  }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth2-proxy-frontend
+  namespace: kube-system
+  annotations:
+    {{- if eq .Values.ingress "nginx" }}
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress }}
+  rules:
+    - host: "{{ .Values.admin.url }}"
+      http:
+        paths:
+          - path: /oauth2
+            pathType: Prefix
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 4180
+  tls:
+    - hosts:
+        - "{{ .Values.admin.url }}"
+      secretName: 
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.admin.replicas }}
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+        - name: admin
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.admin.repository }}:{{ .Values.admin.tag }}"
+          imagePullPolicy: {{ .Values.admin.pullPolicy }}
+          {{- with .Values.admin.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: API_URL
+              value: "{{ .Values.kerberoshub.api.schema }}://{{ .Values.kerberoshub.api.url }}"
+            - name: TITLE
+              value: Hub Admin | Scale for everyone, anywhere
+            - name: LOGO_NAME
+            - name: ENVIRONMENT
+              value: staging
+            - name: PRIVATE_EDITION
+              value: "false"
+            - name: PRODUCTION
+              value: "true"
+            - name: DEMO
+              value: "false"
