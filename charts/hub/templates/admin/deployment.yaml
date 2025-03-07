@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.admin.replicas }}
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+        - name: admin
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.admin.repository }}:{{ .Values.admin.tag }}"
+          imagePullPolicy: {{ .Values.admin.pullPolicy }}
+          {{- with .Values.admin.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: API_URL
+              value: "{{ .Values.kerberoshub.api.schema }}://{{ .Values.kerberoshub.api.url }}"
+            - name: TITLE
+              value: Hub Admin | Scale for everyone, anywhere
+            - name: LOGO_NAME
+            - name: ENVIRONMENT
+              value: staging
+            - name: PRIVATE_EDITION
+              value: "false"
+            - name: PRODUCTION
+              value: "true"
+            - name: DEMO
+              value: "false"
