@@ -34,7 +34,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: hub-frontend-svc
+              name: admin-svc
               port:
                 number: 80
   {{- else }}
