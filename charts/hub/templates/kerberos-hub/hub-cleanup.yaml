@@ -50,4 +50,6 @@ spec:
               value: "{{ .Values.mongodb.username }}"
             - name: MONGODB_PASSWORD
               value: "{{ .Values.mongodb.password }}"
-
+          {{- if .Values.kerberoshub.extraEnv }}
+          {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
+          {{- end }}

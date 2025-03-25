@@ -4,7 +4,7 @@
 
 #######################################################
 # LICENSING information: you will a license to run Hub.
-# Get your license from support@kerberos.io or 
+# Get your license from support@kerberos.io or
 # use the 8 camera license for testing.
 #######################################################
 license: "L/+FAwEBB2xpY2Vuc2UB/4YAAQIBB1BheWxvYWQBCgABCVNpZ25hdHVyZQEKAAAA/gMw/4YB/gEl/8wQACxnaXRodWIuY29tL3V1Zy1haS9odWItbGljZW5zZS9tb2RlbHMuTGljZW5zZf+BAwEBB0xpY2Vuc2UB/4IAAQwBAklkAf+EAAEDS2V5AQwAAQdDb21wYW55AQwAAQdFeHBUaW1lAQQAAQREYXlzAQQAAQdDYW1lcmFzAQQAAQVTaXRlcwEEAAEGVmF1bHRzAQQAAQpNZWRpYUxpbWl0AQQAAQlQZXJwZXR1YWwBAgABBkFjdGl2ZQECAAEJSXBBZGRyZXNzAQwAAAAY/4MBAQEIT2JqZWN0SUQB/4QAAQYBGAAAPf+COgEMAAAAAAAAAAAAAAAAAg9nZW5lcmljLWxpY2Vuc2UB+AJl6LAHsRMYAfoB0alKIAABEAEUARQDAQAB/gIAFlQqo9yJj1a3OH1+5iGjCPcz9VtrRuGfz/iuQEFohbCfSiZGAdHh16gEc59Z2kPaey+eJcwY0BQsBoipW7SwFRmcHkrWLuxt+Yzi2kvwmL4TN0quWqM4xxBzH1sejS6kZpPm7bw11JBsBuaNOYMbl5lgpPCFajWUH6GzfmuQlptNQKosocacI/9PaaqEUUM0ALjDZNSqqFwZPPsFh9WTeaHGbRbmwQRMPFDgaPCxiHnCCUagbvuVZeOQbKaR5gPTUfPQY/L4mrN9QnMxdzwUJgqm7FbTH4UhoZn6EEzNGTN6DbHhpx8lezzCRW8dzMNuK8R1igiORV5gdWOPzBMZlTgodIZRD07e8iAo2XqT/BWcqaJXutdqXltaiJKshh2QzStdv2WZUynVTguYIQJyBNhrXEkewKZA0UftcSemDPkCmp6VovMMveV4X3Cpzkm7ZHtE7j39At/kpuqY/icTEzRWYuQqEDtqXMVar84VOpgVhxeNrrqZniLq8o3ezRdwy0BJG5xT9cuMxq13ZB3Am9iqTSjx2mh5VZZeB33GjLVAtLscj8NoKWy7BThchXB9xwoiy2RLO8nE+EI8wPbg+ajb2Ta7AFyxHgJJU6cea+zEpiBMARwjPKqk2nn02xdfdqMzQ+E9e115sIqhotBM5RI7uBIf8DDwT93HLsJZRBAA"
@@ -15,7 +15,7 @@ licenseServer:
 
 ###########################################################################
 # # Environment: set to 'production', 'develop', 'demo', 'staging' or 'acceptance'.
-# Change the environment to 'staging' or 'acceptance' will add a banner on the 
+# Change the environment to 'staging' or 'acceptance' will add a banner on the
 # front-end, to indicate the environment.
 ###########################################################################
 environment: "production"
@@ -54,7 +54,7 @@ mongodb:
   authenticationMechanism: SCRAM-SHA-256
   username: yourusername
   password: "yourpassword"
-  
+
 
 ###################################################
 # MQTT configuration (bi-directional communication)
@@ -74,9 +74,9 @@ mqtt:
 
 ################################################################
 # AMQP configuration (asynchronous processing for microservices)
-# 
+#
 # Usecases:
-# - Hub pipeline: each time a recording is created, a message is 
+# - Hub pipeline: each time a recording is created, a message is
 #                 send to the pipeline to process the recording.
 ################################################################
 # We are using a pipeline that is orchestrated through Kafka topics or RabbitMQ queues
@@ -102,7 +102,7 @@ kafka:
 
 ############################################
 # TURN/STUN configuration (live streaming)
-# 
+#
 # Usecases:
 # - WebRTC: for live streaming in full HD.
 ############################################
@@ -182,6 +182,11 @@ admin:
 # Following are all the different deployments needed to make
 # Kerberos hub properly working.
 kerberoshub:
+  # Extra environment variables like proxy to set for kerberos-hub pods
+  extraEnv: []
+#  extraEnv:
+#    - name: HTTP_PROXY
+#      value: "custom_value"
   api:
     repository: uugai/hub-api
     pullPolicy: IfNotPresent

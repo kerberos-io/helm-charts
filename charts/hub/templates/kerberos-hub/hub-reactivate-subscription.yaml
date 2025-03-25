@@ -46,3 +46,6 @@ spec:
               value: "{{ .Values.kerberoshub.api.aws.accessKey }}"
             - name: AWS_SECRET_ACCESS_KEY
               value: "{{ .Values.kerberoshub.api.aws.secretKey }}"
+            {{- if .Values.kerberoshub.extraEnv }}
+            {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
+            {{- end }}

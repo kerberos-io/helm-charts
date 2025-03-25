@@ -65,13 +65,13 @@ spec:
               value: "{{ .Values.email.from }}"
             - name: EMAIL_FROM_DISPLAYNAME
               value: "{{ .Values.email.displayName }}"
-              
+
             # Mail templates
             - name: DEVICE_TEMPLATE
               value: "{{ .Values.email.templates.device }}"
             - name: DEVICE_TITLE
               value: "{{ .Values.email.templates.deviceTitle }}"
-              
+
             # - Plain SMTP
             - name: SMTP_SERVER
               value: "{{ .Values.email.smtp.server }}"
@@ -81,10 +81,12 @@ spec:
               value: "{{ .Values.email.smtp.username }}"
             - name: SMTP_PASSWORD
               value: "{{ .Values.email.smtp.password }}"
-          
+
             # Mailgun
             - name: MAILGUN_DOMAIN
               value: "{{ .Values.email.mailgun.domain }}"
             - name: MAILGUN_API_KEY
               value: "{{ .Values.email.mailgun.apikey }}"
-
+        {{- if .Values.kerberoshub.extraEnv }}
+        {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
+        {{- end }}
