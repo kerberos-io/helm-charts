@@ -11,8 +11,6 @@ license: "L/+FAwEBB2xpY2Vuc2UB/4YAAQIBB1BheWxvYWQBCgABCVNpZ25hdHVyZQEKAAAA/gMw/4
 licenseServer:
   url: ""
   token: ""
-
-
 ###########################################################################
 # # Environment: set to 'production', 'develop', 'demo', 'staging' or 'acceptance'.
 # Change the environment to 'staging' or 'acceptance' will add a banner on the
@@ -21,15 +19,11 @@ licenseServer:
 environment: "production"
 isPrivate: true # Set to 'true' if this is a private deployment.
 readOnly: false # Set to 'true' to halt all write operations to the database (e.g. migration, etc).
-
-
 ###########################################################################
 # Global configuration
 ###########################################################################
 global:
   imageRegistry: "docker.io/"
-
-
 # Private Docker Registry: The registry secret is required if you have your Docker images behind a private registry.
 # By default it will pull from Docker hub (https://hub.docker.com/r/kerberos).
 #imagePullSecrets:
@@ -38,7 +32,6 @@ global:
 # Which network ingress you are using in your Kubernetes Cluster
 ingress: "nginx" # or "traefik"
 # A mongodb instance is required to store all the relevant metadata (this can be standalone or in a cluster).
-
 
 #########################################
 # Database configuration (metadata store)
@@ -54,8 +47,6 @@ mongodb:
   authenticationMechanism: SCRAM-SHA-256
   username: yourusername
   password: "yourpassword"
-
-
 ###################################################
 # MQTT configuration (bi-directional communication)
 ###################################################
@@ -70,8 +61,6 @@ mqtt:
   legacy:
     host: ""
     port: ""
-
-
 ################################################################
 # AMQP configuration (asynchronous processing for microservices)
 #
@@ -98,8 +87,6 @@ kafka:
   password: "yourpassword"
   mechanism: "PLAIN"
   security: "SASL_PLAINTEXT"
-
-
 ############################################
 # TURN/STUN configuration (live streaming)
 #
@@ -109,13 +96,10 @@ kafka:
 # For allowing WEBRTC a STUN and TURN server is required.
 # You might want to install coturn in a seperate VM.
 # -> https://help.hcltechsw.com/sametime/11.6/admin/turnserver_ubuntu.html
-
 turn:
   host: "turn:turn.yourdomain.com:8443" # this needs to be a public accessible DNS name.
   username: "username1"
   password: "password1"
-
-
 ############################################
 # OpenAI configuration (semantic search)
 #
@@ -125,8 +109,6 @@ turn:
 openai:
   enabled: false
   apikey: "xxx"
-
-
 # We have a kerberos vault component installed which contains all the
 # recordings. Kerberos vault is queried to retrieve the recordings
 # from the appropriate provider.
@@ -150,7 +132,6 @@ kerberosvault:
     provider: "a-sprite-provider"
     accessKey: "xxx"
     secretKey: "xxx"
-
 ###########################################################################
 # Administration panel for managing the Hub database (and more in future).
 # For now it's used to create, edit users for Hub.
@@ -177,20 +158,18 @@ admin:
       cookieSecret: "generate-a-random-cookie-secret"
       organization: "github-organization"
       team: "github-team"
-
-
 # Following are all the different deployments needed to make
 # Kerberos hub properly working.
 kerberoshub:
   # Extra environment variables like proxy to set for kerberos-hub pods
   extraEnv: []
-#  extraEnv:
-#    - name: HTTP_PROXY
-#      value: "custom_value"
+  #  extraEnv:
+  #    - name: HTTP_PROXY
+  #      value: "custom_value"
   api:
     repository: uugai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.0.22"
+    tag: "v1.0.26"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -270,7 +249,7 @@ kerberoshub:
   frontend:
     repository: uugai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.0.42"
+    tag: "v1.0.45"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -383,9 +362,9 @@ kerberoshub:
       organization: "github-organization"
       team: "github-team"
   cleanup:
-    repository: kerberos/hub-cleanup
+    repository: uugai/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "1.0.6436406806"
+    tag: "v1.4.0"
     maxDays: "365" # The maximum number of days to keep orphaned recordings.
     resources:
       requests:
@@ -408,9 +387,9 @@ kerberoshub:
         #    persistentVolumeClaim:
         #      claimName: custom-layout-claim
   reactivate:
-    repository: kerberos/hub-reactivate
+    repository: uugai/hub-reactivatesubscriptions
     pullPolicy: IfNotPresent
-    tag: "1.0.6256184527"
+    tag: "v1.0.1"
     resources:
       requests:
         memory: 10Mi
@@ -426,23 +405,22 @@ kerberoshub:
     #    cpu: 10m
   # This proxy is legacy for the old agent, will be migrated in the new Hub API.
   proxy:
-    repository: kerberos/vault-proxy
+    repository: uugai/hub-proxy
     pullPolicy: IfNotPresent
-    tag: "1.0.2733724812"
+    tag: "v1.0.0"
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
-
 # The Kerberos Hub pipeline is a series of microservices that process the recordings.
 # Each microservice is responsible for a specific task, like counting objects, generating thumbnails, etc.
 # The pipeline is orchestrated through Kafka topics or RabbitMQ queues.
 # The pipeline is a critical component of Kerberos Hub, and should be monitored closely.
 kerberospipeline:
   event:
-    repository: kerberos/pipe-event
+    repository: uugai/hub-pipeline-event
     pullPolicy: IfNotPresent
-    tag: "1.0.6256042211"
+    tag: "v1.0.1"
     replicas: 1
     resources:
       requests:
@@ -451,7 +429,7 @@ kerberospipeline:
   monitor:
     repository: uugai/hub-pipeline-monitor
     pullPolicy: IfNotPresent
-    tag: "v1.1.0"
+    tag: "v1.2.0"
     replicas: 1
     resources:
       requests:
@@ -460,16 +438,16 @@ kerberospipeline:
   sequence:
     repository: uugai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "v1.0.1"
+    tag: "v1.1.0"
     replicas: 1
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
   throttler:
-    repository: kerberos/pipe-throttler
+    repository: uugai/hub-pipeline-throttler
     pullPolicy: IfNotPresent
-    tag: "1.0.6256059962"
+    tag: "v1.1.0"
     replicas: 1
     resources:
       requests:
@@ -478,7 +456,7 @@ kerberospipeline:
   notify:
     repository: uugai/hub-pipeline-notification
     pullPolicy: IfNotPresent
-    tag: "v1.0.11"
+    tag: "v1.0.12"
     replicas: 1
     resources:
       requests:
@@ -493,9 +471,9 @@ kerberospipeline:
         #    persistentVolumeClaim:
         #      claimName: custom-layout-claim
   notifyTest:
-    repository: kerberos/pipe-notify-test
+    repository: uugai/hub-pipeline-notification-test
     pullPolicy: IfNotPresent
-    tag: "1.0.6256094666"
+    tag: "v1.2.1"
     replicas: 1
     resources:
       requests:
@@ -512,16 +490,16 @@ kerberospipeline:
   analysis:
     repository: uugai/hub-pipeline-analysis
     pullPolicy: IfNotPresent
-    tag: "v1.0.1"
+    tag: "v1.0.10"
     replicas: 1
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
   dominantColor:
-    repository: kerberos/pipe-dominantcolor
+    repository: uugai/hub-pipeline-dominantcolors
     pullPolicy: IfNotPresent
-    tag: "1.0.6971463620"
+    tag: "v1.1.2"
     replicas: 3
     resources:
       requests:
@@ -531,9 +509,9 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   thumbnail:
-    repository: kerberos/pipe-thumbnail
+    repository: uugai/hub-pipeline-thumbnail
     pullPolicy: IfNotPresent
-    tag: "1.0.6962799851"
+    tag: "v1.1.5"
     replicas: 2
     quality: "1" # 1 (best) - 31 (worst)
     width: "600"
@@ -548,9 +526,9 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   counting:
-    repository: kerberos/pipe-counting
+    repository: uugai/hub-pipeline-counting
     pullPolicy: IfNotPresent
-    tag: "1.0.6251572994"
+    tag: "v1.0.5"
     replicas: 1
     resources:
       requests:
@@ -581,15 +559,12 @@ kerberospipeline:
       requests:
         memory: 10Mi
         cpu: 10m
-
-
 ###########################################################################
 # Email configuration
 #
 # Preferred email provider, we support mailgun and smtp.
 # Email templates are used to send out emails to users.
 ###########################################################################
-
 email:
   provider: "mailgun"
   from: "support@yourdomain.com"
