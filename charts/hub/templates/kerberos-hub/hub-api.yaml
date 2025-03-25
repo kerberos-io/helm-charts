@@ -136,7 +136,7 @@ spec:
           {{- end }}
           ports:
             - containerPort: 80
-              name: http  
+              name: http
           {{- with .Values.kerberoshub.api.volumeMounts}}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
@@ -173,11 +173,11 @@ spec:
               value: "{{ .Values.licenseServer.url }}"
             - name: LICENSE_PUBLIC_API_TOKEN
               value: "{{ .Values.licenseServer.token }}"
-              
+
             # Authorization - Authentication secret
             - name: KERBEROS_JWT_SECRET
               value: "{{ .Values.kerberoshub.api.jwtSecret }}"
-              
+
             # SSO (OIDC) setup
             - name: SSO_DOMAINS
               value:  "{{- range .Values.kerberoshub.api.sso }}{{ .domain }};{{- end }}"
@@ -310,7 +310,7 @@ spec:
               value: "{{ .Values.email.from }}"
             - name: EMAIL_FROM_DISPLAYNAME
               value: "{{ .Values.email.displayName }}"
-              
+
             # Mail templates
             - name: WELCOME_TEMPLATE
               value: "{{ .Values.email.templates.welcome }}"
@@ -342,7 +342,7 @@ spec:
               value: "{{ .Values.email.smtp.username }}"
             - name: SMTP_PASSWORD
               value: "{{ .Values.email.smtp.password }}"
-              
+
             # Mailgun
             - name: MAILGUN_DOMAIN
               value: "{{ .Values.email.mailgun.domain }}"
@@ -375,3 +375,6 @@ spec:
               value: "{{ .Values.kerberosvault.sprite.width }}"
             - name: VAULT_SPRITE_HEIGHT
               value: "{{ .Values.kerberosvault.sprite.height }}"
+            {{- if .Values.kerberoshub.extraEnv }}
+            {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
+            {{- end }}
