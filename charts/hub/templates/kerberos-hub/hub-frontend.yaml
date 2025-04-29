@@ -327,6 +327,9 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle5 }}"
         - name: NAVIGATION_LINK_URL_5
           value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl5 }}"
+        - name: CASE_FILTER_ASSIGNEES_DEFAULT
+          value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
+
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
         {{- end }}

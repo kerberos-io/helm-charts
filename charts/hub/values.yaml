@@ -351,6 +351,8 @@ kerberoshub:
     navigationLinkUrl4: ""
     navigationLinkTitle5: ""
     navigationLinkUrl5: ""
+    caseFilterAssigneesDefault: "false"
+
   support:
     enabled: false
   oauth2Proxy:
