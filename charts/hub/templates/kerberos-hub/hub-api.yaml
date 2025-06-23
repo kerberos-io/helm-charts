@@ -142,8 +142,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
+            - name: ENVIRONMENT
+              value: "{{ .Values.environment }}"
             - name: READ_ONLY
-              value: "{{ .Values.readonly }}"
+              value: "{{ .Values.readOnly }}"
             - name: SUPPORT_ENABLED
               value: "{{ .Values.kerberoshub.support.enabled }}"
             - name: CLOUD_API_URL
@@ -195,6 +197,8 @@ spec:
               value: "{{- range .Values.kerberoshub.api.sso }}{{ .clientVerificationId }};{{- end }}"
             - name: SSO_FORCE_SSO
               value: "{{- range .Values.kerberoshub.api.sso }}{{ .forceSSO }};{{- end }}"
+            - name: SSO_EXTRA_HEADERS
+              value: "{{- range .Values.kerberoshub.api.sso }}{{- if .extraHeaders }}{{- range .extraHeaders }}{{ .name }}:{{ .value }};{{- end }}{{- else }}{{- end }}*{{- end }}"
 
             # Kerberos pipeline
             - name: QUEUE_SYSTEM
@@ -378,3 +382,11 @@ spec:
             {{- if .Values.kerberoshub.extraEnv }}
             {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
             {{- end }}
+
+            # Open Telemetry tracing
+            - name: OTEL_EXPORTED_OTLP_ENABLED
+              value: "{{ .Values.kerberoshub.api.otlp.enabled }}"
+            - name: OTEL_EXPORTED_OTLP_ROUTING_ENABLED
+              value: "{{ .Values.kerberoshub.api.otlp.routingEnabled }}"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "{{ .Values.kerberoshub.api.otlp.endpoint }}"
