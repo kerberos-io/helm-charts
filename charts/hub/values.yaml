@@ -238,6 +238,9 @@ kerberoshub:
         clientId: "xxx"
         clientSecret: "xxx"
         clientVerificationId: "" # This is only required for SSO chaining.
+        extraHeaders: # Extra headers to be added to the request
+          - name: "x-zitadel-login-client"
+            value: "xxx"
       - domain: "kerberos.io"
         redirectUrl: "https://api.cloud.kerberos.io/sso/callback/kerberos.io"
         forceSSO: "false"
@@ -246,6 +249,11 @@ kerberoshub:
         clientId: "xxx"
         clientSecret: "xxx"
         clientVerificationId: "" # This is only required for SSO chaining.
+        extraHeaders: []
+    otlp: # Open Telemetry tracing
+      enabled: false # Set to 'true' to enable Open Telemetry tracing
+      routingEnabled: false # Set to 'true' to enable Gin routing middleware of traces
+      endpoint: "x.x.x.x:4318" # The endpoint to which traces are sent
   frontend:
     repository: uugai/hub-frontend
     pullPolicy: IfNotPresent
