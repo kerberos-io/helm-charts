@@ -329,6 +329,21 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl5 }}"
         - name: CASE_FILTER_ASSIGNEES_DEFAULT
           value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
+        - name: COLOR_DEVICE_ACTIVE
+          value: "{{ .Values.kerberoshub.frontend.colorDeviceActive }}"
+        - name: COLOR_DEVICE_INACTIVE
+          value: "{{ .Values.kerberoshub.frontend.colorDeviceInactive }}"
+        - name: COLOR_DEVICE_IDLE
+          value: "{{ .Values.kerberoshub.frontend.colorDeviceIdle }}"
+        - name: COLOR_DEVICE_MOTION
+          value: "{{ .Values.kerberoshub.frontend.colorDeviceMotion }}"
+        - name: COLOR_FLOORPLAN_LABEL_TEXT
+          value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelText }}"
+        - name: COLOR_FLOORPLAN_LABEL_BACKGROUND
+          value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelBackground }}"
+        - name: COLOR_DEVICE_MARKER_BORDER
+          value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
+        
 
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
