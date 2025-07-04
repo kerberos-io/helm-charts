@@ -360,6 +360,16 @@ kerberoshub:
     navigationLinkTitle5: ""
     navigationLinkUrl5: ""
     caseFilterAssigneesDefault: "false"
+    # Custom colors for floor-plans, update the colors of the corresponding device icons to match these
+    # charts/hub/custom-layout/icons.js
+    colorDeviceActive: "hsla(131, 31%, 52%, 1)"
+    colorDeviceInactive: "hsla(0, 3%, 41%, 1)"
+    colorDeviceIdle: "hsla(47, 86%, 47%, 1)"
+    colorDeviceMotion: "hsla(2, 58%, 48%, 1)"
+    colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
+    colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
+    colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)"
+
   support:
     enabled: false
   oauth2Proxy:
