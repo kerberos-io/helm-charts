@@ -369,6 +369,7 @@ kerberoshub:
     colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
     colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
     colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)"
+    floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
 
   support:
     enabled: false
