@@ -337,13 +337,14 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorDeviceIdle }}"
         - name: COLOR_DEVICE_MOTION
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMotion }}"
-        - name: COLOR_FLOORPLAN_LABEL_TEXT
+        - name: COLOR_FLOOR_PLAN_LABEL_TEXT
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelText }}"
-        - name: COLOR_FLOORPLAN_LABEL_BACKGROUND
+        - name: COLOR_FLOOR_PLAN_LABEL_BACKGROUND
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelBackground }}"
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
-        
+        - name: FLOOR_PLAN_NAME
+          value: "{{ .Values.kerberoshub.frontend.floorPlanName }}"
 
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
