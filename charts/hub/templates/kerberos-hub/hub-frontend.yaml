@@ -345,7 +345,15 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
         - name: FLOOR_PLAN_NAME
           value: "{{ .Values.kerberoshub.frontend.floorPlanName }}"
-
+        - name: SITES_NAME
+          value: "{{ .Values.kerberoshub.frontend.sitesName }}"
+        - name: GROUPS_NAME
+          value: "{{ .Values.kerberoshub.frontend.groupsName }}"
+        - name: SITE_GROUP_NAME
+          value: "{{ .Values.kerberoshub.frontend.siteGroupName }}"
+        - name: DEVICE_GROUP_NAME
+          value: "{{ .Values.kerberoshub.frontend.deviceGroupName }}"
+          
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
         {{- end }}
