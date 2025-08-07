@@ -169,7 +169,7 @@ kerberoshub:
   api:
     repository: uugai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.6.1"
+    tag: "v1.6.3"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -257,7 +257,7 @@ kerberoshub:
   frontend:
     repository: uugai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.4.2"
+    tag: "v1.5.1"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
@@ -369,14 +369,12 @@ kerberoshub:
     colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
     colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
     colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)"
-
     # Override naming conventions within the front-end.
     floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
     sitesName: "Sites" # The name of the 'sites' feature to use in the front-end.
     groupsName: "Groups" # The name of the 'groups' feature to use in the front-end.
     siteGroupName: "Site Groups" # The name of the 'site groups' feature to use in the front-end.
     deviceGroupName: "Device Groups" # The name of the 'device groups' feature to use in the front-end.
-    
   support:
     enabled: false
   oauth2Proxy:
