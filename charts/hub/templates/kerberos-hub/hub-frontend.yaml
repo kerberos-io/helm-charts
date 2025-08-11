@@ -337,6 +337,10 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorDeviceIdle }}"
         - name: COLOR_DEVICE_MOTION
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMotion }}"
+        - name: COLOR_LIVE_VIEW_CONTROL_ACTIVE
+          value: "{{ .Values.kerberoshub.frontend.colorLiveViewControlActive }}"
+        - name: COLOR_LIVE_VIEW_CONTROL_MOTION
+          value: "{{ .Values.kerberoshub.frontend.colorLiveViewControlMotion }}"
         - name: COLOR_FLOOR_PLAN_LABEL_TEXT
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelText }}"
         - name: COLOR_FLOOR_PLAN_LABEL_BACKGROUND
