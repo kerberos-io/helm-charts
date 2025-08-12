@@ -366,9 +366,11 @@ kerberoshub:
     colorDeviceInactive: "hsla(0, 3%, 41%, 1)"
     colorDeviceIdle: "hsla(47, 86%, 47%, 1)"
     colorDeviceMotion: "hsla(2, 58%, 48%, 1)"
+    colorLiveViewControlActive: "hsla(131, 31%, 52%, 1)" # Color for the live view control icon for an active device
+    colorLiveViewControlMotion: "hsla(2, 58%, 48%, 1)" # Color for the live view control icon for a device detecting motion, icon is hidden for other states
     colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
     colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
-    colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)"
+    colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)" # Border around the device marker circle on the map
     # Override naming conventions within the front-end.
     floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
     sitesName: "Sites" # The name of the 'sites' feature to use in the front-end.
