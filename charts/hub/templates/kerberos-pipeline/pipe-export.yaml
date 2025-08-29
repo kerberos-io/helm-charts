@@ -110,6 +110,14 @@ spec:
           value: "{{ .Values.kerberosvault.thumbnail.accessKey }}"
         - name: VAULT_THUMBNAIL_SECRET_KEY
           value: "{{ .Values.kerberosvault.thumbnail.secretKey }}"
+        
+        # Open Telemetry tracing
+        - name: OTEL_EXPORTED_OTLP_ENABLED
+          value: "{{ .Values.opentelemetry.enabled }}"
+        - name: OTEL_EXPORTED_OTLP_ROUTING_ENABLED
+          value: "{{ .Values.opentelemetry.routingEnabled }}"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "{{ .Values.opentelemetry.collector.endpoint }}"
 ---
 apiVersion: v1
 kind: Service

@@ -138,6 +138,14 @@ spec:
           value: "{{ .Values.kerberosvault.sprite.accessKey }}"
         - name: VAULT_SPRITE_SECRET_KEY
           value: "{{ .Values.kerberosvault.sprite.secretKey }}"
+        
+        # Open Telemetry tracing
+        - name: OTEL_EXPORTED_OTLP_ENABLED
+          value: "{{ .Values.opentelemetry.enabled }}"
+        - name: OTEL_EXPORTED_OTLP_ROUTING_ENABLED
+          value: "{{ .Values.opentelemetry.routingEnabled }}"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "{{ .Values.opentelemetry.collector.endpoint }}"
 ---
 apiVersion: v1
 kind: Service
