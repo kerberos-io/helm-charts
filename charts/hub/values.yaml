@@ -305,7 +305,7 @@ kerberoshub:
     # By default the Kerberos Hub allows multi-tenancy through the concept
     # of accounts and subaccounts. However through the concept of domains, you
     # take it a step further. Within a domain, user accounts are unique, and are prefixed by a (domain\).
-    #multiTenant: true
+    multiTenant: false
     #tenantBaseDomain: "yourdomain.com" # this would resolve in following sub domain "https://domain.kerberos.io"
 
     # Page title (browser)
@@ -334,9 +334,13 @@ kerberoshub:
     # Override naming conventions within the front-end.
     floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
     sitesName: "site" # The name of the 'sites' feature to use in the front-end.
+    sitesDescription: "" # The description of the 'sites' feature to use in the front-end.
     groupsName: "group" # The name of the 'groups' feature to use in the front-end.
+    groupsDescription: "" # The description of the 'groups' feature to use in the front-end.
     siteGroupName: "site Group" # The name of the 'site groups' feature to use in the front-end.
+    siteGroupDescription: "" # The description of the 'site groups' feature to use in the front-end.
     deviceGroupName: "device Group" # The name of the 'device groups' feature to use in the front-end.
+    deviceGroupDescription: "" # The description of the 'device groups' feature to use in the front-end.
     markersName: "marker" # The name of the 'markers' feature to use in the front-end.
     eventsName: "event" # The name of the 'events' feature to use in the front-end.
 
@@ -351,6 +355,9 @@ kerberoshub:
     # Latest events page
     latestEventsTitle: ""
     latestEventsSubTitle: ""
+    # Day title
+    dayTitle: ""
+    daySubTitle: ""
     # Livestream/view page
     livestreamTitle: ""
     livestreamSubTitle: ""
