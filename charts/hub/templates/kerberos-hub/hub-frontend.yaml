@@ -347,17 +347,42 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelBackground }}"
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
+
+
+        - name: FEATURE_FACE_REDACTION
+          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction }}"      
+        - name: COLOR_TRACK_BOX
+          value: "{{ .Values.kerberoshub.frontend.colorTrackBox }}"
+        - name: COLOR_TRACK_BOX_HOVER
+          value: "{{ .Values.kerberoshub.frontend.colorTrackBoxHover }}"
+        - name: COLOR_TRACK_BOX_DRAWING
+          value: "{{ .Values.kerberoshub.frontend.colorTrackBoxDrawing }}"
+        - name: COLOR_TRACK_BOX_CONTROLS_DELETE
+          value: "{{ .Values.kerberoshub.frontend.colorTrackBoxControlsDelete }}"
+
+        - name: MARKERS_NAME
+          value: "{{ .Values.kerberoshub.frontend.markersName }}"
+        - name: EVENTS_NAME
+          value: "{{ .Values.kerberoshub.frontend.eventsName }}"
         - name: FLOOR_PLAN_NAME
           value: "{{ .Values.kerberoshub.frontend.floorPlanName }}"
         - name: SITES_NAME
           value: "{{ .Values.kerberoshub.frontend.sitesName }}"
+        - name: SITES_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.sitesDescription }}"
         - name: GROUPS_NAME
           value: "{{ .Values.kerberoshub.frontend.groupsName }}"
+        - name: GROUPS_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.groupsDescription }}"
         - name: SITE_GROUP_NAME
           value: "{{ .Values.kerberoshub.frontend.siteGroupName }}"
+        - name: SITE_GROUP_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.siteGroupDescription }}"
         - name: DEVICE_GROUP_NAME
           value: "{{ .Values.kerberoshub.frontend.deviceGroupName }}"
-          
+        - name: DEVICE_GROUP_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.deviceGroupDescription }}"
+
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
         {{- end }}

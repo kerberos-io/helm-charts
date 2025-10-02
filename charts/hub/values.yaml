@@ -331,6 +331,15 @@ kerberoshub:
     #    persistentVolumeClaim:
     #      claimName: custom-favicon-claim
 
+    # Override naming conventions within the front-end.
+    floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
+    sitesName: "site" # The name of the 'sites' feature to use in the front-end.
+    groupsName: "group" # The name of the 'groups' feature to use in the front-end.
+    siteGroupName: "site Group" # The name of the 'site groups' feature to use in the front-end.
+    deviceGroupName: "device Group" # The name of the 'device groups' feature to use in the front-end.
+    markersName: "marker" # The name of the 'markers' feature to use in the front-end.
+    eventsName: "event" # The name of the 'events' feature to use in the front-end.
+
     # By specifying the below environments variables, you can tweak the
     # headings and paragraphs of Kerberos Hub front-end.
     # Login page
@@ -365,6 +374,7 @@ kerberoshub:
     navigationLinkTitle5: ""
     navigationLinkUrl5: ""
     caseFilterAssigneesDefault: "false"
+
     # Custom colors for floor-plans, update the colors of the corresponding device icons to match these
     # charts/hub/custom-layout/icons.js
     colorDeviceActive: "hsla(131, 31%, 52%, 1)"
@@ -376,12 +386,14 @@ kerberoshub:
     colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
     colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
     colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)" # Border around the device marker circle on the map
-    # Override naming conventions within the front-end.
-    floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
-    sitesName: "Sites" # The name of the 'sites' feature to use in the front-end.
-    groupsName: "Groups" # The name of the 'groups' feature to use in the front-end.
-    siteGroupName: "Site Groups" # The name of the 'site groups' feature to use in the front-end.
-    deviceGroupName: "Device Groups" # The name of the 'device groups' feature to use in the front-end.
+    colorTrackBox: "hsla(278, 30%, 48%, 1)"   # Boxes shown on the video
+    colorTrackBoxHover: "hsla(47, 86%, 47%, 1)"   # Boxes while hovering over the associated track
+    colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)"   # New box while drawing
+    colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)"   # Delete icon top right of the box while editing
+
+    features:
+      faceRedaction: "false" # Enable or disable face redaction 'true' or 'false
+
   support:
     enabled: false
   oauth2Proxy:
