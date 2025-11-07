@@ -685,6 +685,12 @@
     <path fill-rule="evenodd" clip-rule="evenodd" d="M11.6464 2.64645C11.8417 2.45118 12.1583 2.45118 12.3536 2.64645L15.3536 5.64645C15.5488 5.84171 15.5488 6.15829 15.3536 6.35355C15.1583 6.54882 14.8417 6.54882 14.6464 6.35355L11.6464 3.35355C11.4512 3.15829 11.4512 2.84171 11.6464 2.64645Z" fill="currentColor"/>
   </svg>`
 
+  /* Plus */
+  window["env"]["svg"]["plus"] = `<svg class="icon icon-plus" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 13C9.55228 13 10 12.5523 10 12V6C10 5.44772 9.55228 5 9 5C8.44772 5 8 5.44772 8 6V12C8 12.5523 8.44772 13 9 13Z" fill="currentColor"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M13 9C13 8.44772 12.5523 8 12 8L6 8C5.44772 8 5 8.44772 5 9C5 9.55229 5.44772 10 6 10L12 10C12.5523 10 13 9.55228 13 9Z" fill="currentColor"/>
+  </svg>`
+  
   /* Plus circle ("add" button) */
   window["env"]["svg"]["plus-circle"] = `<svg class="icon icon-plus-circle" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9C16 12.866 12.866 16 9 16ZM0 9C0 13.9706 4.02944 18 9 18C13.9706 18 18 13.9706 18 9C18 4.02944 13.9706 0 9 0C4.02944 0 0 4.02944 0 9Z" fill="currentColor"/>
@@ -693,9 +699,21 @@
   </svg>`
 
 
+
   /* Plus circle ("add" button) */
   window["env"]["svg"]["play-circle"] = `<svg class="icon icon-play-circle" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0C13.9706 0 18 4.02944 18 9ZM7.27038 13.0048C6.93762 13.2187 6.5 12.9798 6.5 12.5842V5.41586C6.5 5.02027 6.93762 4.78135 7.27038 4.99527L12.8457 8.57943C13.1519 8.77625 13.1519 9.22379 12.8457 9.42061L7.27038 13.0048Z" fill="currentColor"/>
+  </svg>`
+
+  /* Play */
+  window["env"]["svg"]["play"] = `<svg class="icon icon-play" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 4L14 9L6 14V4Z" fill="currentColor"/>
+  </svg>`
+
+  /* Pause */
+  window["env"]["svg"]["pause"] = `<svg class="icon icon-pause" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="4" width="3" height="10" rx="0.5" fill="currentColor"/>
+    <rect x="10" y="4" width="3" height="10" rx="0.5" fill="currentColor"/>
   </svg>`
 
   /* Preferences */
@@ -1089,4 +1107,25 @@
     <path fill="currentColor" d="M3.75 2h16.5c.966 0 1.75.784 1.75 1.75v16.5A1.75 1.75 0 0 1 20.25 22H3.75A1.75 1.75 0 0 1 2 20.25V3.75C2 2.784 2.784 2 3.75 2M3.5 3.75v16.5c0 .138.112.25.25.25H15v-17H3.75a.25.25 0 0 0-.25.25m13 16.75h3.75a.25.25 0 0 0 .25-.25V3.75a.25.25 0 0 0-.25-.25H16.5Z" />
   </svg>`;
 
+  /* Back single */
+  window["env"]["svg"]["back-single"] = `<svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.5 4.5L6.5 9L11.5 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+  
+  /* Back double */
+  window["env"]["svg"]["back-double"] = `<svg class="icon icon-double-chevron-left-spaced" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13.5 4.5L8.5 9L13.5 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8 4.5L3 9L8 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+  /* Forward single */
+  window["env"]["svg"]["forward-single"] = `<svg class="icon icon-chevron-right" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6.5 4.5L11.5 9L6.5 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+  /* Forward double */
+  window["env"]["svg"]["forward-double"] = `<svg class="icon icon-double-chevron-right-spaced" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.5 4.5L9.5 9L4.5 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 4.5L15 9L10 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
 })(this);
