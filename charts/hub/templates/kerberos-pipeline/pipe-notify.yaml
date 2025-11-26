@@ -16,6 +16,8 @@ spec:
       maxSurge: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
         app: pipe-notify
     spec:
@@ -39,23 +41,10 @@ spec:
         volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
+        envFrom:
+        - configMapRef:
+            name: mongodb-config
         env:
-        # Database
-        - name: MONGODB_URI
-          value: "{{ .Values.mongodb.uri }}"
-        - name: MONGODB_HOST
-          value: "{{ .Values.mongodb.host }}"
-        - name: MONGODB_AUTHENTICATION_MECHANISM
-          value: "{{ .Values.mongodb.authenticationMechanism }}"
-        - name: MONGODB_DATABASE_CREDENTIALS
-          value: "{{ .Values.mongodb.adminDatabase }}"
-        - name: MONGODB_USERNAME
-          value: "{{ .Values.mongodb.username }}"
-        - name: MONGODB_PASSWORD
-          value: "{{ .Values.mongodb.password }}"
-        - name: MONGODB_RETRY_WRITES
-          value: "{{ .Values.mongodb.retryWrites }}"
-
         # Queue
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"

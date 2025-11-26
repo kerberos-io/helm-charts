@@ -16,6 +16,8 @@ spec:
       maxSurge: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
         app: hub-reactivate-subscription
     spec:
@@ -30,18 +32,9 @@ spec:
           env:
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
-            - name: MONGODB_URI
-              value: "{{ .Values.mongodb.uri }}"
-            - name: MONGODB_HOST
-              value: "{{ .Values.mongodb.host }}"
-            - name: MONGODB_AUTHENTICATION_MECHANISM
-              value: "{{ .Values.mongodb.authenticationMechanism }}"
-            - name: MONGODB_DATABASE_CREDENTIALS
-              value: "{{ .Values.mongodb.adminDatabase }}"
-            - name: MONGODB_USERNAME
-              value: "{{ .Values.mongodb.username }}"
-            - name: MONGODB_PASSWORD
-              value: "{{ .Values.mongodb.password }}"
+            envFrom:
+            - configMapRef:
+                name: mongodb-config
             - name: AWS_ACCESS_KEY_ID
               value: "{{ .Values.kerberoshub.api.aws.accessKey }}"
             - name: AWS_SECRET_ACCESS_KEY

@@ -16,6 +16,8 @@ spec:
       maxSurge: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
         app: hub-cleanup
     spec:
@@ -36,22 +38,9 @@ spec:
               value: "{{ .Values.readonly }}"
             - name: MAX_DAYS
               value: "{{ .Values.kerberoshub.cleanup.maxDays }}"
-            - name: MONGODB_DATABASE_CLOUD
-              value: "Kerberos"
-            - name: MONGODB_URI
-              value: "{{ .Values.mongodb.uri }}"
-            - name: MONGODB_HOST
-              value: "{{ .Values.mongodb.host }}"
-            - name: MONGODB_AUTHENTICATION_MECHANISM
-              value: "{{ .Values.mongodb.authenticationMechanism }}"
-            - name: MONGODB_DATABASE_CREDENTIALS
-              value: "{{ .Values.mongodb.adminDatabase }}"
-            - name: MONGODB_USERNAME
-              value: "{{ .Values.mongodb.username }}"
-            - name: MONGODB_PASSWORD
-              value: "{{ .Values.mongodb.password }}"
-            - name: MONGODB_RETRY_WRITES
-              value: "{{ .Values.mongodb.retryWrites }}"
+            envFrom:
+            - configMapRef:
+                name: mongodb-config
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}

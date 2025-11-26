@@ -18,6 +18,8 @@ spec:
       maxSurge: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
         app: vault-forwarder
     spec:
@@ -33,32 +35,18 @@ spec:
             requests:
               memory: 10Mi
               cpu: 10m
+          envFrom:
+          - configMapRef:
+              name: mongodb-config
           env:
-            - name: ITERATION_SPEED
-              value: "5"
-            - name: BUFFER_TIME
-              value: "3"
-            # Mongodb
-            - name: MONGODB_URI
-              value: "{{ .Values.mongodb.uri }}"
-            - name: MONGODB_DATABASE_CLOUD
-              value: "Kerberos"
-            - name: MONGODB_HOST
-              value: "{{ .Values.mongodb.host }}"
-            - name: MONGODB_AUTHENTICATION_MECHANISM
-              value: "{{ .Values.mongodb.authenticationMechanism }}"
-            - name: MONGODB_DATABASE_CREDENTIALS
-              value: "{{ .Values.mongodb.adminDatabase }}"
-            - name: MONGODB_USERNAME
-              value: "{{ .Values.mongodb.username }}"
-            - name: MONGODB_PASSWORD
-              value: "{{ .Values.mongodb.password }}"
-
-            # Mqtt (VERNEMQ)
-            - name: MQTT_URI
-              value: "{{ .Values.mqtt.host }}"
-            - name: MQTT_USERNAME
-              value: "{{ .Values.mqtt.username }}"
-            - name: MQTT_PASSWORD
-              value: "{{ .Values.mqtt.password }}"
+          - name: ITERATION_SPEED
+            value: "5"
+          - name: BUFFER_TIME
+            value: "3"
+          - name: MQTT_URI
+            value: "{{ .Values.mqtt.host }}"
+          - name: MQTT_USERNAME
+            value: "{{ .Values.mqtt.username }}"
+          - name: MQTT_PASSWORD
+            value: "{{ .Values.mqtt.password }}"
 {{- end }}
