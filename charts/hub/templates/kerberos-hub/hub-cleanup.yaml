@@ -33,14 +33,14 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
           env:
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
             - name: MAX_DAYS
               value: "{{ .Values.kerberoshub.cleanup.maxDays }}"
-            envFrom:
-            - configMapRef:
-                name: mongodb-config
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}

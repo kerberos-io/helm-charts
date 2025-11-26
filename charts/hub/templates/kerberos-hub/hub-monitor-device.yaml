@@ -41,13 +41,12 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
           env:
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
-            envFrom:
-            - configMapRef:
-                name: mongodb-config
-
             # Mail settings
             - name: MAIL_PROVIDER
               value: "{{ .Values.email.provider }}"

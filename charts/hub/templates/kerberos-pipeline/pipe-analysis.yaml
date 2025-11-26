@@ -33,14 +33,14 @@ spec:
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
+        envFrom:
+        - configMapRef:
+            name: mongodb-config
         env:
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
-        envFrom:
-        - configMapRef:
-            name: mongodb-config
 
         # Kafka settings
         - name: KAFKA_BROKER

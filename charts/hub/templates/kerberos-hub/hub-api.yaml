@@ -269,11 +269,11 @@ spec:
             - name: RABBITMQ_PASSWORD
               value: "{{ .Values.rabbitmq.password }}"
 
-            # Mongodb - loaded from ConfigMap
-            envFrom:
+          # Mongodb - loaded from ConfigMap
+          envFrom:
             - configMapRef:
                 name: mongodb-config
-
+          env:
             # Slack notifications (this will send events/logs to a specific channel).
             - name: SLACK_ENABLED
               value: "{{ .Values.kerberoshub.api.slack.enabled }}"

@@ -41,12 +41,12 @@ spec:
         volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-        env:
-        - name: QUEUE_SYSTEM
-          value: "{{ .Values.queueProvider }}"
         envFrom:
         - configMapRef:
             name: mongodb-config
+        env:
+        - name: QUEUE_SYSTEM
+          value: "{{ .Values.queueProvider }}"
 
         # Kerberos Vault
         - name: STORAGE_URI

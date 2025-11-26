@@ -29,12 +29,12 @@ spec:
         - name: hub-reactivate-subscription
           image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.reactivate.repository }}:{{ .Values.kerberoshub.reactivate.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.reactivate.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
           env:
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
-            envFrom:
-            - configMapRef:
-                name: mongodb-config
             - name: AWS_ACCESS_KEY_ID
               value: "{{ .Values.kerberoshub.api.aws.accessKey }}"
             - name: AWS_SECRET_ACCESS_KEY
