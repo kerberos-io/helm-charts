@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-config
+  namespace: {{ .Release.Namespace }}
+data:
+  MONGODB_URI: "{{ .Values.mongodb.uri }}"
+  MONGODB_HOST: "{{ .Values.mongodb.host }}"
+  MONGODB_AUTHENTICATION_MECHANISM: "{{ .Values.mongodb.authenticationMechanism }}"
+  MONGODB_DATABASE_CREDENTIALS: "{{ .Values.mongodb.adminDatabase }}"
+  MONGODB_USERNAME: "{{ .Values.mongodb.username }}"
+  MONGODB_PASSWORD: "{{ .Values.mongodb.password }}"
+  MONGODB_RETRY_WRITES: "{{ .Values.mongodb.retryWrites }}"
+  MONGODB_DATABASE_CLOUD: "Kerberos"

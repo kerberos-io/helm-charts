@@ -115,6 +115,8 @@ spec:
       maxSurge: 1
   template:
     metadata:
+      annotations:
+        checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
         app: hub-api
     spec:
@@ -267,22 +269,11 @@ spec:
             - name: RABBITMQ_PASSWORD
               value: "{{ .Values.rabbitmq.password }}"
 
-            # Mongodb
-            - name: MONGODB_DATABASE_CLOUD
-              value: "Kerberos"
-            - name: MONGODB_URI
-              value: "{{ .Values.mongodb.uri }}"
-            - name: MONGODB_HOST
-              value: "{{ .Values.mongodb.host }}"
-            - name: MONGODB_AUTHENTICATION_MECHANISM
-              value: "{{ .Values.mongodb.authenticationMechanism }}"
-            - name: MONGODB_DATABASE_CREDENTIALS
-              value: "{{ .Values.mongodb.adminDatabase }}"
-            - name: MONGODB_USERNAME
-              value: "{{ .Values.mongodb.username }}"
-            - name: MONGODB_PASSWORD
-              value: "{{ .Values.mongodb.password }}"
-
+          # Mongodb - loaded from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
+          env:
             # Slack notifications (this will send events/logs to a specific channel).
             - name: SLACK_ENABLED
               value: "{{ .Values.kerberoshub.api.slack.enabled }}"
