@@ -53,6 +53,8 @@ spec:
           value: "{{ .Values.mongodb.username }}"
         - name: MONGODB_PASSWORD
           value: "{{ .Values.mongodb.password }}"
+        - name: MONGODB_RETRY_WRITES
+          value: "{{ .Values.mongodb.retryWrites }}"
 
         # Queue
         - name: QUEUE_SYSTEM

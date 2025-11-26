@@ -270,6 +270,7 @@ spec:
             # Mongodb
             - name: MONGODB_DATABASE_CLOUD
               value: "Kerberos"
+            
             - name: MONGODB_URI
               value: "{{ .Values.mongodb.uri }}"
             - name: MONGODB_HOST
@@ -282,6 +283,8 @@ spec:
               value: "{{ .Values.mongodb.username }}"
             - name: MONGODB_PASSWORD
               value: "{{ .Values.mongodb.password }}"
+            - name: MONGODB_RETRY_WRITES
+              value: "{{ .Values.mongodb.retryWrites }}"
 
             # Slack notifications (this will send events/logs to a specific channel).
             - name: SLACK_ENABLED

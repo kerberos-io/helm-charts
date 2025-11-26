@@ -47,6 +47,8 @@ mongodb:
   authenticationMechanism: SCRAM-SHA-256
   username: yourusername
   password: "yourpassword"
+  retryWrites: "true"
+  
 ###################################################
 # MQTT configuration (bi-directional communication)
 ###################################################
