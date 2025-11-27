@@ -1,0 +1,139 @@
+name: Deploy on k3d
+on:
+  workflow_dispatch:
+  pull_request:
+jobs:
+  deploy:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        k3d: [v5.7.5]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Create single cluster"
+        uses: AbsaOSS/k3d-action@v2
+        with:
+          k3d-version: ${{ matrix.k3d }}  
+          cluster-name: "k3d-cluster"
+      - name: Print Kubernetes Version
+        run: |
+          kubectl version
+      - name: Test k3d
+        run: |
+          echo "Sleeping for 120 seconds, give time for the cluster to be ready" && sleep 120
+          kubectl get no
+          kubectl get pods -A -o wide
+          kubectl get sc
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install OpenEBS
+        run: |
+          kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml
+          kubectl wait --for=condition=available deployment/openebs-localpv-provisioner -n openebs --timeout=300s
+          kubectl get sc
+          kubectl get po -A -o wide
+      - name: Create storage class
+        id: create-storage-class
+        run: |
+          kubectl apply -f ./base/ssd-hostpath-storageclass-openebs.yaml
+          kubectl wait --for=jsonpath='{.metadata.name}'=ssd-hostpath storageclass/ssd-hostpath --timeout=60s
+          kubectl get sc
+      - name: Install Prometheus operator
+        id: install-prometheus-operator
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.48.1/bundle.yaml
+          kubectl wait --for=condition=available deployment/prometheus-operator -n default --timeout=300s
+          kubectl get crd
+          kubectl get po -A -o wide
+      - name: Install Minio
+        id: install-minio
+        run: |
+          git clone --depth 1 --branch v6.0.1 https://github.com/minio/operator.git && kubectl apply -k operator/
+          kubectl apply -f ./base/minio/minio-tenant-base.yaml
+          echo "Waiting for resources to be created..."
+          sleep 10
+          kubectl wait --for=jsonpath='{.status.readyReplicas}'=1 statefulset/myminio-pool-0 -n minio-tenant --timeout=300s
+          kubectl get po -A -o wide
+          kubectl get po -A -o wide | grep myminio-pool-0-0 | awk '{print $3}' | grep -q '2/2' && echo "myminio-pool-0-0 pod is running with status 2/2" || (echo "myminio-pool-0-0 pod is not running with status 2/2" && exit 1)
+      - name: Install MongoDB
+        id: install-mongodb
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          kubectl create namespace mongodb
+          helm install mongodb -n mongodb bitnami/mongodb --values ./base/mongodb/mongodb-values.yaml --wait --timeout=5m
+          kubectl get pods -A -o wide
+      - name: Install RabbitMQ
+        id: install-rabbitmq
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          kubectl create namespace rabbitmq
+          helm install rabbitmq -n rabbitmq bitnami/rabbitmq --values ./base/rabbitmq/rabbitmq-values.yaml --wait --timeout=5m
+          kubectl get pods -A -o wide
+          kubectl exec --namespace rabbitmq rabbitmq-0 -- rabbitmqctl status
+      - name: Install Vernemq (MQTT Broker)
+        id: install-vernemq
+        run: |
+          kubectl create namespace vernemq
+          helm repo add vernemq https://vernemq.github.io/docker-vernemq
+          helm install vernemq vernemq/vernemq --values ./base/vernemq/vernemq-values.yaml -n vernemq --create-namespace --wait --timeout=5m
+          kubectl get pods -A -o wide
+          kubectl exec --namespace vernemq vernemq-0 -- /vernemq/bin/vmq-admin cluster show
+      - name: Install Vault
+        id: install-vault
+        run: |
+          kubectl create namespace kerberos-vault
+          kubectl apply -f ./base/vault/mongodb-configmap.yaml -n kerberos-vault
+          kubectl apply -f ./base/vault/kerberos-vault-deployment.yaml -n kerberos-vault
+          kubectl apply -f ./base/vault/kerberos-vault-service.yaml -n kerberos-vault
+          sleep 10
+          kubectl wait --for=condition=available deployment/vault -n kerberos-vault --timeout=300s
+          kubectl get pods -A -o wide 
+          kubectl get pods -A -o wide | grep vault | awk '{print $3}' | grep -q '1/1' && echo "vault pod is running with status 1/1" || (echo "vault pod is not running with status 1/1" && exit 1)
+      - name: Install Agent
+        id: install-agent
+        run: |
+          kubectl create namespace kerberos-agent
+          kubectl apply -f ./base/agent/kerberos-agent-deployment.yaml -n kerberos-agent
+          kubectl wait --for=condition=available deployment/agent1 -n kerberos-agent --timeout=300s
+          kubectl get pods -A -o wide
+          kubectl get pods -A -o wide | grep agent1 | awk '{print $3}' | grep -q '1/1' && echo "agent1 pod is running with status 1/1" || (echo "agent1 pod is not running with status 1/1" && exit 1)
+      - name: Install Hub Helm chart
+        id: install-hub
+        run: |
+          helm repo add kerberos https://charts.kerberos.io
+          kubectl create namespace kerberos-hub
+          helm install hub kerberos/hub --values ./base/hub/kerberos-hub-values.yaml -n kerberos-hub --create-namespace
+          sleep 10
+          kubectl wait --for=condition=available deployment/admin -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/hub-api -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/hub-cleanup -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/hub-frontend -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/hub-frontend-demo -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/hub-monitor-device -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/hub-reactivate-subscription -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-analysis -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-counting -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-dominantcolor -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-event -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-export -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-monitor -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-notify -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-notify-test -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-sequence -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-sprite -n kerberos-hub --timeout=300s
+          kubectl wait --for=condition=available deployment/pipe-throttler -n kerberos-hub --timeout=300s
+          kubectl get pods -A -o wide
+      - name: Send Slack Notification on Success
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"✅ K3d deployment successful on ${{ matrix.os }} (${{ matrix.k3d }}) - triggered by ${{ github.actor }}\"}" $SLACK_WEBHOOK_URL
+      - name: Send Slack Notification on Failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"❌ K3d deployment failed on ${{ matrix.os }} (${{ matrix.k3d }}) - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>\"}" $SLACK_WEBHOOK_URL
