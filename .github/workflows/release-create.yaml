@@ -1,12 +1,9 @@
-name: Release Charts
-
+name: Create a new release
 on:
-  push:
-    branches:
-      - main
-
-jobs:
   release:
+    types: [created]
+jobs:
+    release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
