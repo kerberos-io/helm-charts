@@ -24,12 +24,6 @@ jobs:
           kubectl get pods -A -o wide
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Create storage class
-        id: create-storage-class
-        run: |
-          kubectl apply -f ./base/ssd-hostpath-storageclass.yaml
-          echo "Sleeping for 30 seconds, give time for the storage class to be created" && sleep 30
-          kubectl get sc
       - name: Install Prometheus operator
         id: install-prometheus-operator
         run: |

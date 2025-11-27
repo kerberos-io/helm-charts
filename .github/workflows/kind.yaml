@@ -24,18 +24,6 @@ jobs:
           kubectl get sc
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Install OpenEBS
-        run: |
-          kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml
-          kubectl wait --for=condition=available deployment/openebs-localpv-provisioner -n openebs --timeout=300s
-          kubectl get sc
-          kubectl get po -A -o wide
-      - name: Create storage class
-        id: create-storage-class
-        run: |
-          kubectl apply -f ./base/ssd-hostpath-storageclass-openebs.yaml
-          kubectl wait --for=jsonpath='{.metadata.name}'=ssd-hostpath storageclass/ssd-hostpath --timeout=60s
-          kubectl get sc
       - name: Install Prometheus operator
         id: install-prometheus-operator
         run: |
