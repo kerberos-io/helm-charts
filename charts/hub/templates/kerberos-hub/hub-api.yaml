@@ -142,7 +142,11 @@ spec:
           {{- with .Values.kerberoshub.api.volumeMounts}}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- end }}          
+          # Mongodb - loaded from ConfigMap
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
           env:
             - name: ENVIRONMENT
               value: "{{ .Values.environment }}"
@@ -269,11 +273,6 @@ spec:
             - name: RABBITMQ_PASSWORD
               value: "{{ .Values.rabbitmq.password }}"
 
-          # Mongodb - loaded from ConfigMap
-          envFrom:
-            - configMapRef:
-                name: mongodb-config
-          env:
             # Slack notifications (this will send events/logs to a specific channel).
             - name: SLACK_ENABLED
               value: "{{ .Values.kerberoshub.api.slack.enabled }}"

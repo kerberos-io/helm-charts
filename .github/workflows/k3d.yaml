@@ -1,4 +1,4 @@
-name: Deploy on microk8s
+name: Deploy on k3d
 on:
   workflow_dispatch:
   pull_request:
@@ -8,20 +8,24 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
-        microk8s: [1.32/stable]
+        k3d: [v5.7.5]
     steps:
-      - uses: balchua/microk8s-actions@v0.4.3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Create single cluster"
+        uses: AbsaOSS/k3d-action@v2
         with:
-          channel: ${{ matrix.microk8s }}
-          addons: '["dns", "dashboard", "hostpath-storage", "nvidia"]'
-      - name: Set permissions
+          k3d-version: ${{ matrix.k3d }}  
+          cluster-name: "k3d-cluster"
+      - name: Print Kubernetes Version
         run: |
-          sudo chown -f -R $USER $HOME/.kube $HOME/.config
-      - name: Test microk8s
-        id: list-pods
+          kubectl version
+      - name: Test k3d
         run: |
+          echo "Sleeping for 120 seconds, give time for the cluster to be ready" && sleep 120
           kubectl get no
           kubectl get pods -A -o wide
+          kubectl get sc
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install Prometheus operator
@@ -43,11 +47,10 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"✅ MicroK8s deployment successful on ${{ matrix.os }} (${{ matrix.microk8s }}) - triggered by ${{ github.actor }}\"}" $SLACK_WEBHOOK_URL
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"✅ K3d deployment successful on ${{ matrix.os }} (${{ matrix.k3d }}) - triggered by ${{ github.actor }}\"}" $SLACK_WEBHOOK_URL
       - name: Send Slack Notification on Failure
         if: failure()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"❌ MicroK8s deployment failed on ${{ matrix.os }} (${{ matrix.microk8s }}) - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>\"}" $SLACK_WEBHOOK_URL
-          
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"❌ K3d deployment failed on ${{ matrix.os }} (${{ matrix.k3d }}) - <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View logs>\"}" $SLACK_WEBHOOK_URL
