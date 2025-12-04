@@ -348,17 +348,39 @@ spec:
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
 
-
-        - name: FEATURE_FACE_REDACTION
-          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction }}"      
+        # features > floorplan
+        - name: FEATURE_FLOORPLAN_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
         - name: COLOR_TRACK_BOX
-          value: "{{ .Values.kerberoshub.frontend.colorTrackBox }}"
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBox }}"
         - name: COLOR_TRACK_BOX_HOVER
-          value: "{{ .Values.kerberoshub.frontend.colorTrackBoxHover }}"
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxHover }}"
         - name: COLOR_TRACK_BOX_DRAWING
-          value: "{{ .Values.kerberoshub.frontend.colorTrackBoxDrawing }}"
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing }}"
         - name: COLOR_TRACK_BOX_CONTROLS_DELETE
-          value: "{{ .Values.kerberoshub.frontend.colorTrackBoxControlsDelete }}"
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete }}"
+
+        # features > face redaction 
+        - name: FEATURE_FACE_REDACTION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}" 
+        
+        # features > media
+        - name: FEATURE_MEDIA_FILTER_DATE_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.date.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_SITES_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.sites.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_GROUPS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.groups.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_DEVICES_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.devices.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_OBJECT_DETECTION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.objectDetection.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_STAR_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.star.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_REGION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.region.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_SORT_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.sort.enabled }}"
 
         - name: MARKERS_NAME
           value: "{{ .Values.kerberoshub.frontend.markersName }}"

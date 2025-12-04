@@ -398,6 +398,7 @@ kerberoshub:
     colorTrackBoxHover: "hsla(47, 86%, 47%, 1)" # Boxes while hovering over the associated track
     colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)" # New box while drawing
     colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)" # Delete icon top right of the box while editing
+    
     features:
       floorplan:
         enabled: "true" # Enable or disable floorplan feature 'true' or 'false'
