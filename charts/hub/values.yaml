@@ -23,7 +23,7 @@ readOnly: false # Set to 'true' to halt all write operations to the database (e.
 # Global configuration
 ###########################################################################
 global:
-  imageRegistry: "docker.io/"
+  imageRegistry: ""
 # Private Docker Registry: The registry secret is required if you have your Docker images behind a private registry.
 # By default it will pull from Docker hub (https://hub.docker.com/r/kerberos).
 #imagePullSecrets:
@@ -168,10 +168,12 @@ admin:
       cookieSecret: "generate-a-random-cookie-secret"
       organization: "github-organization"
       team: "github-team"
+
+###########################################################################
 # Following are all the different deployments needed to make
-# Kerberos hub properly working.
+# Hub properly working.
 kerberoshub:
-  # Extra environment variables like proxy to set for kerberos-hub pods
+  # Extra environment variables like proxy to set for hub pods
   extraEnv: []
   #  extraEnv:
   #    - name: HTTP_PROXY
@@ -397,7 +399,42 @@ kerberoshub:
     colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)" # New box while drawing
     colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)" # Delete icon top right of the box while editing
     features:
-      faceRedaction: "false" # Enable or disable face redaction 'true' or 'false
+      floorplan:
+        enabled: "true" # Enable or disable floorplan feature 'true' or 'false'
+        colorDeviceActive: "hsla(131, 31%, 52%, 1)"
+        colorDeviceInactive: "hsla(0, 3%, 41%, 1)"
+        colorDeviceIdle: "hsla(47, 86%, 47%, 1)"
+        colorDeviceMotion: "hsla(2, 58%, 48%, 1)"
+        colorLiveViewControlActive: "hsla(131, 31%, 52%, 1)" # Color for the live view control icon for an active device
+        colorLiveViewControlMotion: "hsla(2, 58%, 48%, 1)" # Color for the live view control icon for a device detecting motion, icon is hidden for other states
+        colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
+        colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
+        colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)" # Border around the device marker circle on the map
+        colorTrackBox: "hsla(278, 30%, 48%, 1)"   # Boxes shown on the video
+        colorTrackBoxHover: "hsla(47, 86%, 47%, 1)"   # Boxes while hovering over the associated track
+        colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)"   # New box while drawing
+        colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)"   # Delete icon top right of the box while editing
+      faceRedaction:
+        enabled: "false" # Enable or disable face redaction 'true' or 'false'
+      media:
+        filter:
+          date: 
+            enabled: "true" # Enable or disable date filter in media 'true' or 'false'
+          sites: 
+            enabled: "true" # Enable or disable site filter in media 'true' or 'false'
+          groups: 
+            enabled: "true" # Enable or disable group filter in media 'true' or 'false'
+          devices: 
+            enabled: "true" # Enable or disable device filter in media 'true' or 'false'
+          objectDetection: 
+            enabled: "false" # Enable or disable object detection filter in media 'true' or 'false'
+          star: 
+            enabled: "false" # Enable or disable star filter in media 'true' or 'false'
+          region: 
+            enabled: "false" # Enable or disable region filter in media 'true' or 'false'
+          sort : 
+            enabled: "true" # Enable or disable sort filter in media 'true' or 'false'
+
   support:
     enabled: false
   oauth2Proxy:
