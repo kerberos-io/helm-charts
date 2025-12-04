@@ -304,7 +304,7 @@ spec:
         - name: DEVICE_GROUP_NAME
           value: "{{ .Values.kerberoshub.frontend.deviceGroupName }}"
         - name: DEVICE_GROUP_DESCRIPTION
-          value: "{{ .Values.kerberoshub.frontend.deviceGroupDescription }}"xw
+          value: "{{ .Values.kerberoshub.frontend.deviceGroupDescription }}"
         
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
