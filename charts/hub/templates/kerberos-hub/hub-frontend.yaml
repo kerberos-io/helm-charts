@@ -329,6 +329,18 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl5 }}"
         - name: CASE_FILTER_ASSIGNEES_DEFAULT
           value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
+
+        # features > floorplan
+        - name: FEATURE_FLOORPLAN_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
+        - name: COLOR_TRACK_BOX
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBox }}"
+        - name: COLOR_TRACK_BOX_HOVER
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxHover }}"
+        - name: COLOR_TRACK_BOX_DRAWING
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing }}"
+        - name: COLOR_TRACK_BOX_CONTROLS_DELETE
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete }}"
         - name: COLOR_DEVICE_ACTIVE
           value: "{{ .Values.kerberoshub.frontend.colorDeviceActive }}"
         - name: COLOR_DEVICE_INACTIVE
@@ -347,18 +359,6 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelBackground }}"
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
-
-        # features > floorplan
-        - name: FEATURE_FLOORPLAN_ENABLED
-          value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
-        - name: COLOR_TRACK_BOX
-          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBox }}"
-        - name: COLOR_TRACK_BOX_HOVER
-          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxHover }}"
-        - name: COLOR_TRACK_BOX_DRAWING
-          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing }}"
-        - name: COLOR_TRACK_BOX_CONTROLS_DELETE
-          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete }}"
 
         # features > face redaction 
         - name: FEATURE_FACE_REDACTION_ENABLED
