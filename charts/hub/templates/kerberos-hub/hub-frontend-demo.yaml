@@ -228,10 +228,20 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.navigationLinkTitle5 }}"
         - name: NAVIGATION_LINK_URL_5
           value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl5 }}"
-
         - name: CASE_FILTER_ASSIGNEES_DEFAULT
           value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
-        # Custom colors for floor-plans
+          
+        # features > floorplan
+        - name: FEATURE_FLOORPLAN_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
+        - name: COLOR_TRACK_BOX
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBox }}"
+        - name: COLOR_TRACK_BOX_HOVER
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxHover }}"
+        - name: COLOR_TRACK_BOX_DRAWING
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing }}"
+        - name: COLOR_TRACK_BOX_CONTROLS_DELETE
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete }}"
         - name: COLOR_DEVICE_ACTIVE
           value: "{{ .Values.kerberoshub.frontend.colorDeviceActive }}"
         - name: COLOR_DEVICE_INACTIVE
@@ -240,12 +250,62 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorDeviceIdle }}"
         - name: COLOR_DEVICE_MOTION
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMotion }}"
-        - name: COLOR_FLOORPLAN_LABEL_TEXT
+        - name: COLOR_LIVE_VIEW_CONTROL_ACTIVE
+          value: "{{ .Values.kerberoshub.frontend.colorLiveViewControlActive }}"
+        - name: COLOR_LIVE_VIEW_CONTROL_MOTION
+          value: "{{ .Values.kerberoshub.frontend.colorLiveViewControlMotion }}"
+        - name: COLOR_FLOOR_PLAN_LABEL_TEXT
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelText }}"
-        - name: COLOR_FLOORPLAN_LABEL_BACKGROUND
+        - name: COLOR_FLOOR_PLAN_LABEL_BACKGROUND
           value: "{{ .Values.kerberoshub.frontend.colorFloorPlanLabelBackground }}"
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
+
+
+        # features > face redaction 
+        - name: FEATURE_FACE_REDACTION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}" 
+        
+        # features > media
+        - name: FEATURE_MEDIA_FILTER_DATE_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.date.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_SITES_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.sites.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_GROUPS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.groups.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_DEVICES_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.devices.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_OBJECT_DETECTION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.objectDetection.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_STAR_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.star.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_REGION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.region.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_SORT_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.sort.enabled }}"
+
+        - name: MARKERS_NAME
+          value: "{{ .Values.kerberoshub.frontend.markersName }}"
+        - name: EVENTS_NAME
+          value: "{{ .Values.kerberoshub.frontend.eventsName }}"
+        - name: FLOOR_PLAN_NAME
+          value: "{{ .Values.kerberoshub.frontend.floorPlanName }}"
+        - name: SITES_NAME
+          value: "{{ .Values.kerberoshub.frontend.sitesName }}"
+        - name: SITES_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.sitesDescription }}"
+        - name: GROUPS_NAME
+          value: "{{ .Values.kerberoshub.frontend.groupsName }}"
+        - name: GROUPS_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.groupsDescription }}"
+        - name: SITE_GROUP_NAME
+          value: "{{ .Values.kerberoshub.frontend.siteGroupName }}"
+        - name: SITE_GROUP_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.siteGroupDescription }}"
+        - name: DEVICE_GROUP_NAME
+          value: "{{ .Values.kerberoshub.frontend.deviceGroupName }}"
+        - name: DEVICE_GROUP_DESCRIPTION
+          value: "{{ .Values.kerberoshub.frontend.deviceGroupDescription }}"
         
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
