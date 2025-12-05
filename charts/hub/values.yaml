@@ -383,25 +383,14 @@ kerberoshub:
     navigationLinkTitle5: ""
     navigationLinkUrl5: ""
     caseFilterAssigneesDefault: "false"
-    # Custom colors for floor-plans, update the colors of the corresponding device icons to match these
-    # charts/hub/custom-layout/icons.js
-    colorDeviceActive: "hsla(131, 31%, 52%, 1)"
-    colorDeviceInactive: "hsla(0, 3%, 41%, 1)"
-    colorDeviceIdle: "hsla(47, 86%, 47%, 1)"
-    colorDeviceMotion: "hsla(2, 58%, 48%, 1)"
-    colorLiveViewControlActive: "hsla(131, 31%, 52%, 1)" # Color for the live view control icon for an active device
-    colorLiveViewControlMotion: "hsla(2, 58%, 48%, 1)" # Color for the live view control icon for a device detecting motion, icon is hidden for other states
-    colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
-    colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
-    colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)" # Border around the device marker circle on the map
-    colorTrackBox: "hsla(278, 30%, 48%, 1)" # Boxes shown on the video
-    colorTrackBoxHover: "hsla(47, 86%, 47%, 1)" # Boxes while hovering over the associated track
-    colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)" # New box while drawing
-    colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)" # Delete icon top right of the box while editing
+
 
     features:
       floorplan:
         enabled: "true" # Enable or disable floorplan feature 'true' or 'false'
+
+        # Custom colors for floor-plans, update the colors of the corresponding device icons to match these
+        # charts/hub/custom-layout/icons.js
         colorDeviceActive: "hsla(131, 31%, 52%, 1)"
         colorDeviceInactive: "hsla(0, 3%, 41%, 1)"
         colorDeviceIdle: "hsla(47, 86%, 47%, 1)"
