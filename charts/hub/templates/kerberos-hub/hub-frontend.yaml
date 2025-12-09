@@ -330,6 +330,24 @@ spec:
         - name: CASE_FILTER_ASSIGNEES_DEFAULT
           value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
 
+        # features > general
+        - name: FEATURE_DARK_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.darkMode }}"
+        - name: FEATURE_LANDING_PAGE
+          value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
+
+        # features > liveview
+        - name: FEATURE_LIVEVIEW_PAGINATION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationEnabled }}"
+        - name: FEATURE_LIVEVIEW_EMPTY_BY_DEFAULT
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.emptyByDefault }}"
+        - name: FEATURE_LIVEVIEW_MAX_STREAMS
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.maxStreams }}"
+
+        # features > devices
+        - name: FEATURE_DEVICES_HIDE_AGENT
+          value: "{{ .Values.kerberoshub.frontend.features.devices.hideAgent }}"
+
         # features > floorplan
         - name: FEATURE_FLOORPLAN_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
@@ -381,6 +399,15 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.region.enabled }}"
         - name: FEATURE_MEDIA_FILTER_SORT_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.sort.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_CATEGORY_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.category.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_MARKERS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.markers.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_EVENTS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.events.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_TAGS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.tags.enabled }}"
+        
 
         - name: MARKERS_NAME
           value: "{{ .Values.kerberoshub.frontend.markersName }}"

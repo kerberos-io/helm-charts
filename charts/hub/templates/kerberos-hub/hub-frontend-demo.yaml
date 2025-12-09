@@ -105,8 +105,12 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
         env:
-        - name: SSO_DOMAIN
-          value: "{{ .Values.kerberoshub.frontend.ssoDomain }}"
+        - name: SSO_DOMAINS
+          # get the domain attribute from the list of sso domains
+          value: "{{- range .Values.kerberoshub.api.sso }}{{ .domain }};{{- end }}"
+        - name: SSO_FORCE_DOMAINS
+          # get the domain attribute from the list of sso domains
+          value: "{{- range .Values.kerberoshub.api.sso }}{{ .forceSSO }};{{- end }}"
         - name: TITLE
           value: "{{ .Values.kerberoshub.frontend.title }}"
         - name: LOGO_NAME
@@ -128,6 +132,10 @@ spec:
           value: "true"
         - name: DEMO
           value: "true"
+        - name: MULTI_TENANT
+          value: "{{ .Values.kerberoshub.frontend.multiTenant }}"
+        - name: TENANT_BASE_DOMAIN
+          value: "{{ .Values.kerberoshub.frontend.tenantBaseDomain }}"
 
         # Mqtt (VERNEMQ)
         - name: MQTT_PROTOCOL
@@ -140,6 +148,14 @@ spec:
           value: "{{ .Values.mqtt.username }}"
         - name: MQTT_PASSWORD
           value: "{{ .Values.mqtt.password }}"
+        - name: MQTT_LEGACY_SERVER
+          value: "{{ .Values.mqtt.legacy.host }}"
+        - name: MQTT_LEGACY_PORT
+          value: "{{ .Values.mqtt.legacy.port }}"
+
+        # OpenAI
+        - name: OPENAI_ENABLED
+          value: "{{ .Values.openai.enabled }}"
 
         # Turn (Pion)
         - name: TURN_SERVER
@@ -196,6 +212,10 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.mediaTitle }}"
         - name: PAGE_MEDIA_SUB_TITLE
           value: "{{ .Values.kerberoshub.frontend.mediaSubTitle }}"
+        - name: PAGE_DAY_TITLE
+          value: "{{ .Values.kerberoshub.frontend.dayTitle }}"
+        - name: PAGE_DAY_SUB_TITLE
+          value: "{{ .Values.kerberoshub.frontend.daySubTitle }}"
         - name: PAGE_DASHBOARD_CPU_USAGE
           value: "{{ .Values.kerberoshub.frontend.cpuUsageDescription }}"
         - name: PAGE_DASHBOARD_FPS
@@ -230,7 +250,25 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.navigationLinkUrl5 }}"
         - name: CASE_FILTER_ASSIGNEES_DEFAULT
           value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
-          
+
+        # features > general
+        - name: FEATURE_DARK_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.darkMode }}"
+        - name: FEATURE_LANDING_PAGE
+          value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
+
+        # features > liveview
+        - name: FEATURE_LIVEVIEW_PAGINATION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationEnabled }}"
+        - name: FEATURE_LIVEVIEW_EMPTY_BY_DEFAULT
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.emptyByDefault }}"
+        - name: FEATURE_LIVEVIEW_MAX_STREAMS
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.maxStreams }}"
+
+        # features > devices
+        - name: FEATURE_DEVICES_HIDE_AGENT
+          value: "{{ .Values.kerberoshub.frontend.features.devices.hideAgent }}"
+
         # features > floorplan
         - name: FEATURE_FLOORPLAN_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
@@ -261,7 +299,6 @@ spec:
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
 
-
         # features > face redaction 
         - name: FEATURE_FACE_REDACTION_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}" 
@@ -283,6 +320,15 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.region.enabled }}"
         - name: FEATURE_MEDIA_FILTER_SORT_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.sort.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_CATEGORY_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.category.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_MARKERS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.markers.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_EVENTS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.events.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_TAGS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.tags.enabled }}"
+        
 
         - name: MARKERS_NAME
           value: "{{ .Values.kerberoshub.frontend.markersName }}"
