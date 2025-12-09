@@ -181,7 +181,7 @@ kerberoshub:
   api:
     repository: uugai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.6.8"
+    tag: "v1.7.2"
     replicas: 2
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -265,7 +265,7 @@ kerberoshub:
   frontend:
     repository: uugai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.6.7"
+    tag: "v1.7.3"
     replicas: 2
     schema: "https"
     url: "yourdomain.com"
