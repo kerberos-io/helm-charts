@@ -2,9 +2,9 @@ name: Create a new release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'hub-*'
 
-jobs:
+jobs
   release:
     permissions:
       contents: write
