@@ -32,6 +32,8 @@ spec:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:
+        - name: LOG_LEVEL
+          value: "{{ .Values.kerberospipeline.thumbnail.logLevel }}"
         {{ if .Values.isPrivate }}
         - name: KERBEROS_PRIVATE_CLOUD
           value: "true"

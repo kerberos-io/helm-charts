@@ -4,7 +4,7 @@ metadata:
   name: hub-reactivate-subscription
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberoshub.reactivate.replicas }}
   selector:
     matchLabels:
       app: hub-reactivate-subscription
@@ -33,6 +33,8 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            - name: LOG_LEVEL
+              value: "{{ .Values.kerberoshub.reactivate.logLevel }}"
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
             - name: AWS_ACCESS_KEY_ID

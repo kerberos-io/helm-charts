@@ -573,7 +573,7 @@ kerberospipeline:
     repository: uugai/hub-pipeline-notification
     pullPolicy: IfNotPresent
     tag: "v1.0.20"
-    replicas: 1
+    replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -591,7 +591,7 @@ kerberospipeline:
     repository: uugai/hub-pipeline-notification-test
     pullPolicy: IfNotPresent
     tag: "v1.2.1"
-    replicas: 1
+    replicas: 1 # Number of pods for the service.
     resources:
       requests:
         memory: 10Mi
