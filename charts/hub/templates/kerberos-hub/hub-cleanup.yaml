@@ -4,7 +4,7 @@ metadata:
   name: hub-cleanup
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberoshub.cleanup.replicas }}
   selector:
     matchLabels:
       app: hub-cleanup
@@ -37,6 +37,8 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            - name: LOG_LEVEL
+              value: "{{ .Values.kerberoshub.cleanup.logLevel }}"
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
             - name: MAX_DAYS

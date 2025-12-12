@@ -39,6 +39,8 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        - name: LOG_LEVEL
+          value: "{{ .Values.kerberospipeline.event.logLevel }}"
         - name: READ_ONLY
           value: "{{ .Values.readonly }}"
         - name: CLOUD_PROVIDER

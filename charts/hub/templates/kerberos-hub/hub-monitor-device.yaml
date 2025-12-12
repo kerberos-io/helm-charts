@@ -4,7 +4,7 @@ metadata:
   name: hub-monitor-device
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.kerberoshub.monitordevice.replicas }}
   selector:
     matchLabels:
       app: hub-monitor-device
@@ -45,6 +45,8 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            - name: LOG_LEVEL
+              value: "{{ .Values.kerberoshub.monitordevice.logLevel }}"
             - name: READ_ONLY
               value: "{{ .Values.readonly }}"
             # Mail settings

@@ -152,6 +152,8 @@ spec:
               value: "{{ .Values.environment }}"
             - name: READ_ONLY
               value: "{{ .Values.readOnly }}"
+            - name: LOG_LEVEL
+              value: "{{ .Values.kerberoshub.api.logLevel }}"
             - name: SUPPORT_ENABLED
               value: "{{ .Values.kerberoshub.support.enabled }}"
             - name: CLOUD_API_URL
@@ -280,22 +282,6 @@ spec:
               value: "{{ .Values.kerberoshub.api.slack.hook }}"
             - name: SLACK_USERNAME
               value: "{{ .Values.kerberoshub.api.slack.username }}"
-
-            # Elastic search - Kibana
-            - name: LOGGING_ELASTICSEARCH
-              value: "{{ .Values.kerberoshub.api.elasticsearch.enabled }}"
-            - name: LOGGING_ELASTICSEARCH_PROTOCOL
-              value: "{{ .Values.kerberoshub.api.elasticsearch.protocol }}"
-            - name: LOGGING_ELASTICSEARCH_HOST
-              value: "{{ .Values.kerberoshub.api.elasticsearch.host }}"
-            - name: LOGGING_ELASTICSEARCH_PORT
-              value: "{{ .Values.kerberoshub.api.elasticsearch.port }}"
-            - name: LOGGING_ELASTICSEARCH_INDEX
-              value: "{{ .Values.kerberoshub.api.elasticsearch.index }}"
-            - name: LOGGING_ELASTICSEARCH_USERNAME
-              value: "{{ .Values.kerberoshub.api.elasticsearch.username }}"
-            - name: LOGGING_ELASTICSEARCH_PASSWORD
-              value: "{{ .Values.kerberoshub.api.elasticsearch.password }}"
 
             # Mail settings
             - name: MAIL_PROVIDER

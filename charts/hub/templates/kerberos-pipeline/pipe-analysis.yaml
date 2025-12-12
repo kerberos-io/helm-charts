@@ -37,6 +37,8 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        - name: LOG_LEVEL
+          value: "{{ .Values.kerberospipeline.analysis.logLevel }}"
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
         - name: QUEUE_SYSTEM

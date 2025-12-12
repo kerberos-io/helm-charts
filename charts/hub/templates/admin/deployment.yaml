@@ -26,6 +26,8 @@ spec:
               containerPort: 80
               protocol: TCP
           env:
+            - name: LOG_LEVEL
+              value: "{{ .Values.admin.logLevel }}"
             - name: API_URL
               value: "{{ .Values.kerberoshub.api.schema }}://{{ .Values.kerberoshub.api.url }}"
             - name: TITLE
