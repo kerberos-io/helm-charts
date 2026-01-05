@@ -149,7 +149,7 @@ kerberosvault:
 admin:
   repository: uugai/admin
   pullPolicy: IfNotPresent
-  tag: "v1.1.0"
+  tag: "v1.3.0"
   replicas: 2
   logLevel: "info" # possible values: trace, debug, info, warn, error
   resources:
