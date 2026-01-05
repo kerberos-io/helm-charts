@@ -20,6 +20,9 @@ spec:
       labels:
         app: pipe-sprite
     spec:
+      {{- if .Values.kerberoshub.serviceAccount.create }}
+      serviceAccountName: {{ .Values.kerberoshub.serviceAccount.name }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

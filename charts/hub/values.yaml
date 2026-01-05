@@ -149,7 +149,7 @@ kerberosvault:
 admin:
   repository: uugai/admin
   pullPolicy: IfNotPresent
-  tag: "v1.3.0"
+  tag: "v1.1.0"
   replicas: 2
   logLevel: "info" # possible values: trace, debug, info, warn, error
   resources:
@@ -179,6 +179,14 @@ kerberoshub:
   #  extraEnv:
   #    - name: HTTP_PROXY
   #      value: "custom_value"
+  serviceAccount:
+    # serviceAccount.create Enable creation of ServiceAccount
+    create: true
+    # If create is set to false, a name is not used in helm chart
+    name: ""
+    # additional ServiceAccount annotations
+    annotations: {}
+    labels: {}
   api:
     repository: uugai/hub-api
     pullPolicy: IfNotPresent
