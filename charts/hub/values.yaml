@@ -169,7 +169,6 @@ admin:
       cookieSecret: "generate-a-random-cookie-secret"
       organization: "github-organization"
       team: "github-team"
-
 ###########################################################################
 # Following are all the different deployments needed to make
 # Hub properly working.
@@ -180,9 +179,9 @@ kerberoshub:
   #    - name: HTTP_PROXY
   #      value: "custom_value"
   api:
-    repository: uugai/hub-api
+    repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.7.2"
+    tag: "v1.8.6"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
@@ -265,9 +264,9 @@ kerberoshub:
         clientVerificationId: "" # This is only required for SSO chaining.
         extraHeaders: []
   frontend:
-    repository: uugai/hub-frontend
+    repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.7.3"
+    tag: "v1.7.15"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     schema: "https"
@@ -386,57 +385,50 @@ kerberoshub:
     navigationLinkTitle5: ""
     navigationLinkUrl5: ""
     caseFilterAssigneesDefault: "false"
-
     # Enable or disable specific features and behaviours in the front-end
     # Features are grouped per section / page or functionality.
     features:
-
       # General
       darkMode: "true" # Enable or disable dark mode 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
-
       # Live view page
       liveview:
         paginationEnabled: "false" # Enable or disable pagination in live view 'true' or 'false'
         emptyByDefault: "false" # Show empty live view when there are no active devices 'true' or 'false'
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited
-        
       # Device page
       devices:
         hideAgent: "false" # Hide the 'add agent' button in the front-end
-
       # Media page
       media:
         filter:
-          date: 
+          date:
             enabled: "true" # Enable or disable date filter in media 'true' or 'false'
-          sites: 
+          sites:
             enabled: "true" # Enable or disable site filter in media 'true' or 'false'
-          groups: 
+          groups:
             enabled: "true" # Enable or disable group filter in media 'true' or 'false'
-          devices: 
+          devices:
             enabled: "true" # Enable or disable device filter in media 'true' or 'false'
-          objectDetection: 
+          objectDetection:
             enabled: "true" # Enable or disable object detection filter in media 'true' or 'false'
-          star: 
+          star:
             enabled: "true" # Enable or disable star filter in media 'true' or 'false'
-          region: 
+          region:
             enabled: "true" # Enable or disable region filter in media 'true' or 'false'
-          sort : 
+          sort:
             enabled: "true" # Enable or disable sort filter in media 'true' or 'false'
-          category: 
+          category:
             enabled: "true" # Enable or disable category filter in media 'true' or 'false'
-          markers: 
+          markers:
             enabled: "true" # Enable or disable markers filter in media 'true' or 'false'
-          events: 
+          events:
             enabled: "true" # Enable or disable events filter in media 'true' or 'false'
-          tags: 
+          tags:
             enabled: "true" # Enable or disable tags filter in media 'true' or 'false'
-
       # Floor-plan feature
       floorplan:
         enabled: "true" # Enable or disable floorplan feature 'true' or 'false'
-
         # Custom colors for floor-plans, update the colors of the corresponding device icons to match these
         # charts/hub/custom-layout/icons.js
         colorDeviceActive: "hsla(131, 31%, 52%, 1)"
@@ -448,15 +440,13 @@ kerberoshub:
         colorFloorPlanLabelText: "hsla(0, 0%, 100%, 1)"
         colorFloorPlanLabelBackground: "hsla(0, 0%, 0%, 0.8)"
         colorDeviceMarkerBorder: "hsla(0, 0%, 100%, 1)" # Border around the device marker circle on the map
-        colorTrackBox: "hsla(278, 30%, 48%, 1)"   # Boxes shown on the video
-        colorTrackBoxHover: "hsla(47, 86%, 47%, 1)"   # Boxes while hovering over the associated track
-        colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)"   # New box while drawing
-        colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)"   # Delete icon top right of the box while editing
-
+        colorTrackBox: "hsla(278, 30%, 48%, 1)" # Boxes shown on the video
+        colorTrackBoxHover: "hsla(47, 86%, 47%, 1)" # Boxes while hovering over the associated track
+        colorTrackBoxDrawing: "hsla(204, 100%, 50%, 1)" # New box while drawing
+        colorTrackBoxControlsDelete: "hsla(219, 100%, 94%, 1)" # Delete icon top right of the box while editing
       # Face redaction feature
       faceRedaction:
         enabled: "false" # Enable or disable face redaction 'true' or 'false'
-
   support:
     enabled: false
   oauth2Proxy:
@@ -499,7 +489,7 @@ kerberoshub:
   reactivate:
     repository: uugai/hub-reactivatesubscriptions
     pullPolicy: IfNotPresent
-    tag: "v1.0.2" 
+    tag: "v1.0.2"
     replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
@@ -519,7 +509,7 @@ kerberoshub:
   proxy:
     repository: uugai/hub-proxy
     pullPolicy: IfNotPresent
-    tag: "v1.0.0" 
+    tag: "v1.0.0"
     replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
@@ -542,18 +532,18 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   monitor:
-    repository: uugai/hub-pipeline-monitor
+    repository: ghcr.io/uug-ai/hub-pipeline-monitor
     pullPolicy: IfNotPresent
-    tag: "v1.3.5"
+    tag: "v1.3.9"
     replicas: 1 # Number of pods for the service.
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
   sequence:
-    repository: uugai/hub-pipeline-sequence
+    repository: ghcr.io/uug-ai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "v1.6.6"
+    tag: "v1.6.9"
     replicas: 1 # Number of pods for the service.
     resources:
       requests:
@@ -570,9 +560,9 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   notify:
-    repository: uugai/hub-pipeline-notification
+    repository: ghcr.io/uug-ai/hub-pipeline-notification
     pullPolicy: IfNotPresent
-    tag: "v1.0.20"
+    tag: "v1.1.5"
     replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
@@ -605,9 +595,9 @@ kerberospipeline:
         #    persistentVolumeClaim:
         #      claimName: custom-layout-claim
   analysis:
-    repository: uugai/hub-pipeline-analysis
+    repository: ghcr.io/uug-ai/hub-pipeline-analysis
     pullPolicy: IfNotPresent
-    tag: "v1.6.1"
+    tag: "v1.7.6"
     replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
@@ -615,9 +605,9 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   dominantColor:
-    repository: uugai/hub-pipeline-dominantcolors
+    repository: ghcr.io/uug-ai/hub-pipeline-dominantcolors
     pullPolicy: IfNotPresent
-    tag: "v1.2.0"
+    tag: "v2.0.2"
     replicas: 3 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn,
     resources:
@@ -628,9 +618,9 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   thumbnail:
-    repository: uugai/hub-pipeline-thumbnail
+    repository: ghcr.io/uug-ai/hub-pipeline-thumbnail
     pullPolicy: IfNotPresent
-    tag: "v1.2.1"
+    tag: "v1.3.1"
     replicas: 2 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     quality: "1" # 1 (best) - 31 (worst)
@@ -648,7 +638,7 @@ kerberospipeline:
   counting:
     repository: uugai/hub-pipeline-counting
     pullPolicy: IfNotPresent
-    tag: "v1.6.2"
+    tag: "v1.6.3"
     replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn,
     resources:
@@ -673,9 +663,9 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   export:
-    repository: uugai/hub-pipeline-export
+    repository: kerberos/pipe-export
     pullPolicy: IfNotPresent
-    tag: "v1.0.0"
+    tag: "1.0.6437127898"
     replicas: 2 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
