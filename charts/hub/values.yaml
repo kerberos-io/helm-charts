@@ -398,7 +398,7 @@ kerberoshub:
         attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>" # Map attribution
       # Live view page
       liveview:
-        defaultStreamMode: "sd" # Default stream mode 'sd', 'hd', 'webrtc'
+        defaultStreamMode: "sd" # Default stream mode 'sd' or 'hd' (will be migrated to 'preview' or 'live')
         paginationEnabled: "false" # Enable or disable pagination in live view 'true' or 'false'
         emptyByDefault: "false" # Show empty live view when there are no active devices 'true' or 'false'
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited
