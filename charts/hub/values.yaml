@@ -389,10 +389,16 @@ kerberoshub:
     # Features are grouped per section / page or functionality.
     features:
       # General
-      darkMode: "true" # Enable or disable dark mode 'true' or 'false'
+      darkModeEnabled: "true" # Enable or disable dark mode toggle 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
+      # Map tile configuration  
+      map:
+        tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode
+        tileUrlDark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" # Map tile URL for dark mode
+        attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>" # Map attribution
       # Live view page
       liveview:
+        defaultStreamMode: "sd" # Default stream mode 'sd', 'hd', 'webrtc'
         paginationEnabled: "false" # Enable or disable pagination in live view 'true' or 'false'
         emptyByDefault: "false" # Show empty live view when there are no active devices 'true' or 'false'
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited

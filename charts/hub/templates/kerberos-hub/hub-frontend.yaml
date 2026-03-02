@@ -334,11 +334,13 @@ spec:
 
         # features > general
         - name: FEATURE_DARK_MODE
-          value: "{{ .Values.kerberoshub.frontend.features.darkMode }}"
+          value: "{{ .Values.kerberoshub.frontend.features.darkModeEnabled }}"
         - name: FEATURE_LANDING_PAGE
           value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
 
         # features > liveview
+        - name: FEATURE_DEFAULT_STREAM_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.defaultStreamMode }}"
         - name: FEATURE_LIVEVIEW_PAGINATION_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationEnabled }}"
         - name: FEATURE_LIVEVIEW_EMPTY_BY_DEFAULT
@@ -352,7 +354,16 @@ spec:
 
         # features > floorplan
         - name: FEATURE_FLOORPLAN_ENABLED
-          value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
+          value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"
+
+        # features > map
+        - name: MAP_TILE_URL_LIGHT
+          value: "{{ .Values.kerberoshub.frontend.features.map.tileUrlLight }}"
+        - name: MAP_TILE_URL_DARK
+          value: "{{ .Values.kerberoshub.frontend.features.map.tileUrlDark }}"
+        - name: MAP_ATTRIBUTION
+          value: "{{ .Values.kerberoshub.frontend.features.map.attribution }}"
+
         - name: COLOR_TRACK_BOX
           value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBox }}"
         - name: COLOR_TRACK_BOX_HOVER
