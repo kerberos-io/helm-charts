@@ -209,6 +209,16 @@ kerberoshub:
     #    persistentVolumeClaim:
     #      claimName: custom-layout-claim
 
+    # Server-side TLS for hub-api itself (port 8081).
+    # When enabled, TLS_CERT_FILE and TLS_KEY_FILE are injected and
+    # the provided Kubernetes TLS secret is mounted read-only.
+    serverTLS:
+      enabled: false
+      secretName: ""
+      mountPath: "/etc/hub-api/tls"
+      certFile: "/etc/hub-api/tls/tls.crt"
+      keyFile: "/etc/hub-api/tls/tls.key"
+
     # When migrating to another url, this might help migrating.
     #legacyUrl: "api.legacy.yourdomain.com"
 

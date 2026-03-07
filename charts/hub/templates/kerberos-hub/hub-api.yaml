@@ -127,9 +127,17 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.api.volumes }}
+      {{- $serverTLS := .Values.kerberoshub.api.serverTLS }}
+      {{- if or .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) }}
       volumes:
+      {{- with .Values.kerberoshub.api.volumes }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and $serverTLS.enabled $serverTLS.secretName }}
+        - name: hub-api-server-tls
+          secret:
+            secretName: {{ $serverTLS.secretName }}
+      {{- end }}
       {{- end }}
       containers:
         - name: hub-api
@@ -142,10 +150,17 @@ spec:
           ports:
             - containerPort: 80
               name: http
-          {{- with .Values.kerberoshub.api.volumeMounts}}
+          {{- if or .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) }}
           volumeMounts:
+          {{- with .Values.kerberoshub.api.volumeMounts}}
             {{- toYaml . | nindent 12 }}
-          {{- end }}          
+          {{- end }}
+          {{- if and $serverTLS.enabled $serverTLS.secretName }}
+            - name: hub-api-server-tls
+              mountPath: {{ $serverTLS.mountPath }}
+              readOnly: true
+          {{- end }}
+          {{- end }}
           # Mongodb - loaded from ConfigMap
           envFrom:
             - configMapRef:
@@ -178,6 +193,12 @@ spec:
               value: "{{ .Values.kerberoshub.api.fallbackLanguage }}"
             - name: API_KEY
               value: "{{ .Values.kerberoshub.api.apiKey }}"
+            {{- if .Values.kerberoshub.api.serverTLS.enabled }}
+            - name: TLS_CERT_FILE
+              value: "{{ .Values.kerberoshub.api.serverTLS.certFile }}"
+            - name: TLS_KEY_FILE
+              value: "{{ .Values.kerberoshub.api.serverTLS.keyFile }}"
+            {{- end }}
 
             # Kerberos Hub
             - name: LICENSE_KEY
