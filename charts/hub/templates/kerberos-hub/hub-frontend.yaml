@@ -161,7 +161,7 @@ spec:
         app: hub-frontend
     spec:
       {{- if .Values.kerberoshub.serviceAccount.create }}
-      serviceAccountName: {{ .Values.kerberoshub.serviceAccount.name }}
+      serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
