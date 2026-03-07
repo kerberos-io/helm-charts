@@ -1,0 +1,23 @@
+{
+	"name": "go:1.25-bookworm",
+	"dockerFile": "Dockerfile",
+	"runArgs": [
+		"--name=helm-charts",
+		"--network=host",
+		 "--privileged"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"redhat.vscode-yaml",
+				"Tim-Koehler.helm-intellisense",
+				"ms-vscode.azurecli",
+				"ms-vscode-remote.remote-containers",
+				"GitHub.copilot",
+				"ms-kubernetes-tools.vscode-aks-tools",
+				"fabiospampinato.vscode-diff"
+			]
+		}
+	}
+}

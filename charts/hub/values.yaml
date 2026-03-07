@@ -169,6 +169,7 @@ admin:
       cookieSecret: "generate-a-random-cookie-secret"
       organization: "github-organization"
       team: "github-team"
+
 ###########################################################################
 # Following are all the different deployments needed to make
 # Hub properly working.
@@ -180,7 +181,7 @@ kerberoshub:
   #      value: "custom_value"
   serviceAccount:
     # serviceAccount.create Enable creation of ServiceAccount
-    create: true
+    create: false
     # If create is set to false, a name is not used in helm chart
     name: ""
     # additional ServiceAccount annotations
