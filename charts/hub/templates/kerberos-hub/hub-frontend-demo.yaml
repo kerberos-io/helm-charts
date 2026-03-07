@@ -255,6 +255,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.caseFilterAssigneesDefault }}"
 
         # features > general
+        - name: FEATURE_CASE_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.case.enabled }}"
         - name: FEATURE_DARK_MODE
           value: "{{ .Values.kerberoshub.frontend.features.darkMode }}"
         - name: FEATURE_LANDING_PAGE

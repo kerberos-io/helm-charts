@@ -215,6 +215,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.navigationLinkTitle5` | Custom navigation item (title 5) | `""` |
 | `kerberoshub.frontend.navigationLinkUrl5` | Custom navigation item (url 5) | `""` |
 | `kerberoshub.frontend.caseFilterAssigneesDefault` | Default assignee filter behavior for cases in the frontend. | `""` |
+| `kerberoshub.frontend.features.case.enabled` | Enable or disable the case feature in the frontend. | `""` |
 | `kerberoshub.frontend.features.darkModeEnabled` | Enable or disable dark mode in the frontend. | `""` |
 | `kerberoshub.frontend.features.landingPage` | Frontend landing page configuration. | `""` |
 | `kerberoshub.frontend.features.map.tileUrlLight` | Tile URL used by the map in light mode. | `""` |
