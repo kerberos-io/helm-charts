@@ -1,0 +1,22 @@
+{
+  "name": "helm-charts-bookworm",
+  "runArgs": [
+    "--name=kerberos-helm-charts",
+    "--network=host"
+  ],
+  "dockerFile": "Dockerfile",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "postCreateCommand": "helm version && kubectl version --client && yamllint --version"
+}
