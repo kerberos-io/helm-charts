@@ -181,7 +181,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.8.17"
+    tag: "v1.8.20"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
@@ -266,7 +266,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.8.4"
+    tag: "v1.8.11"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     schema: "https"
@@ -655,7 +655,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: ghcr.io/uug-ai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
-    tag: "v1.0.10"
+    tag: "v1.1.5"
     replicas: 5 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn,
     interval: "1" # Number of secondes between each thumbnail in the sprite
