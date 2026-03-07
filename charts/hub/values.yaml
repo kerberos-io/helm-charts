@@ -309,19 +309,6 @@ kerberoshub:
     #  - hosts:
     #      - "demo.yourdomain.com"
     #    secretName: kerberoshub-demo
-    mixpanel: # We can keep track logging in Mixpanel as well
-      apikey: "xxx"
-    sentry: # We can trace errors in Sentry
-      url: "https://xxx@sentry.io/xxx"
-    stripe: # We use stripe for billing, so it's possible to resell Kerberos Hub if agreed.
-      publicKey: ""
-    googlemaps: # Google maps is used inside the application to visualise cameras and sites.
-      apikey: "xxxx"
-    zendesk: # We can use different support tools, for now we use Zendesk but others can be integrated
-      url: "yourdomain.zendesk.com"
-    posthog: # Posthog is used for auditing and user interaction logging
-      key: "xxx"
-      url: "https://posthog.domain.com"
     # You can disable the Kerberos agent buttons, this make sense
     # in a white-label setup, or where you are managing the Kerberos Agents for your customers.
     hideAddAgent: "false"
@@ -408,6 +395,8 @@ kerberoshub:
     # Features are grouped per section / page or functionality.
     features:
       # General
+      case:
+        enabled: "true" # Enable or disable case management feature 'true' or 'false'
       darkModeEnabled: "true" # Enable or disable dark mode toggle 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
       # Map tile configuration  
@@ -472,6 +461,21 @@ kerberoshub:
       # Face redaction feature
       faceRedaction:
         enabled: "false" # Enable or disable face redaction 'true' or 'false'
+
+    # Optional integrations
+    mixpanel: # We can keep track logging in Mixpanel as well
+      apikey: "xxx"
+    sentry: # We can trace errors in Sentry
+      url: "https://xxx@sentry.io/xxx"
+    stripe: # We use stripe for billing, so it's possible to resell Kerberos Hub if agreed.
+      publicKey: ""
+    googlemaps: # Google maps is used inside the application to visualise cameras and sites.
+      apikey: "xxxx"
+    zendesk: # We can use different support tools, for now we use Zendesk but others can be integrated
+      url: "yourdomain.zendesk.com"
+    posthog: # Posthog is used for auditing and user interaction logging
+      key: "xxx"
+      url: "https://posthog.domain.com"
   support:
     enabled: false
   oauth2Proxy:
