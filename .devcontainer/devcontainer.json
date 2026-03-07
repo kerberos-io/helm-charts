@@ -1,22 +1,23 @@
 {
-  "name": "helm-charts-bookworm",
-  "runArgs": [
-    "--name=kerberos-helm-charts",
-    "--network=host"
-  ],
-  "dockerFile": "Dockerfile",
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "GitHub.copilot",
-        "ms-azuretools.vscode-docker",
-        "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "redhat.vscode-yaml"
-      ]
-    }
-  },
-  "postCreateCommand": "helm version && kubectl version --client && yamllint --version"
+	"name": "go:1.25-bookworm",
+	"dockerFile": "Dockerfile",
+	"runArgs": [
+		"--name=helm-charts",
+		"--network=host",
+		 "--privileged"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-kubernetes-tools.vscode-kubernetes-tools",
+				"redhat.vscode-yaml",
+				"Tim-Koehler.helm-intellisense",
+				"ms-vscode.azurecli",
+				"ms-vscode-remote.remote-containers",
+				"GitHub.copilot",
+				"ms-kubernetes-tools.vscode-aks-tools",
+				"fabiospampinato.vscode-diff"
+			]
+		}
+	}
 }
