@@ -395,10 +395,11 @@ kerberoshub:
     # Features are grouped per section / page or functionality.
     features:
       # General
-      case:
-        enabled: "true" # Enable or disable case management feature 'true' or 'false'
       darkModeEnabled: "true" # Enable or disable dark mode toggle 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
+      # Case management is a feature that allows you to create cases, and link recordings, devices, sites, groups, markers and events to those cases. 
+      case:
+        enabled: "true" # Enable or disable case management feature 'true' or 'false'
       # Map tile configuration  
       map:
         tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode
