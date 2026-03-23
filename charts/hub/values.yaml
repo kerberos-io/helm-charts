@@ -441,6 +441,12 @@ kerberoshub:
             enabled: "true" # Enable or disable events filter in media 'true' or 'false'
           tags:
             enabled: "true" # Enable or disable tags filter in media 'true' or 'false'
+          defaultView: "timeline" # Default view for media page 'timeline' or 'grid'
+      # Chart feature
+      chart:
+        colorChartSelectionFill: "rgba(132, 86, 159, 0.07)"
+        colorChartSelectionStroke: "rgba(132, 86, 159, 0.4)"
+        colorChartGridStroke: "rgba(0, 106, 255, 0.18)"
       # Floor-plan feature
       floorplan:
         enabled: "true" # Enable or disable floorplan feature 'true' or 'false'
