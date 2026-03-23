@@ -396,6 +396,14 @@ spec:
         - name: COLOR_DEVICE_MARKER_BORDER
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
 
+        # features > chart
+        - name: COLOR_CHART_SELECTION_FILL
+          value: "{{ .Values.kerberoshub.frontend.features.chart.colorChartSelectionFill }}"
+        - name: COLOR_CHART_SELECTION_STROKE
+          value: "{{ .Values.kerberoshub.frontend.features.chart.colorChartSelectionStroke }}"
+        - name: COLOR_CHART_GRID_STROKE
+          value: "{{ .Values.kerberoshub.frontend.features.chart.colorChartGridStroke }}"
+
         # features > face redaction 
         - name: FEATURE_FACE_REDACTION_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}" 
@@ -421,6 +429,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.category.enabled }}"
         - name: FEATURE_MEDIA_FILTER_MARKERS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.markers.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_DEFAULT_VIEW
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.defaultView }}"
         - name: FEATURE_MEDIA_FILTER_EVENTS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.events.enabled }}"
         - name: FEATURE_MEDIA_FILTER_TAGS_ENABLED
