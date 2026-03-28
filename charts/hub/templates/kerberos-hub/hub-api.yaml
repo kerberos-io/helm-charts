@@ -1,3 +1,4 @@
+{{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -390,3 +391,4 @@ spec:
               value: "{{ .Values.opentelemetry.routingEnabled }}"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "{{ .Values.opentelemetry.collector.endpoint }}"
+{{- end }}

@@ -1,4 +1,4 @@
-{{ if eq .Values.kerberospipeline.sprite.enabled true }}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) (eq .Values.kerberospipeline.sprite.enabled true) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

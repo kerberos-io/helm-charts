@@ -1,4 +1,5 @@
 
+{{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
 {{ if ne .Values.ingress "" }}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
 apiVersion: networking.k8s.io/v1

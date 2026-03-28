@@ -19,6 +19,13 @@ licenseServer:
 environment: "production"
 isPrivate: true # Set to 'true' if this is a private deployment.
 readOnly: false # Set to 'true' to halt all write operations to the database (e.g. migration, etc).
+
+# Deployment mode: all | pipeline | ui
+# - all: Hub services + pipeline + vault
+# - pipeline: pipeline only
+# - ui: Hub services only
+mode: "all"
+
 ###########################################################################
 # Global configuration
 ###########################################################################

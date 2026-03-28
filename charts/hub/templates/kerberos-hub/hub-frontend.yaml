@@ -1,3 +1,4 @@
+{{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -463,3 +464,4 @@ spec:
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}
         {{- end }}
+      {{- end }}
