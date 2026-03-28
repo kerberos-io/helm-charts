@@ -109,7 +109,6 @@ spec:
           value: "{{ .Values.opentelemetry.enabled }}"
         - name: OTEL_EXPORTED_OTLP_ROUTING_ENABLED
           value: "{{ .Values.opentelemetry.routingEnabled }}"
-{{- end }}
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: "{{ .Values.opentelemetry.collector.endpoint }}"
 ---
@@ -129,3 +128,4 @@ spec:
       protocol: TCP
   selector:
     app: pipe-notify-test
+{{- end }}
