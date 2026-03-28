@@ -20,6 +20,7 @@ environment: "production"
 isPrivate: true # Set to 'true' if this is a private deployment.
 readOnly: false # Set to 'true' to halt all write operations to the database (e.g. migration, etc).
 
+###################################################################
 # Deployment mode: all | pipeline | ui
 # - all: Hub services + pipeline + vault
 # - pipeline: pipeline only
@@ -207,6 +208,9 @@ kerberoshub:
       requests:
         memory: 100Mi
         cpu: 250m
+      limits:
+        memory: 100Mi
+        cpu: 250m
     # E-mail templates
     #volumeMounts:
     #  - name: custom-email-templates
@@ -299,6 +303,9 @@ kerberoshub:
     url: "yourdomain.com"
     resources:
       requests:
+        memory: 50Mi
+        cpu: 50m
+      limits:
         memory: 50Mi
         cpu: 50m
     # The front-end but in read-only mode
