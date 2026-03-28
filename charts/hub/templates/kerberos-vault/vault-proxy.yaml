@@ -1,3 +1,4 @@
+{{- if eq .Values.mode "all" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -62,3 +63,4 @@ spec:
       name: http
   selector:
     app: vault-proxy
+{{- end }}

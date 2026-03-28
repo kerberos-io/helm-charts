@@ -1,5 +1,5 @@
 # If .Values.kerberoshub.forwarder.enabled is set to true 
-{{- if .Values.kerberoshub.forwarder.enabled }}
+{{- if and (eq .Values.mode "all") .Values.kerberoshub.forwarder.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

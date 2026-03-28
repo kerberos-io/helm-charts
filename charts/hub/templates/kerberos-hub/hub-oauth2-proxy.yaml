@@ -1,4 +1,4 @@
-{{- if .Values.kerberoshub.oauth2Proxy.enabled -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.oauth2Proxy.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

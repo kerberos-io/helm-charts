@@ -43,6 +43,7 @@ Below all configuration options and parameters are listed.
 | `environment` | A colored banner will be shown on top of the application to illustrate a non-production environment: `staging`, `demo`, .. | `""` |
 | `isPrivate` | Global StorageClass for Persistent Volume(s) | `""` |
 | `readOnly` | This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline. | `""` |
+| `mode` | Deployment mode: `all`, `pipeline`, or `ui`. `all` renders everything, `pipeline` only pipeline services, `ui` only hub services. | `"all"` |
 | `global.imageRegistry` | Global container registry override used for all images. | `""` |
 | `ingress` | The ingress being used for `kerberoshub.api.url` and `kerberoshub.frontend.url`. | `""` |
 | `mongodb.host` | MongoDB hostname (`'mongodb:27017'`) or mongodb replicas (`'mongodb-0:27017,mongodb-1:27017'`). | `""` |

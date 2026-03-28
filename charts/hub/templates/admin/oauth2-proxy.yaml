@@ -1,4 +1,4 @@
-{{- if eq .Values.admin.oauth2Proxy.enabled true  }}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) (eq .Values.admin.oauth2Proxy.enabled true) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
