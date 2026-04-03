@@ -3,6 +3,17 @@ entries:
   hub:
   - apiVersion: v2
     appVersion: 3.3.0
+    created: "2026-04-03T07:55:20.122926811Z"
+    description: A Helm chart to install Kerberos Hub in Kubernetes
+    digest: c2c760c7095d29aef725892355fd598076e26cc58fc5d41a1ff06f10c84a6eb1
+    icon: https://doc.kerberos.io/images/kerberos-logo.svg
+    name: hub
+    type: application
+    urls:
+    - https://github.com/kerberos-io/helm-charts/releases/download/hub-0.103.0/hub-0.103.0.tgz
+    version: 0.103.0
+  - apiVersion: v2
+    appVersion: 3.3.0
     created: "2026-03-28T11:34:16.966461508Z"
     description: A Helm chart to install Kerberos Hub in Kubernetes
     digest: b0de4e99b07e3def246704fc24d64bae4fd9349b18f027c0ac3fa31f3b34970c
