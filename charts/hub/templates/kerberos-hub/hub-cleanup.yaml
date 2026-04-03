@@ -40,7 +40,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: mongodb-config
+          ports:
+            - containerPort: 8080
           env:
+            - name: MODE
+              value: "serve"
             - name: LOG_LEVEL
               value: "{{ .Values.kerberoshub.cleanup.logLevel }}"
             - name: READ_ONLY
@@ -50,4 +54,21 @@ spec:
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub-cleanup
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: hub-cleanup
+    service: hub-cleanup
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: hub-cleanup
 {{- end }}
