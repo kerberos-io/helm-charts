@@ -1,0 +1,18 @@
+{{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hub-cleanup-servicemonitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    service: hub-cleanup
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      service: hub-cleanup
+  endpoints:
+    - port: hub-metrics
+      interval: 15s
+      path: /metrics
+{{- end }}
