@@ -44,7 +44,7 @@ spec:
             - containerPort: 8080
           env:
             - name: MODE
-              value: "serve"
+              value: "{{ .Values.kerberoshub.cleanup.mode }}"
             - name: LOG_LEVEL
               value: "{{ .Values.kerberoshub.cleanup.logLevel }}"
             - name: READ_ONLY

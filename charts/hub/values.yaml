@@ -507,6 +507,7 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.4.8"
     replicas: 1 # Number of pods for the service.
+    mode: "serve" # The mode the cleanup service operates in.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     maxDays: "365" # The maximum number of days to keep orphaned recordings.
     resources:
