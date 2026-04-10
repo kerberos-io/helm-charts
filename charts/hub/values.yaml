@@ -507,9 +507,25 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.4.8"
     replicas: 1 # Number of pods for the service.
-    mode: "serve" # The mode the cleanup service operates in.
+    mode: "serve" # The mode the cleanup service operates in: serve | dry-run | version
     logLevel: "info" # possible values: trace, debug, info, warn, error
-    maxDays: "365" # The maximum number of days to keep orphaned recordings.
+    maxDays: "365" # Hard maximum age (days) for global orphan cleanup.
+    runIntervalMinutes: "10" # Minutes between cleanup cycles.
+    cleanupUsernames: "" # Optional comma-separated usernames to target.
+    batchSize: "250" # Delete batch size per collection operation.
+    userBatchSize: "100" # Users processed per in-memory batch.
+    maxUsersPerRun: "100" # Hard cap of users processed each run.
+    progressEvery: "100" # Print progress every N processed users.
+    activeUserRescanHours: "6" # Next scan delay for active subscriptions.
+    inactiveUserRescanHours: "24" # Next scan delay for inactive users.
+    readTimeoutSeconds: "30" # Read/find/count timeout.
+    deleteTimeoutSeconds: "120" # Delete timeout.
+    reportIncludeStats: "false" # Include richer dry-run/user summary stats.
+    dryRun: "false" # Force dry-run behavior without using mode=dry-run.
+    debug: "false" # Extra per-user/global debug logging.
+    globalPassEnabled: "false" # Enable post-user global cleanup pass.
+    globalPassIntervalHours: "0" # 0 = every cycle when enabled.
+    globalPassDeleteBudget: "0" # 0 = unlimited deletes during global pass.
     resources:
       requests:
         memory: 10Mi

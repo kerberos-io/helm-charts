@@ -265,8 +265,25 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.cleanup.pullPolicy` | The Docker registry pull policy. | `""` |
 | `kerberoshub.cleanup.tag` | The Docker image tag/version. | `""` |
 | `kerberoshub.cleanup.replicas` | Number of replicas for `kerberoshub.cleanup`. | `""` |
+| `kerberoshub.cleanup.mode` | Cleanup service mode: `serve`, `dry-run`, or `version`. | `""` |
 | `kerberoshub.cleanup.logLevel` | Log verbosity level for `kerberoshub.cleanup`. | `""` |
-| `kerberoshub.cleanup.maxDays` | Maximum age (in days) of data retained by the cleanup process. | `""` |
+| `kerberoshub.cleanup.maxDays` | Hard maximum age (in days) used by the optional global cleanup pass. | `""` |
+| `kerberoshub.cleanup.runIntervalMinutes` | Minutes between cleanup cycles. | `""` |
+| `kerberoshub.cleanup.cleanupUsernames` | Optional comma-separated usernames to target. | `""` |
+| `kerberoshub.cleanup.batchSize` | Delete batch size per collection operation. | `""` |
+| `kerberoshub.cleanup.userBatchSize` | Number of users processed per inner batch. | `""` |
+| `kerberoshub.cleanup.maxUsersPerRun` | Maximum users processed per run. | `""` |
+| `kerberoshub.cleanup.progressEvery` | Print progress every N processed users. | `""` |
+| `kerberoshub.cleanup.activeUserRescanHours` | Rescan interval for active users. | `""` |
+| `kerberoshub.cleanup.inactiveUserRescanHours` | Rescan interval for inactive users. | `""` |
+| `kerberoshub.cleanup.readTimeoutSeconds` | Timeout for MongoDB read operations. | `""` |
+| `kerberoshub.cleanup.deleteTimeoutSeconds` | Timeout for delete operations. | `""` |
+| `kerberoshub.cleanup.reportIncludeStats` | Include richer per-user dry-run summary stats. | `""` |
+| `kerberoshub.cleanup.dryRun` | Force dry-run behavior through env var. | `""` |
+| `kerberoshub.cleanup.debug` | Enable extra cleanup debug logging. | `""` |
+| `kerberoshub.cleanup.globalPassEnabled` | Enable optional global orphan cleanup pass. | `""` |
+| `kerberoshub.cleanup.globalPassIntervalHours` | Minimum hours between global cleanup passes. | `""` |
+| `kerberoshub.cleanup.globalPassDeleteBudget` | Max documents deleted during a global pass. | `""` |
 | `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `""` |
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `""` |
 | `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `""` |
