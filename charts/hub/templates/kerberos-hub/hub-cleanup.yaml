@@ -47,10 +47,42 @@ spec:
               value: "{{ .Values.kerberoshub.cleanup.mode }}"
             - name: LOG_LEVEL
               value: "{{ .Values.kerberoshub.cleanup.logLevel }}"
+            - name: RUN_INTERVAL_MINUTES
+              value: "{{ .Values.kerberoshub.cleanup.runIntervalMinutes }}"
+            - name: CLEANUP_USERNAMES
+              value: "{{ .Values.kerberoshub.cleanup.cleanupUsernames }}"
             - name: READ_ONLY
-              value: "{{ .Values.readonly }}"
+              value: "{{ .Values.readOnly }}"
             - name: MAX_DAYS
               value: "{{ .Values.kerberoshub.cleanup.maxDays }}"
+            - name: BATCH_SIZE
+              value: "{{ .Values.kerberoshub.cleanup.batchSize }}"
+            - name: USER_BATCH_SIZE
+              value: "{{ .Values.kerberoshub.cleanup.userBatchSize }}"
+            - name: MAX_USERS_PER_RUN
+              value: "{{ .Values.kerberoshub.cleanup.maxUsersPerRun }}"
+            - name: PROGRESS_EVERY
+              value: "{{ .Values.kerberoshub.cleanup.progressEvery }}"
+            - name: ACTIVE_USER_RESCAN_HOURS
+              value: "{{ .Values.kerberoshub.cleanup.activeUserRescanHours }}"
+            - name: INACTIVE_USER_RESCAN_HOURS
+              value: "{{ .Values.kerberoshub.cleanup.inactiveUserRescanHours }}"
+            - name: READ_TIMEOUT_SECONDS
+              value: "{{ .Values.kerberoshub.cleanup.readTimeoutSeconds }}"
+            - name: DELETE_TIMEOUT_SECONDS
+              value: "{{ .Values.kerberoshub.cleanup.deleteTimeoutSeconds }}"
+            - name: REPORT_INCLUDE_STATS
+              value: "{{ .Values.kerberoshub.cleanup.reportIncludeStats }}"
+            - name: DRY_RUN
+              value: "{{ .Values.kerberoshub.cleanup.dryRun }}"
+            - name: DEBUG
+              value: "{{ .Values.kerberoshub.cleanup.debug }}"
+            - name: GLOBAL_PASS_ENABLED
+              value: "{{ .Values.kerberoshub.cleanup.globalPassEnabled }}"
+            - name: GLOBAL_PASS_INTERVAL_HOURS
+              value: "{{ .Values.kerberoshub.cleanup.globalPassIntervalHours }}"
+            - name: GLOBAL_PASS_DELETE_BUDGET
+              value: "{{ .Values.kerberoshub.cleanup.globalPassDeleteBudget }}"
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}
