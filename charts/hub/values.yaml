@@ -195,7 +195,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.8.25"
+    tag: "v1.9.1"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
@@ -292,7 +292,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.8.23"
+    tag: "v1.8.30"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     schema: "https"
@@ -505,7 +505,7 @@ kerberoshub:
   cleanup:
     repository: ghcr.io/uug-ai/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "v1.4.8"
+    tag: "v1.4.13"
     replicas: 1 # Number of pods for the service.
     mode: "serve" # The mode the cleanup service operates in: serve | dry-run | version
     logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -605,7 +605,7 @@ kerberospipeline:
   sequence:
     repository: ghcr.io/uug-ai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "v1.6.14"
+    tag: "v1.6.15"
     replicas: 1 # Number of pods for the service.
     resources:
       requests:
