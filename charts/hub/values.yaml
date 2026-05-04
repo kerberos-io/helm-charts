@@ -195,7 +195,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.9.1"
+    tag: "v1.9.8"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
@@ -292,7 +292,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.8.30"
+    tag: "v1.9.11"
     replicas: 2
     logLevel: "info" # possible values: trace, debug, info, warn, error
     schema: "https"
@@ -605,7 +605,7 @@ kerberospipeline:
   sequence:
     repository: ghcr.io/uug-ai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "v1.6.15"
+    tag: "v1.6.18"
     replicas: 1 # Number of pods for the service.
     resources:
       requests:
@@ -624,7 +624,7 @@ kerberospipeline:
   notify:
     repository: ghcr.io/uug-ai/hub-pipeline-notification
     pullPolicy: IfNotPresent
-    tag: "v1.3.6"
+    tag: "v1.3.9"
     replicas: 1 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
@@ -727,7 +727,7 @@ kerberospipeline:
   export:
     repository: ghcr.io/uug-ai/hub-pipeline-export
     pullPolicy: IfNotPresent
-    tag: "v1.2.1"
+    tag: "v1.2.4"
     replicas: 2 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
