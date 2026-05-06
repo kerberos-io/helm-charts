@@ -730,6 +730,14 @@ kerberospipeline:
     tag: "v1.2.4"
     replicas: 2 # Number of pods for the service.
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    # playerAssetsPath: "/custom/player-assets/" # Path to custom player.html template (overrides the embedded default)
+    # volumeMounts:
+    #   - name: custom-player-assets
+    #     mountPath: /custom/player-assets
+    # volumes:
+    #   - name: custom-player-assets
+    #     configMap:
+    #       name: custom-player-html
     resources:
       requests:
         memory: 10Mi
