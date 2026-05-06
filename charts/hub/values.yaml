@@ -410,6 +410,9 @@ kerberoshub:
       # Case management is a feature that allows you to create cases, and link recordings, devices, sites, groups, markers and events to those cases. 
       case:
         enabled: "true" # Enable or disable case management feature 'true' or 'false'
+      # Workflows allow you to define automated processes and actions in the front-end.
+      workflows:
+        enabled: "false" # Enable or disable workflows feature 'true' or 'false'
       # Map tile configuration  
       map:
         tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode

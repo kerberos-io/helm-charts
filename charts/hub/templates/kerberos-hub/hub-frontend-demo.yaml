@@ -258,6 +258,8 @@ spec:
         # features > general
         - name: FEATURE_CASE_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.case.enabled }}"
+        - name: FEATURE_WORKFLOWS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.workflows.enabled }}"
         - name: FEATURE_DARK_MODE
           value: "{{ .Values.kerberoshub.frontend.features.darkMode }}"
         - name: FEATURE_LANDING_PAGE
