@@ -92,6 +92,8 @@ spec:
           value: "{{ .Values.email.from }}"
         - name: EMAIL_FROM_DISPLAYNAME
           value: "{{ .Values.email.displayName }}"
+        - name: PUBLIC_URL
+          value: "{{ .Values.kerberoshub.frontend.schema }}://{{ .Values.kerberoshub.frontend.url }}"
           
         # Mail templates 
         - name: DETECT_TEMPLATE

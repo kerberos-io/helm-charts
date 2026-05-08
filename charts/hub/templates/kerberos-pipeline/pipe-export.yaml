@@ -29,6 +29,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.export.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-export
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.export.repository }}:{{ .Values.kerberospipeline.export.tag }}"
@@ -37,12 +41,20 @@ spec:
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
+        {{- with .Values.kerberospipeline.export.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         envFrom:
         - configMapRef:
             name: mongodb-config
         env:
         - name: LOG_LEVEL
           value: "{{ .Values.kerberospipeline.export.logLevel }}"
+        {{- if .Values.kerberospipeline.export.playerAssetsPath }}
+        - name: PLAYER_ASSETS_PATH
+          value: "{{ .Values.kerberospipeline.export.playerAssetsPath }}"
+        {{- end }}
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
         - name: QUEUE_SYSTEM
