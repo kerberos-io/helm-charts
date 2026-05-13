@@ -1,0 +1,102 @@
+{{- if or (eq .Values.mode "all") (eq .Values.mode "pipeline") -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipe-redaction
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.kerberospipeline.redaction.replicas }}
+  selector:
+    matchLabels:
+      app: pipe-redaction
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: pipe-redaction
+    spec:
+      {{- if .Values.kerberoshub.serviceAccount.create }}
+      serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: pipe-redaction
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.redaction.repository }}:{{ .Values.kerberospipeline.redaction.tag }}"
+        imagePullPolicy: {{ .Values.kerberospipeline.redaction.pullPolicy }}
+        {{- with .Values.kerberospipeline.redaction.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        env:
+        - name: LOG_LEVEL
+          value: "{{ .Values.kerberospipeline.redaction.logLevel }}"
+        - name: CLOUD_PROVIDER
+          value: "{{ .Values.cloudProvider }}"
+        - name: QUEUE_SYSTEM
+          value: "{{ .Values.queueProvider }}"
+
+        # Kafka settings
+        - name: KAFKA_BROKER
+          value: "{{ .Values.kafka.broker }}"
+        - name: KAFKA_USERNAME
+          value: "{{ .Values.kafka.username }}"
+        - name: KAFKA_PASSWORD
+          value: "{{ .Values.kafka.password }}"
+        - name: KAFKA_MECHANISM
+          value: "{{ .Values.kafka.mechanism }}"
+        - name: KAFKA_SECURITY
+          value: "{{ .Values.kafka.security }}"
+
+        # RabbitMQ settings
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.rabbitmq.host }}"
+        - name: RABBITMQ_EXCHANGE
+          value: "{{ .Values.rabbitmq.exchange }}"
+        - name: RABBITMQ_USERNAME
+          value: "{{ .Values.rabbitmq.username }}"
+        - name: RABBITMQ_PASSWORD
+          value: "{{ .Values.rabbitmq.password }}"
+
+        # Kerberos Vault (used to download the source media and upload the redacted artifact).
+        - name: KERBEROS_STORAGE_URI
+          value: "{{ .Values.kerberosvault.uri }}"
+        - name: KERBEROS_STORAGE_PROVIDER
+          value: "{{ .Values.kerberosvault.provider }}"
+        - name: KERBEROS_STORAGE_ACCESS_KEY
+          value: "{{ .Values.kerberosvault.accesskey }}"
+        - name: KERBEROS_STORAGE_SECRET
+          value: "{{ .Values.kerberosvault.secretkey }}"
+
+        # Open Telemetry tracing
+        - name: OTEL_EXPORTED_OTLP_ENABLED
+          value: "{{ .Values.opentelemetry.enabled }}"
+        - name: OTEL_EXPORTED_OTLP_ROUTING_ENABLED
+          value: "{{ .Values.opentelemetry.routingEnabled }}"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "{{ .Values.opentelemetry.collector.endpoint }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipe-redaction
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: pipe-redaction
+    service: pipe
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: pipe-redaction
+{{- end }}
