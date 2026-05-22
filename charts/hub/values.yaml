@@ -548,7 +548,7 @@ kerberoshub:
     # negative value) to keep tasks without an explicit retention forever.
     # Tasks with `legal_hold=true` are never deleted. Must match the value
     # used by `kerberoshub.api.defaultTaskRetentionDays`.
-    defaultTaskRetentionDays: "365"
+    defaultTaskRetentionDays: "0"
     resources:
       requests:
         memory: 10Mi
