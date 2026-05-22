@@ -234,6 +234,13 @@ kerberoshub:
     # Admin API's are made available for automation of Kerberos Hub.
     # To access those API's (e.g. creation of owner users), an API key needs to be provided.
     apiKey: "a-random-admin-api-key"
+    # Default retention (in days) applied to tasks that do not have an
+    # explicit `retention_days` set. New tasks created without a custom
+    # retention are stamped with this value. Set to "0" (or a negative
+    # value) to disable the default retention (tasks are kept indefinitely
+    # unless an explicit value is provided). Must match the value used by
+    # `kerberoshub.cleanup.defaultTaskRetentionDays`.
+    defaultTaskRetentionDays: "0"
     ## Certificates
     tls:
       - hosts:
@@ -407,6 +414,12 @@ kerberoshub:
       # General
       darkModeEnabled: "true" # Enable or disable dark mode toggle 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
+      # Internationalization (i18n): controls the runtime language behaviour
+      # of the front-end. When `enabled` is "false" the language switcher is
+      # hidden and `defaultLanguage` is always forced; users cannot change it.
+      i18n:
+        enabled: "true" # Enable or disable the language switcher 'true' or 'false'
+        defaultLanguage: "en" # Default language code: en, nl, pl, tr, fr, sv, de
       # Case management is a feature that allows you to create cases, and link recordings, devices, sites, groups, markers and events to those cases. 
       case:
         enabled: "true" # Enable or disable case management feature 'true' or 'false'
@@ -529,6 +542,13 @@ kerberoshub:
     globalPassEnabled: "false" # Enable post-user global cleanup pass.
     globalPassIntervalHours: "0" # 0 = every cycle when enabled.
     globalPassDeleteBudget: "0" # 0 = unlimited deletes during global pass.
+    # Default retention (in days) applied to tasks without an explicit
+    # `retention_days`. Tasks older than this (anchored on `creation_date`)
+    # are deleted along with their `case_media` rows. Set to "0" (or a
+    # negative value) to keep tasks without an explicit retention forever.
+    # Tasks with `legal_hold=true` are never deleted. Must match the value
+    # used by `kerberoshub.api.defaultTaskRetentionDays`.
+    defaultTaskRetentionDays: "0"
     resources:
       requests:
         memory: 10Mi

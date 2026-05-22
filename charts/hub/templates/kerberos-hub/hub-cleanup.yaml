@@ -83,6 +83,8 @@ spec:
               value: "{{ .Values.kerberoshub.cleanup.globalPassIntervalHours }}"
             - name: GLOBAL_PASS_DELETE_BUDGET
               value: "{{ .Values.kerberoshub.cleanup.globalPassDeleteBudget }}"
+            - name: DEFAULT_TASK_RETENTION_DAYS
+              value: "{{ .Values.kerberoshub.cleanup.defaultTaskRetentionDays }}"
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}
