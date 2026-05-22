@@ -337,6 +337,8 @@ spec:
               value: "{{ .Values.email.templates.assignTask }}"
             - name: ASSIGN_TASK_TITLE
               value: "{{ .Values.email.templates.assignTaskTitle }}"
+            - name: DEFAULT_TASK_RETENTION_DAYS
+              value: "{{ .Values.kerberoshub.api.defaultTaskRetentionDays }}"
 
             # SMTP
             - name: SMTP_SERVER

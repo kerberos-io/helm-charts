@@ -346,6 +346,12 @@ spec:
         - name: FEATURE_LANDING_PAGE
           value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
 
+        # features > internationalization (i18n)
+        - name: FEATURE_I18N_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.i18n.enabled }}"
+        - name: DEFAULT_LANGUAGE
+          value: "{{ .Values.kerberoshub.frontend.features.i18n.defaultLanguage }}"
+
         # features > liveview
         - name: FEATURE_DEFAULT_STREAM_MODE
           value: "{{ .Values.kerberoshub.frontend.features.liveview.defaultStreamMode }}"
