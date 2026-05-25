@@ -37,114 +37,117 @@ Below all configuration options and parameters are listed.
 
 | Name                                        | Description                                                                                                                | Value |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----- |
-| `license` | The license key you received from support@kerberos.io. If not available request one. | `""` |
+| `license` | The license key you received from support@kerberos.io. If not available request one. | `"L/+DAwEBB2xpY2Vuc2UB/4QAAQIBB1BheWxvYWQBCgABCVNpZ25hdHVyZQEKAAAA/gMk/4QB/gEZ/8sQACxnaXRodWIuY29tL3V1Zy1haS9odWItbGljZW5zZS9tb2RlbHMuTGljZW5zZX8DAQEHTGljZW5zZQH/gAABDAECSWQB/4IAAQNLZXkBDAABB0NvbXBhbnkBDAABB0V4cFRpbWUBBAABBERheXMBBAABB0NhbWVyYXMBBAABBVNpdGVzAQQAAQZWYXVsdHMBBAABCk1lZGlhTGltaXQBBAABCVBlcnBldHVhbAECAAEGQWN0aXZlAQIAAQlJcEFkZHJlc3MBDAAAABj/gQEBAQhPYmplY3RJRAH/ggABBgEYAAAy/4AvAQwAAAAAAAAAAAAAAAACDGZyZWUtbGljZW5zZQH81iZi6gH+AtoBEAEUARQDAQAB/gIAfeXxQb6kaPfAgOWeSAE6qEiQviFD6sciNmNfMel1mEL53FeV0GQe4cYBip9wyJag35az8A1yppxSymZD5V4my2FckyN2zmEW4E2sO/v+8eKepiAGYEzrKtfNCLxdWLmrHd0zjYQ3qk+PNfoPyzCOefeulw3aFsqBlzg9wDkF8cRx6tUW0qNTzki6sFGOuLoxS49cWqsftAvZmt+CRWa8u0VArIAjOpywN0RIZCkEYzp5RYF3LSVyWYEyvVhjE19DDnevzpJyCHRsIHTRcpTQkhboeapOdlEz8cx+PaOvxktN8hBWceTAH+nw96FARG7y6Cpjw3xo+NV1xb0tvRXGaGoK77JnErKLhd/haXji98rGvMakDt18WSbQfTVS84+Fw+/gKGsW3uS3fROAaZw1kZj4PgsEPZDvbVkCVyuS0O87UoYqpxH8S4by8cTF3wDP7FwyIRZbEbYjN2wzHSmlADYOBtdsdb1VGm7wvtB85vML9n7ZSlIpJdqfci06mGks102mDyG2LRMhUEvpUW3D/weErIvj2WiAwf6r0EUj+LO8VmAsYkME9da7FXEN6Vg/5f1u485LOpYki332RaDOhDn2eMG9DVb/HnmQSFagX+XXc/QwfsWiehCgKYGk4jQpyklTqoGu8BAt6Sm8CaoH8ngZ3cHLQT5DcZElV36/N/wA"` |
 | `licenseServer.url` | The license server for validating the license of your Kerberos Hub, by default `'"https://license.kerberos.io/verify"'`. | `""` |
 | `licenseServer.token` | The license server API token to sign the license validation by default `'214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM'`. | `""` |
-| `environment` | A colored banner will be shown on top of the application to illustrate a non-production environment: `staging`, `demo`, .. | `""` |
-| `isPrivate` | Global StorageClass for Persistent Volume(s) | `""` |
-| `readOnly` | This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline. | `""` |
+| `environment` | A colored banner will be shown on top of the application to illustrate a non-production environment: `staging`, `demo`, .. | `"production"` |
+| `isPrivate` | Global StorageClass for Persistent Volume(s) | `true` |
+| `readOnly` | This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline. | `false` |
 | `mode` | Deployment mode: `all`, `pipeline`, or `ui`. `all` renders everything, `pipeline` only pipeline services, `ui` only hub services. | `"all"` |
 | `global.imageRegistry` | Global container registry override used for all images. | `""` |
-| `ingress` | The ingress being used for `kerberoshub.api.url` and `kerberoshub.frontend.url`. | `""` |
-| `mongodb.host` | MongoDB hostname (`'mongodb:27017'`) or mongodb replicas (`'mongodb-0:27017,mongodb-1:27017'`). | `""` |
-| `mongodb.adminDatabase` | MongoDB admin database, this is named `admin` by default. | `""` |
-| `mongodb.authenticationMechanism` | MongoDB authentication mechanism (for example `SCRAM-SHA-256`). | `""` |
-| `mongodb.username` | MongoDB user account, we are using in the hub installation `'root'`. | `""` |
-| `mongodb.password` | MongoDB user password, by default `'yourmongodbpassword'` | `""` |
-| `mongodb.retryWrites` | Enable or disable MongoDB retryable writes. | `""` |
-| `mqtt.host` | MQTT (Vernemq) hostname. | `""` |
-| `mqtt.port` | MQTT (Vernemq) port for WSS (secure sockets), by default `'8443'`. | `""` |
-| `mqtt.protocol` | MQTT (Vernemq) protocol, by default `'wss'`. | `""` |
-| `mqtt.username` | MQTT (Vernemq) username, by default `'yourusername'`. | `""` |
-| `mqtt.password` | MQTT (Vernemq) password, by default `'yourpassword'`. | `""` |
+| `ingress` | The ingress being used for `kerberoshub.api.url` and `kerberoshub.frontend.url`. | `"nginx"` |
+| `mongodb.host` | MongoDB hostname (`'mongodb:27017'`) or mongodb replicas (`'mongodb-0:27017,mongodb-1:27017'`). | `"mongodb.mongodb"` |
+| `mongodb.adminDatabase` | MongoDB admin database, this is named `admin` by default. | `"admin"` |
+| `mongodb.authenticationMechanism` | MongoDB authentication mechanism (for example `SCRAM-SHA-256`). | `"SCRAM-SHA-256"` |
+| `mongodb.username` | MongoDB user account, we are using in the hub installation `'root'`. | `"yourusername"` |
+| `mongodb.password` | MongoDB user password, by default `'yourmongodbpassword'` | `"yourpassword"` |
+| `mongodb.retryWrites` | Enable or disable MongoDB retryable writes. | `"true"` |
+| `mqtt.host` | MQTT (Vernemq) hostname. | `"mqtt.yourdomain.com"` |
+| `mqtt.port` | MQTT (Vernemq) port for WSS (secure sockets), by default `'8443'`. | `"8443"` |
+| `mqtt.protocol` | MQTT (Vernemq) protocol, by default `'wss'`. | `"wss"` |
+| `mqtt.username` | MQTT (Vernemq) username, by default `'yourusername'`. | `"yourusername"` |
+| `mqtt.password` | MQTT (Vernemq) password, by default `'yourpassword'`. | `"yourpassword"` |
 | `mqtt.legacy.host` | Legacy MQTT broker host used for backward-compatible clients. | `""` |
 | `mqtt.legacy.port` | Legacy MQTT broker port used for backward-compatible clients. | `""` |
-| `queueProvider` | The queue we are using for the [pipeline](https://doc.kerberos.io/hub/pipeline/): 'SQS', 'KAFKA' or `RABBITMQ`. | `""` |
-| `queueName` | The event queue which is propagating messages in the [Kerberos Hub pipeline](https://doc.kerberos.io/hub/pipeline/). | `""` |
-| `rabbitmq.host` | RabbitMQ host, by default `'rabbitmq.yourdomain.com:5671'` | `""` |
-| `rabbitmq.username` | RabbitMQ username, by default `'yourusername'` | `""` |
-| `rabbitmq.password` | RabbitMQ password, by default `'yourpassword'` | `""` |
+| `queueProvider` | The queue we are using for the [pipeline](https://doc.kerberos.io/hub/pipeline/): 'SQS', 'KAFKA' or `RABBITMQ`. | `"RABBITMQ"` |
+| `queueName` | The event queue which is propagating messages in the [Kerberos Hub pipeline](https://doc.kerberos.io/hub/pipeline/). | `"kcloud-event-queue"` |
+| `rabbitmq.host` | RabbitMQ host, by default `'rabbitmq.yourdomain.com:5671'` | `"rabbitmq.rabbitmq:5672"` |
+| `rabbitmq.username` | RabbitMQ username, by default `'yourusername'` | `"yourusername"` |
+| `rabbitmq.password` | RabbitMQ password, by default `'yourpassword'` | `"yourpassword"` |
 | `rabbitmq.exchange` | RabbitMQ exchange, by default `''` | `""` |
-| `kafka.broker` | Kafka brokers, by default `'kafka1.yourdomain.com:9094,kafka2.yourdomain.com:9094'` | `""` |
-| `kafka.username` | Kafka username, by default `'yourusername'` | `""` |
-| `kafka.password` | Kafka password, by default `'yourpassword'` | `""` |
-| `kafka.mechanism` | Kafka mechanism, by default `'PLAIN'` | `""` |
-| `kafka.security` | Kafka security, by default `'SASL_PLAINTEXT'` | `""` |
-| `turn.host` | TURN/STUN hostname, by default `'turn:turn.yourdomain.com:8443'` | `""` |
-| `turn.username` | TURN/STUN username, by default `'username1'` | `""` |
-| `turn.password` | TURN/STUN password, by default `'password1'` | `""` |
-| `opentelemetry.enabled` | Enable or disable OpenTelemetry instrumentation. | `""` |
-| `opentelemetry.routingEnabled` | Enable or disable OpenTelemetry routing/export behavior. | `""` |
-| `opentelemetry.collector.endpoint` | OpenTelemetry collector endpoint used for trace export. | `""` |
-| `openai.enabled` | Enable or disable OpenAI-backed semantic features. | `""` |
-| `openai.apikey` | OpenAI API key used when OpenAI integration is enabled. | `""` |
-| `kerberosvault.uri` | The default Kerberos Vault uri (you can add multiple within the app), by default `'https://api.storage.yourdomain.com'` | `""` |
-| `kerberosvault.provider` | The default Kerberos Vault provider`'a-provider'` | `""` |
-| `kerberosvault.accesskey` | The default Kerberos Vault access key, by default `'xxx'` | `""` |
-| `kerberosvault.secretkey` | The default Kerberos Vault secret key, by default `'xxx'` | `""` |
-| `kerberosvault.archive.provider` | When a task is created, the relevant recording is moved to this provider `'an-archive-provider'` | `""` |
-| `kerberosvault.archive.accesskey` | When a task is created, the relevant recording is moved to another provider, using this access key `'xxx'` | `""` |
-| `kerberosvault.archive.secretkey` | When a task is created, the relevant recording is moved to another provider, using this secret key`'xxx'` | `""` |
-| `kerberosvault.thumbnail.provider` | Configuration value for `kerberosvault.thumbnail.provider`. | `""` |
-| `kerberosvault.thumbnail.accessKey` | Access key for `kerberosvault.thumbnail`. | `""` |
-| `kerberosvault.thumbnail.secretKey` | Secret key for `kerberosvault.thumbnail`. | `""` |
-| `kerberosvault.sprite.provider` | Configuration value for `kerberosvault.sprite.provider`. | `""` |
-| `kerberosvault.sprite.accessKey` | Access key for `kerberosvault.sprite`. | `""` |
-| `kerberosvault.sprite.secretKey` | Secret key for `kerberosvault.sprite`. | `""` |
-| `admin.repository` | Container image repository for `admin`. | `""` |
-| `admin.pullPolicy` | Image pull policy for `admin`. | `""` |
-| `admin.tag` | Container image tag/version for `admin`. | `""` |
-| `admin.replicas` | Number of replicas for `admin`. | `""` |
-| `admin.logLevel` | Log verbosity level for `admin`. | `""` |
-| `admin.resources.requests.memory` | Memory request for `admin`. | `""` |
-| `admin.resources.requests.cpu` | CPU request for `admin`. | `""` |
-| `admin.url` | URL for `admin`. | `""` |
+| `kafka.broker` | Kafka brokers, by default `'kafka1.yourdomain.com:9094,kafka2.yourdomain.com:9094'` | `"kafka1.yourdomain.com:9094"` |
+| `kafka.username` | Kafka username, by default `'yourusername'` | `"yourusername"` |
+| `kafka.password` | Kafka password, by default `'yourpassword'` | `"yourpassword"` |
+| `kafka.mechanism` | Kafka mechanism, by default `'PLAIN'` | `"PLAIN"` |
+| `kafka.security` | Kafka security, by default `'SASL_PLAINTEXT'` | `"SASL_PLAINTEXT"` |
+| `turn.host` | TURN/STUN hostname, by default `'turn:turn.yourdomain.com:8443'` | `"turn:turn.yourdomain.com:8443"` |
+| `turn.username` | TURN/STUN username, by default `'username1'` | `"username1"` |
+| `turn.password` | TURN/STUN password, by default `'password1'` | `"password1"` |
+| `opentelemetry.enabled` | Enable or disable OpenTelemetry instrumentation. | `false` |
+| `opentelemetry.routingEnabled` | Enable or disable OpenTelemetry routing/export behavior. | `false` |
+| `opentelemetry.collector.endpoint` | OpenTelemetry collector endpoint used for trace export. | `"http://otel-collector:4317"` |
+| `openai.enabled` | Enable or disable OpenAI-backed semantic features. | `false` |
+| `openai.apikey` | OpenAI API key used when OpenAI integration is enabled. | `"xxx"` |
+| `kerberosvault.uri` | The default Kerberos Vault uri (you can add multiple within the app), by default `'https://api.storage.yourdomain.com'` | `"https://api.vault.yourdomain.com"` |
+| `kerberosvault.provider` | The default Kerberos Vault provider`'a-provider'` | `"a-provider"` |
+| `kerberosvault.accesskey` | The default Kerberos Vault access key, by default `'xxx'` | `"xxx"` |
+| `kerberosvault.secretkey` | The default Kerberos Vault secret key, by default `'xxx'` | `"xxx"` |
+| `kerberosvault.archive.provider` | When a task is created, the relevant recording is moved to this provider `'an-archive-provider'` | `"an-archive-provider"` |
+| `kerberosvault.archive.accesskey` | When a task is created, the relevant recording is moved to another provider, using this access key `'xxx'` | `"xxx"` |
+| `kerberosvault.archive.secretkey` | When a task is created, the relevant recording is moved to another provider, using this secret key`'xxx'` | `"xxx"` |
+| `kerberosvault.thumbnail.provider` | Configuration value for `kerberosvault.thumbnail.provider`. | `"a-thumbnail-provider"` |
+| `kerberosvault.thumbnail.accessKey` | Access key for `kerberosvault.thumbnail`. | `"xxx"` |
+| `kerberosvault.thumbnail.secretKey` | Secret key for `kerberosvault.thumbnail`. | `"xxx"` |
+| `kerberosvault.sprite.provider` | Configuration value for `kerberosvault.sprite.provider`. | `"a-sprite-provider"` |
+| `kerberosvault.sprite.accessKey` | Access key for `kerberosvault.sprite`. | `"xxx"` |
+| `kerberosvault.sprite.secretKey` | Secret key for `kerberosvault.sprite`. | `"xxx"` |
+| `admin.repository` | Container image repository for `admin`. | `"uugai/admin"` |
+| `admin.pullPolicy` | Image pull policy for `admin`. | `"IfNotPresent"` |
+| `admin.tag` | Container image tag/version for `admin`. | `"v1.3.0"` |
+| `admin.replicas` | Number of replicas for `admin`. | `2` |
+| `admin.logLevel` | Log verbosity level for `admin`. | `"info"` |
+| `admin.resources.requests.memory` | Memory request for `admin`. | `"100Mi"` |
+| `admin.resources.requests.cpu` | CPU request for `admin`. | `"250m"` |
+| `admin.url` | URL for `admin`. | `"admin.yourdomain.com"` |
 | `admin.tls.secretName` | Kubernetes Secret name used by `admin.tls`. | `""` |
-| `admin.oauth2Proxy.enabled` | Enable or disable `admin.oauth2Proxy`. | `""` |
-| `admin.oauth2Proxy.github.clientId` | Client ID used by `admin.oauth2Proxy.github`. | `""` |
-| `admin.oauth2Proxy.github.clientSecret` | Client secret used by `admin.oauth2Proxy.github`. | `""` |
-| `admin.oauth2Proxy.github.cookieSecret` | Cookie secret used by `admin.oauth2Proxy.github`. | `""` |
-| `admin.oauth2Proxy.github.organization` | Organization value used by `admin.oauth2Proxy.github`. | `""` |
-| `admin.oauth2Proxy.github.team` | Team value used by `admin.oauth2Proxy.github`. | `""` |
-| `kerberoshub.extraEnv` | Additional environment variables injected into Kerberos Hub pods. | `""` |
-| `kerberoshub.serviceAccount.create` | Create or manage `kerberoshub.serviceAccount` resources. | `""` |
+| `admin.oauth2Proxy.enabled` | Enable or disable `admin.oauth2Proxy`. | `false` |
+| `admin.oauth2Proxy.github.clientId` | Client ID used by `admin.oauth2Proxy.github`. | `"github-client-id"` |
+| `admin.oauth2Proxy.github.clientSecret` | Client secret used by `admin.oauth2Proxy.github`. | `"github-client-secret"` |
+| `admin.oauth2Proxy.github.cookieSecret` | Cookie secret used by `admin.oauth2Proxy.github`. | `"generate-a-random-cookie-secret"` |
+| `admin.oauth2Proxy.github.organization` | Organization value used by `admin.oauth2Proxy.github`. | `"github-organization"` |
+| `admin.oauth2Proxy.github.team` | Team value used by `admin.oauth2Proxy.github`. | `"github-team"` |
+| `kerberoshub.extraEnv` | Additional environment variables injected into Kerberos Hub pods. | `[]` |
+| `kerberoshub.serviceAccount.create` | Create or manage `kerberoshub.serviceAccount` resources. | `false` |
 | `kerberoshub.serviceAccount.name` | Name value for `kerberoshub.serviceAccount`. | `""` |
 | `kerberoshub.serviceAccount.annotations` | Annotations applied to `kerberoshub.serviceAccount` resources. | `""` |
 | `kerberoshub.serviceAccount.labels` | Labels applied to `kerberoshub.serviceAccount` resources. | `""` |
-| `kerberoshub.api.repository` | The Docker registry where the Kerberos Hub API container is hosted. | `""` |
-| `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberoshub.api.tag` | The Docker image tag/version. | `""` |
-| `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `""` |
-| `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `""` |
-| `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `""` |
-| `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `""` |
-| `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `""` |
-| `kerberoshub.api.resources.requests.memory` | Memory request for `kerberoshub.api`. | `""` |
-| `kerberoshub.api.resources.requests.cpu` | CPU request for `kerberoshub.api`. | `""` |
-| `kerberoshub.api.serverTLS.enabled` | Enable or disable `kerberoshub.api.serverTLS`. | `""` |
+| `kerberoshub.api.repository` | The Docker registry where the Kerberos Hub API container is hosted. | `"ghcr.io/uug-ai/hub-api"` |
+| `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.9.8"` |
+| `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `2` |
+| `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `"info"` |
+| `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `"this-is-a-secret-please-change-to-random-string"` |
+| `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
+| `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
+| `kerberoshub.api.resources.requests.memory` | Memory request for `kerberoshub.api`. | `"100Mi"` |
+| `kerberoshub.api.resources.requests.cpu` | CPU request for `kerberoshub.api`. | `"250m"` |
+| `kerberoshub.api.resources.limits.memory` | Memory limit for `kerberoshub.api`. | `"100Mi"` |
+| `kerberoshub.api.resources.limits.cpu` | CPU limit for `kerberoshub.api`. | `"250m"` |
+| `kerberoshub.api.serverTLS.enabled` | Enable or disable `kerberoshub.api.serverTLS`. | `false` |
 | `kerberoshub.api.serverTLS.secretName` | Kubernetes Secret name used by `kerberoshub.api.serverTLS`. | `""` |
-| `kerberoshub.api.serverTLS.mountPath` | Filesystem path where the Hub API TLS secret is mounted. | `""` |
-| `kerberoshub.api.serverTLS.certFile` | Path to the TLS certificate file used by Hub API server-side TLS. | `""` |
-| `kerberoshub.api.serverTLS.keyFile` | Path to the TLS private key file used by Hub API server-side TLS. | `""` |
-| `kerberoshub.api.mfaIssuer` | When enabling the MFA access, this is the name that will be shown in the MFA app. | `""` |
-| `kerberoshub.api.apiKey` | API key for `kerberoshub.api`. | `""` |
-| `kerberoshub.api.tls` | Bring your own TLS certificates for Kerberos Hub API ingress. | `""` |
+| `kerberoshub.api.serverTLS.mountPath` | Filesystem path where the Hub API TLS secret is mounted. | `"/etc/hub-api/tls"` |
+| `kerberoshub.api.serverTLS.certFile` | Path to the TLS certificate file used by Hub API server-side TLS. | `"/etc/hub-api/tls/tls.crt"` |
+| `kerberoshub.api.serverTLS.keyFile` | Path to the TLS private key file used by Hub API server-side TLS. | `"/etc/hub-api/tls/tls.key"` |
+| `kerberoshub.api.mfaIssuer` | When enabling the MFA access, this is the name that will be shown in the MFA app. | `"yourdomain.com"` |
+| `kerberoshub.api.apiKey` | API key for `kerberoshub.api`. | `"a-random-admin-api-key"` |
+| `kerberoshub.api.defaultTaskRetentionDays` | Default retention (in days) applied to tasks without an explicit `retention_days`. New tasks are stamped with this value. Set to `"0"` or a negative value to keep tasks indefinitely. Must match `kerberoshub.cleanup.defaultTaskRetentionDays`. | `"0"` |
+| `kerberoshub.api.tls` | Bring your own TLS certificates for Kerberos Hub API ingress. | `<list>` |
 | `kerberoshub.api.tls.secretName` | Kubernetes Secret name used by `kerberoshub.api.tls`. | `""` |
-| `kerberoshub.api.language` | The language of Kerberos Hub API responses, error messages will be communicated in the specified language. | `""` |
-| `kerberoshub.api.fallbackLanguage` | The fallback language, if a specific translation is not available. | `""` |
-| `kerberoshub.api.aws.region` | AWS region used by the Hub API legacy S3 integration. | `""` |
-| `kerberoshub.api.aws.bucket` | AWS S3 bucket used by the Hub API legacy S3 integration. | `""` |
-| `kerberoshub.api.aws.accessKey` | Access key for `kerberoshub.api.aws`. | `""` |
-| `kerberoshub.api.aws.secretKey` | Secret key for `kerberoshub.api.aws`. | `""` |
-| `kerberoshub.api.stripe.privateKey` | Private key for `kerberoshub.api.stripe`. | `""` |
-| `kerberoshub.api.slack.enabled` | Slack integration for sending events and notifications coming from the Kerberos Hub API, `'true'` or `'false'`. | `""` |
-| `kerberoshub.api.slack.hook` | Slack integration hook url. | `""` |
-| `kerberoshub.api.slack.username` | Slack integration username. | `""` |
-| `kerberoshub.api.elasticsearch.enabled` | Elasticsearch for storing events coming from the Kerberos Hub API, `'true'` or `'false'` | `""` |
-| `kerberoshub.api.elasticsearch.protocol` | Elasticsearch protocol, `'http'` or `'https'`. | `""` |
-| `kerberoshub.api.elasticsearch.host` | Elasticsearch host. | `""` |
-| `kerberoshub.api.elasticsearch.port` | Elasticsearch port. | `""` |
-| `kerberoshub.api.elasticsearch.index` | Elasticsearch index which is used to store the events. | `""` |
+| `kerberoshub.api.language` | The language of Kerberos Hub API responses, error messages will be communicated in the specified language. | `"english"` |
+| `kerberoshub.api.fallbackLanguage` | The fallback language, if a specific translation is not available. | `"english"` |
+| `kerberoshub.api.aws.region` | AWS region used by the Hub API legacy S3 integration. | `"xxx"` |
+| `kerberoshub.api.aws.bucket` | AWS S3 bucket used by the Hub API legacy S3 integration. | `"xxx"` |
+| `kerberoshub.api.aws.accessKey` | Access key for `kerberoshub.api.aws`. | `"xxx"` |
+| `kerberoshub.api.aws.secretKey` | Secret key for `kerberoshub.api.aws`. | `"xxx"` |
+| `kerberoshub.api.stripe.privateKey` | Private key for `kerberoshub.api.stripe`. | `"xxx"` |
+| `kerberoshub.api.slack.enabled` | Slack integration for sending events and notifications coming from the Kerberos Hub API, `'true'` or `'false'`. | `"true"` |
+| `kerberoshub.api.slack.hook` | Slack integration hook url. | `"yourslackhook"` |
+| `kerberoshub.api.slack.username` | Slack integration username. | `"Kerberos Hub"` |
+| `kerberoshub.api.elasticsearch.enabled` | Elasticsearch for storing events coming from the Kerberos Hub API, `'true'` or `'false'` | `"false"` |
+| `kerberoshub.api.elasticsearch.protocol` | Elasticsearch protocol, `'http'` or `'https'`. | `"http"` |
+| `kerberoshub.api.elasticsearch.host` | Elasticsearch host. | `"yourelasticsearchinstance.com"` |
+| `kerberoshub.api.elasticsearch.port` | Elasticsearch port. | `"9200"` |
+| `kerberoshub.api.elasticsearch.index` | Elasticsearch index which is used to store the events. | `"kerberos-cloud"` |
 | `kerberoshub.api.elasticsearch.username` | Elasticsearch username. | `""` |
 | `kerberoshub.api.elasticsearch.password` | Elasticsearch password. | `""` |
 | `kerberoshub.api.sso.redirectUrl` | The OIC redirectUrl, once the authentication is validated. | `""` |
@@ -156,55 +159,30 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.api.sso.clientVerificationId` | Optional client verification ID used for SSO chaining scenarios. | `""` |
 | `kerberoshub.api.sso.extraHeaders` | Additional headers appended to outbound SSO provider requests. | `""` |
 | `kerberoshub.api.sso.extraHeaders.value` | Header value for each configured SSO extra header entry. | `""` |
-| `kerberoshub.frontend.repository` | The Docker registry where the Kerberos Hub frontend is hosted. | `""` |
-| `kerberoshub.frontend.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberoshub.frontend.tag` | The Docker image tag/version. | `""` |
-| `kerberoshub.frontend.replicas` | The number of pods/replicas running for the Kerberos Hub frontend deployment. | `""` |
-| `kerberoshub.frontend.logLevel` | Log verbosity level for `kerberoshub.frontend`. | `""` |
-| `kerberoshub.frontend.schema` | The protocol to serve the Kerberos Hub frontend, `'http'` or `'https'`. | `""` |
-| `kerberoshub.frontend.url` | The Kerberos Hub frontend ingress to access the frontend. | `""` |
-| `kerberoshub.frontend.resources.requests.memory` | Memory request for `kerberoshub.frontend`. | `""` |
-| `kerberoshub.frontend.resources.requests.cpu` | CPU request for `kerberoshub.frontend`. | `""` |
-| `kerberoshub.frontend.tls` | Bring your own TLS certificates for Kerberos Hub frontend ingress. | `""` |
+| `kerberoshub.frontend.repository` | The Docker registry where the Kerberos Hub frontend is hosted. | `"ghcr.io/uug-ai/hub-frontend"` |
+| `kerberoshub.frontend.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.9.11"` |
+| `kerberoshub.frontend.replicas` | The number of pods/replicas running for the Kerberos Hub frontend deployment. | `2` |
+| `kerberoshub.frontend.logLevel` | Log verbosity level for `kerberoshub.frontend`. | `"info"` |
+| `kerberoshub.frontend.schema` | The protocol to serve the Kerberos Hub frontend, `'http'` or `'https'`. | `"https"` |
+| `kerberoshub.frontend.url` | The Kerberos Hub frontend ingress to access the frontend. | `"yourdomain.com"` |
+| `kerberoshub.frontend.resources.requests.memory` | Memory request for `kerberoshub.frontend`. | `"50Mi"` |
+| `kerberoshub.frontend.resources.requests.cpu` | CPU request for `kerberoshub.frontend`. | `"50m"` |
+| `kerberoshub.frontend.resources.limits.memory` | Memory limit for `kerberoshub.frontend`. | `"50Mi"` |
+| `kerberoshub.frontend.resources.limits.cpu` | CPU limit for `kerberoshub.frontend`. | `"50m"` |
+| `kerberoshub.frontend.tls` | Bring your own TLS certificates for Kerberos Hub frontend ingress. | `<list>` |
 | `kerberoshub.frontend.tls.secretName` | Kubernetes Secret name used by `kerberoshub.frontend.tls`. | `""` |
-| `kerberoshub.frontend.mixpanel.apikey` | No longer used. | `""` |
-| `kerberoshub.frontend.sentry.url` | No longer used. | `""` |
+| `kerberoshub.frontend.mixpanel.apikey` | No longer used. | `"xxx"` |
+| `kerberoshub.frontend.sentry.url` | No longer used. | `"https://xxx@sentry.io/xxx"` |
 | `kerberoshub.frontend.stripe.publicKey` | Public key for `kerberoshub.frontend.stripe`. | `""` |
-| `kerberoshub.frontend.googlemaps.apikey` | Within Kerberos Hub frontend a couple of maps are being used, the google maps is leveraged for that. | `""` |
-| `kerberoshub.frontend.zendesk.url` | No longer used. | `""` |
-| `kerberoshub.frontend.posthog.key` | The API key retrieved from the Posthog instance. | `""` |
-| `kerberoshub.frontend.posthog.url` | Posthog's endpoint (http/https). | `""` |
-| `kerberoshub.frontend.hideAddAgent` | Configuration value for `kerberoshub.frontend.hideAddAgent`. | `""` |
-| `kerberoshub.frontend.multiTenant` | Configuration value for `kerberoshub.frontend.multiTenant`. | `""` |
-| `kerberoshub.frontend.title` | Title text used for `kerberoshub.frontend`. | `""` |
-| `kerberoshub.frontend.logo` | The logo being used in the Kerberos Hub frontend, set to 'custom' if you want to mount your own stylesheet. | `""` |
-| `kerberoshub.frontend.floorPlanName` | Configuration value for `kerberoshub.frontend.floorPlanName`. | `""` |
-| `kerberoshub.frontend.sitesName` | Configuration value for `kerberoshub.frontend.sitesName`. | `""` |
-| `kerberoshub.frontend.sitesDescription` | Custom description text for `sites` in the frontend UI. | `""` |
-| `kerberoshub.frontend.groupsName` | Configuration value for `kerberoshub.frontend.groupsName`. | `""` |
-| `kerberoshub.frontend.groupsDescription` | Custom description text for `groups` in the frontend UI. | `""` |
-| `kerberoshub.frontend.siteGroupName` | Configuration value for `kerberoshub.frontend.siteGroupName`. | `""` |
-| `kerberoshub.frontend.siteGroupDescription` | Custom description text for `site group` in the frontend UI. | `""` |
-| `kerberoshub.frontend.deviceGroupName` | Configuration value for `kerberoshub.frontend.deviceGroupName`. | `""` |
-| `kerberoshub.frontend.deviceGroupDescription` | Custom description text for `device group` in the frontend UI. | `""` |
-| `kerberoshub.frontend.markersName` | Configuration value for `kerberoshub.frontend.markersName`. | `""` |
-| `kerberoshub.frontend.eventsName` | Configuration value for `kerberoshub.frontend.eventsName`. | `""` |
-| `kerberoshub.frontend.loginDescription` | Custom description text for `login` in the frontend UI. | `""` |
-| `kerberoshub.frontend.loginCopyright` | Configuration value for `kerberoshub.frontend.loginCopyright`. | `""` |
-| `kerberoshub.frontend.dashboardTitle` | Custom title text for `dashboard` in the frontend UI. | `""` |
-| `kerberoshub.frontend.dashboardSubTitle` | Custom title text for `dashboard sub` in the frontend UI. | `""` |
-| `kerberoshub.frontend.latestEventsTitle` | Custom title text for `latest events` in the frontend UI. | `""` |
-| `kerberoshub.frontend.latestEventsSubTitle` | Custom title text for `latest events sub` in the frontend UI. | `""` |
-| `kerberoshub.frontend.dayTitle` | Custom title text for `day` in the frontend UI. | `""` |
-| `kerberoshub.frontend.daySubTitle` | Custom title text for `day sub` in the frontend UI. | `""` |
-| `kerberoshub.frontend.livestreamTitle` | Custom title text for `livestream` in the frontend UI. | `""` |
-| `kerberoshub.frontend.livestreamSubTitle` | Custom title text for `livestream sub` in the frontend UI. | `""` |
-| `kerberoshub.frontend.mediaTitle` | Custom title text for `media` in the frontend UI. | `""` |
-| `kerberoshub.frontend.mediaSubTitle` | Custom title text for `media sub` in the frontend UI. | `""` |
-| `kerberoshub.frontend.cpuUsageDescription` | Custom description text for `cpu usage` in the frontend UI. | `""` |
-| `kerberoshub.frontend.framesPerSecondDescription` | Custom description text for `frames per second` in the frontend UI. | `""` |
-| `kerberoshub.frontend.mlaUtilizationDescription` | Custom description text for `mla utilization` in the frontend UI. | `""` |
-| `kerberoshub.frontend.objectsDetectedDescription` | Custom description text for `objects detected` in the frontend UI. | `""` |
+| `kerberoshub.frontend.googlemaps.apikey` | Within Kerberos Hub frontend a couple of maps are being used, the google maps is leveraged for that. | `"xxxx"` |
+| `kerberoshub.frontend.zendesk.url` | No longer used. | `"yourdomain.zendesk.com"` |
+| `kerberoshub.frontend.posthog.key` | The API key retrieved from the Posthog instance. | `"xxx"` |
+| `kerberoshub.frontend.posthog.url` | Posthog's endpoint (http/https). | `"https://posthog.domain.com"` |
+| `kerberoshub.frontend.hideAddAgent` | Configuration value for `kerberoshub.frontend.hideAddAgent`. | `"false"` |
+| `kerberoshub.frontend.multiTenant` | Configuration value for `kerberoshub.frontend.multiTenant`. | `false` |
+| `kerberoshub.frontend.title` | Title text used for `kerberoshub.frontend`. | `"Kerberos Hub - Video surveillance as it should be"` |
+| `kerberoshub.frontend.logo` | The logo being used in the Kerberos Hub frontend, set to 'custom' if you want to mount your own stylesheet. | `"custom"` |
 | `kerberoshub.frontend.navigationLinkTitle1` | Custom navigation item (title 1) | `""` |
 | `kerberoshub.frontend.navigationLinkUrl1` | Custom navigation item (url 1) | `""` |
 | `kerberoshub.frontend.navigationLinkTitle2` | Custom navigation item (title 2) | `""` |
@@ -215,219 +193,236 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.navigationLinkUrl4` | Custom navigation item (url 4) | `""` |
 | `kerberoshub.frontend.navigationLinkTitle5` | Custom navigation item (title 5) | `""` |
 | `kerberoshub.frontend.navigationLinkUrl5` | Custom navigation item (url 5) | `""` |
-| `kerberoshub.frontend.caseFilterAssigneesDefault` | Default assignee filter behavior for cases in the frontend. | `""` |
-| `kerberoshub.frontend.features.case.enabled` | Enable or disable the case feature in the frontend. | `""` |
-| `kerberoshub.frontend.features.darkModeEnabled` | Enable or disable dark mode in the frontend. | `""` |
-| `kerberoshub.frontend.features.landingPage` | Frontend landing page configuration. | `""` |
-| `kerberoshub.frontend.features.map.tileUrlLight` | Tile URL used by the map in light mode. | `""` |
-| `kerberoshub.frontend.features.map.tileUrlDark` | Tile URL used by the map in dark mode. | `""` |
-| `kerberoshub.frontend.features.map.attribution` | Attribution text displayed on the map tiles. | `""` |
-| `kerberoshub.frontend.features.liveview.defaultStreamMode` | Liveview behavior setting: `defaultStreamMode`. | `""` |
-| `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `""` |
-| `kerberoshub.frontend.features.liveview.pageSize` | Liveview behavior setting: `pageSize` (max streams shown per page in `numbered` mode). | `""` |
-| `kerberoshub.frontend.features.liveview.maxStreams` | Liveview behavior setting: `maxStreams`. | `""` |
-| `kerberoshub.frontend.features.devices.hideAgent` | Hide agent controls in the devices section of the frontend. | `""` |
-| `kerberoshub.frontend.features.media.filter.date.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.date`. | `""` |
-| `kerberoshub.frontend.features.media.filter.sites.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sites`. | `""` |
-| `kerberoshub.frontend.features.media.filter.groups.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.groups`. | `""` |
-| `kerberoshub.frontend.features.media.filter.devices.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.devices`. | `""` |
-| `kerberoshub.frontend.features.media.filter.objectDetection.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.objectDetection`. | `""` |
-| `kerberoshub.frontend.features.media.filter.star.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.star`. | `""` |
-| `kerberoshub.frontend.features.media.filter.region.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.region`. | `""` |
-| `kerberoshub.frontend.features.media.filter.sort.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sort`. | `""` |
-| `kerberoshub.frontend.features.media.filter.category.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.category`. | `""` |
-| `kerberoshub.frontend.features.media.filter.markers.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.markers`. | `""` |
-| `kerberoshub.frontend.features.media.filter.events.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.events`. | `""` |
-| `kerberoshub.frontend.features.media.filter.tags.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.tags`. | `""` |
-| `kerberoshub.frontend.features.floorplan.enabled` | Enable or disable `kerberoshub.frontend.features.floorplan`. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorDeviceActive` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorDeviceInactive` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorDeviceIdle` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorDeviceMotion` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorLiveViewControlActive` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorLiveViewControlMotion` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorFloorPlanLabelText` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorFloorPlanLabelBackground` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorDeviceMarkerBorder` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorTrackBox` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorTrackBoxHover` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete` | Color customization for `floorplan` in the frontend. | `""` |
-| `kerberoshub.frontend.features.faceRedaction.enabled` | Enable or disable `kerberoshub.frontend.features.faceRedaction`. | `""` |
-| `kerberoshub.support.enabled` | Enable or disable in-app support features. | `""` |
-| `kerberoshub.oauth2Proxy.enabled` | Enable or disable `kerberoshub.oauth2Proxy`. | `""` |
-| `kerberoshub.oauth2Proxy.github.clientId` | Client ID used by `kerberoshub.oauth2Proxy.github`. | `""` |
-| `kerberoshub.oauth2Proxy.github.clientSecret` | Client secret used by `kerberoshub.oauth2Proxy.github`. | `""` |
-| `kerberoshub.oauth2Proxy.github.cookieSecret` | Cookie secret used by `kerberoshub.oauth2Proxy.github`. | `""` |
-| `kerberoshub.oauth2Proxy.github.organization` | Organization value used by `kerberoshub.oauth2Proxy.github`. | `""` |
-| `kerberoshub.oauth2Proxy.github.team` | Team value used by `kerberoshub.oauth2Proxy.github`. | `""` |
-| `kerberoshub.cleanup.repository` | The Docker container that is responsible for cleaning up the Kerberos Hub API content and related MongoDB collections. | `""` |
-| `kerberoshub.cleanup.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberoshub.cleanup.tag` | The Docker image tag/version. | `""` |
-| `kerberoshub.cleanup.replicas` | Number of replicas for `kerberoshub.cleanup`. | `""` |
-| `kerberoshub.cleanup.mode` | Cleanup service mode: `serve`, `dry-run`, or `version`. | `""` |
-| `kerberoshub.cleanup.logLevel` | Log verbosity level for `kerberoshub.cleanup`. | `""` |
-| `kerberoshub.cleanup.maxDays` | Hard maximum age (in days) used by the optional global cleanup pass. | `""` |
-| `kerberoshub.cleanup.runIntervalMinutes` | Minutes between cleanup cycles. | `""` |
+| `kerberoshub.frontend.caseFilterAssigneesDefault` | Default assignee filter behavior for cases in the frontend. | `"false"` |
+| `kerberoshub.frontend.features.case.enabled` | Enable or disable the case feature in the frontend. | `"true"` |
+| `kerberoshub.frontend.features.darkModeEnabled` | Enable or disable dark mode in the frontend. | `"true"` |
+| `kerberoshub.frontend.features.landingPage` | Frontend landing page configuration. | `"/dashboard"` |
+| `kerberoshub.frontend.features.i18n.enabled` | Enable or disable the runtime language switcher in the front-end. When `"false"`, `defaultLanguage` is forced and users cannot change it. | `"true"` |
+| `kerberoshub.frontend.features.i18n.defaultLanguage` | Default language code used by the front-end (e.g. `en`, `nl`, `pl`, `tr`, `fr`, `sv`, `de`). | `"en"` |
+| `kerberoshub.frontend.features.workflows.enabled` | Enable or disable the workflows feature in the frontend. | `"false"` |
+| `kerberoshub.frontend.features.map.tileUrlLight` | Tile URL used by the map in light mode. | `"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"` |
+| `kerberoshub.frontend.features.map.tileUrlDark` | Tile URL used by the map in dark mode. | `"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"` |
+| `kerberoshub.frontend.features.map.attribution` | Attribution text displayed on the map tiles. | `"&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>"` |
+| `kerberoshub.frontend.features.liveview.defaultStreamMode` | Liveview behavior setting: `defaultStreamMode`. | `"SD"` |
+| `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `"scroll"` |
+| `kerberoshub.frontend.features.liveview.pageSize` | Liveview behavior setting: `pageSize` (max streams shown per page in `numbered` mode). | `"6"` |
+| `kerberoshub.frontend.features.liveview.maxStreams` | Liveview behavior setting: `maxStreams`. | `"-1"` |
+| `kerberoshub.frontend.features.chart.colorChartSelectionFill` | Fill color for chart selection regions. | `"rgba(132, 86, 159, 0.07)"` |
+| `kerberoshub.frontend.features.chart.colorChartSelectionStroke` | Stroke color for chart selection regions. | `"rgba(132, 86, 159, 0.4)"` |
+| `kerberoshub.frontend.features.chart.colorChartGridStroke` | Stroke color for chart grid lines. | `"rgba(0, 106, 255, 0.18)"` |
+| `kerberoshub.frontend.features.devices.hideAgent` | Hide agent controls in the devices section of the frontend. | `"false"` |
+| `kerberoshub.frontend.features.media.filter.date.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.date`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.sites.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sites`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.groups.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.groups`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.devices.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.devices`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.objectDetection.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.objectDetection`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.star.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.star`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.region.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.region`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.sort.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sort`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.category.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.category`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.markers.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.markers`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.events.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.events`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.tags.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.tags`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.defaultView` | Default view for the media page: `timeline` or `grid`. | `"timeline"` |
+| `kerberoshub.frontend.features.floorplan.enabled` | Enable or disable `kerberoshub.frontend.features.floorplan`. | `"true"` |
+| `kerberoshub.frontend.features.floorplan.colorDeviceActive` | Color customization for `floorplan` in the frontend. | `"hsla(131, 31%, 52%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorDeviceInactive` | Color customization for `floorplan` in the frontend. | `"hsla(0, 3%, 41%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorDeviceIdle` | Color customization for `floorplan` in the frontend. | `"hsla(47, 86%, 47%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorDeviceMotion` | Color customization for `floorplan` in the frontend. | `"hsla(2, 58%, 48%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorLiveViewControlActive` | Color customization for `floorplan` in the frontend. | `"hsla(131, 31%, 52%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorLiveViewControlMotion` | Color customization for `floorplan` in the frontend. | `"hsla(2, 58%, 48%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorFloorPlanLabelText` | Color customization for `floorplan` in the frontend. | `"hsla(0, 0%, 100%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorFloorPlanLabelBackground` | Color customization for `floorplan` in the frontend. | `"hsla(0, 0%, 0%, 0.8)"` |
+| `kerberoshub.frontend.features.floorplan.colorDeviceMarkerBorder` | Color customization for `floorplan` in the frontend. | `"hsla(0, 0%, 100%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorTrackBox` | Color customization for `floorplan` in the frontend. | `"hsla(278, 30%, 48%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorTrackBoxHover` | Color customization for `floorplan` in the frontend. | `"hsla(47, 86%, 47%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing` | Color customization for `floorplan` in the frontend. | `"hsla(204, 100%, 50%, 1)"` |
+| `kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete` | Color customization for `floorplan` in the frontend. | `"hsla(219, 100%, 94%, 1)"` |
+| `kerberoshub.frontend.features.faceRedaction.enabled` | Enable or disable `kerberoshub.frontend.features.faceRedaction`. | `"false"` |
+| `kerberoshub.support.enabled` | Enable or disable in-app support features. | `false` |
+| `kerberoshub.oauth2Proxy.enabled` | Enable or disable `kerberoshub.oauth2Proxy`. | `false` |
+| `kerberoshub.oauth2Proxy.github.clientId` | Client ID used by `kerberoshub.oauth2Proxy.github`. | `"github-client-id"` |
+| `kerberoshub.oauth2Proxy.github.clientSecret` | Client secret used by `kerberoshub.oauth2Proxy.github`. | `"github-client-secret"` |
+| `kerberoshub.oauth2Proxy.github.cookieSecret` | Cookie secret used by `kerberoshub.oauth2Proxy.github`. | `"generate-a-random-cookie-secret"` |
+| `kerberoshub.oauth2Proxy.github.organization` | Organization value used by `kerberoshub.oauth2Proxy.github`. | `"github-organization"` |
+| `kerberoshub.oauth2Proxy.github.team` | Team value used by `kerberoshub.oauth2Proxy.github`. | `"github-team"` |
+| `kerberoshub.cleanup.repository` | The Docker container that is responsible for cleaning up the Kerberos Hub API content and related MongoDB collections. | `"ghcr.io/uug-ai/hub-cleanup"` |
+| `kerberoshub.cleanup.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberoshub.cleanup.tag` | The Docker image tag/version. | `"v1.4.13"` |
+| `kerberoshub.cleanup.replicas` | Number of replicas for `kerberoshub.cleanup`. | `1` |
+| `kerberoshub.cleanup.mode` | Cleanup service mode: `serve`, `dry-run`, or `version`. | `"serve"` |
+| `kerberoshub.cleanup.logLevel` | Log verbosity level for `kerberoshub.cleanup`. | `"info"` |
+| `kerberoshub.cleanup.maxDays` | Hard maximum age (in days) used by the optional global cleanup pass. | `"365"` |
+| `kerberoshub.cleanup.runIntervalMinutes` | Minutes between cleanup cycles. | `"10"` |
 | `kerberoshub.cleanup.cleanupUsernames` | Optional comma-separated usernames to target. | `""` |
-| `kerberoshub.cleanup.batchSize` | Delete batch size per collection operation. | `""` |
-| `kerberoshub.cleanup.userBatchSize` | Number of users processed per inner batch. | `""` |
-| `kerberoshub.cleanup.maxUsersPerRun` | Maximum users processed per run. | `""` |
-| `kerberoshub.cleanup.progressEvery` | Print progress every N processed users. | `""` |
-| `kerberoshub.cleanup.activeUserRescanHours` | Rescan interval for active users. | `""` |
-| `kerberoshub.cleanup.inactiveUserRescanHours` | Rescan interval for inactive users. | `""` |
-| `kerberoshub.cleanup.readTimeoutSeconds` | Timeout for MongoDB read operations. | `""` |
-| `kerberoshub.cleanup.deleteTimeoutSeconds` | Timeout for delete operations. | `""` |
-| `kerberoshub.cleanup.reportIncludeStats` | Include richer per-user dry-run summary stats. | `""` |
-| `kerberoshub.cleanup.dryRun` | Force dry-run behavior through env var. | `""` |
-| `kerberoshub.cleanup.debug` | Enable extra cleanup debug logging. | `""` |
-| `kerberoshub.cleanup.globalPassEnabled` | Enable optional global orphan cleanup pass. | `""` |
-| `kerberoshub.cleanup.globalPassIntervalHours` | Minimum hours between global cleanup passes. | `""` |
-| `kerberoshub.cleanup.globalPassDeleteBudget` | Max documents deleted during a global pass. | `""` |
-| `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `""` |
-| `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `""` |
-| `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `""` |
-| `kerberoshub.monitordevice.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `""` |
-| `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `""` |
-| `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `""` |
-| `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `""` |
-| `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `""` |
-| `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.reactivate.pullPolicy` | Image pull policy for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.reactivate.tag` | Container image tag/version for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.reactivate.replicas` | Number of replicas for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.reactivate.logLevel` | Log verbosity level for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `""` |
-| `kerberoshub.forwarder.enabled` | Enable or disable the Hub forwarder component. | `""` |
-| `kerberoshub.proxy.repository` | Container image repository for `kerberoshub.proxy`. | `""` |
-| `kerberoshub.proxy.pullPolicy` | Image pull policy for `kerberoshub.proxy`. | `""` |
-| `kerberoshub.proxy.tag` | Container image tag/version for `kerberoshub.proxy`. | `""` |
-| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy`. | `""` |
-| `kerberoshub.proxy.logLevel` | Log verbosity level for `kerberoshub.proxy`. | `""` |
-| `kerberoshub.proxy.resources.requests.memory` | Memory request for `kerberoshub.proxy`. | `""` |
-| `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `""` |
-| `kerberospipeline.event.repository` | The [event orchestration](https://doc.kerberos.io/hub/pipeline/#orchestrator) microservice. | `""` |
-| `kerberospipeline.event.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.event.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.event.replicas` | Number of replicas for `kerberospipeline.event`. | `""` |
-| `kerberospipeline.event.logLevel` | Log verbosity level for `kerberospipeline.event`. | `""` |
-| `kerberospipeline.event.resources.requests.memory` | Memory request for `kerberospipeline.event`. | `""` |
-| `kerberospipeline.event.resources.requests.cpu` | CPU request for `kerberospipeline.event`. | `""` |
-| `kerberospipeline.monitor.repository` | The [monitoring microservice](https://doc.kerberos.io/hub/pipeline/#monitoring), calculating metrics of incoming messages. | `""` |
-| `kerberospipeline.monitor.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.monitor.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.monitor.replicas` | Number of replicas for `kerberospipeline.monitor`. | `""` |
-| `kerberospipeline.monitor.resources.requests.memory` | Memory request for `kerberospipeline.monitor`. | `""` |
-| `kerberospipeline.monitor.resources.requests.cpu` | CPU request for `kerberospipeline.monitor`. | `""` |
-| `kerberospipeline.sequence.repository` | The [sequencer microservice](https://doc.kerberos.io/hub/pipeline/#sequencer), grouping recordings in chunks/groups. | `""` |
-| `kerberospipeline.sequence.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.sequence.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.sequence.replicas` | Number of replicas for `kerberospipeline.sequence`. | `""` |
-| `kerberospipeline.sequence.resources.requests.memory` | Memory request for `kerberospipeline.sequence`. | `""` |
-| `kerberospipeline.sequence.resources.requests.cpu` | CPU request for `kerberospipeline.sequence`. | `""` |
-| `kerberospipeline.throttler.repository` | The [throttler microservice](https://doc.kerberos.io/hub/pipeline/#throttler), throttling events. | `""` |
-| `kerberospipeline.throttler.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.throttler.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.throttler.replicas` | Number of replicas for `kerberospipeline.throttler`. | `""` |
-| `kerberospipeline.throttler.logLevel` | Log verbosity level for `kerberospipeline.throttler`. | `""` |
-| `kerberospipeline.throttler.resources.requests.memory` | Memory request for `kerberospipeline.throttler`. | `""` |
-| `kerberospipeline.throttler.resources.requests.cpu` | CPU request for `kerberospipeline.throttler`. | `""` |
-| `kerberospipeline.notify.repository` | The [notification microservice](https://doc.kerberos.io/hub/pipeline/#notification), sending notifications on events. | `""` |
-| `kerberospipeline.notify.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.notify.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.notify.replicas` | Number of replicas for `kerberospipeline.notify`. | `""` |
-| `kerberospipeline.notify.logLevel` | Log verbosity level for `kerberospipeline.notify`. | `""` |
-| `kerberospipeline.notify.resources.requests.memory` | Memory request for `kerberospipeline.notify`. | `""` |
-| `kerberospipeline.notify.resources.requests.cpu` | CPU request for `kerberospipeline.notify`. | `""` |
-| `kerberospipeline.notifyTest.repository` | The notification service for testing, the different channels. | `""` |
-| `kerberospipeline.notifyTest.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.notifyTest.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.notifyTest.replicas` | Number of replicas for `kerberospipeline.notifyTest`. | `""` |
-| `kerberospipeline.notifyTest.resources.requests.memory` | Memory request for `kerberospipeline.notifyTest`. | `""` |
-| `kerberospipeline.notifyTest.resources.requests.cpu` | CPU request for `kerberospipeline.notifyTest`. | `""` |
-| `kerberospipeline.analysis.repository` | The [analysis microservices](https://doc.kerberos.io/hub/pipeline/#analyser) which executed specific analysis in parallel. | `""` |
-| `kerberospipeline.analysis.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.analysis.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.analysis.replicas` | Number of replicas for `kerberospipeline.analysis`. | `""` |
-| `kerberospipeline.analysis.logLevel` | Log verbosity level for `kerberospipeline.analysis`. | `""` |
-| `kerberospipeline.analysis.resources.requests.memory` | Memory request for `kerberospipeline.analysis`. | `""` |
-| `kerberospipeline.analysis.resources.requests.cpu` | CPU request for `kerberospipeline.analysis`. | `""` |
-| `kerberospipeline.dominantColor.repository` | The dominant color microservices is computing a top 3 color histogram. | `""` |
-| `kerberospipeline.dominantColor.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.dominantColor.replicas` | Number of replicas for `kerberospipeline.dominantColor`. | `""` |
-| `kerberospipeline.dominantColor.logLevel` | Log verbosity level for `kerberospipeline.dominantColor`. | `""` |
-| `kerberospipeline.dominantColor.resources.requests.memory` | Memory request for `kerberospipeline.dominantColor`. | `""` |
-| `kerberospipeline.dominantColor.resources.requests.cpu` | CPU request for `kerberospipeline.dominantColor`. | `""` |
-| `kerberospipeline.dominantColor.resources.limits.memory` | Memory limit for `kerberospipeline.dominantColor`. | `""` |
-| `kerberospipeline.dominantColor.resources.limits.cpu` | CPU limit for `kerberospipeline.dominantColor`. | `""` |
-| `kerberospipeline.thumbnail.repository` | The thumbnail microservices generated a thumbnail for a recordings. | `""` |
-| `kerberospipeline.thumbnail.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.thumbnail.replicas` | Number of replicas for `kerberospipeline.thumbnail`. | `""` |
-| `kerberospipeline.thumbnail.logLevel` | Log verbosity level for `kerberospipeline.thumbnail`. | `""` |
-| `kerberospipeline.thumbnail.quality` | Configuration value for `kerberospipeline.thumbnail.quality`. | `""` |
-| `kerberospipeline.thumbnail.width` | Configuration value for `kerberospipeline.thumbnail.width`. | `""` |
-| `kerberospipeline.thumbnail.height` | Configuration value for `kerberospipeline.thumbnail.height`. | `""` |
-| `kerberospipeline.thumbnail.kerberosvault.enabled` | Enable or disable `kerberospipeline.thumbnail.kerberosvault`. | `""` |
-| `kerberospipeline.thumbnail.resources.requests.memory` | Memory request for `kerberospipeline.thumbnail`. | `""` |
-| `kerberospipeline.thumbnail.resources.requests.cpu` | CPU request for `kerberospipeline.thumbnail`. | `""` |
-| `kerberospipeline.thumbnail.resources.limits.memory` | Memory limit for `kerberospipeline.thumbnail`. | `""` |
-| `kerberospipeline.thumbnail.resources.limits.cpu` | CPU limit for `kerberospipeline.thumbnail`. | `""` |
-| `kerberospipeline.counting.repository` | The counting microservices computes objects passing different line segments. | `""` |
-| `kerberospipeline.counting.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberospipeline.counting.tag` | The Docker image tag/version. | `""` |
-| `kerberospipeline.counting.replicas` | Number of replicas for `kerberospipeline.counting`. | `""` |
-| `kerberospipeline.counting.logLevel` | Log verbosity level for `kerberospipeline.counting`. | `""` |
-| `kerberospipeline.counting.resources.requests.memory` | Memory request for `kerberospipeline.counting`. | `""` |
-| `kerberospipeline.counting.resources.requests.cpu` | CPU request for `kerberospipeline.counting`. | `""` |
-| `kerberospipeline.sprite.enabled` | Enable or disable `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.repository` | Container image repository for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.pullPolicy` | Image pull policy for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.tag` | Container image tag/version for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.replicas` | Number of replicas for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.logLevel` | Log verbosity level for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.interval` | Configuration value for `kerberospipeline.sprite.interval`. | `""` |
-| `kerberospipeline.sprite.width` | Configuration value for `kerberospipeline.sprite.width`. | `""` |
-| `kerberospipeline.sprite.height` | Configuration value for `kerberospipeline.sprite.height`. | `""` |
-| `kerberospipeline.sprite.resources.requests.memory` | Memory request for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.resources.requests.cpu` | CPU request for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.resources.limits.memory` | Memory limit for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.sprite.resources.limits.cpu` | CPU limit for `kerberospipeline.sprite`. | `""` |
-| `kerberospipeline.export.repository` | Container image repository for `kerberospipeline.export`. | `""` |
-| `kerberospipeline.export.pullPolicy` | Image pull policy for `kerberospipeline.export`. | `""` |
-| `kerberospipeline.export.tag` | Container image tag/version for `kerberospipeline.export`. | `""` |
-| `kerberospipeline.export.replicas` | Number of replicas for `kerberospipeline.export`. | `""` |
-| `kerberospipeline.export.logLevel` | Log verbosity level for `kerberospipeline.export`. | `""` |
-| `kerberospipeline.export.resources.requests.memory` | Memory request for `kerberospipeline.export`. | `""` |
-| `kerberospipeline.export.resources.requests.cpu` | CPU request for `kerberospipeline.export`. | `""` |
-| `email.provider` | The email service provider for sending out messages over email , use `'mailgun'` or `'smtp'`. | `""` |
-| `email.from` | The email address that is sending messages in name of, by default `'support@yourdomain.com'`. | `""` |
-| `email.displayName` | The display name that is sending messages in name of, by default `'yourdomain.com'` | `""` |
-| `email.mailgun.domain` | While using `mailgun` as email service provider, you will need to provide your Mailgun domain. | `""` |
-| `email.mailgun.apikey` | Mailgun API key (lowercase variant) used when provider is `mailgun`. | `""` |
-| `email.smtp.server` | While using `smtp` as email service provider, use the SMTP server. | `""` |
-| `email.smtp.port` | SMTP port specified by your SMTP server, by default `'456'`. | `""` |
-| `email.smtp.username` | SMTP username. | `""` |
-| `email.smtp.password` | SMTP password. | `""` |
-| `email.templates.welcome` | The template which is send when a new user registered on the platform (`IS_PRIVATE='false'`), by default `'disabled'`. | `""` |
-| `email.templates.welcomeTitle` | The welcome title use in the subject of the email. | `""` |
-| `email.templates.activate` | The template which is send when a user is required to activate his account , by default `'activate'`. | `""` |
-| `email.templates.activateTitle` | The activation title use in the subject of the email. | `""` |
-| `email.templates.forgot` | The template which is send when an account is requesting a forgot password, by default `'forgot'`. | `""` |
-| `email.templates.forgotTitle` | The forgot title use in the subject of the email. | `""` |
-| `email.templates.share` | Email template name/key for `share` notifications. | `""` |
-| `email.templates.shareTitle` | Email subject title for the `share` template. | `""` |
-| `email.templates.assignTask` | Email template name/key for `assign task` notifications. | `""` |
-| `email.templates.assignTaskTitle` | Email subject title for the `assign task` template. | `""` |
-| `email.templates.detection` | We use templates to send notifications, this allow you to bring your own `Mailgun` templates, by default `'detection'`. | `""` |
-| `email.templates.disabled` | The template which is send when an account is disabled due to reaching its upload limit, by default `'disabled'`. | `""` |
-| `email.templates.highupload` | The template which is send when an account is reaching a specific upload threshold, by default `'threshold'`. | `""` |
-| `email.templates.device` | The template which is send when a camera goes online or offline, by default `'device'`. | `""` |
-| `email.templates.alertTitle` | Email subject title for the `alert` template. | `""` |
-| `email.templates.deviceTitle` | Email subject title for the `device` template. | `""` |
+| `kerberoshub.cleanup.batchSize` | Delete batch size per collection operation. | `"250"` |
+| `kerberoshub.cleanup.userBatchSize` | Number of users processed per inner batch. | `"100"` |
+| `kerberoshub.cleanup.maxUsersPerRun` | Maximum users processed per run. | `"100"` |
+| `kerberoshub.cleanup.progressEvery` | Print progress every N processed users. | `"100"` |
+| `kerberoshub.cleanup.activeUserRescanHours` | Rescan interval for active users. | `"6"` |
+| `kerberoshub.cleanup.inactiveUserRescanHours` | Rescan interval for inactive users. | `"24"` |
+| `kerberoshub.cleanup.readTimeoutSeconds` | Timeout for MongoDB read operations. | `"30"` |
+| `kerberoshub.cleanup.deleteTimeoutSeconds` | Timeout for delete operations. | `"120"` |
+| `kerberoshub.cleanup.reportIncludeStats` | Include richer per-user dry-run summary stats. | `"false"` |
+| `kerberoshub.cleanup.dryRun` | Force dry-run behavior through env var. | `"false"` |
+| `kerberoshub.cleanup.debug` | Enable extra cleanup debug logging. | `"false"` |
+| `kerberoshub.cleanup.globalPassEnabled` | Enable optional global orphan cleanup pass. | `"false"` |
+| `kerberoshub.cleanup.globalPassIntervalHours` | Minimum hours between global cleanup passes. | `"0"` |
+| `kerberoshub.cleanup.globalPassDeleteBudget` | Max documents deleted during a global pass. | `"0"` |
+| `kerberoshub.cleanup.defaultTaskRetentionDays` | Default retention (in days) applied to tasks without an explicit `retention_days`. Tasks older than this (anchored on `creation_date`) are deleted with their `case_media` rows. Set to `"0"` or a negative value to keep tasks forever. Must match `kerberoshub.api.defaultTaskRetentionDays`. | `"0"` |
+| `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `"10Mi"` |
+| `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
+| `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
+| `kerberoshub.monitordevice.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
+| `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
+| `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `"info"` |
+| `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
+| `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
+| `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
+| `kerberoshub.reactivate.pullPolicy` | Image pull policy for `kerberoshub.reactivate`. | `"IfNotPresent"` |
+| `kerberoshub.reactivate.tag` | Container image tag/version for `kerberoshub.reactivate`. | `"v1.0.2"` |
+| `kerberoshub.reactivate.replicas` | Number of replicas for `kerberoshub.reactivate`. | `1` |
+| `kerberoshub.reactivate.logLevel` | Log verbosity level for `kerberoshub.reactivate`. | `"info"` |
+| `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `"10Mi"` |
+| `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `"10m"` |
+| `kerberoshub.forwarder.enabled` | Enable or disable the Hub forwarder component. | `false` |
+| `kerberoshub.proxy.repository` | Container image repository for `kerberoshub.proxy`. | `"uugai/hub-proxy"` |
+| `kerberoshub.proxy.pullPolicy` | Image pull policy for `kerberoshub.proxy`. | `"IfNotPresent"` |
+| `kerberoshub.proxy.tag` | Container image tag/version for `kerberoshub.proxy`. | `"v1.0.0"` |
+| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy`. | `1` |
+| `kerberoshub.proxy.logLevel` | Log verbosity level for `kerberoshub.proxy`. | `"info"` |
+| `kerberoshub.proxy.resources.requests.memory` | Memory request for `kerberoshub.proxy`. | `"10Mi"` |
+| `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `"10m"` |
+| `kerberospipeline.event.repository` | The [event orchestration](https://doc.kerberos.io/hub/pipeline/#orchestrator) microservice. | `"ghcr.io/uug-ai/hub-pipeline-event"` |
+| `kerberospipeline.event.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.0"` |
+| `kerberospipeline.event.replicas` | Number of replicas for `kerberospipeline.event`. | `1` |
+| `kerberospipeline.event.logLevel` | Log verbosity level for `kerberospipeline.event`. | `"info"` |
+| `kerberospipeline.event.resources.requests.memory` | Memory request for `kerberospipeline.event`. | `"10Mi"` |
+| `kerberospipeline.event.resources.requests.cpu` | CPU request for `kerberospipeline.event`. | `"10m"` |
+| `kerberospipeline.monitor.repository` | The [monitoring microservice](https://doc.kerberos.io/hub/pipeline/#monitoring), calculating metrics of incoming messages. | `"ghcr.io/uug-ai/hub-pipeline-monitor"` |
+| `kerberospipeline.monitor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.monitor.tag` | The Docker image tag/version. | `"v1.3.9"` |
+| `kerberospipeline.monitor.replicas` | Number of replicas for `kerberospipeline.monitor`. | `1` |
+| `kerberospipeline.monitor.resources.requests.memory` | Memory request for `kerberospipeline.monitor`. | `"10Mi"` |
+| `kerberospipeline.monitor.resources.requests.cpu` | CPU request for `kerberospipeline.monitor`. | `"10m"` |
+| `kerberospipeline.sequence.repository` | The [sequencer microservice](https://doc.kerberos.io/hub/pipeline/#sequencer), grouping recordings in chunks/groups. | `"ghcr.io/uug-ai/hub-pipeline-sequence"` |
+| `kerberospipeline.sequence.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.sequence.tag` | The Docker image tag/version. | `"v1.6.18"` |
+| `kerberospipeline.sequence.replicas` | Number of replicas for `kerberospipeline.sequence`. | `1` |
+| `kerberospipeline.sequence.resources.requests.memory` | Memory request for `kerberospipeline.sequence`. | `"10Mi"` |
+| `kerberospipeline.sequence.resources.requests.cpu` | CPU request for `kerberospipeline.sequence`. | `"10m"` |
+| `kerberospipeline.throttler.repository` | The [throttler microservice](https://doc.kerberos.io/hub/pipeline/#throttler), throttling events. | `"uugai/hub-pipeline-throttler"` |
+| `kerberospipeline.throttler.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.throttler.tag` | The Docker image tag/version. | `"v1.2.0"` |
+| `kerberospipeline.throttler.replicas` | Number of replicas for `kerberospipeline.throttler`. | `1` |
+| `kerberospipeline.throttler.logLevel` | Log verbosity level for `kerberospipeline.throttler`. | `"info"` |
+| `kerberospipeline.throttler.resources.requests.memory` | Memory request for `kerberospipeline.throttler`. | `"10Mi"` |
+| `kerberospipeline.throttler.resources.requests.cpu` | CPU request for `kerberospipeline.throttler`. | `"10m"` |
+| `kerberospipeline.notify.repository` | The [notification microservice](https://doc.kerberos.io/hub/pipeline/#notification), sending notifications on events. | `"ghcr.io/uug-ai/hub-pipeline-notification"` |
+| `kerberospipeline.notify.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.9"` |
+| `kerberospipeline.notify.replicas` | Number of replicas for `kerberospipeline.notify`. | `1` |
+| `kerberospipeline.notify.logLevel` | Log verbosity level for `kerberospipeline.notify`. | `"info"` |
+| `kerberospipeline.notify.resources.requests.memory` | Memory request for `kerberospipeline.notify`. | `"10Mi"` |
+| `kerberospipeline.notify.resources.requests.cpu` | CPU request for `kerberospipeline.notify`. | `"10m"` |
+| `kerberospipeline.notifyTest.repository` | The notification service for testing, the different channels. | `"uugai/hub-pipeline-notification-test"` |
+| `kerberospipeline.notifyTest.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.notifyTest.tag` | The Docker image tag/version. | `"v1.2.1"` |
+| `kerberospipeline.notifyTest.replicas` | Number of replicas for `kerberospipeline.notifyTest`. | `1` |
+| `kerberospipeline.notifyTest.resources.requests.memory` | Memory request for `kerberospipeline.notifyTest`. | `"10Mi"` |
+| `kerberospipeline.notifyTest.resources.requests.cpu` | CPU request for `kerberospipeline.notifyTest`. | `"10m"` |
+| `kerberospipeline.analysis.repository` | The [analysis microservices](https://doc.kerberos.io/hub/pipeline/#analyser) which executed specific analysis in parallel. | `"ghcr.io/uug-ai/hub-pipeline-analysis"` |
+| `kerberospipeline.analysis.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.analysis.tag` | The Docker image tag/version. | `"v1.7.8"` |
+| `kerberospipeline.analysis.replicas` | Number of replicas for `kerberospipeline.analysis`. | `1` |
+| `kerberospipeline.analysis.logLevel` | Log verbosity level for `kerberospipeline.analysis`. | `"info"` |
+| `kerberospipeline.analysis.resources.requests.memory` | Memory request for `kerberospipeline.analysis`. | `"10Mi"` |
+| `kerberospipeline.analysis.resources.requests.cpu` | CPU request for `kerberospipeline.analysis`. | `"10m"` |
+| `kerberospipeline.dominantColor.repository` | The dominant color microservices is computing a top 3 color histogram. | `"ghcr.io/uug-ai/hub-pipeline-dominantcolors"` |
+| `kerberospipeline.dominantColor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `"v2.0.2"` |
+| `kerberospipeline.dominantColor.replicas` | Number of replicas for `kerberospipeline.dominantColor`. | `3` |
+| `kerberospipeline.dominantColor.logLevel` | Log verbosity level for `kerberospipeline.dominantColor`. | `"info"` |
+| `kerberospipeline.dominantColor.resources.requests.memory` | Memory request for `kerberospipeline.dominantColor`. | `"512Mi"` |
+| `kerberospipeline.dominantColor.resources.requests.cpu` | CPU request for `kerberospipeline.dominantColor`. | `"500m"` |
+| `kerberospipeline.dominantColor.resources.limits.memory` | Memory limit for `kerberospipeline.dominantColor`. | `"2Gi"` |
+| `kerberospipeline.dominantColor.resources.limits.cpu` | CPU limit for `kerberospipeline.dominantColor`. | `"1000m"` |
+| `kerberospipeline.thumbnail.repository` | The thumbnail microservices generated a thumbnail for a recordings. | `"ghcr.io/uug-ai/hub-pipeline-thumbnail"` |
+| `kerberospipeline.thumbnail.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.4"` |
+| `kerberospipeline.thumbnail.replicas` | Number of replicas for `kerberospipeline.thumbnail`. | `2` |
+| `kerberospipeline.thumbnail.logLevel` | Log verbosity level for `kerberospipeline.thumbnail`. | `"info"` |
+| `kerberospipeline.thumbnail.quality` | Configuration value for `kerberospipeline.thumbnail.quality`. | `"1"` |
+| `kerberospipeline.thumbnail.width` | Configuration value for `kerberospipeline.thumbnail.width`. | `"600"` |
+| `kerberospipeline.thumbnail.height` | Configuration value for `kerberospipeline.thumbnail.height`. | `"-1"` |
+| `kerberospipeline.thumbnail.kerberosvault.enabled` | Enable or disable `kerberospipeline.thumbnail.kerberosvault`. | `true` |
+| `kerberospipeline.thumbnail.resources.requests.memory` | Memory request for `kerberospipeline.thumbnail`. | `"512Mi"` |
+| `kerberospipeline.thumbnail.resources.requests.cpu` | CPU request for `kerberospipeline.thumbnail`. | `"500m"` |
+| `kerberospipeline.thumbnail.resources.limits.memory` | Memory limit for `kerberospipeline.thumbnail`. | `"2Gi"` |
+| `kerberospipeline.thumbnail.resources.limits.cpu` | CPU limit for `kerberospipeline.thumbnail`. | `"1000m"` |
+| `kerberospipeline.counting.repository` | The counting microservices computes objects passing different line segments. | `"uugai/hub-pipeline-counting"` |
+| `kerberospipeline.counting.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
+| `kerberospipeline.counting.tag` | The Docker image tag/version. | `"v1.6.3"` |
+| `kerberospipeline.counting.replicas` | Number of replicas for `kerberospipeline.counting`. | `1` |
+| `kerberospipeline.counting.logLevel` | Log verbosity level for `kerberospipeline.counting`. | `"info"` |
+| `kerberospipeline.counting.resources.requests.memory` | Memory request for `kerberospipeline.counting`. | `"10Mi"` |
+| `kerberospipeline.counting.resources.requests.cpu` | CPU request for `kerberospipeline.counting`. | `"10m"` |
+| `kerberospipeline.sprite.enabled` | Enable or disable `kerberospipeline.sprite`. | `false` |
+| `kerberospipeline.sprite.repository` | Container image repository for `kerberospipeline.sprite`. | `"ghcr.io/uug-ai/hub-pipeline-sprite"` |
+| `kerberospipeline.sprite.pullPolicy` | Image pull policy for `kerberospipeline.sprite`. | `"IfNotPresent"` |
+| `kerberospipeline.sprite.tag` | Container image tag/version for `kerberospipeline.sprite`. | `"v1.1.12"` |
+| `kerberospipeline.sprite.replicas` | Number of replicas for `kerberospipeline.sprite`. | `5` |
+| `kerberospipeline.sprite.logLevel` | Log verbosity level for `kerberospipeline.sprite`. | `"info"` |
+| `kerberospipeline.sprite.interval` | Configuration value for `kerberospipeline.sprite.interval`. | `"1"` |
+| `kerberospipeline.sprite.width` | Configuration value for `kerberospipeline.sprite.width`. | `"240"` |
+| `kerberospipeline.sprite.height` | Configuration value for `kerberospipeline.sprite.height`. | `"135"` |
+| `kerberospipeline.sprite.resources.requests.memory` | Memory request for `kerberospipeline.sprite`. | `"512Mi"` |
+| `kerberospipeline.sprite.resources.requests.cpu` | CPU request for `kerberospipeline.sprite`. | `"500m"` |
+| `kerberospipeline.sprite.resources.limits.memory` | Memory limit for `kerberospipeline.sprite`. | `"2Gi"` |
+| `kerberospipeline.sprite.resources.limits.cpu` | CPU limit for `kerberospipeline.sprite`. | `"1000m"` |
+| `kerberospipeline.export.repository` | Container image repository for `kerberospipeline.export`. | `"ghcr.io/uug-ai/hub-pipeline-export"` |
+| `kerberospipeline.export.pullPolicy` | Image pull policy for `kerberospipeline.export`. | `"IfNotPresent"` |
+| `kerberospipeline.export.tag` | Container image tag/version for `kerberospipeline.export`. | `"v1.2.4"` |
+| `kerberospipeline.export.replicas` | Number of replicas for `kerberospipeline.export`. | `2` |
+| `kerberospipeline.export.logLevel` | Log verbosity level for `kerberospipeline.export`. | `"info"` |
+| `kerberospipeline.export.resources.requests.memory` | Memory request for `kerberospipeline.export`. | `"10Mi"` |
+| `kerberospipeline.export.resources.requests.cpu` | CPU request for `kerberospipeline.export`. | `"10m"` |
+| `kerberospipeline.redaction.repository` | Container image repository for `kerberospipeline.redaction`. | `"ghcr.io/uug-ai/hub-pipeline-redaction"` |
+| `kerberospipeline.redaction.pullPolicy` | Image pull policy for `kerberospipeline.redaction`. | `"IfNotPresent"` |
+| `kerberospipeline.redaction.tag` | Container image tag/version for `kerberospipeline.redaction`. | `"v1.0.0"` |
+| `kerberospipeline.redaction.replicas` | Number of replicas for `kerberospipeline.redaction`. | `2` |
+| `kerberospipeline.redaction.logLevel` | Log verbosity level for `kerberospipeline.redaction`. | `"info"` |
+| `kerberospipeline.redaction.resources.requests.memory` | Memory request for `kerberospipeline.redaction`. | `"512Mi"` |
+| `kerberospipeline.redaction.resources.requests.cpu` | CPU request for `kerberospipeline.redaction`. | `"500m"` |
+| `kerberospipeline.redaction.resources.limits.memory` | Memory limit for `kerberospipeline.redaction`. | `"2Gi"` |
+| `kerberospipeline.redaction.resources.limits.cpu` | CPU limit for `kerberospipeline.redaction`. | `"1000m"` |
+| `email.provider` | The email service provider for sending out messages over email , use `'mailgun'` or `'smtp'`. | `"mailgun"` |
+| `email.from` | The email address that is sending messages in name of, by default `'support@yourdomain.com'`. | `"support@yourdomain.com"` |
+| `email.displayName` | The display name that is sending messages in name of, by default `'yourdomain.com'` | `"yourdomain.com"` |
+| `email.mailgun.domain` | While using `mailgun` as email service provider, you will need to provide your Mailgun domain. | `"mg.yourdomain.com"` |
+| `email.mailgun.apikey` | Mailgun API key (lowercase variant) used when provider is `mailgun`. | `"xxxx"` |
+| `email.smtp.server` | While using `smtp` as email service provider, use the SMTP server. | `"smtp.yourdomain.com"` |
+| `email.smtp.port` | SMTP port specified by your SMTP server, by default `'456'`. | `"465"` |
+| `email.smtp.username` | SMTP username. | `"yourusername"` |
+| `email.smtp.password` | SMTP password. | `"yourpassword"` |
+| `email.templates.welcome` | The template which is send when a new user registered on the platform (`IS_PRIVATE='false'`), by default `'disabled'`. | `"welcome"` |
+| `email.templates.welcomeTitle` | The welcome title use in the subject of the email. | `"Welcome to Kerberos Hub"` |
+| `email.templates.activate` | The template which is send when a user is required to activate his account , by default `'activate'`. | `"activate"` |
+| `email.templates.activateTitle` | The activation title use in the subject of the email. | `"Wonderful! Your Kerberos Hub is now active"` |
+| `email.templates.forgot` | The template which is send when an account is requesting a forgot password, by default `'forgot'`. | `"forgot"` |
+| `email.templates.forgotTitle` | The forgot title use in the subject of the email. | `"Password reset Kerberos Hub. You forgot your password"` |
+| `email.templates.share` | Email template name/key for `share` notifications. | `"share"` |
+| `email.templates.shareTitle` | Email subject title for the `share` template. | `"[Action] You received a recording from Kerberos Hub"` |
+| `email.templates.assignTask` | Email template name/key for `assign task` notifications. | `"assign_task"` |
+| `email.templates.assignTaskTitle` | Email subject title for the `assign task` template. | `"[Action] You've been assigned to a task"` |
+| `email.templates.detection` | We use templates to send notifications, this allow you to bring your own `Mailgun` templates, by default `'detection'`. | `"detection"` |
+| `email.templates.disabled` | The template which is send when an account is disabled due to reaching its upload limit, by default `'disabled'`. | `"disabled"` |
+| `email.templates.highupload` | The template which is send when an account is reaching a specific upload threshold, by default `'threshold'`. | `"highupload"` |
+| `email.templates.device` | The template which is send when a camera goes online or offline, by default `'device'`. | `"device"` |
+| `email.templates.alertTitle` | Email subject title for the `alert` template. | `"[Alert] Kerberos Hub detected something an event"` |
+| `email.templates.deviceTitle` | Email subject title for the `device` template. | `"[Device] A Kerberos Agent's status has been changed"` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
 | `kerberoshub.forwarder.pullPolicy` | The Docker registry pull policy. | `""` |
