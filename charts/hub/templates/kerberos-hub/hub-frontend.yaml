@@ -355,10 +355,10 @@ spec:
         # features > liveview
         - name: FEATURE_DEFAULT_STREAM_MODE
           value: "{{ .Values.kerberoshub.frontend.features.liveview.defaultStreamMode }}"
-        - name: FEATURE_LIVEVIEW_PAGINATION_ENABLED
-          value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationEnabled }}"
-        - name: FEATURE_LIVEVIEW_EMPTY_BY_DEFAULT
-          value: "{{ .Values.kerberoshub.frontend.features.liveview.emptyByDefault }}"
+        - name: FEATURE_LIVEVIEW_PAGINATION_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationMode }}"
+        - name: FEATURE_LIVEVIEW_PAGE_SIZE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.pageSize }}"
         - name: FEATURE_LIVEVIEW_MAX_STREAMS
           value: "{{ .Values.kerberoshub.frontend.features.liveview.maxStreams }}"
 

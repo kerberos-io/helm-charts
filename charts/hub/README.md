@@ -223,8 +223,8 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.map.tileUrlDark` | Tile URL used by the map in dark mode. | `""` |
 | `kerberoshub.frontend.features.map.attribution` | Attribution text displayed on the map tiles. | `""` |
 | `kerberoshub.frontend.features.liveview.defaultStreamMode` | Liveview behavior setting: `defaultStreamMode`. | `""` |
-| `kerberoshub.frontend.features.liveview.paginationEnabled` | Liveview behavior setting: `paginationEnabled`. | `""` |
-| `kerberoshub.frontend.features.liveview.emptyByDefault` | Liveview behavior setting: `emptyByDefault`. | `""` |
+| `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `""` |
+| `kerberoshub.frontend.features.liveview.pageSize` | Liveview behavior setting: `pageSize` (max streams shown per page in `numbered` mode). | `""` |
 | `kerberoshub.frontend.features.liveview.maxStreams` | Liveview behavior setting: `maxStreams`. | `""` |
 | `kerberoshub.frontend.features.devices.hideAgent` | Hide agent controls in the devices section of the frontend. | `""` |
 | `kerberoshub.frontend.features.media.filter.date.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.date`. | `""` |
