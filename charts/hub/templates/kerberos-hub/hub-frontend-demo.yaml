@@ -195,39 +195,6 @@ spec:
         - name: ZENDESK_URL
           value: "{{ .Values.kerberoshub.frontend.zendesk.url }}"
 
-        # Titles and descriptions on pages
-        - name: LOGIN_DESCRIPTION
-          value: "{{ .Values.kerberoshub.frontend.loginDescription }}"
-        - name: LOGIN_COPYRIGHT
-          value: "{{ .Values.kerberoshub.frontend.loginCopyright }}"
-        - name: PAGE_DASHBOARD_TITLE
-          value: "{{ .Values.kerberoshub.frontend.dashboardTitle }}"
-        - name: PAGE_DASHBOARD_SUB_TITLE
-          value: "{{ .Values.kerberoshub.frontend.dashboardSubTitle }}"
-        - name: PAGE_LATESTEVENTS_TITLE
-          value: "{{ .Values.kerberoshub.frontend.latestEventsTitle }}"
-        - name: PAGE_LATESTEVENTS_SUB_TITLE
-          value: "{{ .Values.kerberoshub.frontend.latestEventsSubTitle }}"
-        - name: PAGE_LIVESTREAM_TITLE
-          value: "{{ .Values.kerberoshub.frontend.livestreamTitle }}"
-        - name: PAGE_LIVESTREAM_SUB_TITLE
-          value: "{{ .Values.kerberoshub.frontend.livestreamSubTitle }}"
-        - name: PAGE_MEDIA_TITLE
-          value: "{{ .Values.kerberoshub.frontend.mediaTitle }}"
-        - name: PAGE_MEDIA_SUB_TITLE
-          value: "{{ .Values.kerberoshub.frontend.mediaSubTitle }}"
-        - name: PAGE_DAY_TITLE
-          value: "{{ .Values.kerberoshub.frontend.dayTitle }}"
-        - name: PAGE_DAY_SUB_TITLE
-          value: "{{ .Values.kerberoshub.frontend.daySubTitle }}"
-        - name: PAGE_DASHBOARD_CPU_USAGE
-          value: "{{ .Values.kerberoshub.frontend.cpuUsageDescription }}"
-        - name: PAGE_DASHBOARD_FPS
-          value: "{{ .Values.kerberoshub.frontend.framesPerSecondDescription }}"
-        - name: PAGE_DASHBOARD_MLA
-          value: "{{ .Values.kerberoshub.frontend.mlaUtilizationDescription }}"
-        - name: PAGE_DASHBOARD_OBJECTS
-          value: "{{ .Values.kerberoshub.frontend.objectsDetectedDescription }}"
         - name: HIDE_ADD_AGENT
           value: "{{ .Values.kerberoshub.frontend.hideAddAgent }}"
 
@@ -272,10 +239,10 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.i18n.defaultLanguage }}"
 
         # features > liveview
-        - name: FEATURE_LIVEVIEW_PAGINATION_ENABLED
-          value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationEnabled }}"
-        - name: FEATURE_LIVEVIEW_EMPTY_BY_DEFAULT
-          value: "{{ .Values.kerberoshub.frontend.features.liveview.emptyByDefault }}"
+        - name: FEATURE_LIVEVIEW_PAGINATION_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationMode }}"
+        - name: FEATURE_LIVEVIEW_PAGE_SIZE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.pageSize }}"
         - name: FEATURE_LIVEVIEW_MAX_STREAMS
           value: "{{ .Values.kerberoshub.frontend.features.liveview.maxStreams }}"
 
@@ -342,30 +309,6 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.events.enabled }}"
         - name: FEATURE_MEDIA_FILTER_TAGS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.tags.enabled }}"
-        
-
-        - name: MARKERS_NAME
-          value: "{{ .Values.kerberoshub.frontend.markersName }}"
-        - name: EVENTS_NAME
-          value: "{{ .Values.kerberoshub.frontend.eventsName }}"
-        - name: FLOOR_PLAN_NAME
-          value: "{{ .Values.kerberoshub.frontend.floorPlanName }}"
-        - name: SITES_NAME
-          value: "{{ .Values.kerberoshub.frontend.sitesName }}"
-        - name: SITES_DESCRIPTION
-          value: "{{ .Values.kerberoshub.frontend.sitesDescription }}"
-        - name: GROUPS_NAME
-          value: "{{ .Values.kerberoshub.frontend.groupsName }}"
-        - name: GROUPS_DESCRIPTION
-          value: "{{ .Values.kerberoshub.frontend.groupsDescription }}"
-        - name: SITE_GROUP_NAME
-          value: "{{ .Values.kerberoshub.frontend.siteGroupName }}"
-        - name: SITE_GROUP_DESCRIPTION
-          value: "{{ .Values.kerberoshub.frontend.siteGroupDescription }}"
-        - name: DEVICE_GROUP_NAME
-          value: "{{ .Values.kerberoshub.frontend.deviceGroupName }}"
-        - name: DEVICE_GROUP_DESCRIPTION
-          value: "{{ .Values.kerberoshub.frontend.deviceGroupDescription }}"
         
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 8 }}

@@ -359,43 +359,9 @@ kerberoshub:
     #    persistentVolumeClaim:
     #      claimName: custom-favicon-claim
 
-    # Override naming conventions within the front-end.
-    floorPlanName: "map" # The name of the 'floor plan' feature to use in the front-end.
-    sitesName: "site" # The name of the 'sites' feature to use in the front-end.
-    sitesDescription: "" # The description of the 'sites' feature to use in the front-end.
-    groupsName: "group" # The name of the 'groups' feature to use in the front-end.
-    groupsDescription: "" # The description of the 'groups' feature to use in the front-end.
-    siteGroupName: "site Group" # The name of the 'site groups' feature to use in the front-end.
-    siteGroupDescription: "" # The description of the 'site groups' feature to use in the front-end.
-    deviceGroupName: "device Group" # The name of the 'device groups' feature to use in the front-end.
-    deviceGroupDescription: "" # The description of the 'device groups' feature to use in the front-end.
-    markersName: "marker" # The name of the 'markers' feature to use in the front-end.
-    eventsName: "event" # The name of the 'events' feature to use in the front-end.
-    # By specifying the below environments variables, you can tweak the
-    # headings and paragraphs of Kerberos Hub front-end.
-    # Login page
-    loginDescription: ""
-    loginCopyright: ""
-    # Dashboard page
-    dashboardTitle: ""
-    dashboardSubTitle: ""
-    # Latest events page
-    latestEventsTitle: ""
-    latestEventsSubTitle: ""
-    # Day title
-    dayTitle: ""
-    daySubTitle: ""
-    # Livestream/view page
-    livestreamTitle: ""
-    livestreamSubTitle: ""
-    # Media page
-    mediaTitle: ""
-    mediaSubTitle: ""
-    # Optional - for custom page.
-    cpuUsageDescription: ""
-    framesPerSecondDescription: ""
-    mlaUtilizationDescription: ""
-    objectsDetectedDescription: ""
+    # Note: Front-end naming/labelling and page headings are sourced from the
+    # built-in internationalization files (assets/i18n/*.json) and are no
+    # longer configurable via the Helm chart.
     # You can add custom links to the navigation bar.
     navigationLinkTitle1: ""
     navigationLinkUrl1: ""
@@ -434,8 +400,8 @@ kerberoshub:
       # Live view page
       liveview:
         defaultStreamMode: "SD" # Default stream mode 'SD' or 'HD' (will be migrated to 'preview' or 'live')
-        paginationEnabled: "false" # Enable or disable pagination in live view 'true' or 'false'
-        emptyByDefault: "false" # Show empty live view when there are no active devices 'true' or 'false'
+        paginationMode: "scroll" # Pagination mode in live view 'scroll', 'numbered' or 'maxStreams'
+        pageSize: "6" # Max streams shown per page when paginationMode is 'numbered' (4, 8, 12, 16 or 25)
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited
       # Device page
       devices:
