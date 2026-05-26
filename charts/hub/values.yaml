@@ -54,6 +54,12 @@ mongodb:
   username: yourusername
   password: "yourpassword"
   retryWrites: "true"
+  # Backend engine flavor. Use "mongodb" for native MongoDB / Atlas (default)
+  # or "documentdb" for AWS DocumentDB. The "documentdb" flavor makes the
+  # hub-api disable features DocumentDB does not support (geospatial queries
+  # and indexes, complex $lookup pipelines, etc.). When using DocumentDB you
+  # should also set retryWrites: "false".
+  flavor: "mongodb"
 ###################################################
 # MQTT configuration (bi-directional communication)
 ###################################################
