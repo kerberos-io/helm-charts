@@ -52,6 +52,7 @@ Below all configuration options and parameters are listed.
 | `mongodb.username` | MongoDB user account, we are using in the hub installation `'root'`. | `"yourusername"` |
 | `mongodb.password` | MongoDB user password, by default `'yourmongodbpassword'` | `"yourpassword"` |
 | `mongodb.retryWrites` | Enable or disable MongoDB retryable writes. | `"true"` |
+| `mongodb.flavor` | Backend engine flavor: `"mongodb"` (native MongoDB / Atlas) or `"documentdb"` (AWS DocumentDB). The `documentdb` flavor disables features DocumentDB does not support (geospatial queries/indexes, complex `$lookup` pipelines). When set to `documentdb`, also set `mongodb.retryWrites: "false"`. | `"mongodb"` |
 | `mqtt.host` | MQTT (Vernemq) hostname. | `"mqtt.yourdomain.com"` |
 | `mqtt.port` | MQTT (Vernemq) port for WSS (secure sockets), by default `'8443'`. | `"8443"` |
 | `mqtt.protocol` | MQTT (Vernemq) protocol, by default `'wss'`. | `"wss"` |

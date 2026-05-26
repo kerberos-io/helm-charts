@@ -11,4 +11,5 @@ data:
   MONGODB_USERNAME: "{{ .Values.mongodb.username }}"
   MONGODB_PASSWORD: "{{ .Values.mongodb.password }}"
   MONGODB_RETRY_WRITES: "{{ .Values.mongodb.retryWrites }}"
+  MONGODB_FLAVOR: "{{ .Values.mongodb.flavor | default "mongodb" }}"
   MONGODB_DATABASE_CLOUD: "Kerberos"
