@@ -194,6 +194,20 @@ spec:
               value: "{{ .Values.kerberoshub.api.fallbackLanguage }}"
             - name: API_KEY
               value: "{{ .Values.kerberoshub.api.apiKey }}"
+
+            # MQTT credentials (served via /runtime/config to authenticated
+            # frontend clients; no longer exposed in the public env.js).
+            - name: MQTT_USERNAME
+              value: "{{ .Values.mqtt.username }}"
+            - name: MQTT_PASSWORD
+              value: "{{ .Values.mqtt.password }}"
+
+            # TURN credentials (served via /runtime/config to authenticated
+            # frontend clients; no longer exposed in the public env.js).
+            - name: TURN_USERNAME
+              value: "{{ .Values.turn.username }}"
+            - name: TURN_PASSWORD
+              value: "{{ .Values.turn.password }}"
             {{- if .Values.kerberoshub.api.serverTLS.enabled }}
             - name: TLS_CERT_FILE
               value: "{{ .Values.kerberoshub.api.serverTLS.certFile }}"
