@@ -148,10 +148,9 @@ spec:
           value: "{{ .Values.mqtt.host }}"
         - name: MQTT_PORT
           value: "{{ .Values.mqtt.port }}"
-        - name: MQTT_USERNAME
-          value: "{{ .Values.mqtt.username }}"
-        - name: MQTT_PASSWORD
-          value: "{{ .Values.mqtt.password }}"
+        # MQTT_USERNAME / MQTT_PASSWORD are intentionally not exposed to the
+        # frontend. They are fetched from the authenticated hub-api endpoint
+        # /runtime/config after login. See hub-api deployment.
         - name: MQTT_LEGACY_SERVER
           value: "{{ .Values.mqtt.legacy.host }}"
         - name: MQTT_LEGACY_PORT
@@ -164,10 +163,9 @@ spec:
         # Turn (Pion)
         - name: TURN_SERVER
           value: "{{ .Values.turn.host }}"
-        - name: TURN_USERNAME
-          value: "{{ .Values.turn.username }}"
-        - name: TURN_PASSWORD
-          value: "{{ .Values.turn.password }}"
+        # TURN_USERNAME / TURN_PASSWORD are intentionally not exposed to the
+        # frontend. They are fetched from the authenticated hub-api endpoint
+        # /runtime/config after login. See hub-api deployment.
 
         # Mixpanel for monitoring
         - name: MIXPANEL_KEY
