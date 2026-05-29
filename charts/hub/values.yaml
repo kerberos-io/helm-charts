@@ -247,6 +247,11 @@ kerberoshub:
     # unless an explicit value is provided). Must match the value used by
     # `kerberoshub.cleanup.defaultTaskRetentionDays`.
     defaultTaskRetentionDays: "0"
+    # Maximum retention (in days) allowed on a task. When a caller
+    # supplies an `expires_at` (or the default retention above resolves)
+    # beyond this cap, the value is clamped down to `now + casesMaxRetentionDays`.
+    # Set to "0" (or a negative value) to disable the cap (no maximum).
+    casesMaxRetentionDays: "0"
     ## Certificates
     tls:
       - hosts:
