@@ -378,6 +378,10 @@ spec:
         - name: COLOR_CHART_GRID_STROKE
           value: "{{ .Values.kerberoshub.frontend.features.chart.colorChartGridStroke }}"
 
+        # features > video edits
+        - name: FEATURE_VIDEO_EDITS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.videoEdits.enabled }}"
+
         # features > face redaction 
         - name: FEATURE_FACE_REDACTION_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}" 
