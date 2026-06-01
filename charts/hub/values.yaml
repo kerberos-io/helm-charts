@@ -354,14 +354,19 @@ kerberoshub:
     # 2. you bring your own logo (set logo to 'custom'), and mount the css file and favicons.
     # we will need to include your logo in the Docker image, so please reach out to us.
     logo: "custom"
-    # Custom layout: override css
-    # By providing a style.css file in the custom folder
-    # this file will override any css styling.
+    # Custom layout: override css, favicons and translations (i18n)
+    # By providing a style.css file in the custom folder this file will override
+    # any css styling. Favicons are mounted into the favicon folder. Custom
+    # translation files (e.g. en.json, nl.json, ...) can be mounted into the
+    # i18n folder to override the built-in translations shipped in the image.
+    # An example translation file can be found in custom-layout/i18n/en.json.
     #volumeMounts:
     #  - name: custom-layout
     #    mountPath: /usr/share/nginx/html/assets/custom
     #  - name: custom-favicon
     #    mountPath: /usr/share/nginx/html/assets/favicon
+    #  - name: custom-i18n
+    #    mountPath: /usr/share/nginx/html/assets/i18n
     #volumes:
     #  - name: custom-layout
     #    persistentVolumeClaim:
@@ -369,6 +374,9 @@ kerberoshub:
     #  - name: custom-favicon
     #    persistentVolumeClaim:
     #      claimName: custom-favicon-claim
+    #  - name: custom-i18n
+    #    persistentVolumeClaim:
+    #      claimName: custom-i18n-claim
 
     # Note: Front-end naming/labelling and page headings are sourced from the
     # built-in internationalization files (assets/i18n/*.json) and are no
