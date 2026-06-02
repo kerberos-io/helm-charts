@@ -29,12 +29,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.sequence.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.sequence.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-sequence
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.sequence.repository }}:{{ .Values.kerberospipeline.sequence.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.sequence.pullPolicy }}
         {{- with .Values.kerberospipeline.sequence.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.sequence.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         envFrom:

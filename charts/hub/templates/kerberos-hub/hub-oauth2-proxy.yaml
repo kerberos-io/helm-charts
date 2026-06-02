@@ -16,6 +16,14 @@ spec:
       labels:
         k8s-app: oauth2-proxy
     spec:
+      {{- with .Values.kerberoshub.oauth2Proxy.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberoshub.oauth2Proxy.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - args:
             - --provider=github
@@ -23,6 +31,10 @@ spec:
             - --upstream=file:///dev/null
             - --http-address=0.0.0.0:4180
             - --skip-auth-preflight=true
+          {{- with .Values.kerberoshub.oauth2Proxy.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: OAUTH2_PROXY_CLIENT_ID
               value: "{{ .Values.kerberoshub.oauth2Proxy.github.clientId }}"

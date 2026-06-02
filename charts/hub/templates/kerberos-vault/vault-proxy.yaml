@@ -24,10 +24,22 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberoshub.proxy.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberoshub.proxy.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: vault-proxy
           image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.proxy.repository }}:{{ .Values.kerberoshub.proxy.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.proxy.pullPolicy }}
+          {{- with .Values.kerberoshub.proxy.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - containerPort: 8080
               name: http

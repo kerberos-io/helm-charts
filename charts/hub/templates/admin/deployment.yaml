@@ -14,12 +14,24 @@ spec:
       labels:
         app: admin
     spec:
+      {{- with .Values.admin.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.admin.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: admin
           image: "{{ .Values.global.imageRegistry }}{{ .Values.admin.repository }}:{{ .Values.admin.tag }}"
           imagePullPolicy: {{ .Values.admin.pullPolicy }}
           {{- with .Values.admin.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.admin.volumeMounts }}
+          volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:

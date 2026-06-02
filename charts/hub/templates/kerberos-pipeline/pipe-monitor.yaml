@@ -29,12 +29,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.monitor.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.monitor.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-monitor
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.monitor.repository }}:{{ .Values.kerberospipeline.monitor.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.monitor.pullPolicy }}
         {{- with .Values.kerberospipeline.monitor.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.monitor.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         envFrom:

@@ -27,12 +27,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.thumbnail.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.thumbnail.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-thumbnail
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.thumbnail.repository }}:{{ .Values.kerberospipeline.thumbnail.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.thumbnail.pullPolicy }}
         {{- with .Values.kerberospipeline.thumbnail.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.thumbnail.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:

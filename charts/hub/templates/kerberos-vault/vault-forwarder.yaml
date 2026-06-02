@@ -27,6 +27,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberoshub.forwarder.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberoshub.forwarder.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: vault-forwarder
           image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.forwarder.repository }}:{{ .Values.kerberoshub.forwarder.tag }}"
@@ -35,6 +43,10 @@ spec:
             requests:
               memory: 10Mi
               cpu: 10m
+          {{- with .Values.kerberoshub.forwarder.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
           - configMapRef:
               name: mongodb-config

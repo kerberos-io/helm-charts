@@ -33,6 +33,10 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.export.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-export
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.export.repository }}:{{ .Values.kerberospipeline.export.tag }}"

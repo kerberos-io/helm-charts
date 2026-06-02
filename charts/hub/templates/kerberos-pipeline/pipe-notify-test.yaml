@@ -33,6 +33,10 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.notifyTest.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-notify-test
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.notifyTest.repository }}:{{ .Values.kerberospipeline.notifyTest.tag }}"

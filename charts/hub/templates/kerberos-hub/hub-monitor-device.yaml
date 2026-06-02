@@ -33,6 +33,10 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberoshub.monitordevice.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: hub-monitor-device
           image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.monitordevice.repository }}:{{ .Values.kerberoshub.monitordevice.tag }}"
