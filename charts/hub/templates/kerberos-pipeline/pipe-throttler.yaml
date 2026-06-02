@@ -29,12 +29,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.throttler.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.throttler.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-throttler
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.throttler.repository }}:{{ .Values.kerberospipeline.throttler.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.throttler.pullPolicy }}
         {{- with .Values.kerberospipeline.throttler.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.throttler.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         envFrom:

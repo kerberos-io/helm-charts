@@ -29,12 +29,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.analysis.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.analysis.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-analysis
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.analysis.repository }}:{{ .Values.kerberospipeline.analysis.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.analysis.pullPolicy }}
         {{- with .Values.kerberospipeline.analysis.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.analysis.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         envFrom:

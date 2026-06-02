@@ -27,12 +27,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.sprite.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.sprite.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-sprite
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.sprite.repository }}:{{ .Values.kerberospipeline.sprite.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.sprite.pullPolicy }}        
         {{- with .Values.kerberospipeline.sprite.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.sprite.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:

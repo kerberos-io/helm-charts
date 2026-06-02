@@ -27,12 +27,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.redaction.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.redaction.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-redaction
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.redaction.repository }}:{{ .Values.kerberospipeline.redaction.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.redaction.pullPolicy }}
         {{- with .Values.kerberospipeline.redaction.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.redaction.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:

@@ -27,12 +27,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.dominantColor.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.dominantColor.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-dominantcolor
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.dominantColor.repository }}:{{ .Values.kerberospipeline.dominantColor.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.dominantColor.pullPolicy }}
         {{- with .Values.kerberospipeline.dominantColor.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.dominantColor.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:

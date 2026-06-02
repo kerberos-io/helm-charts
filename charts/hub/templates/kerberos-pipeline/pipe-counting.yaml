@@ -27,12 +27,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.kerberospipeline.counting.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberospipeline.counting.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: pipe-counting
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.counting.repository }}:{{ .Values.kerberospipeline.counting.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.counting.pullPolicy }}
         {{- with .Values.kerberospipeline.counting.resources }}
         resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.kerberospipeline.counting.volumeMounts }}
+        volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         env:

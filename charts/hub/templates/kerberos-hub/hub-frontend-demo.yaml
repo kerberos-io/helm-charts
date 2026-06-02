@@ -1,4 +1,4 @@
-{{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.frontend.demoEnabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -91,6 +91,10 @@ spec:
       {{- end }}
       {{- with .Values.kerberoshub.frontend.volumes }}
       volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberoshub.frontend.topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:

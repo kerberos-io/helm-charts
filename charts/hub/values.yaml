@@ -163,6 +163,23 @@ admin:
   pullPolicy: IfNotPresent
   tag: "v1.3.0"
   replicas: 2
+  # Optional pod topology spread constraints for this deployment. Empty by
+  # default. Example:
+  #   topologySpreadConstraints:
+  #     - maxSkew: 1
+  #       topologyKey: kubernetes.io/hostname
+  #       whenUnsatisfiable: ScheduleAnyway
+  #       labelSelector:
+  #         matchLabels:
+  #           app: admin
+  topologySpreadConstraints: []
+  # Optional extra volumes / volumeMounts for this deployment (empty = none).
+  #volumes:
+  #  - name: extra
+  #    emptyDir: {}
+  #volumeMounts:
+  #  - name: extra
+  #    mountPath: /data
   logLevel: "info" # possible values: trace, debug, info, warn, error
   resources:
     requests:
@@ -175,6 +192,14 @@ admin:
       secretName: admin
   oauth2Proxy:
     enabled: false
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     github:
       clientId: "github-client-id"
       clientSecret: "github-client-secret"
@@ -203,6 +228,10 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.9.8"
     replicas: 2
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Set to false to skip rendering the hub-api Service (e.g. when an
+    # external/shared Service is managed elsewhere).
+    serviceEnabled: true
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
@@ -312,6 +341,10 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.9.11"
     replicas: 2
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Set to false to skip rendering the hub-frontend Service (e.g. when an
+    # external/shared Service is managed elsewhere).
+    serviceEnabled: true
     logLevel: "info" # possible values: trace, debug, info, warn, error
     schema: "https"
     url: "yourdomain.com"
@@ -322,7 +355,9 @@ kerberoshub:
       limits:
         memory: 50Mi
         cpu: 50m
-    # The front-end but in read-only mode
+    # The front-end but in read-only mode. Set demoEnabled to true to deploy
+    # the demo front-end (service, ingress and deployment).
+    demoEnabled: false
     #demoUrl: "demo.yourdomain.com"
     # When migrating to another url, this might help migrating.
     #legacyUrl: "legacy.yourdomain.com"
@@ -500,6 +535,14 @@ kerberoshub:
     enabled: false
   oauth2Proxy:
     enabled: false
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     github:
       clientId: "github-client-id"
       clientSecret: "github-client-secret"
@@ -511,6 +554,14 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.4.13"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     mode: "serve" # The mode the cleanup service operates in: serve | dry-run | version
     logLevel: "info" # possible values: trace, debug, info, warn, error
     maxDays: "365" # Hard maximum age (days) for global orphan cleanup.
@@ -546,6 +597,7 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.4.0"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -564,6 +616,14 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.0.2"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -571,6 +631,14 @@ kerberoshub:
         cpu: 10m
   forwarder:
     enabled: false
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     #repository: kerberos/vault-forwarder
     #pullPolicy: IfNotPresent
     #tag: "1.0.2732389692"
@@ -584,6 +652,14 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.0.0"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -599,6 +675,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.3.0"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -609,6 +693,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.3.9"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     resources:
       requests:
         memory: 10Mi
@@ -618,6 +710,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.6.18"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     resources:
       requests:
         memory: 10Mi
@@ -627,6 +727,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.2.0"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -637,6 +745,7 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.3.9"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -655,6 +764,7 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.2.1"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     resources:
       requests:
         memory: 10Mi
@@ -672,6 +782,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.7.8"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
@@ -682,6 +800,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v2.0.2"
     replicas: 3 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn,
     resources:
       requests:
@@ -695,6 +821,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.3.4"
     replicas: 2 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     quality: "1" # 1 (best) - 31 (worst)
     width: "600"
@@ -713,6 +847,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.6.3"
     replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn,
     resources:
       requests:
@@ -724,6 +866,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.1.12"
     replicas: 5 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn,
     interval: "1" # Number of secondes between each thumbnail in the sprite
     width: "240" # Should not be changed for the moment (hard coded in UI)
@@ -740,6 +890,7 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.2.4"
     replicas: 2 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
     # playerAssetsPath: "/custom/player-assets/" # Path to custom player.html template (overrides the embedded default)
     # volumeMounts:
@@ -758,6 +909,14 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.0.0"
     replicas: 2 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
     resources:
       requests:
