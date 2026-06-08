@@ -592,6 +592,41 @@ kerberoshub:
       requests:
         memory: 10Mi
         cpu: 10m
+  # hub-workflows is the standalone, queue-driven workflow engine. It consumes
+  # pipeline events and dispatches custom stages declared in the stage registry,
+  # tracking each run in its own `workflow_runs` collection. It shares events
+  # (not a document) with the analysis pipeline and is meant to grow into the
+  # primary orchestrator. See https://github.com/uug-ai/hub-workflows.
+  workflows:
+    # Disabled by default: nothing feeds its queue yet (the event fan-out is a
+    # separate wiring step). Flip to true once `queue` below receives the same
+    # ingest events and upstream results the analysis service consumes.
+    enabled: false
+    repository: ghcr.io/uug-ai/hub-workflows
+    pullPolicy: IfNotPresent
+    tag: "v1.0.0"
+    replicas: 1 # Number of pods for the service.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
+    logLevel: "info" # possible values: trace, debug, info, warn, error
+    # Queue this service consumes ingest events and upstream results from
+    # (WORKFLOWS_QUEUE). Must be fed the same messages the analysis service sees.
+    queue: "kcloud-workflows-queue"
+    # Custom pipeline stage registry (PIPELINE_STAGE_REGISTRY): a JSON array of
+    # stage descriptors the engine may dispatch. Empty = no custom stages, so the
+    # engine runs as a safe no-op consumer (seeds runs, records results, dispatches
+    # nothing).
+    stageRegistry: "[]"
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
   monitordevice:
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent
