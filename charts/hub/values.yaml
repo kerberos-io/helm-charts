@@ -598,9 +598,10 @@ kerberoshub:
   # (not a document) with the analysis pipeline and is meant to grow into the
   # primary orchestrator. See https://github.com/uug-ai/hub-workflows.
   workflows:
-    # Disabled by default: nothing feeds its queue yet (the event fan-out is a
-    # separate wiring step). Flip to true once `queue` below receives the same
-    # ingest events and upstream results the analysis service consumes.
+    # Disabled by default. When enabled, the analysis service hands each
+    # completed analysis off to this service as the terminal pipeline stage
+    # (replacing the throttler/notification tail) via WORKFLOWS_ENABLED on
+    # pipe-analysis. Flip to true to run the workflows engine.
     enabled: false
     repository: ghcr.io/uug-ai/hub-workflows
     pullPolicy: IfNotPresent
@@ -622,6 +623,24 @@ kerberoshub:
     # stage descriptors the engine may dispatch. Empty = no custom stages, so the
     # engine runs as a safe no-op consumer (seeds runs, records results, dispatches
     # nothing).
+    #
+    # Each descriptor carries the routing fields:
+    #   operation  (required) unique stage id; binds its queue and resolution.
+    #   dispatch   "always" (default) | "conditional".
+    #   needs      conditional stages only: an array of upstream dependencies,
+    #              each {"operation": <upstream>, "condition": <predicate?>}. The
+    #              stage fires when a listed upstream resolves and that
+    #              dependency's condition matches (omit condition = unconditional).
+    #   condition  predicate shape: {"path": <dot-path>, "op":
+    #              eq|ne|contains|exists|gt|lt, "value": <operand>}.
+    # Example (one always stage, one conditional fan-in on classify):
+    #   stageRegistry: |
+    #     [
+    #       {"operation":"anpr","dispatch":"always"},
+    #       {"operation":"nohelmet","dispatch":"conditional",
+    #        "needs":[{"operation":"classify",
+    #                  "condition":{"path":"label","op":"eq","value":"person"}}]}
+    #     ]
     stageRegistry: "[]"
     resources:
       requests:

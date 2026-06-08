@@ -1,14 +1,14 @@
-{{- if or (eq .Values.mode "all") (eq .Values.mode "pipeline") -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pipe-analysis
+  name: pipe-workflows
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.kerberospipeline.analysis.replicas }}
+  replicas: {{ .Values.kerberoshub.workflows.replicas }}
   selector:
     matchLabels:
-      app: pipe-analysis
+      app: pipe-workflows
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -20,7 +20,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
-        app: pipe-analysis
+        app: pipe-workflows
     spec:
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
@@ -29,23 +29,23 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberospipeline.analysis.volumes }}
+      {{- with .Values.kerberoshub.workflows.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberospipeline.analysis.topologySpreadConstraints }}
+      {{- with .Values.kerberoshub.workflows.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: pipe-analysis
-        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.analysis.repository }}:{{ .Values.kerberospipeline.analysis.tag }}"
-        imagePullPolicy: {{ .Values.kerberospipeline.analysis.pullPolicy }}
-        {{- with .Values.kerberospipeline.analysis.resources }}
+      - name: pipe-workflows
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.workflows.repository }}:{{ .Values.kerberoshub.workflows.tag }}"
+        imagePullPolicy: {{ .Values.kerberoshub.workflows.pullPolicy }}
+        {{- with .Values.kerberoshub.workflows.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-        {{- with .Values.kerberospipeline.analysis.volumeMounts }}
+        {{- with .Values.kerberoshub.workflows.volumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
@@ -54,23 +54,16 @@ spec:
             name: mongodb-config
         env:
         - name: LOG_LEVEL
-          value: "{{ .Values.kerberospipeline.analysis.logLevel }}"
-        - name: CLOUD_PROVIDER
-          value: "{{ .Values.cloudProvider }}"
+          value: "{{ .Values.kerberoshub.workflows.logLevel }}"
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
 
-        # Kafka settings
-        - name: KAFKA_BROKER
-          value: "{{ .Values.kafka.broker }}"
-        - name: KAFKA_USERNAME
-          value: "{{ .Values.kafka.username }}"
-        - name: KAFKA_PASSWORD
-          value: "{{ .Values.kafka.password }}"
-        - name: KAFKA_MECHANISM
-          value: "{{ .Values.kafka.mechanism }}"
-        - name: KAFKA_SECURITY
-          value: "{{ .Values.kafka.security }}"
+        # Queue this service consumes from (WORKFLOWS_QUEUE) and the custom
+        # pipeline stage registry it may dispatch (PIPELINE_STAGE_REGISTRY).
+        - name: WORKFLOWS_QUEUE
+          value: "{{ .Values.kerberoshub.workflows.queue }}"
+        - name: PIPELINE_STAGE_REGISTRY
+          value: {{ .Values.kerberoshub.workflows.stageRegistry | quote }}
 
         # RabbitMQ settings
         - name: RABBITMQ_HOST
@@ -82,13 +75,9 @@ spec:
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
 
-        # When true, analysis hands the completed result off to the hub-workflows
-        # service as the terminal pipeline stage (replacing the throttler /
-        # notification tail). Kept in sync with whether the workflows service runs.
-        - name: WORKFLOWS_ENABLED
-          value: "{{ .Values.kerberoshub.workflows.enabled }}"
-          
-        # Kerberos Vault
+        # Kerberos Vault — global storage credentials a dispatched stage worker
+        # uses to fetch the media. Per-recording vault overrides (site/account)
+        # are resolved at dispatch time from the database.
         - name: KERBEROS_STORAGE_URI
           value: "{{ .Values.kerberosvault.uri }}"
         - name: KERBEROS_STORAGE_ACCESS_KEY
@@ -96,10 +85,6 @@ spec:
         - name: KERBEROS_STORAGE_SECRET
           value: "{{ .Values.kerberosvault.secretkey }}"
 
-        # Sprites
-        - name: SPRITE_ENABLED
-          value: "{{ .Values.kerberospipeline.sprite.enabled }}"
-        
         # Open Telemetry tracing
         - name: OTEL_EXPORTED_OTLP_ENABLED
           value: "{{ .Values.opentelemetry.enabled }}"
@@ -111,10 +96,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pipe-analysis
+  name: pipe-workflows
   namespace: {{ .Release.Namespace }}
   labels:
-    app: pipe-analysis
+    app: pipe-workflows
     service: pipe
 spec:
   ports:
@@ -123,5 +108,5 @@ spec:
       targetPort: 8080
       protocol: TCP
   selector:
-    app: pipe-analysis
+    app: pipe-workflows
 {{- end }}
