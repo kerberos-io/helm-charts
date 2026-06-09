@@ -598,10 +598,10 @@ kerberoshub:
   # (not a document) with the analysis pipeline and is meant to grow into the
   # primary orchestrator. See https://github.com/uug-ai/hub-workflows.
   workflows:
-    # Disabled by default. When enabled, the analysis service hands each
-    # completed analysis off to this service as the terminal pipeline stage
-    # (replacing the throttler/notification tail) via WORKFLOWS_ENABLED on
-    # pipe-analysis. Flip to true to run the workflows engine.
+    # Disabled by default. When enabled, the analysis service tees each
+    # classify result to this service (via WORKFLOWS_ENABLED on pipe-analysis)
+    # in parallel with the normal throttler/notification tail, which still runs
+    # unchanged. Flip to true to run the workflows engine.
     enabled: false
     repository: ghcr.io/uug-ai/hub-workflows
     pullPolicy: IfNotPresent
@@ -619,33 +619,75 @@ kerberoshub:
     # Queue this service consumes ingest events and upstream results from
     # (WORKFLOWS_QUEUE). Must be fed the same messages the analysis service sees.
     queue: "kcloud-workflows-queue"
-    # Custom pipeline stage registry (PIPELINE_STAGE_REGISTRY): a JSON array of
-    # stage descriptors the engine may dispatch. Empty = no custom stages, so the
-    # engine runs as a safe no-op consumer (seeds runs, records results, dispatches
-    # nothing).
-    #
-    # Each descriptor carries the routing fields:
-    #   operation  (required) unique stage id; binds its queue and resolution.
-    #   dispatch   "always" (default) | "conditional".
-    #   needs      conditional stages only: an array of upstream dependencies,
-    #              each {"operation": <upstream>, "condition": <predicate?>}. The
-    #              stage fires when a listed upstream resolves and that
-    #              dependency's condition matches (omit condition = unconditional).
-    #   condition  predicate shape: {"path": <dot-path>, "op":
-    #              eq|ne|contains|exists|gt|lt, "value": <operand>}.
-    # Example (one always stage, one conditional fan-in on classify):
-    #   stageRegistry: |
-    #     [
-    #       {"operation":"anpr","dispatch":"always"},
-    #       {"operation":"nohelmet","dispatch":"conditional",
-    #        "needs":[{"operation":"classify",
-    #                  "condition":{"path":"label","op":"eq","value":"person"}}]}
-    #     ]
-    stageRegistry: "[]"
     resources:
       requests:
         memory: 10Mi
         cpu: 10m
+    # Stage routing — how each custom stage fits into the workflow. The engine's
+    # PIPELINE_STAGE_REGISTRY is assembled automatically from the *enabled*
+    # stages below: each contributes its operation and dispatch/needs routing,
+    # plus the queue from its matching `services.<name>` entry — so the engine's
+    # routing stays in lockstep with the deployed worker and the queue cannot
+    # drift. There is nothing to set for the registry directly.
+    #
+    # Each stage is keyed to a worker of the same name under kerberoshub.services.
+    # Routing (here) and deployment (services) are toggled independently:
+    #   workflows.stages.<name>.enabled  -> include the stage in the registry (route to it)
+    #   services.<name>.enabled          -> deploy the worker (pipe-<name>.yaml)
+    stages:
+      # hub-anpr — automatic number-plate recognition stage. Routing only; its
+      # worker deployment lives under kerberoshub.services.anpr.
+      anpr:
+        # Include this stage in the engine's registry (route to it).
+        enabled: false
+        # operation  unique stage id (defaults to the key "anpr" if omitted);
+        #            binds the queue (taken from services.anpr.queue) and how
+        #            the result is recorded.
+        # dispatch   "always" (run on every workflow) | "conditional".
+        # needs      conditional stages only: upstream dependencies, each
+        #            {operation, condition?}. condition shape:
+        #            {path: <dot-path>, op: eq|ne|contains|exists|gt|lt, value: <operand>}.
+        operation: anpr
+        dispatch: always
+        # Example conditional routing — only run anpr when classify reports a car:
+        #   dispatch: conditional
+        #   needs:
+        #     - operation: classify
+        #       condition: {path: "classify.details.0.classified", op: eq, value: car}
+  # Workflow stage worker deployments (siblings of the workflows engine). Each
+  # entry is a standalone service the engine dispatches to; it consumes its own
+  # queue and routes a result back to the workflows queue. Keyed to match a
+  # workflows.stages entry of the same name. Deploying a worker here is
+  # independent from routing to it (workflows.stages.<name>.enabled) — a worker
+  # only runs when its `enabled` is true AND the workflows engine is enabled.
+  services:
+    # hub-anpr — automatic number-plate recognition worker. Lives in the
+    # hub-workflows repository as its own module. See
+    # https://github.com/uug-ai/hub-workflows/tree/main/hub-anpr.
+    anpr:
+      # Deploy the pipe-anpr worker.
+      enabled: false
+      repository: ghcr.io/uug-ai/hub-anpr
+      pullPolicy: IfNotPresent
+      tag: "v1.0.0"
+      replicas: 1 # Number of pods for the worker.
+      topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+      #volumes:
+      #  - name: extra
+      #    emptyDir: {}
+      #volumeMounts:
+      #  - name: extra
+      #    mountPath: /data
+      logLevel: "info" # possible values: trace, debug, info, warn, error
+      # Queue this worker consumes dispatched messages from (ANPR_QUEUE). This
+      # same value is read into the engine's generated registry entry for the
+      # matching stage, so the engine dispatches and the worker consumes the same
+      # queue with no drift. Convention: "kcloud-<operation>-queue.fifo".
+      queue: "kcloud-anpr-queue.fifo"
+      resources:
+        requests:
+          memory: 10Mi
+          cpu: 10m
   monitordevice:
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent

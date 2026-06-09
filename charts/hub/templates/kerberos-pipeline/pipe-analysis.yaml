@@ -82,9 +82,9 @@ spec:
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
 
-        # When true, analysis hands the completed result off to the hub-workflows
-        # service as the terminal pipeline stage (replacing the throttler /
-        # notification tail). Kept in sync with whether the workflows service runs.
+        # When true, analysis tees the classify result to the hub-workflows
+        # service in parallel with the throttler/notification tail (which still
+        # runs unchanged). Kept in sync with whether the workflows service runs.
         - name: WORKFLOWS_ENABLED
           value: "{{ .Values.kerberoshub.workflows.enabled }}"
           
