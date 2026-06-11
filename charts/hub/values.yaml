@@ -646,14 +646,36 @@ kerberoshub:
         # dispatch   "always" (run on every workflow) | "conditional".
         # needs      conditional stages only: upstream dependencies, each
         #            {operation, condition?}. condition shape:
-        #            {path: <dot-path>, op: eq|ne|contains|exists|gt|lt, value: <operand>}.
+        #            {path: <dot-path>, op: eq|ne|contains|in|exists|gt|gte|lt|lte, value: <operand>}.
+        #            path is a lookup into string-keyed maps only — it CANNOT
+        #            index into arrays. classify is the only operation teed to
+        #            workflows, so it is the reliable upstream: match the
+        #            `properties` array with `contains` (there is no top-level
+        #            `label`, and `details` is an array you cannot path into),
+        #            or gate on `objectCount` (top-level int) numerically. The
+        #            engine rejects an unknown classify path at boot.
+        # needsMode  conditional stages with more than one need: how they
+        #            combine. "any" (default) fires on the first matching
+        #            upstream; "all" is a join — the stage fires only once every
+        #            need has resolved and each condition matches, and only once.
         operation: anpr
-        dispatch: always
+        dispatch: conditional
+        # How the needs below combine. Omit (or set "any") for the original
+        # fire-on-first-match behaviour; set "all" to require every need.
+        needsMode: any
         # Example conditional routing — only run anpr when classify reports a car:
-        #   dispatch: conditional
-        #   needs:
-        #     - operation: classify
-        #       condition: {path: "classify.details.0.classified", op: eq, value: car}
+        needs:
+          - operation: classify
+            condition: {path: "properties", op: contains, value: car}
+          - operation: event
+        # Example "all" join (uncomment needsMode: all above): run only when
+        # classify reports a car AND more than one object was detected.
+        #needs:
+        #  - operation: classify
+        #    condition: {path: "properties", op: contains, value: car}
+        #  - operation: classify
+        #    condition: {path: "objectCount", op: gt, value: 1}
+          
   # Workflow stage worker deployments (siblings of the workflows engine). Each
   # entry is a standalone service the engine dispatches to; it consumes its own
   # queue and routes a result back to the workflows queue. Keyed to match a
