@@ -82,7 +82,7 @@ spec:
         - name: {{ $queueEnv }}
           value: "{{ $svc.queue }}"
         - name: WORKFLOWS_QUEUE
-          value: "{{ $root.Values.kerberoshub.workflows.queue }}"
+          value: "{{ $root.Values.kerberoshub.services.workflows.queue }}"
 
         # RabbitMQ settings
         - name: RABBITMQ_HOST

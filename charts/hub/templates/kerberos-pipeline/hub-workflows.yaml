@@ -5,7 +5,7 @@ metadata:
   name: hub-workflows
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.kerberoshub.workflows.replicas }}
+  replicas: {{ .Values.kerberoshub.services.workflows.replicas }}
   selector:
     matchLabels:
       app: hub-workflows
@@ -29,23 +29,23 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.workflows.volumes }}
+      {{- with .Values.kerberoshub.services.workflows.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.workflows.topologySpreadConstraints }}
+      {{- with .Values.kerberoshub.services.workflows.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
       - name: hub-workflows
-        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.workflows.repository }}:{{ .Values.kerberoshub.workflows.tag }}"
-        imagePullPolicy: {{ .Values.kerberoshub.workflows.pullPolicy }}
-        {{- with .Values.kerberoshub.workflows.resources }}
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.services.workflows.repository }}:{{ .Values.kerberoshub.services.workflows.tag }}"
+        imagePullPolicy: {{ .Values.kerberoshub.services.workflows.pullPolicy }}
+        {{- with .Values.kerberoshub.services.workflows.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-        {{- with .Values.kerberoshub.workflows.volumeMounts }}
+        {{- with .Values.kerberoshub.services.workflows.volumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
@@ -54,7 +54,7 @@ spec:
             name: mongodb-config
         env:
         - name: LOG_LEVEL
-          value: "{{ .Values.kerberoshub.workflows.logLevel }}"
+          value: "{{ .Values.kerberoshub.services.workflows.logLevel }}"
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
 
@@ -63,7 +63,7 @@ spec:
         # The registry is assembled from the enabled stages under
         # kerberoshub.workflows.stages (see _workflows-helpers.tpl).
         - name: WORKFLOWS_QUEUE
-          value: "{{ .Values.kerberoshub.workflows.queue }}"
+          value: "{{ .Values.kerberoshub.services.workflows.queue }}"
         - name: PIPELINE_STAGE_REGISTRY
           value: {{ include "kerberoshub.workflows.stageRegistry" . | quote }}
 

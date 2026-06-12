@@ -603,26 +603,11 @@ kerberoshub:
     # in parallel with the normal throttler/notification tail, which still runs
     # unchanged. Flip to true to run the workflows engine.
     enabled: false
-    repository: ghcr.io/uug-ai/hub-workflows
-    pullPolicy: IfNotPresent
-    tag: "v1.0.0"
-    replicas: 1 # Number of pods for the service.
-    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-    # Optional extra volumes / volumeMounts for this deployment (empty = none).
-    #volumes:
-    #  - name: extra
-    #    emptyDir: {}
-    #volumeMounts:
-    #  - name: extra
-    #    mountPath: /data
-    logLevel: "info" # possible values: trace, debug, info, warn, error
-    # Queue this service consumes ingest events and upstream results from
-    # (WORKFLOWS_QUEUE). Must be fed the same messages the analysis service sees.
-    queue: "kcloud-workflows-queue"
-    resources:
-      requests:
-        memory: 10Mi
-        cpu: 10m
+    # This block is purely behaviour: the master switch above plus the stage
+    # routing below. The engine's own deployment (image/tag/replicas/queue/
+    # resources) lives under kerberoshub.services.workflows, in the same uniform
+    # shape as the stage workers it dispatches to.
+    #
     # Stage routing — how each custom stage fits into the workflow. The engine's
     # PIPELINE_STAGE_REGISTRY is assembled automatically from the *enabled*
     # stages below: each contributes its operation and dispatch/needs routing,
@@ -669,12 +654,13 @@ kerberoshub:
         #            need has resolved and each condition matches, and only once.
         operation: anpr
         dispatch: conditional
-        # kind routes this stage's typed result (the PostANPRRequest its worker
-        # returns in the run Payload) through the engine's shared ingest core,
-        # which persists it into the dedicated "anpr" collection and creates one
-        # marker per recognised plate. Without it the result is only recorded for
-        # routing, not persisted.
-        kind: anpr
+        # kind routes this stage's typed result (the PostDetectionsRequest its
+        # demo worker compiles from the classify car boxes and returns in the run
+        # Payload) through the engine's shared ingest core, which persists it into
+        # the detections collection so the recording's edit-media modal shows the
+        # car boxes. Without it the result is only recorded for routing, not
+        # persisted.
+        kind: detection
         # Default routing — run anpr whenever classify reports a car (any camera).
         needsMode: any
         needs:
@@ -691,13 +677,43 @@ kerberoshub:
         #  - operation:
         #    condition: {path: "device.deviceKey", op: eq, value: device02}
           
-  # Workflow stage worker deployments (siblings of the workflows engine). Each
-  # entry is a standalone service the engine dispatches to; it consumes its own
-  # queue and routes a result back to the workflows queue. Keyed to match a
-  # workflows.stages entry of the same name. Deploying a worker here is
-  # independent from routing to it (workflows.stages.<name>.enabled) — a worker
-  # only runs when its `enabled` is true AND the workflows engine is enabled.
+  # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
+  # replicas/resources/queue lives here in a single, uniform shape:
+  #   - `workflows` is the engine itself (the orchestrator). It is deployed
+  #     whenever kerberoshub.workflows.enabled is true and has no `enabled` of
+  #     its own — the master switch already gates the whole subsystem.
+  #   - every other entry is a stage worker the engine dispatches to, keyed to
+  #     match a kerberoshub.workflows.stages entry of the same name. A worker
+  #     consumes its own queue and routes its result back to the engine queue.
+  #     Deploying a worker (services.<name>.enabled) is independent from routing
+  #     to it (workflows.stages.<name>.enabled) — it runs only when its own
+  #     `enabled` is true AND the workflows engine is enabled.
   services:
+    # hub-workflows — the workflows engine (orchestrator). Consumes the engine
+    # queue, evaluates the stage registry (assembled from workflows.stages) and
+    # dispatches to the stage workers below. Deployed when workflows.enabled is
+    # true; it has no separate `enabled` here.
+    workflows:
+      repository: ghcr.io/uug-ai/hub-workflows
+      pullPolicy: IfNotPresent
+      tag: "v1.0.0"
+      replicas: 1 # Number of pods for the service.
+      topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+      # Optional extra volumes / volumeMounts for this deployment (empty = none).
+      #volumes:
+      #  - name: extra
+      #    emptyDir: {}
+      #volumeMounts:
+      #  - name: extra
+      #    mountPath: /data
+      logLevel: "info" # possible values: trace, debug, info, warn, error
+      # Queue this service consumes ingest events and upstream results from
+      # (WORKFLOWS_QUEUE). Must be fed the same messages the analysis service sees.
+      queue: "kcloud-workflows-queue"
+      resources:
+        requests:
+          memory: 10Mi
+          cpu: 10m
     # hub-anpr — automatic number-plate recognition worker. Lives in the
     # hub-workflows repository as its own module. See
     # https://github.com/uug-ai/hub-workflows/tree/main/hub-anpr.
