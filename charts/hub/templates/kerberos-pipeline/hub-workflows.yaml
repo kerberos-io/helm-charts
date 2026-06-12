@@ -1,14 +1,14 @@
-{{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled .Values.kerberoshub.services.anpr.enabled -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pipe-anpr
+  name: hub-workflows
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.kerberoshub.services.anpr.replicas }}
+  replicas: {{ .Values.kerberoshub.workflows.replicas }}
   selector:
     matchLabels:
-      app: pipe-anpr
+      app: hub-workflows
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -17,8 +17,10 @@ spec:
       maxSurge: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
-        app: pipe-anpr
+        app: hub-workflows
     spec:
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
@@ -27,40 +29,43 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.services.anpr.volumes }}
+      {{- with .Values.kerberoshub.workflows.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.services.anpr.topologySpreadConstraints }}
+      {{- with .Values.kerberoshub.workflows.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - name: pipe-anpr
-        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.services.anpr.repository }}:{{ .Values.kerberoshub.services.anpr.tag }}"
-        imagePullPolicy: {{ .Values.kerberoshub.services.anpr.pullPolicy }}
-        {{- with .Values.kerberoshub.services.anpr.resources }}
+      - name: hub-workflows
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.workflows.repository }}:{{ .Values.kerberoshub.workflows.tag }}"
+        imagePullPolicy: {{ .Values.kerberoshub.workflows.pullPolicy }}
+        {{- with .Values.kerberoshub.workflows.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-        {{- with .Values.kerberoshub.services.anpr.volumeMounts }}
+        {{- with .Values.kerberoshub.workflows.volumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 12 }}
         {{- end }}
+        envFrom:
+        - configMapRef:
+            name: mongodb-config
         env:
         - name: LOG_LEVEL
-          value: "{{ .Values.kerberoshub.services.anpr.logLevel }}"
+          value: "{{ .Values.kerberoshub.workflows.logLevel }}"
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
 
-        # The queue this stage worker consumes dispatched "anpr" stages from
-        # (ANPR_QUEUE) and the workflows engine queue it routes its result back
-        # to (WORKFLOWS_QUEUE, so the run records the resolution and any stage
-        # that needs "anpr" can fire).
-        - name: ANPR_QUEUE
-          value: "{{ .Values.kerberoshub.services.anpr.queue }}"
+        # Queue this service consumes from (WORKFLOWS_QUEUE) and the custom
+        # pipeline stage registry it may dispatch (PIPELINE_STAGE_REGISTRY).
+        # The registry is assembled from the enabled stages under
+        # kerberoshub.workflows.stages (see _workflows-helpers.tpl).
         - name: WORKFLOWS_QUEUE
           value: "{{ .Values.kerberoshub.workflows.queue }}"
+        - name: PIPELINE_STAGE_REGISTRY
+          value: {{ include "kerberoshub.workflows.stageRegistry" . | quote }}
 
         # RabbitMQ settings
         - name: RABBITMQ_HOST
@@ -72,22 +77,31 @@ spec:
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
 
-        # Kerberos Vault — global storage credentials this stage uses to fetch
-        # the media it operates on.
+        # Kerberos Vault — global storage credentials a dispatched stage worker
+        # uses to fetch the media. Per-recording vault overrides (site/account)
+        # are resolved at dispatch time from the database.
         - name: KERBEROS_STORAGE_URI
           value: "{{ .Values.kerberosvault.uri }}"
         - name: KERBEROS_STORAGE_ACCESS_KEY
           value: "{{ .Values.kerberosvault.accesskey }}"
         - name: KERBEROS_STORAGE_SECRET
           value: "{{ .Values.kerberosvault.secretkey }}"
+
+        # Open Telemetry tracing
+        - name: OTEL_EXPORTED_OTLP_ENABLED
+          value: "{{ .Values.opentelemetry.enabled }}"
+        - name: OTEL_EXPORTED_OTLP_ROUTING_ENABLED
+          value: "{{ .Values.opentelemetry.routingEnabled }}"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "{{ .Values.opentelemetry.collector.endpoint }}"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pipe-anpr
+  name: hub-workflows
   namespace: {{ .Release.Namespace }}
   labels:
-    app: pipe-anpr
+    app: hub-workflows
     service: pipe
 spec:
   ports:
@@ -96,5 +110,5 @@ spec:
       targetPort: 8080
       protocol: TCP
   selector:
-    app: pipe-anpr
+    app: hub-workflows
 {{- end }}

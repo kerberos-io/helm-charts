@@ -1,0 +1,124 @@
+{{- /*
+  Generic workflow-stage worker.
+
+  Renders a Deployment + Service for every stage under
+  kerberoshub.workflows.stages that has a matching, enabled worker under
+  kerberoshub.services.<name>. A custom stage joins the pipeline by values
+  alone — no per-stage template needed.
+
+  Every stage worker receives the same connection contract; the only value that
+  varies by stage is the consume-queue variable name, <NAME>_QUEUE (a stage
+  keyed "anpr" gets ANPR_QUEUE, "my-stage" gets MY_STAGE_QUEUE). To run a worker
+  outside the chart instead, leave services.<name>.enabled unset (or false)
+  while keeping the stage under workflows.stages so the engine still routes to
+  the queue you publish.
+*/ -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
+{{- $root := . -}}
+{{- $services := .Values.kerberoshub.services | default dict -}}
+{{- range $name, $stage := .Values.kerberoshub.workflows.stages -}}
+{{- $svc := index $services $name -}}
+{{- if and $svc $svc.enabled -}}
+{{- $queueEnv := printf "%s_QUEUE" ($name | upper | replace "-" "_") -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hub-{{ $name }}
+  namespace: {{ $root.Release.Namespace }}
+spec:
+  replicas: {{ $svc.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: hub-{{ $name }}
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: hub-{{ $name }}
+    spec:
+      {{- if $root.Values.kerberoshub.serviceAccount.create }}
+      serviceAccountName: {{ default (printf "%s-%s-sa" $root.Release.Name $root.Chart.Name | trunc 63 | trimSuffix "-") $root.Values.kerberoshub.serviceAccount.name }}
+      {{- end }}
+      {{- with $root.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $svc.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $svc.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: hub-{{ $name }}
+        image: "{{ $root.Values.global.imageRegistry }}{{ $svc.repository }}:{{ $svc.tag }}"
+        imagePullPolicy: {{ $svc.pullPolicy | default "IfNotPresent" }}
+        {{- with $svc.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with $svc.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        env:
+        - name: LOG_LEVEL
+          value: "{{ $svc.logLevel | default "info" }}"
+        - name: QUEUE_SYSTEM
+          value: "{{ $root.Values.queueProvider }}"
+
+        # The queue this stage worker consumes dispatched "{{ $name }}" stages
+        # from ({{ $queueEnv }}) and the workflows engine queue it routes its
+        # result back to (WORKFLOWS_QUEUE, so the run records the resolution and
+        # any stage that needs "{{ $name }}" can fire).
+        - name: {{ $queueEnv }}
+          value: "{{ $svc.queue }}"
+        - name: WORKFLOWS_QUEUE
+          value: "{{ $root.Values.kerberoshub.workflows.queue }}"
+
+        # RabbitMQ settings
+        - name: RABBITMQ_HOST
+          value: "{{ $root.Values.rabbitmq.host }}"
+        - name: RABBITMQ_EXCHANGE
+          value: "{{ $root.Values.rabbitmq.exchange }}"
+        - name: RABBITMQ_USERNAME
+          value: "{{ $root.Values.rabbitmq.username }}"
+        - name: RABBITMQ_PASSWORD
+          value: "{{ $root.Values.rabbitmq.password }}"
+
+        # Kerberos Vault — global storage credentials this stage uses to fetch
+        # the media it operates on.
+        - name: KERBEROS_STORAGE_URI
+          value: "{{ $root.Values.kerberosvault.uri }}"
+        - name: KERBEROS_STORAGE_ACCESS_KEY
+          value: "{{ $root.Values.kerberosvault.accesskey }}"
+        - name: KERBEROS_STORAGE_SECRET
+          value: "{{ $root.Values.kerberosvault.secretkey }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub-{{ $name }}
+  namespace: {{ $root.Release.Namespace }}
+  labels:
+    app: hub-{{ $name }}
+    service: pipe
+spec:
+  ports:
+    - name: hub-metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: hub-{{ $name }}
+{{- end }}
+{{- end }}
+{{- end }}
