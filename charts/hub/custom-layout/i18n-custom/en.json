@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "cases": "Investigations",
+    "dashboard": "Home"
+  },
+  "login": {
+    "signInTo": "Sign in to {{domain}} \u2014 Acme Security"
+  }
+}

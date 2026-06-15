@@ -391,17 +391,32 @@ kerberoshub:
     logo: "custom"
     # Custom layout: override css, favicons and translations (i18n)
     # By providing a style.css file in the custom folder this file will override
-    # any css styling. Favicons are mounted into the favicon folder. Custom
-    # translation files (e.g. en.json, nl.json, ...) can be mounted into the
-    # i18n folder to override the built-in translations shipped in the image.
-    # An example translation file can be found in custom-layout/i18n/en.json.
+    # any css styling. Favicons are mounted into the favicon folder.
+    #
+    # Translations (i18n): for each language the served strings are
+    #   deepMerge(assets/i18n/<lang>.json, assets/i18n-custom/<lang>.json)
+    # — your optional overrides layered on top of the shipped base file. To
+    # customise, mount a volume at assets/i18n-custom holding <lang>.json files
+    # with the keys you want to change. Any key you omit falls back to the shipped
+    # value, so keys added in future releases always render a real string (never a
+    # raw key) and you only maintain your diffs. Put as little or as much here as
+    # you like — even a complete file — but mounting at this overlay layer is
+    # always the safe choice, because missing keys can never leak into the UI.
+    # You only need files for the languages you actually customise. A partial
+    # example lives in custom-layout/i18n-custom/en.json; the matching complete
+    # files (handy to copy keys from) are published as hub-frontend release assets
+    # (en.json / i18n-<tag>.zip) and ship in the image at assets/i18n.
+    #
+    # (Backward compatibility: deployments that instead mount complete files over
+    # assets/i18n keep working, but that layer has no fallback — any key you do
+    # not supply shows as a raw key — so prefer assets/i18n-custom for new setups.)
     #volumeMounts:
     #  - name: custom-layout
     #    mountPath: /usr/share/nginx/html/assets/custom
     #  - name: custom-favicon
     #    mountPath: /usr/share/nginx/html/assets/favicon
     #  - name: custom-i18n
-    #    mountPath: /usr/share/nginx/html/assets/i18n
+    #    mountPath: /usr/share/nginx/html/assets/i18n-custom
     #volumes:
     #  - name: custom-layout
     #    persistentVolumeClaim:
