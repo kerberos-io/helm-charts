@@ -1,0 +1,2983 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search..",
+    "loading": "Loading...",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "verify": "Verify",
+    "continue": "Continue",
+    "logout": "Log out",
+    "name": "Name",
+    "status": "Status",
+    "active": "Active",
+    "idle": "Idle",
+    "offline": "Offline",
+    "language": "Language",
+    "english": "English",
+    "dutch": "Dutch",
+    "polish": "Polish",
+    "turkish": "Turkish",
+    "french": "French",
+    "swedish": "Swedish",
+    "german": "German",
+    "portuguese": "Portuguese",
+    "chooseLanguage": "Choose language",
+    "italian": "Italian"
+  },
+  "app": {
+    "environment": "Environment",
+    "encryption": {
+      "title": "Enter your 4-character passphrase",
+      "copy": "This account uses encrypted keys. Enter the 4-character passphrase used to protect it.",
+      "hint": "Type one character per box. Backspace moves to the previous box.",
+      "wrongPassphrase": "That 4-character passphrase is incorrect.",
+      "incomplete": "Enter all 4 characters to continue.",
+      "unlock": "Unlock encrypted data",
+      "switchAccount": "or switch account",
+      "ariaCharacter": "Passphrase character"
+    },
+    "darkMode": {
+      "switchToLight": "Switch to light mode",
+      "switchToDark": "Switch to dark mode"
+    }
+  },
+  "login": {
+    "signIn": "Sign in",
+    "signInTo": "Sign in to {{domain}}",
+    "passwordReset": "Password reset",
+    "passwordResetFor": "Password reset for {{domain}}",
+    "email": "email",
+    "yourEmail": "Your Email",
+    "validEmail": "Please enter a valid email",
+    "requestNewPassword": "Request new password",
+    "domain": "Domain",
+    "yourDomain": "Your domain",
+    "usernameOrEmail": "Username or Email",
+    "password": "Password",
+    "noSpecialCharacters": "Do not use special characters",
+    "forgotPassword": "Forgot password?",
+    "continueWithSso": "Continue with SSO",
+    "redirectToDomain": "Redirect to domain",
+    "ssoDescription": "SSO is enabled for your organisation, please click the button below to continue with single-sign-on with your identity provider.",
+    "redirectDescription": "Your organisation has a dedicated domain page. Click the below button to continue to the domain page.",
+    "twofa": {
+      "title": "2FA authentication",
+      "enter": "Enter 2FA Secret",
+      "placeholder": "Please enter your secret code",
+      "onlyNumbers": "Only use numbers."
+    },
+    "mfa": {
+      "enable": "Enable MFA",
+      "description": "Before you can sign-in you are required to setup MFA for your account. Please use an authenticator of choice to setup MFA for your account.",
+      "secretFallback": "If the QR code is not working for you might use following secret code",
+      "label": "Force MFA"
+    },
+    "messages": {
+      "mfaEnabled": "MFA has been successfully enabled.",
+      "registered": "We've created your profile. Please check your mail to activate your account.",
+      "mfaFailed": "MFA validation failed. Please try again.",
+      "forgotSent": "We've send you a new password. Please check your mail.",
+      "forgotError": "Hmm, sorry went wrong. Please try again later. ({{error}})"
+    },
+    "errors": {
+      "demoAccount": "This is a demo account, please try it",
+      "demoAccountLink": "to login here",
+      "invalidCredentials": "Something went wrong, make sure your credentials are valid.",
+      "tokenExpired": "Your session expired, please sign-in again.",
+      "licenseInvalid": "The license is invalid, missing or expired. Please get in touch with your administrator.",
+      "userNotFound": "Can't find your account, it might be deleted.",
+      "userNotActivated": "We've found your account, but it hasn't been activated. Please check your activation mail.",
+      "twofaWrongCode": "The secret you entered is not a valid one for this account. Please try again.",
+      "notAllowedTimeWindow": "User is not allowed to login at this time.",
+      "fallback": "Authentication failed. Please sign-in again."
+    },
+    "signupQuestion": "Not a member?",
+    "signup": "Sign up",
+    "tagline": "\"Hub is the defacto cloud platform for managing your video surveillance footages. We handle millions of footages every day, and provide our customers with state-of-the-art features to review their data.\"",
+    "copyright": "Cédric Verstraeten, Founder kerberos.io"
+  },
+  "nav": {
+    "sections": {
+      "profile": "Profile",
+      "monitoring": "Monitoring",
+      "analysis": "Analysis",
+      "integrations": "Integrations",
+      "management": "Management",
+      "subscription": "Subscription",
+      "helpSupport": "Help & Support"
+    },
+    "dashboard": "Dashboard",
+    "latestEvents": "Latest events",
+    "recentRecordings": "Recent recordings",
+    "liveView": "Live view",
+    "videoWall": "Video wall",
+    "recording": "Recording",
+    "dayOverview": "Day overview",
+    "analytics": "Analytics",
+    "watchlist": "Watchlist",
+    "cases": "Cases",
+    "alerts": "Alerts",
+    "channels": "Channels",
+    "workflows": "Workflows",
+    "inputsOutputs": "Inputs & Outputs",
+    "devices": "Devices",
+    "allOf": "All {{name}}s",
+    "accounts": "Accounts",
+    "roles": "Roles",
+    "settings": "Settings",
+    "plansIntegrations": "Plans & integrations",
+    "dataUploaded": "Data uploaded",
+    "dailyLimit": "{{percent}}% – {{usage}}/{{max}} GB daily limit",
+    "swaggerDocs": "Swagger API docs",
+    "documentation": "Documentation",
+    "github": "Github"
+  },
+  "headings": {
+    "openCases": "Open Cases",
+    "floorPlans": "Floor plans",
+    "dashboard": {
+      "subtitle": "All metrics in a single place"
+    },
+    "liveView": {
+      "withCount": "Live view ({{count}})",
+      "subtitle": "Get instant overview of all your online devices"
+    },
+    "latestEvents": {
+      "subtitle": "Overview of the latest recordings"
+    },
+    "recentRecordings": {
+      "subtitle": "Overview of most recent recordings"
+    },
+    "recordings": {
+      "title": "Recordings",
+      "subtitle": "Latest recordings"
+    },
+    "dayOverview": {
+      "subtitle": "Overview"
+    }
+  },
+  "dashboardPage": {
+    "subscribePrompt": "Subscribe to a plan to connect one or more devices and view your analytics",
+    "devicesOnline": "Devices online",
+    "sitesOnline": "Sites online",
+    "averageUpload": "Average upload",
+    "uploadedToCloud": "Uploaded to cloud",
+    "mlaFps": "MLA Frames Per Second",
+    "mlaProcessing": "MLA processing",
+    "mlaRecordingsProcessing": "MLA Recordings Processing",
+    "noSitesFound": "No sites found",
+    "moreSites": "+{{count}} more sites",
+    "moreDevices": "+{{count}} more devices",
+    "manageDevices": "Manage Devices",
+    "noSiteSelected": "No site selected",
+    "uploadedProgress": "Uploaded {{usage}} / {{max}} GB ({{percent}} %)"
+  },
+  "labels": {
+    "site": "site",
+    "sites": "sites",
+    "Site": "Site",
+    "Sites": "Sites",
+    "group": "group",
+    "groups": "groups",
+    "Group": "Group",
+    "Groups": "Groups",
+    "siteGroup": "site group",
+    "siteGroups": "site groups",
+    "SiteGroup": "Site group",
+    "SiteGroups": "Site groups",
+    "deviceGroup": "device group",
+    "deviceGroups": "device groups",
+    "DeviceGroup": "Device group",
+    "DeviceGroups": "Device groups",
+    "floorPlan": "floor plan",
+    "floorPlans": "floor plans",
+    "FloorPlan": "Floor plan",
+    "FloorPlans": "Floor plans",
+    "Device": "Device",
+    "Devices": "Devices",
+    "Vault": "Vault"
+  },
+  "pages": {
+    "floorplans": {
+      "noneUploaded": "No floor plans uploaded yet",
+      "uploadFirstHint": "Upload your first floor plan to visualize your devices on this site",
+      "uploadFirstButton": "Upload first floor plan",
+      "header": "Floor plans",
+      "uploadNew": "Upload a new floor plan",
+      "name": "Floor plan name",
+      "namePlaceholder": "Name this floor plan",
+      "nameRequired": "Floor plan name is required.",
+      "imageRequired": "Floor plan image file is required.",
+      "save": "Save floor plan",
+      "removeFromTooltip": "Remove device from floor plan",
+      "placeOntoTooltip": "Place device onto floor plan",
+      "edit": "Edit floor plan",
+      "noneForSite": "No floor plan found for current site.",
+      "uploadFirstForSite": "Upload your first floor plan to visualize this site's devices on it.",
+      "remove": "Remove floor plan",
+      "removeConfirm": "Are you sure you want to remove this floor plan?",
+      "hideLabels": "Hide floor plan labels",
+      "editNameLabel": "Floor plan Name"
+    },
+    "sites": {
+      "header": "Sites",
+      "subtitle": "Setup and manage your Sites",
+      "addSite": "Add Site",
+      "editSite": "Edit Site",
+      "deleteSite": "Delete Site",
+      "addEditTitle": "{{mode}} Site",
+      "searchPlaceholder": "Search Sites..",
+      "all": "All Sites",
+      "information": "Site Information",
+      "id": "Site ID",
+      "edit": "Edit Site",
+      "namePlaceholder": "Enter descriptive name of your new Site",
+      "descriptionPlaceholder": "Briefly describe your new Site",
+      "description": "Sites are a useful tool to organize your devices across multiple locations and assign different permissions to multiple user Accounts.",
+      "vaultHint": "For optimal performance, connect your Site to a dedicated vault or storage provider located in the same region. Using a geographically close vault will significantly improve the speed of loading and accessing recordings.",
+      "deviceGroupsAndDevicesTab": "Device groups and Devices",
+      "deviceGroupAccess": "Device group access",
+      "deviceGroupAccessIntro": "Manage the device groups assigned to this site by visiting the",
+      "deviceGroupAccessLink": "device groups.",
+      "deviceGroupsAssigned": "Device groups assigned",
+      "noDeviceGroupSelected": "No device group selected, select the Device groups and Devices tab to select one or more device groups.",
+      "cameraAssignmentHint": "to a specific Site.",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
+      "emptyDescription": "Sites are a useful tool to organise your devices across multiple locations and assign different permissions for multiple user Accounts.",
+      "addASite": "Add a site",
+      "noAccessDescription": "You do not have access to any site",
+      "requestAccess": "Request access to a site",
+      "completeAllFields": "Please complete all the missing fields",
+      "nameExists": "This name already exists",
+      "badgeColor": "Badge color (HEX)",
+      "vaultSaveToUse": "Save changes to use this Vault",
+      "vaultCheckCredentials": "Check credentials and try again"
+    },
+    "groups": {
+      "header": "Groups",
+      "subtitle": "Use Groups to create a hierarchy.",
+      "addCombined": "Add Site group or Device group",
+      "addEditTitle": "{{mode}} Site group or Device group",
+      "saveOrAdd": "{{mode}} Group",
+      "searchPlaceholder": "Search Groups..",
+      "siteGroups": "Site groups",
+      "siteGroupName": "Site group name",
+      "siteGroup": "Site group",
+      "deviceGroups": "Device groups",
+      "deviceGroupName": "Device group name",
+      "deviceGroup": "Device group",
+      "setupFirstTitle": "Setup your first Group",
+      "setupFirstDescription": "Use Groups to create concept separate of devices and Sites.",
+      "setupFirstButton": "Add a Group",
+      "noAccessTitle": "You do not have access to any Groups",
+      "noAccessButton": "Request access to a Group",
+      "editGroup": "Edit Group",
+      "all": "All Groups",
+      "groupInformation": "Group Information",
+      "types": {
+        "all": "All",
+        "site": "Site groups",
+        "device": "Device groups"
+      }
+    },
+    "videowall": {
+      "addEditTitle": "{{mode}} Videowall",
+      "addVideowall": "Add videowall",
+      "deleteVideowall": "Delete videowall",
+      "saving": "Saving...",
+      "deleting": "Deleting...",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "myVideowallsEmptyDescription": "Provide access to external users and devices without exposing your entire account.",
+      "assignedVideowallsEmptyDescription": "You do not have any videowalls assigned to you.",
+      "allVideowallsEmptyDescription": "We didn't find any videowalls from your peers."
+    },
+    "analytics": {
+      "manageAlerts": "Manage alerts",
+      "subscribePrompt": "Subscribe to a plan to generate notifications",
+      "noAlerts": {
+        "description": "Create an alert or enable existing ones to start receiving analytics.",
+        "button": "Alerts"
+      },
+      "kpi": {
+        "devicesOnline": "Devices online",
+        "totalRecordings": "Total recordings",
+        "objectsCounted": "Objects counted",
+        "objectsInRegions": "Objects in regions",
+        "timeInRegions": "Time in regions"
+      }
+    },
+    "watchlist": {
+      "readAll": "Read all",
+      "objects": "Objects",
+      "caseCreated": "A case was created for this recording. Go to the case overview to review your case.",
+      "placeholderDescription": "No alerts were found. Make sure to create an alert to generate notifications.",
+      "goToAlerts": "Go to Alerts",
+      "line": {
+        "download": "Download",
+        "shareRecording": "Share recording",
+        "addCase": "Add case"
+      },
+      "visibility": {
+        "label": "Visibility",
+        "all": "All",
+        "watched": "Watched",
+        "unwatched": "Unwatched"
+      }
+    },
+    "cases": {
+      "subscribePrompt": "Subscribe to a plan to create one or more cases",
+      "updateError": "Something went wrong while updating the case. Please try again.",
+      "placeholderDescription": "To create your first case go to the media section, and select a media item. Create a new case and assign it to the relevant person.",
+      "goToMedia": "Go to Media",
+      "myCases": "My cases",
+      "actions": {
+        "reopenCase": "Reopen case",
+        "approveCase": "Approve case",
+        "rejectCase": "Reject case",
+        "openCase": "Open case",
+        "openSequence": "Open sequence",
+        "downloadVideo": "Download export",
+        "downloadMedia": "Download media",
+        "generateExport": "Generate export",
+        "regenerateExport": "Generate export",
+        "exportInProgress": "Generating export…",
+        "exportStuck": "Export stuck — Retry",
+        "exportStuckTitle": "Export hasn't reported progress for over 2 minutes. Click to force a retry.",
+        "exportRetryConfirmTitle": "Force retry export?",
+        "exportRetryConfirmText": "This export hasn't reported progress for more than two minutes. Forcing a retry will discard the current run and start a new one.",
+        "exportRetryConfirmButton": "Force retry",
+        "exportRetryCancelButton": "Cancel",
+        "exportStatusGenerating": "Generating export…",
+        "exportStatusUnresponsive": "Export not responding",
+        "exportStatusFailed": "Export failed",
+        "exportStatusStale": "Export out of date",
+        "exportStatusReady": "Export ready",
+        "shareCase": "Share case",
+        "deleteCase": "Delete case",
+        "download": "Download",
+        "delete": "Delete",
+        "openDetail": "Open detail"
+      },
+      "exportSelection": {
+        "title": "Export selection",
+        "subtitle": "Pick which media items go into the export bundle.",
+        "selected": "selected",
+        "selectAll": "Select all",
+        "clear": "Clear",
+        "empty": "This case has no media items yet.",
+        "emptyAttachments": "This case has no attachments yet.",
+        "attachmentsHeading": "Attachments"
+      },
+      "filter": {
+        "assignees": "Assignees",
+        "labels": "Labels",
+        "status": "Status",
+        "all": "All",
+        "open": "Open",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "alerts": {
+      "cancel": "Cancel",
+      "sendSuggestion": "Send suggestion",
+      "yesDelete": "Yes, delete",
+      "addCustomAlert": "Add Custom Alert",
+      "alertPrefix": "Alert:",
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "addAlert": "Add Alert",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
+      "subscribePrompt": "Subscribe to a plan to receive alerts",
+      "sort": {
+        "name": "Name"
+      },
+      "noAlertsDescription": "We didn't find any alerts. Go ahead and create your own custom alert!",
+      "createAlert": "Create an alert",
+      "noPeerAlertsDescription": "We didn't find any alerts from your peers.",
+      "suggestDescription": "Create a custom alert, or tell us which alert you would like to use and we’ll do our best to implement it!",
+      "suggestNewAlert": "Suggest a new Alert"
+    },
+    "channels": {
+      "testNotification": "A test notification has been sent to the channel.",
+      "sort": {
+        "name": "Name",
+        "popular": "Popular"
+      },
+      "suggestDescription": "Tell us which channel you would like to use and we’ll do our best to implement it!",
+      "suggestNewChannel": "Suggest a new Channel"
+    },
+    "accounts": {
+      "addAccount": "Add account",
+      "editAccount": "Edit user account",
+      "deleteAccount": "Delete Account",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "emptyDescription": "Delegate devices and sites to other business users by creating privileged accounts.",
+      "orgRole": "ORG role",
+      "active": "active",
+      "forceMFA": "force MFA",
+      "sort": {
+        "username": "Username",
+        "role": "Role"
+      }
+    },
+    "roles": {
+      "addRole": "Add role",
+      "editRole": "Edit Role",
+      "addCustomRole": "Add a custom role",
+      "deleteRole": "Delete Role",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "emptyDescription": "Group permissions on role level and assign to user accounts.",
+      "roleExists": "The role you tried to create already exists",
+      "sort": {
+        "name": "Name",
+        "role": "Role"
+      }
+    },
+    "settings": {
+      "addLabel": "Add label"
+    },
+    "profile": {
+      "close": "Close",
+      "enableMFA": "Enable MFA",
+      "disableMFA": "Disable MFA",
+      "cancelClose": "Cancel & Close",
+      "createEncryption": "Create encryption",
+      "enableEncryption": "Enable encryption",
+      "disableEncryption": "Disable encryption",
+      "deleteAccessToken": "Delete Access Token",
+      "viewPlan": "View plan",
+      "resumePlan": "Resume plan",
+      "upgrade": "Upgrade",
+      "subscribe": "Subscribe",
+      "manageBilling": "Manage Billing",
+      "addPaymentMethod": "Add Payment Method",
+      "noSubscription": "No subscription",
+      "disabled": "Disabled",
+      "noCreditCard": "No credit card",
+      "billingMethod": "Billing method",
+      "privateLicense": "Private license",
+      "prepaid": "Prepaid",
+      "prepaid30": "30 days pre-paid",
+      "cancelled": "Cancelled",
+      "reachedLimit": "Reached limit",
+      "protectYourAccount": "Protect your account",
+      "multiFactorAuth": "Multi-factor Auth",
+      "updateProfile": "Update Profile",
+      "updatingYourProfile": "Updating your profile",
+      "changePassword": "Change Password",
+      "mfaDescription": "Secure your account by enabling MFA. When enabled, you will need to use TOTP codes generated by your app in addition to your username and password. We recommend enabling MFA.",
+      "setupMfa": "Setup Multi-factor Auth",
+      "changeSettings": "Change Settings",
+      "e2eDescription": "Enabling this feature will encrypt all communication from/to your remote devices using your own custom encryption keys. Next to our out of the box encryption, this is an additional encryption layer you might activate (so double encryption). Once enabled, livestreams, ptz, io triggers, heartbeats are all end-to-end encrypted.",
+      "setupEncryption": "Setup encryption",
+      "generateAccessToken": "Generate access token",
+      "generateClientCredentials": "Generate Client Credentials",
+      "copy": "Copy",
+      "otpInvalid": "The one-time password was not valid, please try again.",
+      "mfaActive": "The one-time password was accepted and MFA is now active.",
+      "e2eActive": "The one-time password was accepted and NFA is now active.",
+      "e2eKeysWarning": "Your private key and optional 4-character passphrase will not be stored, so make sure you have copied them. Once you close this modal it is gone forever, and you/we are not able to recover it!",
+      "enterGeneratedCode": "Enter your generated code:",
+      "publicKey": "Public key",
+      "privateKey": "Private key",
+      "symmetricKey": "Symmetric key",
+      "scope": "Scope",
+      "scopes": "Scopes",
+      "date": "Date",
+      "cancel": "Cancel",
+      "saveChanges": "Save changes",
+      "generate": "Generate",
+      "accessTokenGenerated": "Access token generated successfully!"
+    },
+    "subscription": {
+      "prepaid30": "30 days pre-paid",
+      "activePlan": "Active plan",
+      "cancelled": "Cancelled",
+      "reachedLimit": "Reached limit",
+      "disabled": "Disabled",
+      "noSubscription": "No subscription",
+      "averageDailyUsage": "Average daily usage",
+      "privateLicense": "Private license",
+      "saveMediaToDedicatedStorage": "Save media to dedicated storage",
+      "changePlan": "Change plan",
+      "resumePlan": "Resume plan",
+      "upgrade": "Upgrade",
+      "subscribe": "Subscribe",
+      "getHigherLimits": "Get higher limits",
+      "choosePlan": "Choose a plan",
+      "cancelPlan": "Cancel plan",
+      "deletePlan": "Delete plan",
+      "updatingSubscription": "Updating subscription",
+      "verifyingConnection": "Verifying connection",
+      "verifyConnection": "Verify connection",
+      "updating": "Updating",
+      "save": "Save",
+      "removeCard": "Remove card",
+      "removingCard": "Removing card",
+      "registerCustomer": "Register customer",
+      "addCard": "Add card",
+      "addingYourCard": "Adding your card",
+      "cancelClose": "Cancel & Close",
+      "close": "Close",
+      "cancelSubscription": "Cancel subscription",
+      "resumeSubscription": "Resume subscription",
+      "deleteSubscription": "Delete subscription",
+      "back": "<- Back",
+      "continueToBilling": "Continue to billing",
+      "addCreditCard": "Add credit card",
+      "attachingCard": "Attaching card..",
+      "confirmPay": "Confirm & pay",
+      "purchasing": "Purchasing..",
+      "purchaseCompleted": "Purchase completed",
+      "info": {
+        "subscribeForCredentials": "Subscribe to a plan to obtain your Kerberos Hub credentials.",
+        "vaultUpdated": "Your Vault settings were successfully updated.",
+        "subscribeForVault": "Subscribe to a plan to attach your Vault.",
+        "vaultConnected": "Successfully connected to your Vault.",
+        "vaultUnreachable": "There is a problem reaching to your Vault."
+      }
+    },
+    "recordings": {
+      "filter": {
+        "date": "Date",
+        "region": "Region",
+        "categories": "Categories",
+        "markers": "Markers",
+        "events": "Events",
+        "tags": "Tags",
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "showAllRecordings": "Show all recordings",
+        "showStarredRecordings": "Show starred recordings only"
+      },
+      "emptyState": {
+        "selectDayAndDevice": "Select day and device",
+        "selectDay": "Select day",
+        "selectDevice": "Select device",
+        "selectDayAndDeviceTimeline": "Select day and device to display timeline.",
+        "selectDayTimeline": "Select day to display timeline.",
+        "selectDeviceTimeline": "Select device to display timeline.",
+        "selectDayAndDeviceChart": "Select day and device to display chart.",
+        "selectDayChart": "Select day to display chart.",
+        "selectDeviceChart": "Select device to display chart."
+      },
+      "timeline": {
+        "title": "Timeline",
+        "clearSelectedTime": "Clear selected time",
+        "fetching": "Fetching timeline rows for selected devices.",
+        "noRecordings": "No recordings are available for the selected date and devices."
+      },
+      "chart": {
+        "title": "Chart",
+        "fullDay": "Full day"
+      },
+      "actions": {
+        "createCase": "Create case",
+        "download": "Download",
+        "clearFilter": "Clear filter",
+        "refresh": "Refresh",
+        "cancelAndClose": "Cancel & Close",
+        "preparingCase": "Preparing case..."
+      },
+      "detail": {
+        "detail": "Detail",
+        "actions": "Actions",
+        "viewContext": "View Context",
+        "copyVideoUrl": "Copy Video URL",
+        "verifyVideo": "Verify video",
+        "shareRecording": "Share Recording",
+        "newCase": "New case",
+        "addToCase": "Add to case",
+        "share": "Share",
+        "save": "Save",
+        "loading": "Loading...",
+        "loadMore": "Load more",
+        "sites": "Sites",
+        "devices": "Devices",
+        "assignees": "Assignees",
+        "labels": "Labels",
+        "status": "Status",
+        "markers": "Markers",
+        "noDescription": "No description",
+        "untitledCase": "Untitled case",
+        "starRecording": "Star recording",
+        "unstarRecording": "Unstar recording",
+        "mediaDetail": "Media detail",
+        "contextTitle": "Context",
+        "contextSubtitle": "Media around this recording",
+        "synchronisedPlayer": "Synchronised player",
+        "views": {
+          "recording": "Recording",
+          "live": "Live",
+          "classifications": "Classifications",
+          "counting": "Counting",
+          "heatmap": "Heatmap"
+        }
+      }
+    }
+  },
+  "auto": {
+    "home": {
+      "accounts": {
+        "accounts": {
+          "k1": "Delete user Account",
+          "k2": "Search accounts..",
+          "k3": "Create an Account",
+          "k4": "Accounts",
+          "k5": "Manage user accounts and their permissions"
+        },
+        "blocks": {
+          "accountinformation": {
+            "accountinformation": {
+              "k1": "Account Information",
+              "k2": "Permissions",
+              "k3": "User Information",
+              "k4": "First name",
+              "k5": "Last name",
+              "k6": "Username (READ ONLY)",
+              "k7": "A unique username",
+              "k8": "Username",
+              "k9": "Email",
+              "k10": "Email address",
+              "k11": "Password",
+              "k12": "Select a role",
+              "k13": "Account Active",
+              "k14": "You can temporarily deactivate user Account without deleting it",
+              "k15": "Force MFA",
+              "k16": "Require MFA to be setup for user.",
+              "k17": "Permissions overview",
+              "k18": "Group access",
+              "k19": "No groups selected, select the",
+              "k20": "tab to select one or more groups.",
+              "k21": "Site access",
+              "k22": "No sites selected, select the",
+              "k23": "tab to select one or more sites.",
+              "k24": "Device access",
+              "k25": "No devices selected, select the",
+              "k26": "tab to select one or more devices.",
+              "k27": "Assign user's permissions below. Choose any Groups, Sites or individual Devices, which will be accessible to this user Account:"
+            }
+          },
+          "cameraassignment": {
+            "cameraassignment": {
+              "k1": "Device access",
+              "k2": "You can assign",
+              "k3": "individual devices",
+              "k4": "to a specific site."
+            }
+          },
+          "groupassignment": {
+            "groupassignment": {
+              "k1": "Manage Group access"
+            }
+          },
+          "new": {
+            "new": {
+              "k1": "Name",
+              "k2": "Password",
+              "k3": "Password cannot exceed 72 characters.",
+              "k4": "Select a role",
+              "k5": "Active"
+            }
+          },
+          "showconfirm": {
+            "showconfirm": {
+              "k1": "confirm",
+              "k2": "cancel"
+            }
+          },
+          "siteassignment": {
+            "siteassignment": {
+              "k1": "Manage Site access"
+            }
+          }
+        }
+      },
+      "alerts": {
+        "alerts": {
+          "k1": "Suggest an alert",
+          "k2": "Which alert would you like?",
+          "k3": "Describe the alert you would like to have.",
+          "k4": "Delete alert",
+          "k5": "Search alert..",
+          "k6": "My Custom Alerts",
+          "k7": "status",
+          "k8": "alert",
+          "k9": "description",
+          "k10": "No alerts found",
+          "k11": "Edit Alert",
+          "k12": "Delete Alert",
+          "k13": "All Custom Alerts",
+          "k14": "Generic Alerts",
+          "k15": "Missing your alert?",
+          "k16": "Alerts",
+          "k17": "Configure monitoring alerts which will be sent out when certain events happen"
+        },
+        "blocks": {
+          "custom_alert": {
+            "custom_alert": {
+              "k1": "Alert Information",
+              "k2": "Time",
+              "k3": "Inputs",
+              "k4": "Motion",
+              "k5": "Counting",
+              "k6": "Channels",
+              "k7": "Outputs",
+              "k8": "Information",
+              "k9": "Provide some additional information about the alert you have configured",
+              "k10": "Title",
+              "k11": "Title / Name",
+              "k12": "Description",
+              "k13": "A short description",
+              "k14": "Features",
+              "k15": "Enable additional behavior for this alert.",
+              "k16": "Generate marker",
+              "k17": "Generate watchlist item",
+              "k18": "Classifications",
+              "k19": "Limit notifications by selecting a classification. If an object was detected in one of your recordings it will send a notification.",
+              "k20": "All classifications",
+              "k21": "Selected classifications",
+              "k22": "Schedule",
+              "k23": "Configure the time windows during which alerts are allowed to trigger.",
+              "k24": "Enabling this option will require all selected inputs to be active, to trigger the alert.",
+              "k25": "All inputs should be active",
+              "k26": "At least one of inputs active",
+              "k27": "Select all inputs you would like to read from. Active inputs will trigger the alert.",
+              "k28": "Monitored Devices",
+              "k29": "Select all the devices you would like to have monitored. As soon as a recording is made for one of the selected devices, and motion was detected in a region of interest, you will receive a notification.",
+              "k30": "Region selection",
+              "k31": "Region selection is based on classified objects, make sure to turn on at least one classification object to start using regions.",
+              "k32": "No devices selected",
+              "k33": "Draw counting lines and regions to count objects. Detect how long objects stay within a region. Notifications and analytics are generated upon object detection.",
+              "k34": "Counting regions",
+              "k35": "Counting is based on classified objects, make sure to turn on at least one classification object to start using counting lines.",
+              "k36": "Notification Channels",
+              "k37": "Select all the channels you would like to be notified on. If a recording is made, and all conditions are valid, a message will be send to the selected channels.",
+              "k38": "Channel Settings",
+              "k39": "No channels selected",
+              "k40": "Email",
+              "k41": "Slack",
+              "k42": "Pushbullet",
+              "k43": "Telegram",
+              "k44": "Alexa",
+              "k45": "Webhook",
+              "k46": "IFTTT",
+              "k47": "SMS",
+              "k48": "Pushover",
+              "k49": "Select all outputs you wish to trigger, a message will be send to the selected output if an alert is triggered."
+            }
+          },
+          "detections": {
+            "detections": {
+              "k1": "Detections",
+              "k2": "Send a notification when a detection occurred.",
+              "k3": "Time of interest",
+              "k4": "When a recording is made, during the below hour ranges, a notification will be send to all selected channels.",
+              "k5": "Notification Channels",
+              "k6": "Select all the channels you would like to be notified on. If a recording is made, and all conditions are valid, a message will be send to the selected channels.",
+              "k7": "All channels",
+              "k8": "Selected channels",
+              "k9": "Monitored devices",
+              "k10": "Select all the devices you would like to have monitored. As soon as a recording is made for one of the selected devices, you will receive a notification.",
+              "k11": "All devices",
+              "k12": "Selected devices",
+              "k13": "Classifications",
+              "k14": "gold",
+              "k15": "This feature requires a gold subscription",
+              "k16": "Limit notifications by selecting a classification. If an object was detected in of your recordings it will send a notification.",
+              "k17": "All classifications",
+              "k18": "Selected classifications"
+            }
+          },
+          "devices": {
+            "devices": {
+              "k1": "Devices",
+              "k2": "Monitor your devices. Know when they go offline or idle.",
+              "k3": "Offline time",
+              "k4": "When a selected devices goes offline or idle, for longer than",
+              "k5": "minutes, a notification is sent to all your selected/enabled channels.",
+              "k6": "Notification Channels",
+              "k7": "Select all the channels you would like to be notified on. If one of your selected devices go offline, a message will be send to the selected channels.",
+              "k8": "All channels",
+              "k9": "Selected channels",
+              "k10": "Monitored Devices",
+              "k11": "Select all the devices you would like to have monitored. As soon as one of the selected devices go offline, you will receive a notification.",
+              "k12": "All devices",
+              "k13": "Selected devices"
+            }
+          },
+          "hightraffic": {
+            "hightraffic": {
+              "k1": "High upload",
+              "k2": "Send a notification when a lot of data is being uploaded.",
+              "k3": "Number of requests",
+              "k4": "When your account is uploading more than",
+              "k5": "requests per 5min",
+              "k6": ", a notification is sent.",
+              "k7": "Notification Channels",
+              "k8": "Select all the channels you would like to be notified on. If one of your selected devices is generating a lot of recordings, a message will be send to the selected channels.",
+              "k9": "All channels",
+              "k10": "Selected channels",
+              "k11": "Monitored devices",
+              "k12": "Select all the devices you would like to have monitored. As soon as one of the selected devices generate a lot of recordings, you will receive a notification.",
+              "k13": "All devices",
+              "k14": "Selected devices"
+            }
+          }
+        }
+      },
+      "analytics": {
+        "analytics": {
+          "k1": "No alerts found",
+          "k2": "Counted per hour",
+          "k3": "all",
+          "k4": "in",
+          "k5": "out",
+          "k6": "No chart data",
+          "k7": "Region time per hour (s)",
+          "k8": "Objects counted",
+          "k9": "Date",
+          "k10": "Hour",
+          "k11": "Device",
+          "k12": "Alert",
+          "k13": "Direction",
+          "k14": "No objects were counted for this day.",
+          "k15": "Objects in region",
+          "k16": "Duration",
+          "k17": "Recordings per hour",
+          "k18": "Analytics",
+          "k19": "Explore your video landscape through KPIs and charts."
+        },
+        "blocks": {
+          "showconfirm": {
+            "showconfirm": {
+              "k1": "confirm",
+              "k2": "cancel"
+            }
+          }
+        }
+      },
+      "blocks": {
+        "header": {
+          "blocks": {
+            "video": {
+              "videoheadermodal": {
+                "k1": "Loading..",
+                "k2": "To view this video please enable JavaScript, and consider upgrading to a web browser that",
+                "k3": "supports HTML5 video"
+              }
+            }
+          },
+          "header": {
+            "k1": "menu",
+            "k2": "search",
+            "k3": "Search"
+          }
+        },
+        "sidebar": {
+          "sidebar": {
+            "k1": "HUB"
+          }
+        }
+      },
+      "channels": {
+        "blocks": {
+          "alexa": {
+            "alexa": {
+              "k1": "Alexa",
+              "k2": "Send notifications to your Amazon Echo",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "How to setup",
+              "k6": "Configure channel",
+              "k7": "Alexa token",
+              "k8": "Enter your Alexa token"
+            }
+          },
+          "browser": {
+            "browser": {
+              "k1": "Browser",
+              "k2": "Show notifications inside the web app",
+              "k3": "Always active"
+            }
+          },
+          "channelnothere": {
+            "channelnothere": {
+              "k1": "Channel not here?",
+              "k2": "Tell us which channel you would like to see here.",
+              "k3": "What are you thinking?",
+              "k4": "Send feedback"
+            }
+          },
+          "email": {
+            "email": {
+              "k1": "Email",
+              "k2": "Get notified through e-mail messages",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "How to setup",
+              "k6": "Configure channel",
+              "k7": "Email address",
+              "k8": "Enter an email address"
+            }
+          },
+          "ifttt": {
+            "ifttt": {
+              "k1": "IFTTT",
+              "k2": "Send events to your IFTTT account",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "Configure channel",
+              "k6": "Bot Token",
+              "k7": "Your token"
+            }
+          },
+          "pushbullet": {
+            "pushbullet": {
+              "k1": "Pushbullet",
+              "k2": "Send notifications to all your devices",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "How to setup",
+              "k6": "Configure channel",
+              "k7": "Pushbullet Token",
+              "k8": "Enter your API key"
+            }
+          },
+          "pushover": {
+            "pushover": {
+              "k1": "Pushover",
+              "k2": "Send pushover notifications",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "Configure channel",
+              "k6": "API key",
+              "k7": "Enter your API key",
+              "k8": "Send to"
+            }
+          },
+          "slack": {
+            "slack": {
+              "k1": "Slack",
+              "k2": "Post notifications to your slack channel",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "How to setup",
+              "k6": "Configure channel",
+              "k7": "Hook",
+              "k8": "Your Slack hook",
+              "k9": "Bot name",
+              "k10": "The bot name"
+            }
+          },
+          "sms": {
+            "sms": {
+              "k1": "Sms",
+              "k2": "Send events to a mobile number using Twilio",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "Configure channel",
+              "k6": "Account SID",
+              "k7": "Enter your accountsid",
+              "k8": "Auth token",
+              "k9": "Enter your auth token",
+              "k10": "Tel. From",
+              "k11": "Tel. To"
+            }
+          },
+          "telegram": {
+            "telegram": {
+              "k1": "Telegram",
+              "k2": "Publish notifications in a telegram group",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "How to setup",
+              "k6": "Configure channel",
+              "k7": "Token",
+              "k8": "Enter your token",
+              "k9": "Channel",
+              "k10": "Your channel"
+            }
+          },
+          "webhook": {
+            "webhook": {
+              "k1": "Webhook",
+              "k2": "Send events to your own API/application",
+              "k3": "Active",
+              "k4": "Inactive",
+              "k5": "Configure channel",
+              "k6": "Webhook URL",
+              "k7": "Enter a webhook URL (http:// or https://)"
+            }
+          }
+        },
+        "channels": {
+          "k1": "Suggest a channel",
+          "k2": "Which channel would you like?",
+          "k3": "Describe the channel you would like to have.",
+          "k4": "Search channels..",
+          "k5": "Missing you channel?",
+          "k6": "Channels",
+          "k7": "Configure your notification channels for Alerts"
+        }
+      },
+      "counting": {
+        "blocks": {
+          "dialog": {
+            "dialog": {
+              "k1": "Add counting line",
+              "k2": "Name",
+              "k3": "Traversal",
+              "k4": "In",
+              "k5": "Intermediate",
+              "k6": "Out",
+              "k7": "add counting line"
+            }
+          }
+        },
+        "counting": {
+          "k1": "Counts in time",
+          "k2": "Oops, your subscription doesn't include counting.",
+          "k3": "Before you watch livestreaming, you first need to purchase a subscription that includes counting.",
+          "k4": "purchase or upgrade subscription",
+          "k5": "group_add",
+          "k6": "Counting",
+          "k7": "Font Style",
+          "k8": "Counts per hour",
+          "k9": "notes",
+          "k10": "Count Chart",
+          "k11": "Counts per device per day",
+          "k12": "device_hub",
+          "k13": "Instances",
+          "k14": "Count per zone per day",
+          "k15": "picture_in_picture",
+          "k16": "Zones",
+          "k17": "Counting & Flows",
+          "k18": "Analyze footage with custom flow events and object counting"
+        }
+      },
+      "dashboard": {
+        "dashboard": {
+          "k1": "name",
+          "k2": "Devices",
+          "k3": "Device",
+          "k4": "Latest heartbeat",
+          "k5": "Uptime",
+          "k6": "offline",
+          "k7": "No devices found",
+          "k8": "No media",
+          "k9": "The device didn't uploaded any videos or images so far. Make sure it is properly configured.",
+          "k10": "Open Cases",
+          "k11": "Date",
+          "k12": "Device(s)",
+          "k13": "Case title",
+          "k14": "No open cases found",
+          "k15": "Cloud storage"
+        }
+      },
+      "datasets": {
+        "blocks": {
+          "device": {
+            "device": {
+              "k1": "Number of images stored on this device",
+              "k2": "Percentage disk occupied",
+              "k3": "Version of machinery running",
+              "k4": "Remove device"
+            }
+          },
+          "new": {
+            "new": {
+              "k1": "A dataset is a collection of images and videos that you can use to train your AI models. By labeling your dataset, you can train your AI models to recognize objects and events in your images and videos.",
+              "k2": "Information",
+              "k3": "Provide some information about the dataset you are creating",
+              "k4": "Title",
+              "k5": "Title / Name",
+              "k6": "Description",
+              "k7": "A short description",
+              "k8": "Metadata",
+              "k9": "Specify the metadata that you want to collect for each image or video in this dataset",
+              "k10": "Select a dataset type"
+            }
+          }
+        },
+        "datasets": {
+          "k1": "Add a Dataset",
+          "k2": "Are you sure you want to remove device",
+          "k3": "Search dataset..",
+          "k4": "Set up your first Kerberos Agent",
+          "k5": "No devices are available",
+          "k6": "Subscribe to a plan",
+          "k7": "Dataset",
+          "k8": "Manage your datasets"
+        },
+        "pages": {
+          "dataset_detail": {
+            "blocks": {
+              "camerainformation": {
+                "camerainformation": {
+                  "k1": "Device Information",
+                  "k2": "Description",
+                  "k3": "Briefly describe your device",
+                  "k4": "Search a brand",
+                  "k5": "Device model",
+                  "k6": "Specify your model",
+                  "k7": "Choose a date"
+                }
+              }
+            },
+            "dataset_detail": {
+              "k1": "Labeling",
+              "k2": "Details",
+              "k3": "Dataset Store1",
+              "k4": "All datasets"
+            }
+          }
+        }
+      },
+      "day": {
+        "day": {
+          "k1": "No recordings found.",
+          "k2": "No devices selected."
+        }
+      },
+      "devices": {
+        "blocks": {
+          "device": {
+            "device": {
+              "k1": "Number of images stored on this device",
+              "k2": "Percentage disk occupied",
+              "k3": "Version of machinery running",
+              "k4": "Remove device"
+            }
+          },
+          "new": {
+            "new": {
+              "k1": "Before you will see your recordings shown up on Kerberos Hub, you first need to install and configure a Kerberos Agent. A Kerberos Agent is a piece of software that processes a device, and will make recordings when a portion of the video stream has changed. These recordings will then be send to, and processed by the Kerberos Hub application.",
+              "k2": "After you've properly installed one or more Kerberos Agents, you can link it to the Kerberos Hub application using your",
+              "k3": "cloud credentials",
+              "k4": ". When linked successfully, your device will show up on the devices page.",
+              "k5": "Get started",
+              "k6": "We have different ways to get your Kerberos Agent up and running. You can install the Kerberos Agent using a prebuilt Docker container, inside your Kubernetes Cluster, on your Raspberry Pi (or any other compatible board) or on a simple VM. Please select the most appropriate solution to get started. Visit",
+              "k7": "our documentation website to learn more",
+              "k8": "A Docker image (amd64, armv7, arm64) is",
+              "k9": "available on the Docker Hub",
+              "k10": ". Before you can run this image you will have to get Docker installed.",
+              "k11": "Install Docker on your system, and",
+              "k12": "read through the Docker installation method",
+              "k13": "Go to the plan page",
+              "k14": "on your cloud account and copy your cloud credentials.",
+              "k15": "When created successfully, you can navigate to the Kerberos Factory interface, and enter your cloud credentials in your deployment of global configuration.",
+              "k16": "Your new Kerberos Agent will show up on the devices page.",
+              "k17": "If you want to manage Kerberos Agents at scale with Kubernetes, then",
+              "k18": "Kerberos Factory is what you are looking for",
+              "k19": "Setup a Kubernetes cluster or use your existing Kubernetes cluster.",
+              "k20": "Install the different components of",
+              "k21": "Kerberos Factory",
+              "k22": "in your cluster (if you need help get in touch with support).",
+              "k23": "Go to the plans & integrations page",
+              "k24": "on your Kerberos Hub account and copy your credentials.",
+              "k25": "When configured Kerberos Factory successfully, you can modify the global settings, and enter your credentials.",
+              "k26": "All Kerberos Agent you will now add, will show up on your devices page.",
+              "k27": "KiOS is a custom linux OS, created for the Raspberry Pi, which runs Kerberos.io out-of-the-box. This is the most simple and basic installation procedure.",
+              "k28": "Download",
+              "k29": "the KiOS installer",
+              "k30": "Open the installer, insert an SD card, and follow the different steps",
+              "k31": "Insert the SD card in your Raspberry Pi, and power on",
+              "k32": "on your cloud account and copy your cloud credentials",
+              "k33": "When configured succesfully, you can navigate to the web interface, and enter your cloud credentials",
+              "k34": "Your new device will show up",
+              "k35": "If you use Balena as your Device Management platform,",
+              "k36": "you want to read following documentation",
+              "k37": "Connect your device to Balena and",
+              "k38": "install Kerberos to your fleet",
+              "k39": "Once succesfully installed,",
+              "k40": "go to the plan page",
+              "k41": "Navigate to the web interface using the Balena public link, and enter your cloud credentials.",
+              "k42": "Your new device will show up.",
+              "k43": "If you don't want to install Kerberos using the predefined installation methods,",
+              "k44": "you can always compile from source",
+              "k45": "Follow the different steps on our",
+              "k46": "Documentation website",
+              "k47": "When configured succesfully, you can navigate to the web interface, and enter your cloud credentials."
+            }
+          }
+        },
+        "devices": {
+          "k1": "Add an Agent",
+          "k2": "(device)",
+          "k3": "Are you sure you want to remove device",
+          "k4": "Search device...",
+          "k5": "Set up your first Agent",
+          "k6": "No devices available",
+          "k7": "Subscribe to a plan",
+          "k8": "Devices",
+          "k9": "Setup and manage your devices"
+        },
+        "pages": {
+          "device_detail": {
+            "blocks": {
+              "camerainformation": {
+                "camerainformation": {
+                  "k1": "Device Information",
+                  "k2": "Description",
+                  "k3": "Briefly describe your device",
+                  "k4": "Search a brand",
+                  "k5": "Device model",
+                  "k6": "Specify your model",
+                  "k7": "Choose a date"
+                }
+              }
+            },
+            "device_detail": {
+              "k1": "Edit device",
+              "k2": "You can assign metadata to your devices so they are easier to find.",
+              "k3": "Delete preset",
+              "k4": "Details",
+              "k5": "Permissions",
+              "k6": "Remote Configuration",
+              "k7": "PTZ",
+              "k8": "Live feed",
+              "k9": "Latest activity",
+              "k10": "No media",
+              "k11": "The device didn't uploaded any videos or images so far. Make sure it is properly configured.",
+              "k12": "ONVIF details",
+              "k13": "Version",
+              "k14": "No ONVIF support",
+              "k15": "Functions",
+              "k16": "Zoom",
+              "k17": "Pan/tilt",
+              "k18": "Presets",
+              "k19": "Inputs & Outputs",
+              "k20": "Audio backchannel",
+              "k21": "IO",
+              "k22": "Click to trigger output",
+              "k23": "No IOs found on device",
+              "k24": "Device details",
+              "k25": "Name",
+              "k26": "ID",
+              "k27": "Description",
+              "k28": "Edit",
+              "k29": "Device color",
+              "k30": "Up time",
+              "k31": "Boot time",
+              "k32": "Last heartbeat",
+              "k33": "Offline for a long time",
+              "k34": "Last upload",
+              "k35": "Never",
+              "k36": "Didn't upload for some time",
+              "k37": "Hostname",
+              "k38": "Architecture",
+              "k39": "Process Memory",
+              "k40": "Host Memory",
+              "k41": "IPs",
+              "k42": "MACs",
+              "k43": "Current version",
+              "k44": "Factory",
+              "k45": "Agent",
+              "k46": "Release",
+              "k47": "n/a",
+              "k48": "Device specs",
+              "k49": "Type",
+              "k50": "Brand",
+              "k51": "Model (version)",
+              "k52": "Installation date",
+              "k53": "Last maintenance",
+              "k54": "Device Preset List",
+              "k55": "No presets added",
+              "k56": "Create Preset",
+              "k57": "Preset name",
+              "k58": "A name for the preset",
+              "k59": "Retrieve coordinates",
+              "k60": "Absolute coordinates",
+              "k61": "Custom Preset List",
+              "k62": "General settings",
+              "k63": "Loading...",
+              "k64": "General settings allow you to configure your device on a higher level.",
+              "k65": "KEY",
+              "k66": "Key",
+              "k67": "DEVICE NAME",
+              "k68": "Device Name",
+              "k69": "FRIENDLY NAME",
+              "k70": "Friendly Name",
+              "k71": "Region Of Interest",
+              "k72": "By defining one or more regions, motion will be tracked only in the regions you have defined.",
+              "k73": "Device settings",
+              "k74": "Device settings are required to make a connection to your device of choice.",
+              "k75": "RTSP",
+              "k76": "RTSP Url",
+              "k77": "Width",
+              "k78": "Height",
+              "k79": "SUB RTSP",
+              "k80": "Sub RTSP Url",
+              "k81": "Base width",
+              "k82": "Base Width",
+              "k83": "Base height",
+              "k84": "Base Height",
+              "k85": "ONVIF settings",
+              "k86": "Credentials to communicate with ONVIF capabilities. These are used for PTZ or other capabilities provided by the device.",
+              "k87": "XADDR",
+              "k88": "ONVIF xaddr",
+              "k89": "USERNAME",
+              "k90": "ONVIF username",
+              "k91": "PASSWORD",
+              "k92": "ONVIF password",
+              "k93": "Device Permissions",
+              "k94": "Permissions overview",
+              "k95": "This device will have following permissions:",
+              "k96": "Machine learning models",
+              "k97": "Models activated",
+              "k98": "For this device following models will be executed:",
+              "k99": "Devices",
+              "k100": "All devices"
+            }
+          }
+        }
+      },
+      "events": {
+        "events": {
+          "k1": "Search device...",
+          "k2": "No latest events found",
+          "k3": "No devices found",
+          "k4": "No media",
+          "k5": "The device didn't uploaded any videos or images so far. Make sure it is properly configured."
+        }
+      },
+      "groups": {
+        "blocks": {
+          "cameraassignment": {
+            "cameraassignment": {
+              "k1": "Device Assignment"
+            }
+          },
+          "groupsinformation": {
+            "groupsinformation": {
+              "k1": "or",
+              "k2": "Use",
+              "k3": "to conceptually separate",
+              "k4": "devices",
+              "k5": "and/or",
+              "k6": ". Whereas",
+              "k7": "are used to group devices geographically (based on the same location),",
+              "k8": "can group devices and/or",
+              "k9": "however you need.",
+              "k10": "also give you better flexibility with account permissions.",
+              "k11": "Examples",
+              "k12": "example: group all devices pointing to all cash registers across your sites.",
+              "k13": "example: group all sites in Europe or a specific country.",
+              "k14": "Details",
+              "k15": "Select a group type",
+              "k16": "Name",
+              "k17": "Enter descriptive name of your new group",
+              "k18": "Description",
+              "k19": "Briefly describe your new group",
+              "k20": "Badge initials",
+              "k21": "e.g. KH"
+            }
+          },
+          "siteassignment": {
+            "siteassignment": {
+              "k1": "Site Assignment"
+            }
+          }
+        },
+        "groups": {
+          "k1": "or",
+          "k2": "Delete",
+          "k3": "Are you use you want to delete \"",
+          "k4": "controls",
+          "k5": "Edit Group",
+          "k6": "Assign Sites",
+          "k7": "Delete Group",
+          "k8": "Assign Devices"
+        },
+        "pages": {
+          "group_detail": {
+            "group_detail": {
+              "k1": "Overview",
+              "k2": "Assigned Devices",
+              "k3": "Name",
+              "k4": "Type",
+              "k5": "Description",
+              "k6": "Group ID",
+              "k7": "Badge",
+              "k8": "Initials",
+              "k9": "Color",
+              "k10": "Open Cases",
+              "k11": "Date",
+              "k12": "Device(s)",
+              "k13": "Case title",
+              "k14": "No open cases found",
+              "k15": "Under construction"
+            }
+          }
+        }
+      },
+      "home": {
+        "k1": "T",
+        "k2": "D",
+        "k3": "W",
+        "k4": "F"
+      },
+      "io": {
+        "io": {
+          "k1": "Delete IO",
+          "k2": "Inputs",
+          "k3": "Current input status",
+          "k4": "Status",
+          "k5": "Input name/key",
+          "k6": "Name",
+          "k7": "Device providing input",
+          "k8": "Device",
+          "k9": "Actions",
+          "k10": "active",
+          "k11": "Input is active",
+          "k12": "inactive",
+          "k13": "Input is inactive",
+          "k14": "Delete input",
+          "k15": "No IO/inputs found for this user.",
+          "k16": "Outputs",
+          "k17": "Output name/key",
+          "k18": "Device providing output",
+          "k19": "Output is active",
+          "k20": "Output is inactive",
+          "k21": "Trigger or delete output",
+          "k22": "Trigger relay",
+          "k23": "Delete output",
+          "k24": "No IO/outputs found for this user.",
+          "k25": "Inputs & Outputs",
+          "k26": "A collection of inputs and outputs coming from different devices."
+        }
+      },
+      "livestream": {
+        "blocks": {
+          "liveview": {
+            "liveview": {
+              "k1": "Select a device",
+              "k2": "Please select a device",
+              "k3": "to add to the liveview."
+            }
+          },
+          "placeholder": {
+            "placeholder": {
+              "k1": "Add live view"
+            }
+          }
+        },
+        "livestream": {
+          "k1": "Search devices...",
+          "k2": "No livestreams found",
+          "k3": "No devices found",
+          "k4": "online",
+          "k5": "idle",
+          "k6": "Agent is online, but video stream appears to be offline.",
+          "k7": "event detected",
+          "k8": "offline"
+        }
+      },
+      "locations": {
+        "blocks": {
+          "device": {
+            "device": {
+              "k1": "Number of images stored on this device",
+              "k2": "Percentage disk occupied",
+              "k3": "Version of machinery running",
+              "k4": "Remove device"
+            }
+          },
+          "new": {
+            "new": {
+              "k1": "Add a device",
+              "k2": "Before you can see events on your cloud profile, you first need to setup a device. A device is a piece of hardware (Raspberry Pi, Server or Working station) which is running",
+              "k3": "the Kerberos.io software",
+              "k4": ". After you've properly installed a device, you have to link it with your",
+              "k5": "cloud credentials",
+              "k6": ". When linked succesfully, your device will be listed on the devices page.",
+              "k7": "Get started",
+              "k8": "We have different ways to get your device installed. You can install a unit on your Raspberry Pi using our KiOS or Raspbian OS, or you can even install it on a VM running our Docker container. Please select the most appropiate solution to get started. You can find more information",
+              "k9": "on our documentation website",
+              "k10": "KiOS is a custom linux OS, created for the Raspberry Pi, which runs Kerberos.io out-of-the-box. This is the most simple and basic installation procedure.",
+              "k11": "Download",
+              "k12": "the KiOS installer",
+              "k13": "Open the installer, insert an SD card, and follow the different steps.",
+              "k14": "Insert the SD card in your Raspberry Pi, and power on.",
+              "k15": "When configured succesfully, you can navigate to the web interface, and enter your cloud credentials.",
+              "k16": "Your new device will show up.",
+              "k17": "If you already have a Raspberry Pi running Raspbian",
+              "k18": ", you probably don't want to reflash your SD card. Therefore you can install and download the different parts of Kerberos.io (the machinery and the web) without the need for complex and time consuming compiling.",
+              "k19": "Get Raspbian",
+              "k20": "installed on your Raspberry Pi or other board.",
+              "k21": "Follow the different steps on our",
+              "k22": "Raspbian",
+              "k23": "A Docker image (x86) is available on the Docker Hub. Before you can run this image you will have to get Docker installed. After the installation you can use",
+              "k24": "docker-compose",
+              "k25": "to get Kerberos.io up and running.",
+              "k26": "Install Docker on your system.",
+              "k27": "Open your terminal (or command prompt) and run following command; or if you plan to setup a lot of devices, you should use our",
+              "k28": "dockeros tool",
+              "k29": "which will make your life a lot easier.",
+              "k30": "When created succesfully, you can navigate to the web interface, and enter your cloud credentials."
+            }
+          },
+          "site": {
+            "site": {
+              "k1": "no devices assigned to this site."
+            }
+          }
+        },
+        "locations": {
+          "k1": "business",
+          "k2": "Sites",
+          "k3": "Search site",
+          "k4": "No sites added"
+        },
+        "pages": {
+          "device_detail": {
+            "device_detail": {
+              "k1": "Devices",
+              "k2": "Click here to reactivate now.",
+              "k3": "videocam_off",
+              "k4": "Mute for 5 minutes",
+              "k5": "Mute for 15 minutes",
+              "k6": "Mute for 30 minutes",
+              "k7": "Mute for 1 hour",
+              "k8": "Mute for 2 hours",
+              "k9": "Mute for 3 hours",
+              "k10": "Stop mute",
+              "k11": "live_tv",
+              "k12": "Livestream",
+              "k13": "The machinery version of this device, doesn't support livestreaming. Please upgrade the machinery to",
+              "k14": "or KiOS to",
+              "k15": "Device information",
+              "k16": "Key:",
+              "k17": "Name:",
+              "k18": "Type:",
+              "k19": "Device online:",
+              "k20": "Last heartbeat:",
+              "k21": "Last upload:",
+              "k22": "Number of media:",
+              "k23": "Version running:",
+              "k24": "Location:",
+              "k25": "Latest media",
+              "k26": "sort",
+              "k27": "Logging",
+              "k28": "coming soon"
+            }
+          },
+          "locations_detail": {
+            "locations_detail": {
+              "k1": "business",
+              "k2": "Sites",
+              "k3": "Site information",
+              "k4": "Key:",
+              "k5": "Name:",
+              "k6": "Address:",
+              "k7": "Devices:",
+              "k8": "device",
+              "k9": "Devices",
+              "k10": "Location"
+            }
+          }
+        }
+      },
+      "logging": {
+        "logging": {
+          "k1": "Real-time logging is currently in BETA, we are still working on this and adding more options in the coming weeks.",
+          "k2": "Events",
+          "k3": "Hmm, no events found for your account.",
+          "k4": "# Events",
+          "k5": "last 30/days"
+        }
+      },
+      "attachments": {
+        "attachments_panel": {
+          "k0": "Attachments",
+          "k1": "Upload files",
+          "k2": "Uploading...",
+          "k3": "Something went wrong. Try again.",
+          "k4": "No attachments yet.",
+          "k5": "Save",
+          "k6": "Cancel",
+          "k7": "Rename",
+          "k8": "Delete",
+          "k9": "Drag and drop files here",
+          "k10": "or use the upload button below",
+          "k11": "Delete attachment",
+          "k12": "Are you sure you want to delete this attachment? This action cannot be undone.",
+          "k13": "Yes, delete"
+        }
+      },
+      "media": {
+        "blocks": {
+          "context_timeline": {
+            "context_timeline": {
+              "k1": "Skip back 5 seconds",
+              "k2": "Back 5s",
+              "k3": "5s",
+              "k4": "Skip forward 5 seconds",
+              "k5": "Forward 5s"
+            }
+          },
+          "export_media": {
+            "export_media": {
+              "k1": "Details",
+              "k2": "Media",
+              "k3": "Create a case from the currently selected filters. This will attach the matching recordings to a case.",
+              "k4": "Title of the case",
+              "k5": "Provide a short description.",
+              "k6": "Settings",
+              "k7": "Notify assignees",
+              "k8": "Keep this case private",
+              "k9": "Labels",
+              "k10": "Assignees",
+              "k11": "Recordings",
+              "k12": "Preview of recordings currently in scope for export.",
+              "k13": "No recordings found to be added",
+              "k14": "Remove from case"
+            }
+          },
+          "filter": {
+            "filter": {
+              "k1": "Starred"
+            },
+            "timeline": {
+              "timeline": {
+                "k1": "Timeline",
+                "k2": "Loading timeline data",
+                "k3": "No timeline data"
+              }
+            }
+          },
+          "media_grid": {
+            "media_grid": {
+              "k1": "View device context",
+              "k2": "view details",
+              "k3": "No recordings found."
+            }
+          }
+        },
+        "media": {
+          "k1": "Create case"
+        },
+        "pages": {
+          "media_detail": {
+            "blocks": {
+              "face_redaction": {
+                "face_redaction": {
+                  "k1": "Edit video",
+                  "k2": "Edit video tools",
+                  "k3": "This editing tool is coming soon.",
+                  "k4": "No detections available",
+                  "k5": "No face detections are available for this video. You can still draw redaction boxes manually on the player and submit.",
+                  "k6": "Back 1 second",
+                  "k7": "Back 1 frame",
+                  "k8": "Play",
+                  "k9": "Pause",
+                  "k10": "Forward 1 frame",
+                  "k11": "Forward 1 second",
+                  "k12": "Frames per second for redaction",
+                  "k13": "Frames per second",
+                  "k14": "fps",
+                  "k15": "Detection run",
+                  "k16": "Select a detection run",
+                  "k17": "No detections"
+                }
+              },
+              "motionmap": {
+                "motionmap": {
+                  "k1": "Trajectory"
+                }
+              }
+            },
+            "media_detail_panel": {
+              "media_detail_panel": {
+                "k1": "Media details",
+                "k2": "Close",
+                "k3": "Media actions",
+                "k4": "No classifications",
+                "k5": "No counting data",
+                "k6": "Context",
+                "k7": "Device",
+                "k8": "Analysis",
+                "k9": "Description",
+                "k10": "Device name",
+                "k11": "Status",
+                "k12": "online",
+                "k13": "offline",
+                "k14": "idle",
+                "k15": "File",
+                "k16": "File name",
+                "k17": "New case",
+                "k18": "Add to case",
+                "k19": "Select one of your accessible cases",
+                "k20": "Search cases...",
+                "k21": "Loading cases...",
+                "k22": "No cases available.",
+                "k23": "Share recording",
+                "k24": "Recordings",
+                "k25": "Overview"
+              }
+            },
+            "media_detail_view": {
+              "media_detail_view": {
+                "k1": "New case",
+                "k2": "Add to case",
+                "k3": "Select one of your accessible cases",
+                "k4": "Search cases...",
+                "k5": "Loading cases...",
+                "k6": "No cases available.",
+                "k7": "Share recording",
+                "k8": "Media actions",
+                "k9": "Context",
+                "k10": "Device",
+                "k11": "No classifications",
+                "k12": "No counting data",
+                "k13": "Analysis",
+                "k14": "Description",
+                "k15": "Dominant colors",
+                "k16": "Thumbnail",
+                "k17": "Sprites",
+                "k18": "Device name",
+                "k19": "Site",
+                "k20": "N/A",
+                "k21": "Location",
+                "k22": "Status",
+                "k23": "online",
+                "k24": "offline",
+                "k25": "idle",
+                "k26": "File",
+                "k27": "File name",
+                "k28": "Storage solution",
+                "k29": "Bitrate (kbps)",
+                "k30": "Resolution",
+                "k31": "Recordings",
+                "k32": "Overview"
+              }
+            }
+          }
+        }
+      },
+      "profile": {
+        "blocks": {
+          "end2end": {
+            "end2end": {
+              "k1": "Ok, that was it!",
+              "k2": "You're now all set, make sure to keep your token generator secure. From now on, you'll need to provide a one-time password on every login attempt.",
+              "k3": "Background",
+              "k4": "This application is using a bi-directional message broker (MQTT) to communicate with your remote devices. This allows you to initiate actions like receiving a livestream, pan-tilting your device and more, without enabling port-forwarding or modifying the network. By default the message broker which is orchestrating these actions is protected with credentials (username and password) and hub encryption, however you might want more security: encryption using your own encryption keys.",
+              "k5": "Encryption",
+              "k6": "Encryption is a method of secure communication that prevents third-parties from accessing data while it's transferred from one end system or device to another. In this case, the end systems are your devices and your browser. By activating encryption you'll receive a passphrase-protected public key and private key (RSA) which are used to encrypt and decrypt the data you're sending through the MQTT broker, making it unreadable for anyone else other than you.",
+              "k7": "Generate key-pair",
+              "k8": "You can generate your own keypair using",
+              "k9": "ssh-keygen",
+              "k10": "or we can generate a public key and private key for you. If you wish to generate one",
+              "k11": "click this button",
+              "k12": "4-character passphrase (optional)",
+              "k13": "By providing a 4-character passphrase, your public key will be encrypted using it. On login you'll be prompted for the same 4-character passphrase to decrypt your public key. Leave the field empty if you don't want to use one.",
+              "k14": "Provide a 4-character passphrase",
+              "k15": "Optional. If used, it must be exactly 4 characters.",
+              "k16": "Use exactly 4 characters.",
+              "k17": "Great news, encryption is now enabled. Make sure to securely copy and persist your private key and fingerprint. You'll need to add these credentials in your device deployment to allow encryption.",
+              "k18": "As mentioned above only the fingerprint and encrypted public key will be stored in this application. We do not store your private key or optional 4-character passphrase, so keep them somewhere secure.",
+              "k19": "Your tokens",
+              "k20": "Fingerprint",
+              "k21": "Copy",
+              "k22": "4-character passphrase",
+              "k23": "Public key",
+              "k24": "Private key",
+              "k25": "Symmetric key"
+            }
+          },
+          "generate_access_token": {
+            "generate_access_token": {
+              "k1": "Generate access token",
+              "k2": "Name",
+              "k3": "Token name",
+              "k4": "Name is required.",
+              "k5": "Description",
+              "k6": "Description for this token",
+              "k7": "Description is required.",
+              "k8": "Expiry Date",
+              "k9": "Expiry date is required.",
+              "k10": "Scope",
+              "k11": "At least one scope is required.",
+              "k12": "Access Token",
+              "k13": "Copy",
+              "k14": "Copy this token now. You won't be able to see it again!",
+              "k15": "Token copied to clipboard! Go ahead and leverage",
+              "k16": "the Hub API",
+              "k17": ", insert the token in the Authorization header as a Bearer token."
+            }
+          },
+          "mfa": {
+            "mfa": {
+              "k1": "You're all set!",
+              "k2": "Make sure to keep your token generator secure. From now on, you'll need to provide a one-time password on every login attempt.",
+              "k3": "Multi-factor authentication (MFA) adds an extra layer of security to your business by addressing the vulnerabilities of relying solely on passwords.",
+              "k4": "Get Started",
+              "k5": "When enabling MFA you will be asked to enter a time-based one-time password, after signing in with your password. This one-time password is generated by an authenticator app on a device you own. After opening the authenticator of choice, add a new account and the QR code below.",
+              "k6": "Verify",
+              "k7": "Once registered, your authenticator app will begin generating unique tokens. If you can’t scan the QR code, you can manually enter the secret key provided instead.",
+              "k8": "Enter the verification code generated by your authenticator app"
+            }
+          },
+          "showconfirm": {
+            "showconfirm": {
+              "k1": "confirm",
+              "k2": "cancel"
+            }
+          },
+          "update_access_token": {
+            "update_access_token": {
+              "k1": "Update access token",
+              "k2": "Name",
+              "k3": "Token name",
+              "k4": "Name is required.",
+              "k5": "Description",
+              "k6": "Description for this token",
+              "k7": "Description is required.",
+              "k8": "Expiry Date",
+              "k9": "Scope"
+            }
+          }
+        },
+        "profile": {
+          "k1": "Multi-factor Authentication",
+          "k2": "(MFA)",
+          "k3": "Multi-actor Authentication",
+          "k4": "Are you sure you want to disable MFA? This will make your account more vulnerable, as it will only be protected by your password and not by a one-time password.",
+          "k5": "Encryption",
+          "k6": "You're encrypted!",
+          "k7": "Are you sure you want to disable encryption? This will make your account more vulnerable, as it will not be protected by encryption.",
+          "k8": "Delete access token",
+          "k9": "Are you sure you want to delete this access token?",
+          "k10": "No plan",
+          "k11": "Active",
+          "k12": "Disabled",
+          "k13": "Enterprise",
+          "k14": "Enabled",
+          "k15": "Not enabled",
+          "k16": "Edit Profile",
+          "k17": "Change password",
+          "k18": "Access tokens",
+          "k19": "Login audit",
+          "k20": "Edit profile",
+          "k21": "User information",
+          "k22": "Username",
+          "k23": "First name",
+          "k24": "Firstname",
+          "k25": "Email address",
+          "k26": "Last name",
+          "k27": "Lastname",
+          "k28": "Timezone",
+          "k29": "Select timezone",
+          "k30": "Billing address",
+          "k31": "Company name",
+          "k32": "Company Name",
+          "k33": "Company (VAT) Number",
+          "k34": "Number",
+          "k35": "Current password",
+          "k36": "New password",
+          "k37": "Repeat new password",
+          "k38": "Multi-factor Auth not set up",
+          "k39": "Multi-factor authentication (MFA) is successfully",
+          "k40": "enabled",
+          "k41": "on your account.",
+          "k42": "Settings",
+          "k43": "HLS Callback URI",
+          "k44": "The URL that will be triggered when HLS generation is done.",
+          "k45": "You have enabled this feature, and therefore will encrypt all communication from and to your remote devices. For example livestream, ptz and more.",
+          "k46": "Fingerprint",
+          "k47": "Copy",
+          "k48": "Creation date:",
+          "k49": "Passphrase",
+          "k50": "Public key",
+          "k51": "(passphrase protected)",
+          "k52": "Private key",
+          "k53": "Symmetric key",
+          "k54": "Access tokens allow you to authenticate",
+          "k55": "Hub API",
+          "k56": "requests. They can be created, updated, and deleted as needed. Access tokens provide the foundation for integrating custom applications",
+          "k57": "using our OpenAPI",
+          "k58": ". Keep your tokens secure and do not share them with unauthorized parties.",
+          "k59": "The access token are used as a Bearer token in the Authorization header of your API requests on behalf of the owner user. The token will take into account the expiration and scope levels, which makes sure you grant the least privilege access.",
+          "k60": "Name",
+          "k61": "Token",
+          "k62": "Expiry date",
+          "k63": "Open update access token",
+          "k64": "No access tokens found",
+          "k65": "date, time",
+          "k66": "ip",
+          "k67": "browser",
+          "k68": "os",
+          "k69": "No login history found.",
+          "k70": "My account",
+          "k71": "Manage your profile, billing methods and invoices"
+        }
+      },
+      "roles": {
+        "blocks": {
+          "pageassignment": {
+            "pageassignment": {
+              "k1": "Select pages",
+              "k2": "Choose the pages you would like to give access to, and will show up in the left navigation menu.",
+              "k3": "Showing page access options for base role:",
+              "k4": "Select a base role in the Role Information tab to see available page access options."
+            }
+          },
+          "roleinformation": {
+            "roleinformation": {
+              "k1": "Role Information",
+              "k2": "Page access",
+              "k3": "Time-based access",
+              "k4": "Feature access",
+              "k5": "Role name",
+              "k6": "Select a base role",
+              "k7": "Base role defines maximum access. Page access can only narrow this access.",
+              "k8": "Role Active",
+              "k9": "You can temporarily deactivate a Role without deleting it. When assigning a role, this role will no longer show up.",
+              "k10": "Access overview",
+              "k11": "No pages selected, select the",
+              "k12": "Permissions",
+              "k13": "tab to select one or more pages.",
+              "k14": "Overview",
+              "k15": "You can enable or disable specific features for a set of users. By disabling specific features on role level, you'll make sure all accounts inheriting this role will not have access to this feature in the UI.",
+              "k16": "Allow to watch live view",
+              "k17": "Allow to pan/tilt and zoom",
+              "k18": "Allow to remotely configure",
+              "k19": "Features and functions",
+              "k20": "By adding a time constraint to one or more days, you limit access during a specific time window. This makes sure specific users, assigned to this role, can only access the platform during this time window.",
+              "k21": "Enable Time-based access",
+              "k22": "You can temporarily deactivate the time window without deleting it.",
+              "k23": "Allow to download recordings"
+            }
+          }
+        },
+        "roles": {
+          "k1": "Delete role",
+          "k2": "Search role..",
+          "k3": "Custom Roles",
+          "k4": "Create a Role",
+          "k5": "Generic Roles",
+          "k6": "No role found",
+          "k7": "Roles",
+          "k8": "Manage role permissions"
+        }
+      },
+      "settings": {
+        "settings": {
+          "k1": "Labels",
+          "k2": "Settings",
+          "k3": "Manage your hub settings"
+        }
+      },
+      "sites": {
+        "blocks": {
+          "cameraassignment": {
+            "cameraassignment": {
+              "k1": "Device access",
+              "k2": "You can assign",
+              "k3": "individual devices"
+            }
+          },
+          "groupassignment": {
+            "groupassignment": {
+              "k1": "You can assign a collection of multiple devices by adding"
+            }
+          },
+          "sitesinformation": {
+            "sitesinformation": {
+              "k1": "Details",
+              "k2": "Vault settings",
+              "k3": "details",
+              "k4": "Name",
+              "k5": "Description",
+              "k6": "Badge initials",
+              "k7": "e.g. KH",
+              "k8": "Badge",
+              "k9": "permissions",
+              "k10": "Device access",
+              "k11": "No devices selected, select the",
+              "k12": "tab to select one or more devices.",
+              "k13": "Connect to dedicated Vault",
+              "k14": "Vault URI (e.g. https://vault.kerberos.io/api)",
+              "k15": "Enter your Vault URI",
+              "k16": "Access key (assigned to your Vault account)",
+              "k17": "Enter your account access key",
+              "k18": "Secret key (assigned to your Vault account)",
+              "k19": "Enter your secret access key",
+              "k20": "Test connection",
+              "k21": "Successfully connected",
+              "k22": "Connection failed"
+            }
+          }
+        },
+        "pages": {
+          "sites_detail": {
+            "site_detail": {
+              "k1": "Overview",
+              "k2": "Assigned Devices",
+              "k3": "Live view",
+              "k4": "Name",
+              "k5": "Description",
+              "k6": "Badge",
+              "k7": "Initials",
+              "k8": "Color",
+              "k9": "Open Cases",
+              "k10": "Date",
+              "k11": "Device(s)",
+              "k12": "Case title",
+              "k13": "No open cases found",
+              "k14": "No livestreams found",
+              "k15": "online",
+              "k16": "idle",
+              "k17": "Agent is online, but video stream appears to be offline.",
+              "k18": "offline",
+              "k19": "Under construction"
+            }
+          }
+        },
+        "sites": {
+          "k1": "Setup your first site",
+          "k2": "Name",
+          "k3": "Address",
+          "k4": "Devices",
+          "k5": "Controls",
+          "k6": "Edit Site",
+          "k7": "Assign Devices",
+          "k8": "Delete Site"
+        }
+      },
+      "subscription": {
+        "blocks": {
+          "plans": {
+            "plans": {
+              "k1": "Get the most out of Kerberos Hub",
+              "k2": "Kerberos Hub supercharges your experience with features like advanced filtering, analysis and parallel livestreaming of all your devices.",
+              "k3": "Features",
+              "k4": "Recording history",
+              "k5": "The limit you are allowed to upload. Once you reach this limit your account will be disabled during a specific timeout. For example, having a 500 MB daily threshold with a timeout of 6 hours, means your account will be disabled once it reaches the 500 MB upload. After 6 hours your account will be activated again, and you can consume another 500 MB until the limit is reached again. This means that you get by max 4 resets per day; a capacity of max 2 GB each day.",
+              "k6": "Daily threshold*",
+              "k7": "Once your daily threshold is reached, you're account will be disabled, and reset after a specific timeout.",
+              "k8": "Timeout*",
+              "k9": "Hosting",
+              "k10": "Cases",
+              "k11": "Notifications",
+              "k12": "Accounts",
+              "k13": "Filtering",
+              "k14": "Labeling",
+              "k15": "Analysis",
+              "k16": "Analytics",
+              "k17": "Livestream (Preview/Live)",
+              "k18": "Support",
+              "k19": "Hobbyist",
+              "k20": "3 days",
+              "k21": "500 MB (2 GB)",
+              "k22": "6 hours",
+              "k23": "SaaS",
+              "k24": "Plus",
+              "k25": "7 days",
+              "k26": "1 GB (4 GB)",
+              "k27": "Pro",
+              "k28": "30 days",
+              "k29": "3 GB (12 GB)",
+              "k30": "Confirm & Pay",
+              "k31": "Review your subscription selection and add a preferred payment credit card for monthly billing.",
+              "k32": "Summary",
+              "k33": "Review your plan changes",
+              "k34": "Selected Plan",
+              "k35": "Monthly payment",
+              "k36": "Provide a coupon code",
+              "k37": "Payment method",
+              "k38": "Payment info secured and processed by Stripe – Kerberos.io won’t see or store you credit card details",
+              "k39": "Before you can purchase a plan, make sure",
+              "k40": "to add a valid credit card first",
+              "k41": "active card",
+              "k42": "Thank you for your payment",
+              "k43": "We successfully received your payment."
+            }
+          }
+        },
+        "subscription": {
+          "k1": "No plan",
+          "k2": "Quota limit",
+          "k3": "Enterprise",
+          "k4": "Bandwidth",
+          "k5": "Connected",
+          "k6": "Not connected",
+          "k7": "Overview",
+          "k8": "Billing & Invoices",
+          "k9": "Subscription plan",
+          "k10": "Daily usage limits",
+          "k11": "Subscription Overview",
+          "k12": "Active",
+          "k13": "Cancelled",
+          "k14": "Reached limit",
+          "k15": "Billing cycle",
+          "k16": "Every 30 days",
+          "k17": "Start date",
+          "k18": "Choose your subscription plan",
+          "k19": "Using Kerberos Hub requires a paid plan. Add a Billing method below and choose one of the plans that fits best your use case.",
+          "k20": "Kerberos Hub credentials",
+          "k21": "Cloud credentials",
+          "k22": "Media storage region",
+          "k23": "Your media can be stored in one of the following regions. Different Kerberos agents can store in different regions.",
+          "k24": "Copy",
+          "k25": "Use the below credentials to connect your Kerberos Agents to your Kerberos Hub.",
+          "k26": "Use the below credentials to connect your devices to our cloud.",
+          "k27": "How to connect Agents to Kerberos Hub",
+          "k28": "Public key",
+          "k29": "Private key",
+          "k30": "Kerberos Vault settings",
+          "k31": "Vault settings",
+          "k32": "If you have a Kerberos Vault setup, you can specify your credentials below. Kerberos Hub will use this to get a signed URL from your Kerberos Vault instance.",
+          "k33": "If you have a Vault setup, you can specify your credentials below. We will use this to get a signed URL from your Vault instance.",
+          "k34": "Learn more about Kerberos Vault",
+          "k35": "Vault uri",
+          "k36": "Enter your Vault URI",
+          "k37": "Access key",
+          "k38": "Vault access key",
+          "k39": "Secret key",
+          "k40": "Vault secret key",
+          "k41": "Billing method",
+          "k42": "You have a credit card attached, which will be used to pay for your",
+          "k43": "subscription",
+          "k44": "You have a credit card attached, go ahead and subscribe to a plan",
+          "k45": "Active card",
+          "k46": "Invoices",
+          "k47": "date",
+          "k48": "reason",
+          "k49": "price",
+          "k50": "download",
+          "k51": "PDF",
+          "k52": "No invoices found.",
+          "k53": "Usage details",
+          "k54": "% used",
+          "k55": "uploaded",
+          "k56": "&thinsp;GB",
+          "k57": "total",
+          "k58": "No activity found.",
+          "k59": "Credit Card",
+          "k60": "Are you sure you want to delete your credit card?",
+          "k61": "This might stop your subscription on the next renewal.",
+          "k62": "Cancel subscription",
+          "k63": "Are you sure you want to cancel your subscription?",
+          "k64": "You will be able to use your subscription until the end of your billing period. Afterwards your subscription will be deleted, and all relevant information will be removed.",
+          "k65": "Resume subscription",
+          "k66": "Are you sure you want to resume your subscription?",
+          "k67": "You will be billed again after you reaches your current billing period.",
+          "k68": "Delete subscription",
+          "k69": "Are you sure you want to delete your subscription?",
+          "k70": "Your subscription and all relevant information will be removed immediately.",
+          "k71": "Select a subscription plan",
+          "k72": "Plans & Integrations",
+          "k73": "Manage your subscription plan and connect to other apps"
+        }
+      },
+      "tasks": {
+        "blocks": {
+          "filter": {
+            "filter": {
+              "k1": "Search cases...",
+              "k2": "Show filters",
+              "k3": "Hide filters"
+            }
+          },
+          "showconfirm": {
+            "showconfirm": {
+              "k1": "confirm",
+              "k2": "cancel"
+            }
+          }
+        },
+        "pages": {
+          "case_detail": {
+            "case_detail": {
+              "k1": "Case actions",
+              "k2": "Remove case",
+              "k3": "Are you sure you want to remove the case,",
+              "k4": "Media",
+              "k5": "Loading case media...",
+              "k6": "Previous",
+              "k7": "Next",
+              "k8": "Loading media...",
+              "k9": "Media thumbnail",
+              "k10": "Redacted",
+              "k11": "More media actions",
+              "k12": "Open media detail",
+              "k13": "Details",
+              "k14": "Write your description here.",
+              "k15": "Edit description",
+              "k16": "Labels:",
+              "k17": "No labels",
+              "k18": "Assignees:",
+              "k19": "Notify new assignees",
+              "k20": "Save",
+              "k21": "Visibility:",
+              "k22": "Private",
+              "k23": "Public",
+              "k24": "Activity",
+              "k25": "No comments yet",
+              "k26": "Write your comment here.",
+              "k27": "Send comment",
+              "k28": "Case not found",
+              "k29": "Share case",
+              "k30": "&times;",
+              "k31": "Share this case with an external party via email. They will receive a link and verify their identity with a one-time code.",
+              "k32": "Enter email address",
+              "k33": "1 hour",
+              "k34": "1 day",
+              "k35": "1 week",
+              "k36": "Active shares",
+              "k37": "Cases",
+              "k38": "Overview",
+              "k39": "Select version",
+              "k40": "Use latest (default)"
+            }
+          }
+        },
+        "tasks": {
+          "k1": "No cases found",
+          "k2": "Cases",
+          "k3": "Manage footage that has been marked for futher processing and analysis"
+        }
+      },
+      "videowall": {
+        "blocks": {
+          "cameraassignment": {
+            "cameraassignment": {
+              "k1": "Device access",
+              "k2": "You can assign",
+              "k3": "individual devices",
+              "k4": "to a specific site."
+            }
+          },
+          "groupassignment": {
+            "groupassignment": {
+              "k1": "Manage Group access"
+            }
+          },
+          "showconfirm": {
+            "showconfirm": {
+              "k1": "confirm",
+              "k2": "cancel"
+            }
+          },
+          "siteassignment": {
+            "siteassignment": {
+              "k1": "Manage Site access"
+            }
+          },
+          "videowall_information": {
+            "videowall_information": {
+              "k1": "Videowall Information",
+              "k2": "Devices",
+              "k3": "Permissions",
+              "k4": "Share",
+              "k5": "Wall Id",
+              "k6": "Id",
+              "k7": "Name",
+              "k8": "Videowall name",
+              "k9": "Description",
+              "k10": "Pass code",
+              "k11": "Videowall Active",
+              "k12": "You can temporarily deactivate a videowall without deleting it",
+              "k13": "Show filter",
+              "k14": "Display or hide the filter on top of the videowall",
+              "k15": "Permissions overview",
+              "k16": "Group access",
+              "k17": "No groups selected, select the",
+              "k18": "tab to select one or more groups.",
+              "k19": "Site access",
+              "k20": "No sites selected, select the",
+              "k21": "tab to select one or more sites.",
+              "k22": "Device access",
+              "k23": "No devices selected, select the",
+              "k24": "tab to select one or more devices.",
+              "k25": "Choose any Groups, Sites or individual Devices, which will be accessible though this videowall:",
+              "k26": "This videowall will have following permissions:",
+              "k27": "Assign this videowall to users within your organisation. Assigned users will see this videowall in their dashboard.",
+              "k28": "Currently assigned users:",
+              "k29": "No users assigned. Use the selector to assign users to this videowall."
+            }
+          }
+        },
+        "videowall": {
+          "k1": "Delete videowall",
+          "k2": "Search videowall..",
+          "k3": "My Videowalls",
+          "k4": "Create a videowall",
+          "k5": "Assigned Videowalls",
+          "k6": "No videowalls",
+          "k7": "All Videowalls",
+          "k8": "No videowalls found",
+          "k9": "Videowalls",
+          "k10": "A videowall to give external users and devices access to live view."
+        }
+      },
+      "watchlist": {
+        "blocks": {
+          "showconfirm": {
+            "showconfirm": {
+              "k1": "confirm",
+              "k2": "cancel"
+            }
+          }
+        },
+        "watchlist": {
+          "k1": "Create case",
+          "k2": "Share recording",
+          "k3": "Search alerts...",
+          "k4": "My alerts",
+          "k5": "No alerts not found",
+          "k6": "Watchlist",
+          "k7": "Review all your notifications and alerts, leverage insights and analytics."
+        }
+      },
+      "workflows": {
+        "blocks": {
+          "workflow_editor": {
+            "workflow_editor": {
+              "k1": "Blocks",
+              "k2": "Drag a block onto the canvas.",
+              "k3": "Zoom out to fit all blocks",
+              "k4": "⤢ Fit view",
+              "k5": "Reset pan/zoom to 100%",
+              "k6": "⌖ Reset view",
+              "k7": "🗑 Delete",
+              "k8": "From",
+              "k9": "Until",
+              "k10": "Weekdays",
+              "k11": "Drag a block from the left to get started."
+            }
+          },
+          "workflow_form": {
+            "workflow_form": {
+              "k1": "Information",
+              "k2": "Workflow editor",
+              "k3": "Provide some additional information about the workflow you are configuring.",
+              "k4": "Title",
+              "k5": "Title / Name",
+              "k6": "Description",
+              "k7": "A short description",
+              "k8": "When disabled, this workflow will not be executed."
+            }
+          }
+        },
+        "workflows": {
+          "k1": "Delete workflow",
+          "k2": "Search workflow..",
+          "k3": "My Workflows",
+          "k4": "status",
+          "k5": "workflow",
+          "k6": "description",
+          "k7": "blocks",
+          "k8": "No workflows found",
+          "k9": "Edit Workflow",
+          "k10": "Delete Workflow",
+          "k11": "Workflows",
+          "k12": "Design and chain building blocks to automate flows"
+        }
+      }
+    },
+    "login": {
+      "activate": {
+        "k1": "Please enter your PIN to activate your account:",
+        "k2": "Your account is succesfully activated, please proceed to the",
+        "k3": "login page",
+        "k4": "Your activation pin is not valid, or your account is already activated.",
+        "k5": "</body>"
+      },
+      "blocks": {
+        "tos": {
+          "tos": {
+            "k1": "Terms of Use",
+            "k2": "Effective Date:",
+            "k3": "Welcome to Hub, a sophisticated video surveillance Software-as-a-Service (SaaS) application provided by UUG.AI. By accessing or using Hub (\"Service\"), you agree to comply with and be bound by these Terms of Use (\"Terms\"). If you do not agree with these Terms, you must not use the Service.",
+            "k4": "1. Acceptance of Terms",
+            "k5": "These Terms constitute a legally binding agreement between you (\"User,\" \"you\") and UUG.AI (\"Company,\" \"we,\" \"us,\" \"our\"). By registering for, accessing, or using the Service, you acknowledge that you have read, understood, and agreed to these Terms.",
+            "k6": "2. Eligibility",
+            "k7": "To use the Service, you must be at least 18 years old and possess the legal authority to enter into these Terms. If you are using the Service on behalf of an organization, you represent and warrant that you have the authority to bind that organization to these Terms.",
+            "k8": "3. Account Registration & Security",
+            "k9": "You must provide accurate, current, and complete information when creating an account.",
+            "k10": "You are responsible for maintaining the confidentiality of your login credentials.",
+            "k11": "You are required to implement the highest possible security measures, including multi-factor authentication and a strong, unique password for the Hub application.",
+            "k12": "Any activity occurring under your account is your responsibility. Notify us immediately of any unauthorized access or security breaches.",
+            "k13": "4. Use of the Service",
+            "k14": "You agree to use the Service solely for lawful purposes and in compliance with all applicable laws and regulations.",
+            "k15": "You shall not misuse the Service, including but not limited to unauthorized access, reverse engineering, or interfering with its operation.",
+            "k16": "The Service may not be used to infringe on the privacy or rights of others.",
+            "k17": "5. Data & Privacy",
+            "k18": "UUG.AI collects and processes data as described in our",
+            "k19": "Privacy Policy",
+            "k20": "You are responsible for obtaining consent from individuals being recorded, as required by applicable laws.",
+            "k21": "We do not claim ownership of the content you upload, but you grant us a limited license to use it for the purpose of providing the Service.",
+            "k22": "6. Subscription & Payment",
+            "k23": "The Service is provided on a subscription basis, with fees as detailed in our pricing plans.",
+            "k24": "Payments are due in advance and are non-refundable unless otherwise stated.",
+            "k25": "Failure to make timely payments may result in suspension or termination of your access to the Service.",
+            "k26": "7. Intellectual Property",
+            "k27": "All software, trademarks, and content associated with the Service remain the property of UUG.AI or its licensors.",
+            "k28": "You are granted a limited, non-exclusive, non-transferable right to use the Service in accordance with these Terms.",
+            "k29": "8. Service Availability & Limitations",
+            "k30": "We strive to maintain the availability of the Service but do not guarantee uninterrupted or error-free operation.",
+            "k31": "We may modify, suspend, or discontinue parts of the Service without prior notice.",
+            "k32": "9. Termination",
+            "k33": "We may suspend or terminate your access to the Service if you violate these Terms.",
+            "k34": "You may terminate your account at any time, but no refunds will be provided for unused portions of your subscription.",
+            "k35": "10. Disclaimers & Limitation of Liability",
+            "k36": "The Service is provided \"as is\" without warranties of any kind, either express or implied.",
+            "k37": "We are not responsible for any damages, including lost data or unauthorized access.",
+            "k38": "Our total liability shall not exceed the amount paid by you in the past 12 months.",
+            "k39": "11. Governing Law & Dispute Resolution",
+            "k40": "These Terms shall be governed by the laws of [Insert Jurisdiction].",
+            "k41": "Any disputes arising out of or in connection with these Terms shall be resolved through arbitration or the courts of [Insert Jurisdiction].",
+            "k42": "12. Changes to Terms",
+            "k43": "We may update these Terms at any time. Continued use of the Service constitutes acceptance of the revised Terms.",
+            "k44": "13. Contact Information",
+            "k45": "If you have any questions about these Terms, please contact us at",
+            "k46": "support@uug.ai",
+            "k47": "By using Hub, you acknowledge that you have read, understood, and agreed to these Terms of Use.",
+            "k48": "I agree"
+          }
+        }
+      },
+      "signup": {
+        "k1": "We've created your profile. Please check your mail to activate your account.",
+        "k2": "Terms Of Use",
+        "k3": "We at are committed to keeping your data private and protected. Due to the changes in the legal environment in the European Union and as a part of our continuing effort to improve our service, we have updated our Terms of Use, effective as of today.",
+        "k4": "Read Terms of Use",
+        "k5": "I agree with Terms of Use",
+        "k6": "Sign up",
+        "k7": "Username",
+        "k8": "Choose a username",
+        "k9": "Username is required",
+        "k10": "Do not use special characters or capitals",
+        "k11": "E-mail",
+        "k12": "Your E-mail",
+        "k13": "Email is required",
+        "k14": "Please enter a valid email",
+        "k15": "Password",
+        "k16": "Password is required",
+        "k17": "Make sure passwords are at least 8 characters",
+        "k18": "Make sure passwords are maximum 72 characters long",
+        "k19": "Confirm Password",
+        "k20": "Repeat your password",
+        "k21": "Repeat password",
+        "k22": "Make sure passwords are equal",
+        "k23": "Already a member?",
+        "k24": "Sign in"
+      },
+      "sso": {
+        "k1": "Verifying SSO",
+        "k2": "We are validating your account, before we let you in. Hold on for a moment.",
+        "k3": "Loading...",
+        "k4": "</body>"
+      }
+    },
+    "share": {
+      "share": {
+        "k1": "Verify your identity",
+        "k2": "Enter the 6-character verification code from your email to access the shared case.",
+        "k3": "Request new code",
+        "k4": "Access denied",
+        "k5": "Media",
+        "k6": "Loading case media...",
+        "k7": "Previous",
+        "k8": "Next",
+        "k9": "Loading media...",
+        "k10": "Media thumbnail",
+        "k11": "Details",
+        "k12": "Labels:",
+        "k13": "No labels",
+        "k14": "Visibility:",
+        "k15": "Private",
+        "k16": "Public",
+        "k17": "Activity",
+        "k18": "No comments yet"
+      }
+    },
+    "shared": {
+      "widgets": {
+        "accounts_list": {
+          "accounts_list": {
+            "k1": "name",
+            "k2": "username",
+            "k3": "role",
+            "k4": "groups",
+            "k5": "sites",
+            "k6": "devices",
+            "k7": "status",
+            "k8": "actions",
+            "k9": "user",
+            "k10": "Edit user",
+            "k11": "Delete user"
+          }
+        },
+        "address": {
+          "address": {
+            "k1": "Address",
+            "k2": "Use current location"
+          }
+        },
+        "badge": {
+          "badge": {
+            "k1": "&thinsp;/&thinsp;0"
+          }
+        },
+        "camerapicker": {
+          "camerapicker": {
+            "k1": "No items found"
+          }
+        },
+        "canvas": {
+          "canvas": {
+            "k1": "Loading..."
+          }
+        },
+        "controls_popup": {
+          "controls_popup": {
+            "k1": "Controls Menu",
+            "k2": "Edit",
+            "k3": "Delete"
+          }
+        },
+        "creditcardbox": {
+          "creditcardbox": {
+            "k1": "To upgrade to a paid subscription, we need your preferred credit card info for billing. Get started by providing some personal information:",
+            "k2": "Customer details",
+            "k3": "Provide billing details to create your customer profile.",
+            "k4": "Card information",
+            "k5": "Add your payment method to complete setup.",
+            "k6": "Name on card",
+            "k7": "Street address",
+            "k8": "Postal code",
+            "k9": "Select your billing country"
+          }
+        },
+        "dataset_list": {
+          "dataset_detail": {
+            "dataset_detail": {
+              "k1": "published",
+              "k2": "draft",
+              "k3": "Device detail",
+              "k4": "Kerberos Factory",
+              "k5": "Kerberos Agent",
+              "k6": "n/a",
+              "k7": "Remove device"
+            }
+          },
+          "dataset_list": {
+            "k1": "Status",
+            "k2": "Name",
+            "k3": "Site",
+            "k4": "Uptime",
+            "k5": "Version",
+            "k6": "Release",
+            "k7": "Controls"
+          }
+        },
+        "dateinput": {
+          "dateinput": {
+            "k1": "Date"
+          }
+        },
+        "datepicker": {
+          "datepicker": {
+            "k1": "Clear date",
+            "k2": "Date"
+          }
+        },
+        "devices_list": {
+          "devices_detail": {
+            "devices_detail": {
+              "k1": "idle",
+              "k2": "Agent is online, but video stream appears to be offline.",
+              "k3": "online",
+              "k4": "offline",
+              "k5": "Agent appears to be offline.",
+              "k6": "Site",
+              "k7": "No site",
+              "k8": "Uptime",
+              "k9": "ONVIF",
+              "k10": "Enabled",
+              "k11": "Disabled",
+              "k12": "Remove device",
+              "k13": "Device detail",
+              "k14": "N/A",
+              "k15": "Factory",
+              "k16": "Agent",
+              "k17": "n/a"
+            }
+          },
+          "devices_list": {
+            "k1": "Status",
+            "k2": "Name",
+            "k3": "Site(s)",
+            "k4": "Uptime",
+            "k5": "Version",
+            "k6": "ONVIF",
+            "k7": "Release",
+            "k8": "Controls"
+          }
+        },
+        "floorplan_camera_placer": {
+          "floorplan_camera_placer": {
+            "k1": "No devices found"
+          }
+        },
+        "floorplan_management": {
+          "floorplan_management": {
+            "k1": "Back to overview",
+            "k2": "Hide sidebar",
+            "k3": "Show sidebar",
+            "k4": "Close live stream",
+            "k5": "Devices",
+            "k6": "File",
+            "k7": "Selected File Preview:",
+            "k8": "Selected Image"
+          }
+        },
+        "floorplan_switcher": {
+          "floorplan_switcher": {
+            "k1": "Overview",
+            "k2": "File",
+            "k3": "File is too large. Max size: 5MB.",
+            "k4": "Current file preview:",
+            "k5": "Selected Image"
+          }
+        },
+        "itempicker": {
+          "itempicker": {
+            "k1": "No items found"
+          }
+        },
+        "kpi": {
+          "kpi": {
+            "k1": "Total line crossings",
+            "k2": "Total time spent in region",
+            "k3": "Total count of objects in region"
+          }
+        },
+        "label_picker": {
+          "label_picker": {
+            "k1": "No labels found",
+            "k2": "Add labels here",
+            "k3": "Save"
+          }
+        },
+        "labeler": {
+          "labeler": {
+            "k1": "Loading..."
+          }
+        },
+        "labels_manager": {
+          "label_form": {
+            "label_form": {
+              "k1": "Name",
+              "k2": "colorpicker",
+              "k3": "Description"
+            }
+          },
+          "label_row": {
+            "label_row": {
+              "k1": "Name",
+              "k2": "colorpicker",
+              "k3": "Description",
+              "k4": "Delete label",
+              "k5": "Are you sure you want to delete this label?"
+            }
+          },
+          "labels_manager": {
+            "k1": "No labels found"
+          }
+        },
+        "media_container": {
+          "media_container": {
+            "k1": "Create case",
+            "k2": "view details",
+            "k3": "No recording at this time",
+            "k4": "No byte-range data available for merged playback.",
+            "k5": "No recordings found."
+          }
+        },
+        "range_slider": {
+          "range_slider": {
+            "k1": "Remove selected time segment",
+            "k2": "Add time segment",
+            "k3": "Segment start time",
+            "k4": "Segment end time"
+          }
+        },
+        "roles_list": {
+          "roles_list": {
+            "k1": "name",
+            "k2": "base role",
+            "k3": "pages",
+            "k4": "status",
+            "k5": "actions",
+            "k6": "View role",
+            "k7": "Edit role",
+            "k8": "Delete role"
+          }
+        },
+        "sample_list": {
+          "sample_detail": {
+            "sample_detail": {
+              "k1": "reviewed",
+              "k2": "draft",
+              "k3": "Device detail"
+            }
+          },
+          "sample_list": {
+            "k1": "Status",
+            "k2": "Name",
+            "k3": "Site",
+            "k4": "Uptime",
+            "k5": "Version",
+            "k6": "Release",
+            "k7": "Controls"
+          }
+        },
+        "share": {
+          "share": {
+            "k1": "Sharing this recording creates a public link that anyone with the link can access. The recording will remain available until you disable the public link.",
+            "k2": "Share details",
+            "k3": "Title for the event",
+            "k4": "Provide a short description of what is happening, or why you are sharing.",
+            "k5": "Device",
+            "k6": "Sites",
+            "k7": "No sites",
+            "k8": "Date/Time",
+            "k9": "Recipients",
+            "k10": "Following persons will receive a notification and receive access to the shared recording.",
+            "k11": "No recipients"
+          }
+        },
+        "stream": {
+          "block": {
+            "io": {
+              "io": {
+                "k1": "Trigger output"
+              }
+            },
+            "ptz": {
+              "ptz": {
+                "k1": "Select a preset",
+                "k2": "Search presets...",
+                "k3": "No presets found",
+                "k4": "Move up [Shift + ↑]",
+                "k5": "Trigger output",
+                "k6": "Move left [Shift + ←]",
+                "k7": "Go to home position [Shift + C]",
+                "k8": "Move right [Shift + →]",
+                "k9": "Zoom out [Shift + -]",
+                "k10": "Move down [Shift + ↓]",
+                "k11": "Zoom in [Shift + +]"
+              }
+            },
+            "ptzpreset": {
+              "ptzpreset": {
+                "k1": "Select a preset"
+              }
+            },
+            "record": {
+              "record": {
+                "k1": "Record video"
+              }
+            },
+            "talk": {
+              "talk": {
+                "k1": "Disable microphone",
+                "k2": "Enable microphone"
+              }
+            }
+          },
+          "stream": {
+            "k1": "Switch to preview [Shift + P]",
+            "k2": "PREVIEW",
+            "k3": "Switch to live [Shift + L]",
+            "k4": "LIVE",
+            "k5": "Make sure you are using the latest Kerberos agent and a Gold subscription",
+            "k6": "You are not allowed to watch a live stream.",
+            "k7": "Turn sound off",
+            "k8": "Turn sound on",
+            "k9": "Show fullscreen [Double Click]",
+            "k10": "Hide fullscreen [Esc / Double Click]",
+            "k11": "Stream paused",
+            "k12": "Device Offline",
+            "k13": "The agent is offline, please check your agent or factory.",
+            "k14": "Device Idle",
+            "k15": "The agent is online, but the device stream seems to be offline",
+            "k16": "No permissions",
+            "k17": "You aren't allowed to view this livestream."
+          }
+        },
+        "tags": {
+          "tags": {
+            "k1": "Write email and press enter to submit."
+          }
+        },
+        "tasks_list": {
+          "blocks": {
+            "tasks_line": {
+              "k1": "Remove case",
+              "k2": "Are you sure you want to remove the case,",
+              "k3": "Loading case media...",
+              "k4": "Previous",
+              "k5": "Next",
+              "k6": "Loading media...",
+              "k7": "Media thumbnail",
+              "k8": "Redacted",
+              "k9": "More media actions",
+              "k10": "Open media detail",
+              "k11": "Details",
+              "k12": "Comments",
+              "k13": "Write your description here.",
+              "k14": "Edit description",
+              "k15": "Labels:",
+              "k16": "No labels",
+              "k17": "Assignees:",
+              "k18": "Notify new assignees",
+              "k19": "Save",
+              "k20": "Visibility:",
+              "k21": "Private",
+              "k22": "Public",
+              "k23": "No comments yet",
+              "k24": "Write your comment here.",
+              "k25": "Send comment",
+              "k26": "Delete this case",
+              "k27": "Download related video",
+              "k28": "Open the sequence for this case",
+              "k29": "Open the full case detail page",
+              "k30": "Case was checked, follow-up not needed",
+              "k31": "Case was checked and needs a follow-up",
+              "k32": "Select version",
+              "k33": "Use latest (default)"
+            }
+          },
+          "tasks_list": {
+            "k1": "Status",
+            "k2": "Date",
+            "k3": "Title/Notes",
+            "k4": "Preview"
+          }
+        },
+        "time_chart": {
+          "time_chart": {
+            "k1": "Chart time range",
+            "k2": "Start time",
+            "k3": "End time"
+          }
+        },
+        "video_js": {
+          "video_js": {
+            "k1": "To view this video please enable JavaScript, and consider upgrading to a web browser that",
+            "k2": "supports HTML5 video"
+          }
+        },
+        "videowall_list": {
+          "videowall_list": {
+            "k1": "Status",
+            "k2": "Name",
+            "k3": "Groups",
+            "k4": "Sites",
+            "k5": "Devices",
+            "k6": "Controls",
+            "k7": "View videowall",
+            "k8": "Edit videowall",
+            "k9": "Delete videowall"
+          }
+        },
+        "watch_list": {
+          "blocks": {
+            "watch_line": {
+              "k1": "A case was created for this alert.",
+              "k2": "Case created",
+              "k3": "N/A",
+              "k4": "Created",
+              "k5": "Title:",
+              "k6": "Alert",
+              "k7": "Site",
+              "k8": "Device",
+              "k9": "Download related video",
+              "k10": "Open media"
+            }
+          },
+          "watch_list": {
+            "k1": "Preview",
+            "k2": "Date",
+            "k3": "Title/Alert",
+            "k4": "Site",
+            "k5": "Device"
+          }
+        }
+      }
+    },
+    "verification": {
+      "verification": {
+        "k1": "Theme",
+        "k2": "Verification",
+        "k3": "Verify a recording",
+        "k4": "Upload a recording to verify its origin and detect any tampering, for example when auditing recordings.",
+        "k5": "Verification steps",
+        "k6": "Select source",
+        "k7": "Verify integrity",
+        "k8": "Review result",
+        "k9": "Verification input mode",
+        "k10": "File",
+        "k11": "URL",
+        "k12": "Verify",
+        "k13": "https://example.com/recording.mp4",
+        "k14": "Processing recording and validating signature...",
+        "k15": "Preview",
+        "k16": "Video placeholder",
+        "k17": "Metadata",
+        "k18": "Agent version",
+        "k19": "No valid version",
+        "k20": "Creation time (UTC)",
+        "k21": "Duration (timescale units)",
+        "k22": "Fingerprint",
+        "k23": "Fingerprint hash (SHA-256)",
+        "k24": "Public key (PEM)",
+        "k25": "Signature",
+        "k26": "Segment sizes",
+        "k27": "No segments found",
+        "k28": "Metadata placeholder"
+      }
+    },
+    "wall": {
+      "blocks": {
+        "tos": {
+          "tos": {
+            "k1": "**Terms of Use** **Effective Date:** [Insert Date] Welcome to UUG.AI, a video surveillance Software-as-a-Service (SaaS) application. By accessing or using UUG.AI (\"Service\"), you agree to comply with and be bound by these Terms of Use (\"Terms\"). If you do not agree with these Terms, you must not use the Service. --- ## 1. **Acceptance of Terms** These Terms constitute a legal agreement between you (\"User,\" \"you\") and UUG.AI (\"Company,\" \"we,\" \"us,\" \"our\"). By registering for, accessing, or using the Service, you acknowledge that you have read, understood, and agreed to these Terms. ## 2. **Eligibility** To use the Service, you must be at least 18 years old and have the legal authority to enter into these Terms. If you are using the Service on behalf of an organization, you represent that you have the authority to bind that organization to these Terms. ## 3. **Account Registration & Security** - You must provide accurate and complete information when creating an account. - You are responsible for maintaining the confidentiality of your login credentials. - Any activity occurring under your account is your responsibility. Notify us immediately of unauthorized access. ## 4. **Use of the Service** - You agree to use the Service only for lawful purposes and in compliance with all applicable laws and regulations. - You shall not misuse the Service, including but not limited to unauthorized access, reverse engineering, or interfering with its operation. - The Service may not be used to infringe on the privacy or rights of others. ## 5. **Data & Privacy** - UUG.AI collects and processes data as described in our **Privacy Policy**. - You are responsible for obtaining consent from individuals being recorded, as required by applicable laws. - We do not claim ownership of the content you upload, but you grant us a limited license to use it for providing the Service. ## 6. **Subscription & Payment** - The Service is provided on a subscription basis, with fees as detailed in our pricing plans. - Payments are due in advance and are non-refundable unless otherwise stated. - Failure to make timely payments may result in suspension or termination of your access. ## 7. **Intellectual Property** - All software, trademarks, and content associated with the Service remain the property of UUG.AI or its licensors. - You are granted a limited, non-exclusive, non-transferable right to use the Service. ## 8. **Service Availability & Limitations** - We strive to maintain the availability of the Service but do not guarantee uninterrupted or error-free operation. - We may modify, suspend, or discontinue parts of the Service without prior notice. ## 9. **Termination** - We may suspend or terminate your access if you violate these Terms. - You may terminate your account at any time, but no refunds will be provided for unused portions of your subscription. ## 10. **Disclaimers & Limitation of Liability** - The Service is provided \"as is\" without warranties of any kind. - We are not responsible for any damages, including lost data or unauthorized access. - Our total liability shall not exceed the amount paid by you in the past 12 months. ## 11. **Governing Law & Dispute Resolution** - These Terms shall be governed by the laws of [Insert Jurisdiction]. - Any disputes shall be resolved through arbitration or the courts of [Insert Jurisdiction]. ## 12. **Changes to Terms** - We may update these Terms at any time. Continued use of the Service constitutes acceptance of the revised Terms. ## 13. **Contact Information** If you have any questions about these Terms, please contact us at **[Insert Contact Information]**. --- By using UUG.AI, you acknowledge that you have read, understood, and agreed to these Terms of Use.",
+            "k2": "I agree"
+          }
+        }
+      },
+      "wall": {
+        "k1": "Search device...",
+        "k2": "Enter your 4-character passphrase",
+        "k3": "This encrypted videowall needs the same 4-character passphrase as the owner account.",
+        "k4": "Type one character per box. Backspace moves to the previous box.",
+        "k5": "That 4-character passphrase is incorrect.",
+        "k6": "Enter all 4 characters to continue.",
+        "k7": "Unlock encrypted data",
+        "k8": "Encryption keys unavailable",
+        "k9": "This videowall contains encrypted cameras, but the encryption keys are not available. Please contact the videowall owner to enable encryption sharing for this videowall.",
+        "k10": "Your videowall is protected",
+        "k11": "Enter the pass code"
+      }
+    }
+  }
+}
