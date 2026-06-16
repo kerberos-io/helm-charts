@@ -241,6 +241,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.i18n.defaultLanguage }}"
 
         # features > liveview
+        - name: FEATURE_LIVE_STREAM_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.liveStreamMode }}"
         - name: FEATURE_LIVEVIEW_PAGINATION_MODE
           value: "{{ .Values.kerberoshub.frontend.features.liveview.paginationMode }}"
         - name: FEATURE_LIVEVIEW_PAGE_SIZE
