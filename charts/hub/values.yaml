@@ -226,7 +226,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.9.8"
+    tag: "v1.9.29"
     replicas: 2
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-api Service (e.g. when an
@@ -339,7 +339,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.9.11"
+    tag: "v1.9.32"
     replicas: 2
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
@@ -567,7 +567,7 @@ kerberoshub:
   cleanup:
     repository: ghcr.io/uug-ai/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "v1.4.13"
+    tag: "v1.4.16"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -681,17 +681,16 @@ kerberoshub:
         needs:
           - operation: classify
             condition: {path: "inputs.classify.properties", op: contains, value: car}
-        # Restrict plate recognition to a SINGLE camera: add an ungated need on
-        # the recording's device (empty operation = checked as soon as the run
-        # opens) and switch needsMode to "all", so both must hold — "that camera
-        # AND a car was detected". For several cameras use op: in with a list.
-        #needsMode: all
-        #needs:
-        #  - operation: classify
-        #    condition: {path: "inputs.classify.properties", op: contains, value: car}
-        #  - operation:
-        #    condition: {path: "device.deviceKey", op: eq, value: device02}
-          
+            # Restrict plate recognition to a SINGLE camera: add an ungated need on
+            # the recording's device (empty operation = checked as soon as the run
+            # opens) and switch needsMode to "all", so both must hold — "that camera
+            # AND a car was detected". For several cameras use op: in with a list.
+            #needsMode: all
+            #needs:
+            #  - operation: classify
+            #    condition: {path: "inputs.classify.properties", op: contains, value: car}
+            #  - operation:
+            #    condition: {path: "device.deviceKey", op: eq, value: device02}
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed
@@ -855,7 +854,7 @@ kerberospipeline:
   monitor:
     repository: ghcr.io/uug-ai/hub-pipeline-monitor
     pullPolicy: IfNotPresent
-    tag: "v1.3.9"
+    tag: "v1.3.10"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -944,7 +943,7 @@ kerberospipeline:
   analysis:
     repository: ghcr.io/uug-ai/hub-pipeline-analysis
     pullPolicy: IfNotPresent
-    tag: "v1.7.8"
+    tag: "v1.7.17"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -983,7 +982,7 @@ kerberospipeline:
   thumbnail:
     repository: ghcr.io/uug-ai/hub-pipeline-thumbnail
     pullPolicy: IfNotPresent
-    tag: "v1.3.4"
+    tag: "v1.3.6"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1028,7 +1027,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: ghcr.io/uug-ai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
-    tag: "v1.1.12"
+    tag: "v1.1.14"
     replicas: 5 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1052,7 +1051,7 @@ kerberospipeline:
   export:
     repository: ghcr.io/uug-ai/hub-pipeline-export
     pullPolicy: IfNotPresent
-    tag: "v1.2.4"
+    tag: "v1.2.8"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
