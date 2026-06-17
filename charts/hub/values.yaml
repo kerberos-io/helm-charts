@@ -669,13 +669,11 @@ kerberoshub:
         #            need has resolved and each condition matches, and only once.
         operation: anpr
         dispatch: conditional
-        # kind routes this stage's typed result (the PostDetectionsRequest its
-        # demo worker compiles from the classify car boxes and returns in the run
-        # Payload) through the engine's shared ingest core, which persists it into
-        # the detections collection so the recording's edit-media modal shows the
-        # car boxes. Without it the result is only recorded for routing, not
-        # persisted.
-        kind: detection
+        # The demo worker hands back a detection block (the car detection it
+        # compiles from the classify boxes, in the run Payload) that the engine's
+        # shared ingest core persists into the detections collection, so the
+        # recording's edit-media modal shows the car boxes. The engine routes
+        # ingest by each block's type, so no per-stage wiring is needed here.
         # Default routing — run anpr whenever classify reports a car (any camera).
         needsMode: any
         needs:
