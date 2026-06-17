@@ -19,10 +19,6 @@ Each enabled stage contributes one descriptor:
              "any" (default; fire on the first matching upstream) or "all"
              (a join; fire only once every need has resolved and matched).
              Carried through verbatim; omitted when unset (engine defaults any).
-  kind       delegated-ingest stages only: the ingest handler the engine routes
-             the stage's typed payload through (e.g. "detection"). Carried
-             through verbatim; omitted when unset (engine treats the stage as
-             self-persisting).
 */}}
 {{- define "kerberoshub.workflows.stageRegistry" -}}
 {{- $entries := list -}}
@@ -34,7 +30,6 @@ Each enabled stage contributes one descriptor:
 {{- if $service }}{{- with $service.queue }}{{- $_ := set $entry "queue" . -}}{{- end }}{{- end }}
 {{- with $stage.needs }}{{- $_ := set $entry "needs" . -}}{{- end }}
 {{- with $stage.needsMode }}{{- $_ := set $entry "needsMode" . -}}{{- end }}
-{{- with $stage.kind }}{{- $_ := set $entry "kind" . -}}{{- end }}
 {{- $entries = append $entries $entry -}}
 {{- end -}}
 {{- end -}}
