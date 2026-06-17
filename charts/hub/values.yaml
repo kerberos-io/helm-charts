@@ -469,6 +469,7 @@ kerberoshub:
       # Live view page
       liveview:
         defaultStreamMode: "SD" # Default stream mode 'SD' or 'HD' (will be migrated to 'preview' or 'live')
+        liveStreamMode: "webrtc" # Transport backing the LIVE (HD) mode 'webrtc' (default) or 'hls' (firewall-friendly, no TURN required)
         paginationMode: "scroll" # Pagination mode in live view 'scroll', 'numbered' or 'maxStreams'
         pageSize: "6" # Max streams shown per page when paginationMode is 'numbered' (4, 8, 12, 16 or 25)
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited
