@@ -100,6 +100,7 @@ spec:
         - name: VAULT_SPRITE_HEIGHT
           value: "{{ .Values.kerberospipeline.sprite.height }}"
         
+        {{- if .Values.opentelemetry.enabled }}
         # Open Telemetry tracing
         - name: OTEL_EXPORTED_OTLP_ENABLED
           value: "{{ .Values.opentelemetry.enabled }}"
@@ -107,6 +108,7 @@ spec:
           value: "{{ .Values.opentelemetry.routingEnabled }}"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: "{{ .Values.opentelemetry.collector.endpoint }}"
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service
