@@ -87,6 +87,12 @@ spec:
         # runs unchanged). Kept in sync with whether the workflows service runs.
         - name: WORKFLOWS_ENABLED
           value: "{{ .Values.kerberoshub.workflows.enabled }}"
+
+        # Queue analysis publishes opened workflow runs to (WORKFLOWS_QUEUE),
+        # taken from the workflows service's queue so analysis and the engine
+        # always agree on the queue name (no drift).
+        - name: WORKFLOWS_QUEUE
+          value: "{{ .Values.kerberoshub.services.workflows.queue }}"
           
         # Kerberos Vault
         - name: KERBEROS_STORAGE_URI
@@ -100,6 +106,7 @@ spec:
         - name: SPRITE_ENABLED
           value: "{{ .Values.kerberospipeline.sprite.enabled }}"
         
+        {{- if .Values.opentelemetry.enabled }}
         # Open Telemetry tracing
         - name: OTEL_EXPORTED_OTLP_ENABLED
           value: "{{ .Values.opentelemetry.enabled }}"
@@ -107,6 +114,7 @@ spec:
           value: "{{ .Values.opentelemetry.routingEnabled }}"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: "{{ .Values.opentelemetry.collector.endpoint }}"
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service

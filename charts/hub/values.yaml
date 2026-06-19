@@ -121,7 +121,12 @@ opentelemetry:
   enabled: false
   routingEnabled: false
   collector:
-    endpoint: "http://otel-collector:4317"
+    # NOTE: the services use the OTLP *HTTP* exporter, so this must be the
+    # collector's HTTP port (4318) and must include the scheme. Use http://
+    # for a plaintext in-cluster collector (e.g. Jaeger) and https:// only if
+    # the collector terminates TLS. A scheme-less value defaults to TLS and
+    # fails against a plaintext collector ("server gave HTTP response to HTTPS client").
+    endpoint: "http://otel-collector:4318"
 ############################################
 # OpenAI configuration (semantic search)
 #
@@ -722,7 +727,7 @@ kerberoshub:
       logLevel: "info" # possible values: trace, debug, info, warn, error
       # Queue this service consumes ingest events and upstream results from
       # (WORKFLOWS_QUEUE). Must be fed the same messages the analysis service sees.
-      queue: "kcloud-workflows-queue"
+      queue: "hub-workflows-queue"
       resources:
         requests:
           memory: 10Mi
