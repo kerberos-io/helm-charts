@@ -66,7 +66,7 @@ mongodb:
 # A MQTT broker (vernemq or other like mosquitto) is used to have a bi-directional communication between Agents and Hub.
 # We recommend to use VernemQ (as part of this installation), but a stand-alone mosquitto broker is also possible.
 mqtt:
-  host: "mqtt.yourdomain.com" # this needs to be a public accessible DNS name (it's used to communicate between Kerberos Agents and Kerberos Hub)
+  host: "mqtt.yourdomain.com" # this needs to be a public accessible DNS name (it's used to communicate between Agents and Kerberos Hub)
   port: "8443"
   protocol: "wss"
   username: "yourusername"
@@ -372,8 +372,8 @@ kerberoshub:
     #  - hosts:
     #      - "demo.yourdomain.com"
     #    secretName: kerberoshub-demo
-    # You can disable the Kerberos agent buttons, this make sense
-    # in a white-label setup, or where you are managing the Kerberos Agents for your customers.
+    # You can disable the Agent buttons, this make sense
+    # in a white-label setup, or where you are managing the Agents for your customers.
     hideAddAgent: "false"
     # Multi tenancy (domains)
     # By default the Kerberos Hub allows multi-tenancy through the concept
@@ -959,4 +959,4 @@ email:
     highupload: "highupload"
     device: "device"
     alertTitle: "[Alert] Kerberos Hub detected something an event"
-    deviceTitle: "[Device] A Kerberos Agent's status has been changed"
+    deviceTitle: "[Device] An Agent's status has been changed"

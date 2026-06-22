@@ -1,6 +1,6 @@
 # Kerberos Hub
 
-Kerberos Hub is the single pane of glass for your Kerberos agents. It comes with a best of breed open source technology stack, modular and scale first mindset, and allows you to build and maintain an everless growing video surveillance and video analytics landscape.
+Kerberos Hub is the single pane of glass for your Agents. It comes with a best of breed open source technology stack, modular and scale first mindset, and allows you to build and maintain an everless growing video surveillance and video analytics landscape.
 
 ![Kerberos Hub Interface](assets/images/hub-dashboard.png)
 
@@ -273,7 +273,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.cleanup.defaultTaskRetentionDays` | Default retention (in days) applied to tasks without an explicit `retention_days`. Tasks older than this (anchored on `creation_date`) are deleted with their `case_media` rows. Set to `"0"` or a negative value to keep tasks forever. Must match `kerberoshub.api.defaultTaskRetentionDays`. | `"0"` |
 | `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `"10Mi"` |
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
-| `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
+| `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
 | `kerberoshub.monitordevice.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
 | `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
@@ -423,7 +423,7 @@ Below all configuration options and parameters are listed.
 | `email.templates.highupload` | The template which is send when an account is reaching a specific upload threshold, by default `'threshold'`. | `"highupload"` |
 | `email.templates.device` | The template which is send when a camera goes online or offline, by default `'device'`. | `"device"` |
 | `email.templates.alertTitle` | Email subject title for the `alert` template. | `"[Alert] Kerberos Hub detected something an event"` |
-| `email.templates.deviceTitle` | Email subject title for the `device` template. | `"[Device] A Kerberos Agent's status has been changed"` |
+| `email.templates.deviceTitle` | Email subject title for the `device` template. | `"[Device] An Agent's status has been changed"` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
 | `kerberoshub.forwarder.pullPolicy` | The Docker registry pull policy. | `""` |
