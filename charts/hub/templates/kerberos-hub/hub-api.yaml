@@ -353,6 +353,10 @@ spec:
               value: "{{ .Values.email.templates.share }}"
             - name: SHARE_TITLE
               value: "{{ .Values.email.templates.shareTitle }}"
+            - name: CASE_SHARE_TEMPLATE
+              value: "{{ .Values.email.templates.caseShare }}"
+            - name: CASE_SHARE_TITLE
+              value: "{{ .Values.email.templates.caseShareTitle }}"
             - name: ASSIGN_TASK_TEMPLATE
               value: "{{ .Values.email.templates.assignTask }}"
             - name: ASSIGN_TASK_TITLE
