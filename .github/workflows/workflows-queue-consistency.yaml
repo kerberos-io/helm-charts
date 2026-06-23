@@ -1,0 +1,28 @@
+name: Workflows queue consistency
+
+# Fails the build if the analysis producer, the workflows engine and the stage
+# workers would render onto different WORKFLOWS_QUEUE names — the silent
+# producer/consumer queue-name drift that leaves runs piling up with no
+# consumer. Pure `helm template` render check, no cluster required.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'charts/hub/**'
+      - 'scripts/check-workflows-queue-consistency.sh'
+      - '.github/workflows/workflows-queue-consistency.yaml'
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.2
+
+      - name: Check WORKFLOWS_QUEUE consistency
+        run: ./scripts/check-workflows-queue-consistency.sh charts/hub

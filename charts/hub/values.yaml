@@ -1121,6 +1121,8 @@ email:
     shareTitle: "[Action] You received a recording from Kerberos Hub"
     caseShare: "share_case"
     caseShareTitle: "[Action] A case has been shared with you on Kerberos Hub"
+    caseShareOtp: "share_case_otp"
+    caseShareOtpTitle: "Your Kerberos Hub verification code"
     assignTask: "assign_task"
     assignTaskTitle: "[Action] You've been assigned to a task"
     detection: "detection"
