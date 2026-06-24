@@ -1126,7 +1126,7 @@ email:
     assignTask: "assign_task"
     assignTaskTitle: "[Action] You've been assigned to a task"
     detection: "detection"
-    disabled: "disabled"
+    disabled: "disable"
     highupload: "highupload"
     device: "device"
     alertTitle: "[Alert] Kerberos Hub detected something an event"
