@@ -8,10 +8,10 @@
 
   Every stage worker receives the same connection contract; the only value that
   varies by stage is the consume-queue variable name, <NAME>_QUEUE (a stage
-  keyed "anpr" gets ANPR_QUEUE, "my-stage" gets MY_STAGE_QUEUE). To run a worker
-  outside the chart instead, leave services.<name>.enabled unset (or false)
-  while keeping the stage under workflows.stages so the engine still routes to
-  the queue you publish.
+  keyed "loitering" gets LOITERING_QUEUE, "my-stage" gets MY_STAGE_QUEUE). To run
+  a worker outside the chart instead, leave services.<name>.enabled unset (or
+  false) while keeping the stage under workflows.stages so the engine still
+  routes to the queue you publish.
 */ -}}
 {{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
 {{- $root := . -}}
