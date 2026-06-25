@@ -475,6 +475,7 @@ kerberoshub:
       liveview:
         defaultStreamMode: "SD" # Default stream mode 'SD' or 'HD' (will be migrated to 'preview' or 'live')
         liveStreamMode: "webrtc" # Transport backing the LIVE (HD) mode 'webrtc' (default) or 'hls' (firewall-friendly, no TURN required)
+        hlsEnabled: "true" # Offer HLS as a selectable LIVE transport 'true' or 'false'. When 'false' the HLS option is removed from the front-end and streams use webrtc
         paginationMode: "scroll" # Pagination mode in live view 'scroll', 'numbered' or 'maxStreams'
         pageSize: "6" # Max streams shown per page when paginationMode is 'numbered' (4, 8, 12, 16 or 25)
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited
@@ -641,60 +642,57 @@ kerberoshub:
     #   workflows.stages.<name>.enabled  -> include the stage in the registry (route to it)
     #   services.<name>.enabled          -> deploy the worker (pipe-<name>.yaml)
     stages:
-      # hub-anpr — automatic number-plate recognition stage. Routing only; its
-      # worker deployment lives under kerberoshub.services.anpr.
-      anpr:
-        # Include this stage in the engine's registry (route to it).
-        enabled: false
-        # operation  unique stage id (defaults to the key "anpr" if omitted);
-        #            binds the queue (taken from services.anpr.queue) and how
-        #            the result is recorded.
-        # dispatch   "always" (run on every workflow) | "conditional".
-        # needs      conditional stages only: upstream dependencies, each
-        #            {operation?, condition}. operation is the readiness GATE —
-        #            the upstream op whose data must be present before the
-        #            condition is read; leave it empty for a check on the run
-        #            root itself (device/user/identity), read as soon as the run
-        #            opens. condition shape:
-        #            {path: <abs-path>, op: eq|ne|contains|in|exists|gt|gte|lt|lte, value: <operand>}.
-        #            path is ABSOLUTE from the run root and resolves through
-        #            string-keyed maps only (it CANNOT index into arrays):
-        #            inputs.<op>.<field> (a trigger result, e.g. classify),
-        #            results.<op>.<field> (a finished stage), device.<field>,
-        #            user.<field>, or a top-level scalar (operation/runId/key).
-        #            classify is the only operation teed to workflows, so it is
-        #            the reliable upstream: match inputs.classify.properties (the
-        #            detected class strings) with `contains` — there is no
-        #            top-level `label`, and inputs.classify.details is an array a
-        #            path cannot index into — or gate on inputs.classify.objectCount
-        #            (top-level int) numerically. The engine rejects an unknown
-        #            path at boot.
-        # needsMode  conditional stages with more than one need: how they
-        #            combine. "any" (default) fires on the first matching
-        #            need; "all" is a join — the stage fires only once every
-        #            need has resolved and each condition matches, and only once.
-        operation: anpr
-        dispatch: conditional
-        # The demo worker hands back a detection block (the car detection it
-        # compiles from the classify boxes, in the run Payload) that the engine's
-        # shared ingest core persists into the detections collection, so the
-        # recording's edit-media modal shows the car boxes. The engine routes
-        # ingest by each block's type, so no per-stage wiring is needed here.
-        # Default routing — run anpr whenever classify reports a car (any camera).
-        needsMode: any
-        needs:
-          - operation: classify
-            condition: {path: "inputs.classify.properties", op: contains, value: car}
-            # Restrict plate recognition to a SINGLE camera: add an ungated need on
-            # the recording's device (empty operation = checked as soon as the run
-            # opens) and switch needsMode to "all", so both must hold — "that camera
-            # AND a car was detected". For several cameras use op: in with a list.
-            #needsMode: all
-            #needs:
-            #  - operation: classify
-            #    condition: {path: "inputs.classify.properties", op: contains, value: car}
-            #  - operation:
-            #    condition: {path: "device.deviceKey", op: eq, value: device02}
+      # ---------------------------------------------------------------------
+      # EXAMPLE custom stage (commented out) — hub-loitering.
+      #
+      # The stages below ship no enabled entries by default; this is a worked
+      # example of how to register a custom workflow stage. Uncomment this block
+      # (and the matching kerberoshub.services.loitering worker further down) to
+      # route runs to the hub-loitering demo worker, which emits a timeline
+      # marker. Routing only; the worker deployment lives under
+      # kerberoshub.services.loitering. See https://github.com/uug-ai/hub-loitering.
+      #loitering:
+      #  # Include this stage in the engine's registry (route to it).
+      #  enabled: true
+      #  # operation  unique stage id (defaults to the key "loitering" if omitted);
+      #  #            binds the queue (taken from services.loitering.queue) and how
+      #  #            the result is recorded.
+      #  # dispatch   "always" (run on every workflow) | "conditional".
+      #  # needs      conditional stages only: upstream dependencies, each
+      #  #            {operation?, condition}. operation is the readiness GATE —
+      #  #            the upstream op whose data must be present before the
+      #  #            condition is read; leave it empty for a check on the run
+      #  #            root itself (device/user/identity), read as soon as the run
+      #  #            opens. condition shape:
+      #  #            {path: <abs-path>, op: eq|ne|contains|in|exists|gt|gte|lt|lte, value: <operand>}.
+      #  #            path is ABSOLUTE from the run root and resolves through
+      #  #            string-keyed maps only (it CANNOT index into arrays):
+      #  #            inputs.<op>.<field> (a trigger result, e.g. classify),
+      #  #            results.<op>.<field> (a finished stage), device.<field>,
+      #  #            user.<field>, or a top-level scalar (operation/runId/key).
+      #  #            classify is the only operation teed to workflows, so it is
+      #  #            the reliable upstream: match inputs.classify.properties (the
+      #  #            detected class strings) with `contains` — there is no
+      #  #            top-level `label`, and inputs.classify.details is an array a
+      #  #            path cannot index into — or gate on inputs.classify.objectCount
+      #  #            (top-level int) numerically. The engine rejects an unknown
+      #  #            path at boot.
+      #  # needsMode  conditional stages with more than one need: how they
+      #  #            combine. "any" (default) fires on the first matching
+      #  #            need; "all" is a join — the stage fires only once every
+      #  #            need has resolved and each condition matches, and only once.
+      #  operation: loitering
+      #  dispatch: conditional
+      #  # The demo worker hands back a marker block (a named span on the
+      #  # recording's timeline, measured from the classify trajectory) that the
+      #  # engine's shared ingest core persists into the markers collection, so
+      #  # the marker shows on the recording's timeline. The engine routes ingest
+      #  # by each block's type, so no per-stage wiring is needed here.
+      #  # Default routing — run loitering whenever classify reports a person.
+      #  needsMode: any
+      #  needs:
+      #    - operation: classify
+      #      condition: {path: "inputs.classify.properties", op: contains, value: person}
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed
@@ -732,33 +730,36 @@ kerberoshub:
         requests:
           memory: 10Mi
           cpu: 10m
-    # hub-anpr — automatic number-plate recognition worker. Lives in the
-    # hub-workflows repository as its own module. See
-    # https://github.com/uug-ai/hub-workflows/tree/main/hub-anpr.
-    anpr:
-      # Deploy the hub-anpr worker.
-      enabled: false
-      repository: ghcr.io/uug-ai/hub-anpr
-      pullPolicy: IfNotPresent
-      tag: "v1.0.0"
-      replicas: 1 # Number of pods for the worker.
-      topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-      #volumes:
-      #  - name: extra
-      #    emptyDir: {}
-      #volumeMounts:
-      #  - name: extra
-      #    mountPath: /data
-      logLevel: "info" # possible values: trace, debug, info, warn, error
-      # Queue this worker consumes dispatched messages from (ANPR_QUEUE). This
-      # same value is read into the engine's generated registry entry for the
-      # matching stage, so the engine dispatches and the worker consumes the same
-      # queue with no drift. Convention: "kcloud-<operation>-queue.fifo".
-      queue: "kcloud-anpr-queue.fifo"
-      resources:
-        requests:
-          memory: 10Mi
-          cpu: 10m
+    # ---------------------------------------------------------------------
+    # EXAMPLE custom stage worker (commented out) — hub-loitering.
+    #
+    # Companion deployment for the kerberoshub.workflows.stages.loitering example
+    # above. Uncomment both to deploy the demo worker. It ships as its own
+    # repository/module. See https://github.com/uug-ai/hub-loitering.
+    #loitering:
+    #  # Deploy the hub-loitering worker.
+    #  enabled: true
+    #  repository: ghcr.io/uug-ai/hub-loitering
+    #  pullPolicy: IfNotPresent
+    #  tag: "v1.0.0"
+    #  replicas: 1 # Number of pods for the worker.
+    #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    #  #volumes:
+    #  #  - name: extra
+    #  #    emptyDir: {}
+    #  #volumeMounts:
+    #  #  - name: extra
+    #  #    mountPath: /data
+    #  logLevel: "info" # possible values: trace, debug, info, warn, error
+    #  # Queue this worker consumes dispatched messages from (LOITERING_QUEUE). This
+    #  # same value is read into the engine's generated registry entry for the
+    #  # matching stage, so the engine dispatches and the worker consumes the same
+    #  # queue with no drift. Convention: "kcloud-<operation>-queue.fifo".
+    #  queue: "kcloud-loitering-queue.fifo"
+    #  resources:
+    #    requests:
+    #      memory: 10Mi
+    #      cpu: 10m
   monitordevice:
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent

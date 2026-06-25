@@ -21,13 +21,21 @@ CHART_DIR="${1:-charts/hub}"
 PROBE="drift-probe-queue-name"
 
 # Flags that force all three deployment kinds (analysis, engine and one stage
-# worker) to render, so the check actually has something to compare. anpr is a
-# stage/worker shipped in the chart's default values.
+# worker) to render, so the check actually has something to compare. The chart
+# ships NO enabled stage worker by default (custom stages are values-only and
+# opt-in), so we synthesise a throwaway stage purely to exercise the generic
+# hub-stage path. The name is a neutral fixture ("queuecheck") on purpose: any
+# arbitrary stage key must render the same way, so the check must not depend on
+# a specific bundled worker.
+STAGE="queuecheck"
 RENDER_FLAGS=(
   --set mode=all
   --set kerberoshub.workflows.enabled=true
-  --set kerberoshub.workflows.stages.anpr.enabled=true
-  --set kerberoshub.services.anpr.enabled=true
+  --set "kerberoshub.workflows.stages.${STAGE}.enabled=true"
+  --set "kerberoshub.services.${STAGE}.enabled=true"
+  --set "kerberoshub.services.${STAGE}.repository=example.invalid/queuecheck"
+  --set "kerberoshub.services.${STAGE}.tag=test"
+  --set "kerberoshub.services.${STAGE}.queue=queuecheck-fixture-queue"
 )
 
 # Read `helm template` output on stdin and print one WORKFLOWS_QUEUE value per
