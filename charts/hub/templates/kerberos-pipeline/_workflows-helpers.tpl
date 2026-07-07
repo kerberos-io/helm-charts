@@ -1,37 +1,48 @@
 {{/*
-Assemble the workflows engine stage registry (PIPELINE_STAGE_REGISTRY) as a
-JSON array from every *enabled* stage under kerberoshub.workflows.stages, so the
-engine's routing stays in lockstep with the deployed stage workers and the
-per-stage queue cannot drift. The `stages:` block is the routing source of truth;
-each stage's deployment (and its queue) lives under the matching
-kerberoshub.services.<name> entry.
+Assemble the deployment-global workflow definitions (WORKFLOW_DEFINITIONS) as a
+JSON array from every *enabled* workflow under kerberoshub.workflows.definitions.
+This is the engine's single routing source: several distinct workflows can run
+over one recording — each opens its own run and dispatches only its own stages.
 
-Each enabled stage contributes one descriptor:
-  operation  defaults to the stage's map key.
-  dispatch   defaults to "always".
-  queue      taken from the matching services.<key>.queue (authoritative; the
-             same value the worker consumes via <NAME>_QUEUE). Omitted when the
-             service or its queue is unset, so the engine derives
-             "kcloud-<operation>-queue.fifo".
-  needs      conditional stages only: the upstream dependencies (each
-             {operation, condition?}) carried through verbatim.
-  needsMode  conditional stages with more than one need: how they combine —
-             "any" (default; fire on the first matching upstream) or "all"
-             (a join; fire only once every need has resolved and matched).
-             Carried through verbatim; omitted when unset (engine defaults any).
+Each enabled definition contributes one workflow object:
+  name      the map key (the workflow's human-readable name; also its identity —
+            the engine derives a stable id from it when the definition carries
+            no explicit id).
+  enabled   always true here (a disabled definition is skipped entirely).
+  source    "config" — provenance marking a Helm-seeded, deployment-global,
+            ops-managed workflow (read-only in the API, no owning organisation).
+  triggers  how a run OPENS. Defaults to a single bare automatic trigger
+            (opens for every recording); narrow with device/schedule triggers.
+            Per-stage `needs` (below) decide which stages then FIRE.
+  stages    the executable stage set, each contributing the same routing
+            descriptor the stageRegistry emits:
+              operation  the stage's operation (unique within the workflow).
+              dispatch   "always" (default) | "conditional".
+              queue      from the matching services.<operation>.queue
+                         (authoritative; omitted when unset so the engine
+                         derives "kcloud-<operation>-queue.fifo").
+              needs      conditional stages only: upstream dependencies, each
+                         {operation?, condition?}, carried through verbatim.
+              needsMode  conditional stages: "any" (default) | "all".
 */}}
-{{- define "kerberoshub.workflows.stageRegistry" -}}
-{{- $entries := list -}}
+{{- define "kerberoshub.workflows.workflowDefinitions" -}}
+{{- $defs := list -}}
 {{- $services := .Values.kerberoshub.services | default dict -}}
-{{- range $name, $stage := .Values.kerberoshub.workflows.stages -}}
-{{- if $stage.enabled -}}
-{{- $entry := dict "operation" (default $name $stage.operation) "dispatch" (default "always" $stage.dispatch) -}}
-{{- $service := index $services $name -}}
+{{- range $name, $wf := .Values.kerberoshub.workflows.definitions -}}
+{{- if $wf.enabled -}}
+{{- $stages := list -}}
+{{- range $stage := $wf.stages -}}
+{{- $op := $stage.operation -}}
+{{- $entry := dict "operation" $op "dispatch" (default "always" $stage.dispatch) -}}
+{{- $service := index $services $op -}}
 {{- if $service }}{{- with $service.queue }}{{- $_ := set $entry "queue" . -}}{{- end }}{{- end }}
 {{- with $stage.needs }}{{- $_ := set $entry "needs" . -}}{{- end }}
 {{- with $stage.needsMode }}{{- $_ := set $entry "needsMode" . -}}{{- end }}
-{{- $entries = append $entries $entry -}}
+{{- $stages = append $stages $entry -}}
+{{- end -}}
+{{- $def := dict "name" $name "enabled" true "source" "config" "triggers" (default (list (dict "type" "automatic")) $wf.triggers) "stages" $stages -}}
+{{- $defs = append $defs $def -}}
 {{- end -}}
 {{- end -}}
-{{- $entries | toJson -}}
+{{- $defs | toJson -}}
 {{- end -}}

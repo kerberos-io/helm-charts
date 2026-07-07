@@ -1,24 +1,23 @@
 {{- /*
   Generic workflow-stage worker.
 
-  Renders a Deployment + Service for every stage under
-  kerberoshub.workflows.stages that has a matching, enabled worker under
-  kerberoshub.services.<name>. A custom stage joins the pipeline by values
-  alone — no per-stage template needed.
+  Renders a Deployment + Service for every enabled worker under
+  kerberoshub.services.<name> other than the `workflows` engine itself. A custom
+  stage joins the pipeline by values alone — declare its worker here and route to
+  it from a kerberoshub.workflows.definitions stage of the same operation; no
+  per-stage template is needed.
 
   Every stage worker receives the same connection contract; the only value that
-  varies by stage is the consume-queue variable name, <NAME>_QUEUE (a stage
-  keyed "loitering" gets LOITERING_QUEUE, "my-stage" gets MY_STAGE_QUEUE). To run
+  varies by stage is the consume-queue variable name, <NAME>_QUEUE (a worker
+  named "loitering" gets LOITERING_QUEUE, "my-stage" gets MY_STAGE_QUEUE). To run
   a worker outside the chart instead, leave services.<name>.enabled unset (or
-  false) while keeping the stage under workflows.stages so the engine still
-  routes to the queue you publish.
+  false) and point its workflow stage at the queue you publish.
 */ -}}
 {{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
 {{- $root := . -}}
 {{- $services := .Values.kerberoshub.services | default dict -}}
-{{- range $name, $stage := .Values.kerberoshub.workflows.stages -}}
-{{- $svc := index $services $name -}}
-{{- if and $svc $svc.enabled -}}
+{{- range $name, $svc := $services -}}
+{{- if and (ne $name "workflows") $svc $svc.enabled -}}
 {{- $queueEnv := printf "%s_QUEUE" ($name | upper | replace "-" "_") -}}
 ---
 apiVersion: apps/v1
@@ -102,6 +101,15 @@ spec:
           value: "{{ $root.Values.kerberosvault.accesskey }}"
         - name: KERBEROS_STORAGE_SECRET
           value: "{{ $root.Values.kerberosvault.secretkey }}"
+
+        # Per-stage tuning knobs. Any key/value under services.<name>.env is
+        # rendered verbatim as container env, so a worker can be tuned from
+        # values without a per-stage template. These override the image's own
+        # ENV defaults; the fixed contract env above is not overridable here.
+        {{- range $key, $value := $svc.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service

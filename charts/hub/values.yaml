@@ -615,8 +615,8 @@ kerberoshub:
         memory: 10Mi
         cpu: 10m
   # hub-workflows is the standalone, queue-driven workflow engine. It consumes
-  # pipeline events and dispatches custom stages declared in the stage registry,
-  # tracking each run in its own `workflow_runs` collection. It shares events
+  # pipeline events and dispatches the stages declared in its workflow
+  # definitions, tracking each run in its own `workflow_runs` collection. It shares events
   # (not a document) with the analysis pipeline and is meant to grow into the
   # primary orchestrator. See https://github.com/uug-ai/hub-workflows.
   workflows:
@@ -625,88 +625,72 @@ kerberoshub:
     # in parallel with the normal throttler/notification tail, which still runs
     # unchanged. Flip to true to run the workflows engine.
     enabled: false
-    # This block is purely behaviour: the master switch above plus the stage
-    # routing below. The engine's own deployment (image/tag/replicas/queue/
+    # This block is purely behaviour: the master switch above plus the workflow
+    # definitions below. The engine's own deployment (image/tag/replicas/queue/
     # resources) lives under kerberoshub.services.workflows, in the same uniform
     # shape as the stage workers it dispatches to.
     #
-    # Stage routing — how each custom stage fits into the workflow. The engine's
-    # PIPELINE_STAGE_REGISTRY is assembled automatically from the *enabled*
-    # stages below: each contributes its operation and dispatch/needs routing,
-    # plus the queue from its matching `services.<name>` entry — so the engine's
-    # routing stays in lockstep with the deployed worker and the queue cannot
-    # drift. There is nothing to set for the registry directly.
+    # -----------------------------------------------------------------------
+    # Global workflow definitions — the named workflows the engine runs.
     #
-    # Each stage is keyed to a worker of the same name under kerberoshub.services.
-    # Routing (here) and deployment (services) are toggled independently:
-    #   workflows.stages.<name>.enabled  -> include the stage in the registry (route to it)
-    #   services.<name>.enabled          -> deploy the worker (pipe-<name>.yaml)
-    stages:
-      # ---------------------------------------------------------------------
-      # EXAMPLE custom stage (commented out) — hub-loitering.
-      #
-      # The stages below ship no enabled entries by default; this is a worked
-      # example of how to register a custom workflow stage. Uncomment this block
-      # (and the matching kerberoshub.services.loitering worker further down) to
-      # route runs to the hub-loitering demo worker, which emits a timeline
-      # marker. Routing only; the worker deployment lives under
-      # kerberoshub.services.loitering. See https://github.com/uug-ai/hub-loitering.
-      #loitering:
-      #  # Include this stage in the engine's registry (route to it).
+    # `definitions` is the engine's single routing source: several distinct
+    # workflows can run over one recording, each opening its own run and
+    # dispatching only its own stages. It is a MAP keyed by workflow name (names
+    # are unique and merge cleanly across -f / --set overrides). Ships empty; the
+    # commented block is a worked example of an object-tracking + loitering
+    # pipeline. Add more keys to run more workflows.
+    #
+    # Each definition:
+    #   enabled   include this workflow (soft-delete toggle).
+    #   source    always rendered as "config" (a Helm-seeded, ops-managed,
+    #             deployment-global workflow — read-only in the API).
+    #   triggers  how a run OPENS. Omit for a single bare automatic trigger
+    #             (opens for every recording); the per-stage `needs` then decide
+    #             which stages FIRE. Narrow with device/schedule triggers, e.g.
+    #             `- {type: automatic, devices: [{key: <device-key>}]}`.
+    #   stages    the executable stages, each {operation, dispatch?, needs?,
+    #             needsMode?}. dispatch is "always" (default) or "conditional";
+    #             a conditional stage's `needs` are upstream dependencies, each
+    #             {operation?, condition?} — operation is the readiness GATE (the
+    #             upstream op whose data must be present before the condition is
+    #             read; omit for a check on the run root itself), condition is
+    #             {path, op, value} where path is ABSOLUTE from the run root and
+    #             resolves through string-keyed maps only (it cannot index into
+    #             arrays). needsMode combines multiple needs: "any" (default;
+    #             fire on the first match) or "all" (a join; fire once every need
+    #             has resolved and matched). The queue is taken from the matching
+    #             services.<operation> entry, so dispatch and consume cannot drift.
+    #
+    # Every stage `operation` must have a deployed worker under
+    # kerberoshub.services.<operation> (deploy the objecttracking / loitering
+    # workers below).
+    definitions: {}
+      #tracking-workflow:
       #  enabled: true
-      #  # operation  unique stage id (defaults to the key "loitering" if omitted);
-      #  #            binds the queue (taken from services.loitering.queue) and how
-      #  #            the result is recorded.
-      #  # dispatch   "always" (run on every workflow) | "conditional".
-      #  # needs      conditional stages only: upstream dependencies, each
-      #  #            {operation?, condition}. operation is the readiness GATE —
-      #  #            the upstream op whose data must be present before the
-      #  #            condition is read; leave it empty for a check on the run
-      #  #            root itself (device/user/identity), read as soon as the run
-      #  #            opens. condition shape:
-      #  #            {path: <abs-path>, op: eq|ne|contains|in|exists|gt|gte|lt|lte, value: <operand>}.
-      #  #            path is ABSOLUTE from the run root and resolves through
-      #  #            string-keyed maps only (it CANNOT index into arrays):
-      #  #            inputs.<op>.<field> (a trigger result, e.g. classify),
-      #  #            results.<op>.<field> (a finished stage), device.<field>,
-      #  #            user.<field>, or a top-level scalar (operation/runId/key).
-      #  #            classify is the only operation teed to workflows, so it is
-      #  #            the reliable upstream: match inputs.classify.properties (the
-      #  #            detected class strings) with `contains` — there is no
-      #  #            top-level `label`, and inputs.classify.details is an array a
-      #  #            path cannot index into — or gate on inputs.classify.objectCount
-      #  #            (top-level int) numerically. The engine rejects an unknown
-      #  #            path at boot.
-      #  # needsMode  conditional stages with more than one need: how they
-      #  #            combine. "any" (default) fires on the first matching
-      #  #            need; "all" is a join — the stage fires only once every
-      #  #            need has resolved and each condition matches, and only once.
-      #  operation: loitering
-      #  dispatch: conditional
-      #  # The demo worker hands back a marker block (a named span on the
-      #  # recording's timeline, measured from the classify trajectory) that the
-      #  # engine's shared ingest core persists into the markers collection, so
-      #  # the marker shows on the recording's timeline. The engine routes ingest
-      #  # by each block's type, so no per-stage wiring is needed here.
-      #  # Default routing — run loitering whenever classify reports a person.
-      #  needsMode: any
-      #  needs:
-      #    - operation: classify
-      #      condition: {path: "inputs.classify.properties", op: contains, value: person}
+      #  triggers:
+      #    - type: automatic
+      #  stages:
+      #    - operation: objecttracking
+      #      dispatch: always
+      #    - operation: loitering
+      #      dispatch: conditional
+      #      # Fire loitering once objecttracking has resolved — a readiness join
+      #      # (no condition ⇒ gate on the upstream's presence, not a value).
+      #      needs:
+      #        - operation: objecttracking
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed
   #     whenever kerberoshub.workflows.enabled is true and has no `enabled` of
   #     its own — the master switch already gates the whole subsystem.
-  #   - every other entry is a stage worker the engine dispatches to, keyed to
-  #     match a kerberoshub.workflows.stages entry of the same name. A worker
+  #   - every other entry is a stage worker the engine dispatches to. A worker
   #     consumes its own queue and routes its result back to the engine queue.
   #     Deploying a worker (services.<name>.enabled) is independent from routing
-  #     to it (workflows.stages.<name>.enabled) — it runs only when its own
-  #     `enabled` is true AND the workflows engine is enabled.
+  #     to it (a workflows.definitions stage of the same operation) — it runs only
+  #     when its own `enabled` is true AND the workflows engine is enabled.
   services:
     # hub-workflows — the workflows engine (orchestrator). Consumes the engine
-    # queue, evaluates the stage registry (assembled from workflows.stages) and
+    # queue, evaluates the workflow definitions (WORKFLOW_DEFINITIONS) and
     # dispatches to the stage workers below. Deployed when workflows.enabled is
     # true; it has no separate `enabled` here.
     workflows:
@@ -733,9 +717,10 @@ kerberoshub:
     # ---------------------------------------------------------------------
     # EXAMPLE custom stage worker (commented out) — hub-loitering.
     #
-    # Companion deployment for the kerberoshub.workflows.stages.loitering example
-    # above. Uncomment both to deploy the demo worker. It ships as its own
-    # repository/module. See https://github.com/uug-ai/hub-loitering.
+    # Companion deployment for the workflows.definitions example above (the
+    # loitering stage of tracking-workflow). Uncomment to deploy the demo
+    # worker. It ships as its own repository/module.
+    # See https://github.com/uug-ai/hub-loitering.
     #loitering:
     #  # Deploy the hub-loitering worker.
     #  enabled: true
@@ -752,10 +737,30 @@ kerberoshub:
     #  #    mountPath: /data
     #  logLevel: "info" # possible values: trace, debug, info, warn, error
     #  # Queue this worker consumes dispatched messages from (LOITERING_QUEUE). This
-    #  # same value is read into the engine's generated registry entry for the
-    #  # matching stage, so the engine dispatches and the worker consumes the same
-    #  # queue with no drift. Convention: "kcloud-<operation>-queue.fifo".
+    #  # same value is taken into the matching workflows.definitions stage, so the
+    #  # engine dispatches and the worker consumes the same queue with no drift.
+    #  # Convention: "kcloud-<operation>-queue.fifo".
     #  queue: "kcloud-loitering-queue.fifo"
+    #  resources:
+    #    requests:
+    #      memory: 10Mi
+    #      cpu: 10m
+    # ---------------------------------------------------------------------
+    # EXAMPLE stage worker (commented out) for the workflows.definitions example
+    # above — hub-objecttracking. Uncomment the worker whose operation a
+    # definition references, so the engine dispatches and the worker consumes the
+    # same queue with no drift.
+    #objecttracking:
+    #  # Deploy the object-tracking worker (operation "objecttracking").
+    #  enabled: true
+    #  repository: ghcr.io/uug-ai/hub-objecttracking
+    #  pullPolicy: IfNotPresent
+    #  tag: "v1.0.0"
+    #  replicas: 1 # Number of pods for the worker.
+    #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    #  logLevel: "info" # possible values: trace, debug, info, warn, error
+    #  # Queue this worker consumes dispatched messages from (OBJECTTRACKING_QUEUE).
+    #  queue: "kcloud-objecttracking-queue.fifo"
     #  resources:
     #    requests:
     #      memory: 10Mi
