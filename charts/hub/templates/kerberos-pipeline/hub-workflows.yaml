@@ -58,14 +58,16 @@ spec:
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
 
-        # Queue this service consumes from (WORKFLOWS_QUEUE) and the custom
-        # pipeline stage registry it may dispatch (PIPELINE_STAGE_REGISTRY).
-        # The registry is assembled from the enabled stages under
-        # kerberoshub.workflows.stages (see _workflows-helpers.tpl).
+        # Queue this service consumes from (WORKFLOWS_QUEUE) and the set of
+        # named workflows it runs (WORKFLOW_DEFINITIONS): each with its own
+        # trigger and executable stages, assembled from the enabled definitions
+        # under kerberoshub.workflows.definitions (see _workflows-helpers.tpl).
+        # Definitions are the engine's single routing source; empty means no
+        # workflows run.
         - name: WORKFLOWS_QUEUE
           value: "{{ .Values.kerberoshub.services.workflows.queue }}"
-        - name: PIPELINE_STAGE_REGISTRY
-          value: {{ include "kerberoshub.workflows.stageRegistry" . | quote }}
+        - name: WORKFLOW_DEFINITIONS
+          value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
 
         # RabbitMQ settings
         - name: RABBITMQ_HOST
