@@ -127,6 +127,6 @@ spec:
       protocol: TCP
   selector:
     app: hub-{{ $name }}
-{{- end }}
+{{ end -}}
 {{- end }}
 {{- end }}
