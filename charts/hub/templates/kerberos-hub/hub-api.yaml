@@ -259,6 +259,15 @@ spec:
             - name: QUEUE_NAME
               value: "{{ .Values.queueName }}"
 
+            # Deployment-global workflow definitions (WORKFLOW_DEFINITIONS): the
+            # SAME set the workflows engine consumes, assembled from the enabled
+            # definitions under kerberoshub.workflows.definitions (see
+            # kerberos-pipeline/_workflows-helpers.tpl). hub-api reads these
+            # read-only to surface config workflows alongside the user workflows
+            # it stores in the database; the config workflows are never persisted.
+            - name: WORKFLOW_DEFINITIONS
+              value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
+
             # Stripe for billing
             - name: STRIPE_KEY
               value: "{{ .Values.kerberoshub.api.stripe.privateKey }}"
