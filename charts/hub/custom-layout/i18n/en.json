@@ -366,7 +366,8 @@
         "deleteCase": "Delete case",
         "download": "Download",
         "delete": "Delete",
-        "openDetail": "Open detail"
+        "openDetail": "Open detail",
+        "runWorkflow": "Run workflow"
       },
       "exportSelection": {
         "title": "Export selection",
@@ -377,6 +378,16 @@
         "empty": "This case has no media items yet.",
         "emptyAttachments": "This case has no attachments yet.",
         "attachmentsHeading": "Attachments"
+      },
+      "runWorkflow": {
+        "title": "Run workflow",
+        "subtitle": "Launch a workflow over selected media on this case.",
+        "workflowLabel": "Workflow",
+        "loading": "Loading workflows…",
+        "noWorkflows": "No workflows are available to run on cases.",
+        "attachmentsSelected": "attachments selected",
+        "attachmentBadge": "Attachment",
+        "submit": "Run workflow"
       },
       "filter": {
         "assignees": "Assignees",
@@ -1614,7 +1625,8 @@
           "k10": "or use the upload button below",
           "k11": "Delete attachment",
           "k12": "Are you sure you want to delete this attachment? This action cannot be undone.",
-          "k13": "Yes, delete"
+          "k13": "Yes, delete",
+          "k14": "Redact faces"
         }
       },
       "media": {
