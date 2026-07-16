@@ -413,7 +413,7 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.region.enabled }}"
         - name: FEATURE_MEDIA_FILTER_SORT_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.sort.enabled }}"
-        - name: FEATURE_MEDIA_FILTER_CATEGORY_ENABLED
+        - name: FEATURE_MEDIA_FILTER_CATEGORIES_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.category.enabled }}"
         - name: FEATURE_MEDIA_FILTER_MARKERS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.markers.enabled }}"
