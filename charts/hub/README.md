@@ -390,15 +390,6 @@ Below all configuration options and parameters are listed.
 | `kerberospipeline.export.logLevel` | Log verbosity level for `kerberospipeline.export`. | `"info"` |
 | `kerberospipeline.export.resources.requests.memory` | Memory request for `kerberospipeline.export`. | `"10Mi"` |
 | `kerberospipeline.export.resources.requests.cpu` | CPU request for `kerberospipeline.export`. | `"10m"` |
-| `kerberospipeline.redaction.repository` | Container image repository for `kerberospipeline.redaction`. | `"ghcr.io/uug-ai/hub-pipeline-redaction"` |
-| `kerberospipeline.redaction.pullPolicy` | Image pull policy for `kerberospipeline.redaction`. | `"IfNotPresent"` |
-| `kerberospipeline.redaction.tag` | Container image tag/version for `kerberospipeline.redaction`. | `"v1.0.0"` |
-| `kerberospipeline.redaction.replicas` | Number of replicas for `kerberospipeline.redaction`. | `2` |
-| `kerberospipeline.redaction.logLevel` | Log verbosity level for `kerberospipeline.redaction`. | `"info"` |
-| `kerberospipeline.redaction.resources.requests.memory` | Memory request for `kerberospipeline.redaction`. | `"512Mi"` |
-| `kerberospipeline.redaction.resources.requests.cpu` | CPU request for `kerberospipeline.redaction`. | `"500m"` |
-| `kerberospipeline.redaction.resources.limits.memory` | Memory limit for `kerberospipeline.redaction`. | `"2Gi"` |
-| `kerberospipeline.redaction.resources.limits.cpu` | CPU limit for `kerberospipeline.redaction`. | `"1000m"` |
 | `email.provider` | The email service provider for sending out messages over email , use `'mailgun'` or `'smtp'`. | `"mailgun"` |
 | `email.from` | The email address that is sending messages in name of, by default `'support@yourdomain.com'`. | `"support@yourdomain.com"` |
 | `email.displayName` | The display name that is sending messages in name of, by default `'yourdomain.com'` | `"yourdomain.com"` |
