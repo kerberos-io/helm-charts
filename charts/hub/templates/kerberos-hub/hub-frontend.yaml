@@ -314,6 +314,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.workflows.enabled }}"
         - name: FEATURE_DARK_MODE
           value: "{{ .Values.kerberoshub.frontend.features.darkModeEnabled }}"
+        - name: FEATURE_SPLASH_SCREEN_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.splashScreen.enabled }}"
         - name: FEATURE_LANDING_PAGE
           value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
 

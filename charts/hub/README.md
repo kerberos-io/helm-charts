@@ -197,6 +197,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.caseFilterAssigneesDefault` | Default assignee filter behavior for cases in the frontend. | `"false"` |
 | `kerberoshub.frontend.features.case.enabled` | Enable or disable the case feature in the frontend. | `"true"` |
 | `kerberoshub.frontend.features.darkModeEnabled` | Enable or disable dark mode in the frontend. | `"true"` |
+| `kerberoshub.frontend.features.splashScreen.enabled` | Enable or disable the pre-bootstrap splash screen and reveal delay. | `"true"` |
 | `kerberoshub.frontend.features.landingPage` | Frontend landing page configuration. | `"/dashboard"` |
 | `kerberoshub.frontend.features.i18n.enabled` | Enable or disable the runtime language switcher in the front-end. When `"false"`, `defaultLanguage` is forced and users cannot change it. | `"true"` |
 | `kerberoshub.frontend.features.i18n.defaultLanguage` | Default language code used by the front-end (e.g. `en`, `nl`, `pl`, `tr`, `fr`, `sv`, `de`). | `"en"` |
