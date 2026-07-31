@@ -453,6 +453,8 @@ kerberoshub:
     features:
       # General
       darkModeEnabled: "true" # Enable or disable dark mode toggle 'true' or 'false'
+      splashScreen:
+        enabled: "true" # Enable or disable the pre-bootstrap splash screen 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
       # Internationalization (i18n): controls the runtime language behaviour
       # of the front-end. When `enabled` is "false" the language switcher is
