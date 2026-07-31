@@ -1077,27 +1077,6 @@ kerberospipeline:
       requests:
         memory: 10Mi
         cpu: 10m
-  redaction:
-    repository: ghcr.io/uug-ai/hub-pipeline-redaction
-    pullPolicy: IfNotPresent
-    tag: "v1.0.0"
-    replicas: 2 # Number of pods for the service.
-    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-    # Optional extra volumes / volumeMounts for this deployment (empty = none).
-    #volumes:
-    #  - name: extra
-    #    emptyDir: {}
-    #volumeMounts:
-    #  - name: extra
-    #    mountPath: /data
-    logLevel: "info" # possible values: trace, debug, info, warn, error
-    resources:
-      requests:
-        memory: 512Mi
-        cpu: 500m
-      limits:
-        memory: 2Gi
-        cpu: 1000m
 ###########################################################################
 # Email configuration
 #
