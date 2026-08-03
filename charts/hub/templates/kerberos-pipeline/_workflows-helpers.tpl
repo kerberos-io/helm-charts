@@ -46,3 +46,20 @@ Each enabled definition contributes one workflow object:
 {{- end -}}
 {{- $defs | toJson -}}
 {{- end -}}
+
+{{/*
+Expose the deployment's operation→queue catalog to API producers that seed
+embedded WorkflowRuns. Unlike WORKFLOW_DEFINITIONS this includes services that
+are enabled for internal flows but are absent from user-visible workflow
+definitions. The workflows engine remains authoritative for dispatch; producers
+use this only to embed the same queue on a synthetic stage.
+*/}}
+{{- define "kerberoshub.workflows.stageQueues" -}}
+{{- $queues := dict -}}
+{{- range $operation, $service := (.Values.kerberoshub.services | default dict) -}}
+{{- with $service.queue -}}
+{{- $_ := set $queues $operation . -}}
+{{- end -}}
+{{- end -}}
+{{- $queues | toJson -}}
+{{- end -}}

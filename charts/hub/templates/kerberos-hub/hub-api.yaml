@@ -267,6 +267,10 @@ spec:
             # it stores in the database; the config workflows are never persisted.
             - name: WORKFLOW_DEFINITIONS
               value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
+            # Deployment service routing catalog used by API-owned embedded
+            # workflows (for example the one-stage case redaction modal flow).
+            - name: WORKFLOW_STAGE_QUEUES
+              value: {{ include "kerberoshub.workflows.stageQueues" . | quote }}
 
             # Stripe for billing
             - name: STRIPE_KEY
