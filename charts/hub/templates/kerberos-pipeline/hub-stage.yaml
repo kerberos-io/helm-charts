@@ -12,6 +12,12 @@
   named "loitering" gets LOITERING_QUEUE, "my-stage" gets MY_STAGE_QUEUE). To run
   a worker outside the chart instead, leave services.<name>.enabled unset (or
   false) and point its workflow stage at the queue you publish.
+
+  All stages receive the Vault read credentials (KERBEROS_STORAGE_URI /
+  ACCESS_KEY / SECRET). A stage that also writes an artefact back to Vault (e.g.
+  redaction) declares its destination provider with the named field
+  services.<name>.storageProvider, rendered as KERBEROS_STORAGE_PROVIDER; a
+  read-only stage omits it and gets no provider env.
 */ -}}
 {{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
 {{- $root := . -}}
@@ -101,6 +107,13 @@ spec:
           value: "{{ $root.Values.kerberosvault.accesskey }}"
         - name: KERBEROS_STORAGE_SECRET
           value: "{{ $root.Values.kerberosvault.secretkey }}"
+        {{- with $svc.storageProvider }}
+        # Destination Vault provider (KERBEROS_STORAGE_PROVIDER) — only stages
+        # that write an artefact back (e.g. redaction) set services.<name>.
+        # storageProvider; read-only stages omit it and get no provider env.
+        - name: KERBEROS_STORAGE_PROVIDER
+          value: {{ . | quote }}
+        {{- end }}
 
         # Per-stage tuning knobs. Any key/value under services.<name>.env is
         # rendered verbatim as container env, so a worker can be tuned from
