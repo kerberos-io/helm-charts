@@ -476,8 +476,11 @@ kerberoshub:
       # Live view page
       liveview:
         defaultStreamMode: "SD" # Default stream mode 'SD' or 'HD' (will be migrated to 'preview' or 'live')
-        liveStreamMode: "webrtc" # Transport backing the LIVE (HD) mode 'webrtc' (default) or 'hls' (firewall-friendly, no TURN required)
+        liveStreamMode: "webrtc" # Transport backing the LIVE (HD) mode: 'webrtc' (default), 'hls' or 'moq'
         hlsEnabled: "true" # Offer HLS as a selectable LIVE transport 'true' or 'false'. When 'false' the HLS option is removed from the front-end and streams use webrtc
+        moqEnabled: "false" # Offer MoQ as a selectable LIVE transport 'true' or 'false'
+        moqRelayUrl: "https://relay.uug.ai/anon" # WebTransport URL of the MoQ relay
+        moqBroadcastPrefix: "devices" # Prefix used to build devices/<deviceKey>/live.hang broadcast names
         paginationMode: "scroll" # Pagination mode in live view 'scroll', 'numbered' or 'maxStreams'
         pageSize: "6" # Max streams shown per page when paginationMode is 'numbered' (4, 8, 12, 16 or 25)
         maxStreams: "-1" # Maximum number of live streams to show in live view, -1 for unlimited
