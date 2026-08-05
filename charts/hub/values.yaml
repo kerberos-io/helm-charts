@@ -680,6 +680,21 @@ kerberoshub:
       #      # (no condition ⇒ gate on the upstream's presence, not a value).
       #      needs:
       #        - operation: objecttracking
+      # EXAMPLE — the redaction editor's workflow. A manual trigger on the
+      # dedicated `redaction` surface binds this to the redaction editor's submit
+      # control (kept out of the case/media "Run workflow" list). On submit,
+      # hub-api runs THIS workflow's stages and injects the reviewed regions as
+      # the redaction stage's `media_edit` input, so no detector runs — the
+      # editor already supplied the regions. A single always-on redaction stage
+      # is the norm; deploy the redaction worker under services.redaction.
+      #case-media-redaction:
+      #  enabled: true
+      #  triggers:
+      #    - type: manual
+      #      surfaces: [redaction]
+      #  stages:
+      #    - operation: redaction
+      #      dispatch: always
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed
