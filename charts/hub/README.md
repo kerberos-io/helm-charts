@@ -206,6 +206,11 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.map.tileUrlDark` | Tile URL used by the map in dark mode. | `"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"` |
 | `kerberoshub.frontend.features.map.attribution` | Attribution text displayed on the map tiles. | `"&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>"` |
 | `kerberoshub.frontend.features.liveview.defaultStreamMode` | Liveview behavior setting: `defaultStreamMode`. | `"SD"` |
+| `kerberoshub.frontend.features.liveview.liveStreamMode` | Transport backing LIVE mode: `webrtc`, `hls`, or `moq`. | `"webrtc"` |
+| `kerberoshub.frontend.features.liveview.hlsEnabled` | Offer HLS as a selectable LIVE transport. | `"true"` |
+| `kerberoshub.frontend.features.liveview.moqEnabled` | Offer MoQ as a selectable LIVE transport. | `"false"` |
+| `kerberoshub.frontend.features.liveview.moqRelayUrl` | WebTransport URL of the MoQ relay. | `"https://relay.uug.ai/anon"` |
+| `kerberoshub.frontend.features.liveview.moqBroadcastPrefix` | Prefix used to build MoQ broadcast names. | `"devices"` |
 | `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `"scroll"` |
 | `kerberoshub.frontend.features.liveview.pageSize` | Liveview behavior setting: `pageSize` (max streams shown per page in `numbered` mode). | `"6"` |
 | `kerberoshub.frontend.features.liveview.maxStreams` | Liveview behavior setting: `maxStreams`. | `"-1"` |
