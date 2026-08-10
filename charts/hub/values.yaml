@@ -231,7 +231,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.9.29"
+    tag: "v1.9.48"
     replicas: 2
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-api Service (e.g. when an
@@ -344,7 +344,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.9.32"
+    tag: "v1.13.0"
     replicas: 2
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
@@ -670,19 +670,19 @@ kerberoshub:
     # kerberoshub.services.<operation> (deploy the objecttracking / loitering
     # workers below).
     definitions: {}
-      #tracking-workflow:
-      #  enabled: true
-      #  triggers:
-      #    - type: automatic
-      #  stages:
-      #    - operation: objecttracking
-      #      dispatch: always
-      #    - operation: loitering
-      #      dispatch: conditional
-      #      # Fire loitering once objecttracking has resolved — a readiness join
-      #      # (no condition ⇒ gate on the upstream's presence, not a value).
-      #      needs:
-      #        - operation: objecttracking
+    #tracking-workflow:
+    #  enabled: true
+    #  triggers:
+    #    - type: automatic
+    #  stages:
+    #    - operation: objecttracking
+    #      dispatch: always
+    #    - operation: loitering
+    #      dispatch: conditional
+    #      # Fire loitering once objecttracking has resolved — a readiness join
+    #      # (no condition ⇒ gate on the upstream's presence, not a value).
+    #      needs:
+    #        - operation: objecttracking
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed
@@ -719,61 +719,61 @@ kerberoshub:
         requests:
           memory: 10Mi
           cpu: 10m
-    # ---------------------------------------------------------------------
-    # EXAMPLE custom stage worker (commented out) — hub-loitering.
-    #
-    # Companion deployment for the workflows.definitions example above (the
-    # loitering stage of tracking-workflow). Uncomment to deploy the demo
-    # worker. It ships as its own repository/module.
-    # See https://github.com/uug-ai/hub-loitering.
-    #loitering:
-    #  # Deploy the hub-loitering worker.
-    #  enabled: true
-    #  repository: ghcr.io/uug-ai/hub-loitering
-    #  pullPolicy: IfNotPresent
-    #  tag: "v1.0.0"
-    #  replicas: 1 # Number of pods for the worker.
-    #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-    #  #volumes:
-    #  #  - name: extra
-    #  #    emptyDir: {}
-    #  #volumeMounts:
-    #  #  - name: extra
-    #  #    mountPath: /data
-    #  logLevel: "info" # possible values: trace, debug, info, warn, error
-    #  # Queue this worker consumes dispatched messages from (LOITERING_QUEUE). This
-    #  # same value is taken into the matching workflows.definitions stage, so the
-    #  # engine dispatches and the worker consumes the same queue with no drift.
-    #  # Convention: "kcloud-<operation>-queue.fifo".
-    #  queue: "kcloud-loitering-queue.fifo"
-    #  resources:
-    #    requests:
-    #      memory: 10Mi
-    #      cpu: 10m
-    # ---------------------------------------------------------------------
-    # EXAMPLE stage worker (commented out) for the workflows.definitions example
-    # above — hub-objecttracking. Uncomment the worker whose operation a
-    # definition references, so the engine dispatches and the worker consumes the
-    # same queue with no drift.
-    #objecttracking:
-    #  # Deploy the object-tracking worker (operation "objecttracking").
-    #  enabled: true
-    #  repository: ghcr.io/uug-ai/hub-objecttracking
-    #  pullPolicy: IfNotPresent
-    #  tag: "v1.0.0"
-    #  replicas: 1 # Number of pods for the worker.
-    #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-    #  logLevel: "info" # possible values: trace, debug, info, warn, error
-    #  # Queue this worker consumes dispatched messages from (OBJECTTRACKING_QUEUE).
-    #  queue: "kcloud-objecttracking-queue.fifo"
-    #  resources:
-    #    requests:
-    #      memory: 10Mi
-    #      cpu: 10m
+          # ---------------------------------------------------------------------
+          # EXAMPLE custom stage worker (commented out) — hub-loitering.
+          #
+          # Companion deployment for the workflows.definitions example above (the
+          # loitering stage of tracking-workflow). Uncomment to deploy the demo
+          # worker. It ships as its own repository/module.
+          # See https://github.com/uug-ai/hub-loitering.
+          #loitering:
+          #  # Deploy the hub-loitering worker.
+          #  enabled: true
+          #  repository: ghcr.io/uug-ai/hub-loitering
+          #  pullPolicy: IfNotPresent
+          #  tag: "v1.0.0"
+          #  replicas: 1 # Number of pods for the worker.
+          #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+          #  #volumes:
+          #  #  - name: extra
+          #  #    emptyDir: {}
+          #  #volumeMounts:
+          #  #  - name: extra
+          #  #    mountPath: /data
+          #  logLevel: "info" # possible values: trace, debug, info, warn, error
+          #  # Queue this worker consumes dispatched messages from (LOITERING_QUEUE). This
+          #  # same value is taken into the matching workflows.definitions stage, so the
+          #  # engine dispatches and the worker consumes the same queue with no drift.
+          #  # Convention: "kcloud-<operation>-queue.fifo".
+          #  queue: "kcloud-loitering-queue.fifo"
+          #  resources:
+          #    requests:
+          #      memory: 10Mi
+          #      cpu: 10m
+          # ---------------------------------------------------------------------
+          # EXAMPLE stage worker (commented out) for the workflows.definitions example
+          # above — hub-objecttracking. Uncomment the worker whose operation a
+          # definition references, so the engine dispatches and the worker consumes the
+          # same queue with no drift.
+          #objecttracking:
+          #  # Deploy the object-tracking worker (operation "objecttracking").
+          #  enabled: true
+          #  repository: ghcr.io/uug-ai/hub-objecttracking
+          #  pullPolicy: IfNotPresent
+          #  tag: "v1.0.0"
+          #  replicas: 1 # Number of pods for the worker.
+          #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+          #  logLevel: "info" # possible values: trace, debug, info, warn, error
+          #  # Queue this worker consumes dispatched messages from (OBJECTTRACKING_QUEUE).
+          #  queue: "kcloud-objecttracking-queue.fifo"
+          #  resources:
+          #    requests:
+          #      memory: 10Mi
+          #      cpu: 10m
   monitordevice:
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "v1.4.0"
+    tag: "v1.4.1"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -851,7 +851,7 @@ kerberospipeline:
   event:
     repository: ghcr.io/uug-ai/hub-pipeline-event
     pullPolicy: IfNotPresent
-    tag: "v1.3.0"
+    tag: "v1.3.1"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -869,7 +869,7 @@ kerberospipeline:
   monitor:
     repository: ghcr.io/uug-ai/hub-pipeline-monitor
     pullPolicy: IfNotPresent
-    tag: "v1.3.10"
+    tag: "v1.3.11"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -886,7 +886,7 @@ kerberospipeline:
   sequence:
     repository: ghcr.io/uug-ai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "v1.6.18"
+    tag: "v1.6.23"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -921,7 +921,7 @@ kerberospipeline:
   notify:
     repository: ghcr.io/uug-ai/hub-pipeline-notification
     pullPolicy: IfNotPresent
-    tag: "v1.3.9"
+    tag: "v1.3.17"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -958,7 +958,7 @@ kerberospipeline:
   analysis:
     repository: ghcr.io/uug-ai/hub-pipeline-analysis
     pullPolicy: IfNotPresent
-    tag: "v1.7.17"
+    tag: "v1.8.4"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -976,7 +976,7 @@ kerberospipeline:
   dominantColor:
     repository: ghcr.io/uug-ai/hub-pipeline-dominantcolors
     pullPolicy: IfNotPresent
-    tag: "v2.0.2"
+    tag: "v2.0.3"
     replicas: 3 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -997,7 +997,7 @@ kerberospipeline:
   thumbnail:
     repository: ghcr.io/uug-ai/hub-pipeline-thumbnail
     pullPolicy: IfNotPresent
-    tag: "v1.3.6"
+    tag: "v1.3.10"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1042,7 +1042,7 @@ kerberospipeline:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
     repository: ghcr.io/uug-ai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
-    tag: "v1.1.14"
+    tag: "v1.1.16"
     replicas: 5 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1066,7 +1066,7 @@ kerberospipeline:
   export:
     repository: ghcr.io/uug-ai/hub-pipeline-export
     pullPolicy: IfNotPresent
-    tag: "v1.2.8"
+    tag: "v1.2.9"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
