@@ -468,6 +468,10 @@ kerberoshub:
       # Workflows allow you to define automated processes and actions in the front-end.
       workflows:
         enabled: "false" # Enable or disable workflows feature 'true' or 'false'
+      # Organisation controls remain visible as a read-only current organisation when switching is disabled.
+      organisations:
+        switcherEnabled: "false" # Enable or disable organisation switching 'true' or 'false'
+        creationEnabled: "false" # Enable or disable organisation creation; requires switcherEnabled 'true' or 'false'
       # Map tile configuration  
       map:
         tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode

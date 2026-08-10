@@ -312,6 +312,10 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.case.enabled }}"
         - name: FEATURE_WORKFLOWS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.workflows.enabled }}"
+        - name: FEATURE_ORGANISATION_SWITCHER_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.organisations.switcherEnabled }}"
+        - name: FEATURE_ORGANISATION_CREATION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.organisations.creationEnabled }}"
         - name: FEATURE_DARK_MODE
           value: "{{ .Values.kerberoshub.frontend.features.darkModeEnabled }}"
         - name: FEATURE_SPLASH_SCREEN_ENABLED
