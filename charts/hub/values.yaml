@@ -806,7 +806,7 @@ kerberoshub:
     repository: uugai/hub-reactivatesubscriptions
     pullPolicy: IfNotPresent
     tag: "v1.0.2"
-    replicas: 1 # Number of pods for the service.
+    replicas: 0 # Number of pods for the service. Set to 0 to disable.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
@@ -842,7 +842,7 @@ kerberoshub:
     repository: uugai/hub-proxy
     pullPolicy: IfNotPresent
     tag: "v1.0.0"
-    replicas: 1 # Number of pods for the service.
+    replicas: 0 # Number of pods for the service. Set to 0 to disable.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
