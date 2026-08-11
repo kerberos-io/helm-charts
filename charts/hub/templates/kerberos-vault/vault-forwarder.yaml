@@ -27,9 +27,15 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.forwarder.volumes }}
+      {{- $mongodbTLS := .Values.mongodb.tls }}
+      {{- if or .Values.kerberoshub.forwarder.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
+      {{- with .Values.kerberoshub.forwarder.volumes }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
+        {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
+      {{- end }}
       {{- end }}
       {{- with .Values.kerberoshub.forwarder.topologySpreadConstraints }}
       topologySpreadConstraints:
@@ -43,9 +49,14 @@ spec:
             requests:
               memory: 10Mi
               cpu: 10m
-          {{- with .Values.kerberoshub.forwarder.volumeMounts }}
+          {{- if or .Values.kerberoshub.forwarder.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
+          {{- with .Values.kerberoshub.forwarder.volumeMounts }}
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
+            {{- include "hub.mongodb.tlsVolumeMount" . | nindent 12 }}
+          {{- end }}
           {{- end }}
           envFrom:
           - configMapRef:
