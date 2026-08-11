@@ -296,7 +296,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
 | `kerberoshub.reactivate.pullPolicy` | Image pull policy for `kerberoshub.reactivate`. | `"IfNotPresent"` |
 | `kerberoshub.reactivate.tag` | Container image tag/version for `kerberoshub.reactivate`. | `"v1.0.2"` |
-| `kerberoshub.reactivate.replicas` | Number of replicas for `kerberoshub.reactivate`. | `1` |
+| `kerberoshub.reactivate.replicas` | Number of replicas for `kerberoshub.reactivate`. Set to `0` to disable. | `0` |
 | `kerberoshub.reactivate.logLevel` | Log verbosity level for `kerberoshub.reactivate`. | `"info"` |
 | `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `"10Mi"` |
 | `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `"10m"` |
@@ -304,7 +304,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.proxy.repository` | Container image repository for `kerberoshub.proxy`. | `"uugai/hub-proxy"` |
 | `kerberoshub.proxy.pullPolicy` | Image pull policy for `kerberoshub.proxy`. | `"IfNotPresent"` |
 | `kerberoshub.proxy.tag` | Container image tag/version for `kerberoshub.proxy`. | `"v1.0.0"` |
-| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy`. | `1` |
+| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy`. Set to `0` to disable. | `0` |
 | `kerberoshub.proxy.logLevel` | Log verbosity level for `kerberoshub.proxy`. | `"info"` |
 | `kerberoshub.proxy.resources.requests.memory` | Memory request for `kerberoshub.proxy`. | `"10Mi"` |
 | `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `"10m"` |
