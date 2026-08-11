@@ -53,6 +53,11 @@ Below all configuration options and parameters are listed.
 | `mongodb.password` | MongoDB user password, by default `'yourmongodbpassword'` | `"yourpassword"` |
 | `mongodb.retryWrites` | Enable or disable MongoDB retryable writes. | `"true"` |
 | `mongodb.flavor` | Backend engine flavor: `"mongodb"` (native MongoDB / Atlas) or `"documentdb"` (AWS DocumentDB). The `documentdb` flavor disables features DocumentDB does not support (geospatial queries/indexes, complex `$lookup` pipelines). When set to `documentdb`, also set `mongodb.retryWrites: "false"`. | `"mongodb"` |
+| `mongodb.tls.enabled` | Enable TLS for MongoDB connections. When `mongodb.uri` is set, the chart appends missing `tls=true` and `tlsCAFile` query parameters. | `false` |
+| `mongodb.tls.existingSecret` | Existing Kubernetes Secret containing the MongoDB CA bundle. The Secret is mounted into every workload that consumes `mongodb-config`. | `""` |
+| `mongodb.tls.caFileName` | Key and filename of the CA bundle in `mongodb.tls.existingSecret` (for AWS DocumentDB, typically `global-bundle.pem`). | `""` |
+| `mongodb.tls.mountPath` | Read-only directory where the MongoDB CA Secret is mounted. | `"/etc/mongodb/tls"` |
+| `mongodb.tls.insecureSkipVerify` | Skip MongoDB certificate and hostname verification. This is insecure and intended only for local testing. | `false` |
 | `mqtt.host` | MQTT (Vernemq) hostname. | `"mqtt.yourdomain.com"` |
 | `mqtt.port` | MQTT (Vernemq) port for WSS (secure sockets), by default `'8443'`. | `"8443"` |
 | `mqtt.protocol` | MQTT (Vernemq) protocol, by default `'wss'`. | `"wss"` |
