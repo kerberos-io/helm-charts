@@ -26,9 +26,15 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.reactivate.volumes }}
+      {{- $mongodbTLS := .Values.mongodb.tls }}
+      {{- if or .Values.kerberoshub.reactivate.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
+      {{- with .Values.kerberoshub.reactivate.volumes }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
+        {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
+      {{- end }}
       {{- end }}
       {{- with .Values.kerberoshub.reactivate.topologySpreadConstraints }}
       topologySpreadConstraints:
@@ -38,9 +44,14 @@ spec:
         - name: hub-reactivate-subscription
           image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.reactivate.repository }}:{{ .Values.kerberoshub.reactivate.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.reactivate.pullPolicy }}
-          {{- with .Values.kerberoshub.reactivate.volumeMounts }}
+          {{- if or .Values.kerberoshub.reactivate.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
+          {{- with .Values.kerberoshub.reactivate.volumeMounts }}
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
+            {{- include "hub.mongodb.tlsVolumeMount" . | nindent 12 }}
+          {{- end }}
           {{- end }}
           envFrom:
             - configMapRef:

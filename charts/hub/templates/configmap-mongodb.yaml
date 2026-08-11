@@ -4,7 +4,7 @@ metadata:
   name: mongodb-config
   namespace: {{ .Release.Namespace }}
 data:
-  MONGODB_URI: "{{ .Values.mongodb.uri }}"
+  MONGODB_URI: {{ include "hub.mongodb.uri" . | quote }}
   MONGODB_HOST: "{{ .Values.mongodb.host }}"
   MONGODB_AUTHENTICATION_MECHANISM: "{{ .Values.mongodb.authenticationMechanism }}"
   MONGODB_DATABASE_CREDENTIALS: "{{ .Values.mongodb.adminDatabase }}"
@@ -12,4 +12,7 @@ data:
   MONGODB_PASSWORD: "{{ .Values.mongodb.password }}"
   MONGODB_RETRY_WRITES: "{{ .Values.mongodb.retryWrites }}"
   MONGODB_FLAVOR: "{{ .Values.mongodb.flavor | default "mongodb" }}"
+  MONGODB_TLS: "{{ .Values.mongodb.tls.enabled }}"
+  MONGODB_TLS_CA_FILE: {{ include "hub.mongodb.tlsCAFile" . | quote }}
+  MONGODB_TLS_INSECURE_SKIP_VERIFY: "{{ .Values.mongodb.tls.insecureSkipVerify }}"
   MONGODB_DATABASE_CLOUD: "Kerberos"

@@ -60,6 +60,15 @@ mongodb:
   # and indexes, complex $lookup pipelines, etc.). When using DocumentDB you
   # should also set retryWrites: "false".
   flavor: "mongodb"
+  # TLS for MongoDB-compatible backends. When uri is set, missing TLS query
+  # parameters are appended automatically. AWS DocumentDB requires TLS and a
+  # trusted RDS CA bundle, typically stored in an existing Kubernetes Secret.
+  tls:
+    enabled: false
+    existingSecret: ""
+    caFileName: ""
+    mountPath: "/etc/mongodb/tls"
+    insecureSkipVerify: false
 ###################################################
 # MQTT configuration (bi-directional communication)
 ###################################################
