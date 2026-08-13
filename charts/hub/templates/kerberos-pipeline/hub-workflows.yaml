@@ -73,8 +73,10 @@ spec:
         # named workflows it runs (WORKFLOW_DEFINITIONS): each with its own
         # trigger and executable stages, assembled from the enabled definitions
         # under kerberoshub.workflows.definitions (see _workflows-helpers.tpl).
-        # Definitions are the engine's single routing source; empty means no
-        # workflows run.
+        # Definitions are the engine's boot-loaded config source and deployment
+        # stage catalog. Organisation-scoped database workflows are read per
+        # recording; an in-cluster engine still requires at least one config
+        # definition so an empty catalog cannot silently drop traffic.
         - name: WORKFLOWS_QUEUE
           value: "{{ .Values.kerberoshub.services.workflows.queue }}"
         - name: WORKFLOW_DEFINITIONS
