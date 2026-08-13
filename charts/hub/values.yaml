@@ -651,16 +651,18 @@ kerberoshub:
     # -----------------------------------------------------------------------
     # Global workflow definitions — the named workflows the engine runs.
     #
-    # `definitions` is the engine's single routing source: several distinct
-    # workflows can run over one recording, each opening its own run and
-    # dispatching only its own stages. It is a MAP keyed by workflow name (names
-    # are unique and merge cleanly across -f / --set overrides). Ships empty; the
-    # commented block is a worked example of an object-tracking + loitering
-    # pipeline. Add more keys to run more workflows.
+    # `definitions` is the engine's deployment-global configuration source and
+    # stage catalog: several distinct workflows can run over one recording, each
+    # opening its own run and dispatching only its own stages. Database-backed
+    # organisation workflows, when present, are read separately per recording.
+    # This is a MAP keyed by workflow name (names are unique and merge cleanly
+    # across -f / --set overrides). Ships empty; the commented block is a worked
+    # example of an object-tracking + loitering pipeline. Add more keys to run
+    # more config workflows.
     #
     # Each definition:
     #   enabled   include this workflow (soft-delete toggle).
-    #   source    always rendered as "config" (a Helm-seeded, ops-managed,
+    #   source    always rendered as "config" (a Helm-defined, ops-managed,
     #             deployment-global workflow — read-only in the API).
     #   triggers  how a run OPENS. Omit for a single bare automatic trigger
     #             (opens for every recording); the per-stage `needs` then decide
@@ -672,9 +674,9 @@ kerberoshub:
     #             {operation?, condition?} — operation is the readiness GATE (the
     #             upstream op whose data must be present before the condition is
     #             read; omit for a check on the run root itself), condition is
-    #             {path, op, value} where path is ABSOLUTE from the run root and
-    #             resolves through string-keyed maps only (it cannot index into
-    #             arrays). needsMode combines multiple needs: "any" (default;
+    #             {path, op, value} where path is ABSOLUTE from the run root;
+    #             a `*` segment fans out across array elements. needsMode combines
+    #             multiple needs: "any" (default;
     #             fire on the first match) or "all" (a join; fire once every need
     #             has resolved and matched). The queue is taken from the matching
     #             services.<operation> entry, so dispatch and consume cannot drift.
@@ -708,9 +710,10 @@ kerberoshub:
   #     when its own `enabled` is true AND the workflows engine is enabled.
   services:
     # hub-workflows — the workflows engine (orchestrator). Consumes the engine
-    # queue, evaluates the workflow definitions (WORKFLOW_DEFINITIONS) and
-    # dispatches to the stage workers below. Deployed when workflows.enabled is
-    # true; it has no separate `enabled` here.
+    # queue, evaluates the boot-loaded config workflows (WORKFLOW_DEFINITIONS)
+    # plus organisation-scoped database workflows, and dispatches to the stage
+    # workers below. Deployed when workflows.enabled is true; it has no separate
+    # `enabled` here.
     workflows:
       repository: ghcr.io/uug-ai/hub-workflows
       pullPolicy: IfNotPresent
