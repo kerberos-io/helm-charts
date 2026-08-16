@@ -240,7 +240,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.9.48"
+    tag: "v1.9.51"
     replicas: 2
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-api Service (e.g. when an
@@ -353,7 +353,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.13.0"
+    tag: "v1.13.9"
     replicas: 2
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
@@ -592,7 +592,7 @@ kerberoshub:
   cleanup:
     repository: ghcr.io/uug-ai/hub-cleanup
     pullPolicy: IfNotPresent
-    tag: "v1.4.16"
+    tag: "v1.4.19"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -789,7 +789,7 @@ kerberoshub:
   monitordevice:
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent
-    tag: "v1.4.1"
+    tag: "v1.4.2"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -885,7 +885,7 @@ kerberospipeline:
   monitor:
     repository: ghcr.io/uug-ai/hub-pipeline-monitor
     pullPolicy: IfNotPresent
-    tag: "v1.3.11"
+    tag: "v1.3.13"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -902,7 +902,7 @@ kerberospipeline:
   sequence:
     repository: ghcr.io/uug-ai/hub-pipeline-sequence
     pullPolicy: IfNotPresent
-    tag: "v1.6.23"
+    tag: "v1.6.26"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -919,7 +919,7 @@ kerberospipeline:
   throttler:
     repository: uugai/hub-pipeline-throttler
     pullPolicy: IfNotPresent
-    tag: "v1.2.0"
+    tag: "v1.2.1"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -937,7 +937,7 @@ kerberospipeline:
   notify:
     repository: ghcr.io/uug-ai/hub-pipeline-notification
     pullPolicy: IfNotPresent
-    tag: "v1.3.17"
+    tag: "v1.3.18"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -956,7 +956,7 @@ kerberospipeline:
   notifyTest:
     repository: uugai/hub-pipeline-notification-test
     pullPolicy: IfNotPresent
-    tag: "v1.2.1"
+    tag: "v1.2.2"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     resources:
@@ -974,7 +974,7 @@ kerberospipeline:
   analysis:
     repository: ghcr.io/uug-ai/hub-pipeline-analysis
     pullPolicy: IfNotPresent
-    tag: "v1.8.4"
+    tag: "v1.8.5"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1039,7 +1039,7 @@ kerberospipeline:
   counting:
     repository: uugai/hub-pipeline-counting
     pullPolicy: IfNotPresent
-    tag: "v1.6.3"
+    tag: "v2.0.0"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1082,7 +1082,7 @@ kerberospipeline:
   export:
     repository: ghcr.io/uug-ai/hub-pipeline-export
     pullPolicy: IfNotPresent
-    tag: "v1.2.9"
+    tag: "v1.2.10"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
