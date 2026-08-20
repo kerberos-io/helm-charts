@@ -194,6 +194,23 @@ spec:
               value: "{{ .Values.kerberoshub.api.schema }}://{{ .Values.kerberoshub.api.url }}"
             - name: PUBLIC_URL
               value: "{{ .Values.kerberoshub.frontend.schema }}://{{ .Values.kerberoshub.frontend.url }}"
+            - name: REFRESH_COOKIE_SECURE
+              value: {{ eq .Values.kerberoshub.api.schema "https" | quote }}
+            {{- $corsOrigins := list }}
+            {{- with .Values.kerberoshub.frontend.legacyUrl }}
+            {{- $corsOrigins = append $corsOrigins (printf "%s://%s" $.Values.kerberoshub.frontend.schema .) }}
+            {{- end }}
+            {{- range .Values.kerberoshub.frontend.domains }}
+            {{- $corsOrigins = append $corsOrigins (printf "%s://%s" $.Values.kerberoshub.frontend.schema .) }}
+            {{- end }}
+            {{- if and .Values.kerberoshub.frontend.multiTenant .Values.kerberoshub.frontend.tenantBaseDomain }}
+            {{- $corsOrigins = append $corsOrigins (printf "%s://*.%s" .Values.kerberoshub.frontend.schema .Values.kerberoshub.frontend.tenantBaseDomain) }}
+            {{- end }}
+            {{- if and .Values.kerberoshub.frontend.demoEnabled .Values.kerberoshub.frontend.demoUrl }}
+            {{- $corsOrigins = append $corsOrigins (printf "%s://%s" .Values.kerberoshub.frontend.schema .Values.kerberoshub.frontend.demoUrl) }}
+            {{- end }}
+            - name: CORS_ALLOWED_ORIGINS
+              value: {{ join "," $corsOrigins | quote }}
             {{ if .Values.isPrivate }}
             - name: KERBEROS_PRIVATE_CLOUD
               value: "true"
