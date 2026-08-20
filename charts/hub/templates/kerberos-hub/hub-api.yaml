@@ -196,7 +196,7 @@ spec:
               value: "{{ .Values.kerberoshub.frontend.schema }}://{{ .Values.kerberoshub.frontend.url }}"
             - name: REFRESH_COOKIE_SECURE
               value: {{ eq .Values.kerberoshub.api.schema "https" | quote }}
-            {{- $corsOrigins := list }}
+            {{- $corsOrigins := list (printf "%s://%s" .Values.kerberoshub.frontend.schema .Values.kerberoshub.frontend.url) }}
             {{- with .Values.kerberoshub.frontend.legacyUrl }}
             {{- $corsOrigins = append $corsOrigins (printf "%s://%s" $.Values.kerberoshub.frontend.schema .) }}
             {{- end }}
