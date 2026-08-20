@@ -312,10 +312,22 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.case.enabled }}"
         - name: FEATURE_WORKFLOWS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.workflows.enabled }}"
+        - name: FEATURE_ORGANISATIONS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.organisations.enabled }}"
         - name: FEATURE_ORGANISATION_SWITCHER_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.organisations.switcherEnabled }}"
         - name: FEATURE_ORGANISATION_CREATION_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.organisations.creationEnabled }}"
+        - name: FEATURE_ORGANISATION_SETTINGS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.organisations.settingsEnabled }}"
+        - name: FEATURE_PROJECTS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.projects.enabled }}"
+        - name: FEATURE_PROJECT_SWITCHER_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.projects.switcherEnabled }}"
+        - name: FEATURE_PROJECT_CREATION_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.projects.creationEnabled }}"
+        - name: FEATURE_PROJECT_SETTINGS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.projects.settingsEnabled }}"
         - name: FEATURE_DARK_MODE
           value: "{{ .Values.kerberoshub.frontend.features.darkModeEnabled }}"
         - name: FEATURE_SPLASH_SCREEN_ENABLED

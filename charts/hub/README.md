@@ -207,8 +207,14 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.i18n.enabled` | Enable or disable the runtime language switcher in the front-end. When `"false"`, `defaultLanguage` is forced and users cannot change it. | `"true"` |
 | `kerberoshub.frontend.features.i18n.defaultLanguage` | Default language code used by the front-end (e.g. `en`, `nl`, `pl`, `tr`, `fr`, `sv`, `de`). | `"en"` |
 | `kerberoshub.frontend.features.workflows.enabled` | Enable or disable the workflows feature in the frontend. | `"false"` |
+| `kerberoshub.frontend.features.organisations.enabled` | Enable or disable all organisation feature flags. When empty, the child settings apply independently. | `""` |
 | `kerberoshub.frontend.features.organisations.switcherEnabled` | Enable or disable the organisation dropdown and switching. The current organisation remains visible when disabled. | `"false"` |
 | `kerberoshub.frontend.features.organisations.creationEnabled` | Enable or disable organisation creation. Requires organisation switching to be enabled. | `"false"` |
+| `kerberoshub.frontend.features.organisations.settingsEnabled` | Enable or disable the organisation identity link to organisation settings. | `"false"` |
+| `kerberoshub.frontend.features.projects.enabled` | Enable or disable all project feature flags. When empty, the child settings apply independently. | `""` |
+| `kerberoshub.frontend.features.projects.switcherEnabled` | Enable or disable the read-only project dropdown. | `"false"` |
+| `kerberoshub.frontend.features.projects.creationEnabled` | Reserved for the project creation UI. | `"false"` |
+| `kerberoshub.frontend.features.projects.settingsEnabled` | Reserved for the project settings UI. | `"false"` |
 | `kerberoshub.frontend.features.map.tileUrlLight` | Tile URL used by the map in light mode. | `"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"` |
 | `kerberoshub.frontend.features.map.tileUrlDark` | Tile URL used by the map in dark mode. | `"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"` |
 | `kerberoshub.frontend.features.map.attribution` | Attribution text displayed on the map tiles. | `"&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>"` |

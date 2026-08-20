@@ -479,8 +479,15 @@ kerberoshub:
         enabled: "false" # Enable or disable workflows feature 'true' or 'false'
       # Organisation controls remain visible as a read-only current organisation when switching is disabled.
       organisations:
+        enabled: "" # Enable or disable all organisation feature flags; when empty, the child settings apply independently
         switcherEnabled: "false" # Enable or disable organisation switching 'true' or 'false'
         creationEnabled: "false" # Enable or disable organisation creation; requires switcherEnabled 'true' or 'false'
+        settingsEnabled: "false" # Enable or disable the organisation settings link 'true' or 'false'
+      projects:
+        enabled: "" # Enable or disable all project feature flags; when empty, the child settings apply independently
+        switcherEnabled: "false" # Enable or disable the read-only project dropdown 'true' or 'false'
+        creationEnabled: "false" # Reserved for project creation UI 'true' or 'false'
+        settingsEnabled: "false" # Reserved for project settings UI 'true' or 'false'
       # Map tile configuration  
       map:
         tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode
