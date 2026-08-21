@@ -564,6 +564,7 @@ kerberoshub:
       # Face redaction feature
       faceRedaction:
         enabled: "false" # Enable or disable face redaction 'true' or 'false'
+        classifierTracksEnabled: "true" # Make classifier-generated tracks available in the redaction modal
     # Optional integrations
     mixpanel: # We can keep track logging in Mixpanel as well
       apikey: "xxx"

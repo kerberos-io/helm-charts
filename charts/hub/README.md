@@ -259,6 +259,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.floorplan.colorTrackBoxDrawing` | Color customization for `floorplan` in the frontend. | `"hsla(204, 100%, 50%, 1)"` |
 | `kerberoshub.frontend.features.floorplan.colorTrackBoxControlsDelete` | Color customization for `floorplan` in the frontend. | `"hsla(219, 100%, 94%, 1)"` |
 | `kerberoshub.frontend.features.faceRedaction.enabled` | Enable or disable `kerberoshub.frontend.features.faceRedaction`. | `"false"` |
+| `kerberoshub.frontend.features.faceRedaction.classifierTracksEnabled` | Make classifier-generated tracks available in the redaction modal. | `"true"` |
 | `kerberoshub.support.enabled` | Enable or disable in-app support features. | `false` |
 | `kerberoshub.oauth2Proxy.enabled` | Enable or disable `kerberoshub.oauth2Proxy`. | `false` |
 | `kerberoshub.oauth2Proxy.github.clientId` | Client ID used by `kerberoshub.oauth2Proxy.github`. | `"github-client-id"` |
@@ -497,6 +498,7 @@ Following indexes should be executed on the MongoDB database (Kerberos) to impro
 #### Analysis collection
 
     db.getCollection("analysis").createIndex({start:1})
+    db.getCollection("analysis").createIndex({organisationId:1, projectId:1, key:1}, {name:"analysis_org_project_key"})
     db.getCollection("analysis").createIndex({userid:1, key:1})
     db.getCollection("analysis").createIndex({userid:1, start:1})
 

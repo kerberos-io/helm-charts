@@ -1702,7 +1702,9 @@
                   "k14": "fps",
                   "k15": "Detection run",
                   "k16": "Select a detection run",
-                  "k17": "No detections"
+                  "k17": "No detections",
+                  "k18": "Automatic tracks unavailable",
+                  "k19": "Automatic face tracks are disabled. You can still draw redaction boxes manually on the player and submit."
                 }
               },
               "motionmap": {
