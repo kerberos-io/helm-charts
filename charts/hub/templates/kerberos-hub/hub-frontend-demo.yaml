@@ -300,7 +300,9 @@ spec:
 
         # features > face redaction 
         - name: FEATURE_FACE_REDACTION_ENABLED
-          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}" 
+          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}"
+        - name: FEATURE_FACE_REDACTION_CLASSIFIER_TRACKS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.classifierTracksEnabled }}"
         
         # features > media
         - name: FEATURE_MEDIA_FILTER_DATE_ENABLED
