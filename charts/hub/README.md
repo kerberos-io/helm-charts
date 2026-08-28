@@ -218,6 +218,12 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.map.tileUrlLight` | Tile URL used by the map in light mode. | `"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"` |
 | `kerberoshub.frontend.features.map.tileUrlDark` | Tile URL used by the map in dark mode. | `"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"` |
 | `kerberoshub.frontend.features.map.attribution` | Attribution text displayed on the map tiles. | `"&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>"` |
+| `kerberoshub.frontend.features.map.overlayTileUrl` | Optional XYZ overlay URL supporting `{z}`, `{x}`, `{y}`, and `{apiKey}`. Empty disables the overlay. | `""` |
+| `kerberoshub.frontend.features.map.overlayApiKey` | Optional browser-visible API key substituted for `{apiKey}` in the overlay URL. | `""` |
+| `kerberoshub.frontend.features.map.overlayAttribution` | Attribution text displayed when the overlay is enabled. | `""` |
+| `kerberoshub.frontend.features.map.overlayMinZoom` | Minimum zoom level for overlay tiles. | `"0"` |
+| `kerberoshub.frontend.features.map.overlayMaxZoom` | Maximum zoom level for overlay tiles. | `"19"` |
+| `kerberoshub.frontend.features.map.overlayOpacity` | Overlay opacity from `0` to `1`. | `"1"` |
 | `kerberoshub.frontend.features.liveview.defaultStreamMode` | Liveview behavior setting: `defaultStreamMode`. | `"SD"` |
 | `kerberoshub.frontend.features.liveview.liveStreamMode` | Transport backing LIVE mode: `webrtc`, `hls`, or `moq`. | `"webrtc"` |
 | `kerberoshub.frontend.features.liveview.hlsEnabled` | Offer HLS as a selectable LIVE transport. | `"true"` |

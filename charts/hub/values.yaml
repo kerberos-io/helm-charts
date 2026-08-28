@@ -493,6 +493,12 @@ kerberoshub:
         tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode
         tileUrlDark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" # Map tile URL for dark mode
         attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>" # Map attribution
+        overlayTileUrl: "" # Optional XYZ overlay URL; supports {z}, {x}, {y}, and {apiKey}
+        overlayApiKey: "" # Optional browser-visible API key substituted into overlayTileUrl
+        overlayAttribution: "" # Attribution displayed when the overlay is enabled
+        overlayMinZoom: "0" # Minimum overlay zoom level
+        overlayMaxZoom: "19" # Maximum overlay zoom level
+        overlayOpacity: "1" # Overlay opacity from 0 to 1
       # Live view page
       liveview:
         defaultStreamMode: "SD" # Default stream mode 'SD' or 'HD' (will be migrated to 'preview' or 'live')

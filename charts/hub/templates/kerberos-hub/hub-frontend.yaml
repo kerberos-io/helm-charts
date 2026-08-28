@@ -376,6 +376,18 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.map.tileUrlDark }}"
         - name: MAP_ATTRIBUTION
           value: "{{ .Values.kerberoshub.frontend.features.map.attribution }}"
+        - name: MAP_OVERLAY_TILE_URL
+          value: "{{ .Values.kerberoshub.frontend.features.map.overlayTileUrl }}"
+        - name: MAP_OVERLAY_API_KEY
+          value: "{{ .Values.kerberoshub.frontend.features.map.overlayApiKey }}"
+        - name: MAP_OVERLAY_ATTRIBUTION
+          value: "{{ .Values.kerberoshub.frontend.features.map.overlayAttribution }}"
+        - name: MAP_OVERLAY_MIN_ZOOM
+          value: "{{ .Values.kerberoshub.frontend.features.map.overlayMinZoom }}"
+        - name: MAP_OVERLAY_MAX_ZOOM
+          value: "{{ .Values.kerberoshub.frontend.features.map.overlayMaxZoom }}"
+        - name: MAP_OVERLAY_OPACITY
+          value: "{{ .Values.kerberoshub.frontend.features.map.overlayOpacity }}"
 
         - name: COLOR_TRACK_BOX
           value: "{{ .Values.kerberoshub.frontend.features.floorplan.colorTrackBox }}"
