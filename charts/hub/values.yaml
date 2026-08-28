@@ -493,12 +493,19 @@ kerberoshub:
         tileUrlLight: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" # Map tile URL for light mode
         tileUrlDark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" # Map tile URL for dark mode
         attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>" # Map attribution
+        overlayTileUrl: "" # Optional XYZ overlay URL; supports {z}, {x}, {y}, and {apiKey}
+        overlayApiKey: "" # Optional browser-visible API key substituted into overlayTileUrl
+        overlayAttribution: "" # Attribution displayed when the overlay is enabled
+        overlayMinZoom: "0" # Minimum overlay zoom level
+        overlayMaxZoom: "19" # Maximum overlay zoom level
+        overlayOpacity: "1" # Overlay opacity from 0 to 1
       # Live view page
       liveview:
         defaultStreamMode: "SD" # Default stream mode 'SD' or 'HD' (will be migrated to 'preview' or 'live')
         liveStreamMode: "webrtc" # Transport backing the LIVE (HD) mode: 'webrtc' (default), 'hls' or 'moq'
         hlsEnabled: "true" # Offer HLS as a selectable LIVE transport 'true' or 'false'. When 'false' the HLS option is removed from the front-end and streams use webrtc
         moqEnabled: "false" # Offer MoQ as a selectable LIVE transport 'true' or 'false'
+        remoteRecordingEnabled: "false" # Show the manual REC control in live views
         moqRelayUrl: "https://relay.uug.ai/anon" # WebTransport URL of the MoQ relay
         moqBroadcastPrefix: "devices" # Prefix used to build devices/<deviceKey>/live.hang broadcast names
         paginationMode: "scroll" # Pagination mode in live view 'scroll', 'numbered' or 'maxStreams'
