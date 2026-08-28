@@ -265,6 +265,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.liveview.hlsEnabled }}"
         - name: FEATURE_MOQ_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.liveview.moqEnabled }}"
+        - name: FEATURE_REMOTE_RECORDING_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.remoteRecordingEnabled }}"
         - name: MOQ_RELAY_URL
           value: "{{ .Values.kerberoshub.frontend.features.liveview.moqRelayUrl }}"
         - name: MOQ_BROADCAST_PREFIX
