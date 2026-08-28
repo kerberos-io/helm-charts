@@ -64,6 +64,10 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        # Application
+        - name: LOG_LEVEL
+          value: "{{ .Values.kerberospipeline.monitor.logLevel }}"
+
         # Queue      
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"

@@ -326,6 +326,7 @@ Below all configuration options and parameters are listed.
 | `kerberospipeline.monitor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberospipeline.monitor.tag` | The Docker image tag/version. | `"v1.3.9"` |
 | `kerberospipeline.monitor.replicas` | Number of replicas for `kerberospipeline.monitor`. | `1` |
+| `kerberospipeline.monitor.logLevel` | Monitor log level. Set to `debug` for per-event processing checkpoints. | `"info"` |
 | `kerberospipeline.monitor.resources.requests.memory` | Memory request for `kerberospipeline.monitor`. | `"10Mi"` |
 | `kerberospipeline.monitor.resources.requests.cpu` | CPU request for `kerberospipeline.monitor`. | `"10m"` |
 | `kerberospipeline.sequence.repository` | The [sequencer microservice](https://doc.kerberos.io/hub/pipeline/#sequencer), grouping recordings in chunks/groups. | `"ghcr.io/uug-ai/hub-pipeline-sequence"` |

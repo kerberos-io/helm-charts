@@ -903,6 +903,7 @@ kerberospipeline:
     #volumeMounts:
     #  - name: extra
     #    mountPath: /data
+    logLevel: "info" # possible values: debug, info, warn, error
     resources:
       requests:
         memory: 10Mi
