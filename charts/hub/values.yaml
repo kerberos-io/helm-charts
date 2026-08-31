@@ -470,7 +470,7 @@ kerberoshub:
       # hidden and `defaultLanguage` is always forced; users cannot change it.
       i18n:
         enabled: "true" # Enable or disable the language switcher 'true' or 'false'
-        defaultLanguage: "en" # Default language code: en, nl, pl, tr, fr, sv, de
+        defaultLanguage: "en" # Default language code: en, nl, pl, pt, it, tr, fr, sv, de
       # Case management is a feature that allows you to create cases, and link recordings, devices, sites, groups, markers and events to those cases. 
       case:
         enabled: "true" # Enable or disable case management feature 'true' or 'false'

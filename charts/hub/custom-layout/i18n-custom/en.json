@@ -1,7 +1,15 @@
 {
   "nav": {
     "cases": "Investigations",
-    "dashboard": "Home"
+    "dashboard": "Home",
+    "context": {
+      "label": "Tenant",
+      "title": "Switch tenant",
+      "open": "Choose tenant and project"
+    }
+  },
+  "projects": {
+    "current": "Active project"
   },
   "login": {
     "signInTo": "Sign in to {{domain}} \u2014 Acme Security"
