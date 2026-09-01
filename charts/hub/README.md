@@ -315,10 +315,11 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `"10Mi"` |
 | `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `"10m"` |
 | `kerberoshub.forwarder.enabled` | Enable or disable the Hub forwarder component. | `false` |
+| `kerberoshub.proxy.enabled` | Enable or disable the legacy Hub proxy Deployment and LoadBalancer Service. | `false` |
 | `kerberoshub.proxy.repository` | Container image repository for `kerberoshub.proxy`. | `"uugai/hub-proxy"` |
 | `kerberoshub.proxy.pullPolicy` | Image pull policy for `kerberoshub.proxy`. | `"IfNotPresent"` |
 | `kerberoshub.proxy.tag` | Container image tag/version for `kerberoshub.proxy`. | `"v1.0.0"` |
-| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy`. Set to `0` to disable. | `0` |
+| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy` when enabled. | `0` |
 | `kerberoshub.proxy.logLevel` | Log verbosity level for `kerberoshub.proxy`. | `"info"` |
 | `kerberoshub.proxy.resources.requests.memory` | Memory request for `kerberoshub.proxy`. | `"10Mi"` |
 | `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `"10m"` |

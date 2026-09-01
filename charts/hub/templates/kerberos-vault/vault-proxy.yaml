@@ -1,4 +1,4 @@
-{{- if eq .Values.mode "all" -}}
+{{- if and (eq .Values.mode "all") .Values.kerberoshub.proxy.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
