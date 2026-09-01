@@ -857,10 +857,11 @@ kerberoshub:
     #    cpu: 10m
   # This proxy is legacy for the old agent, will be migrated in the new Hub API.
   proxy:
+    enabled: false
     repository: uugai/hub-proxy
     pullPolicy: IfNotPresent
     tag: "v1.0.0"
-    replicas: 0 # Number of pods for the service. Set to 0 to disable.
+    replicas: 0 # Number of pods for the service when enabled.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
