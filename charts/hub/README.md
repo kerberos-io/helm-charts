@@ -207,6 +207,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.i18n.enabled` | Enable or disable the runtime language switcher in the front-end. When `"false"`, `defaultLanguage` is forced and users cannot change it. | `"true"` |
 | `kerberoshub.frontend.features.i18n.defaultLanguage` | Default language code used by the front-end (e.g. `en`, `nl`, `pl`, `tr`, `fr`, `sv`, `de`). | `"en"` |
 | `kerberoshub.frontend.features.workflows.enabled` | Enable or disable the workflows feature in the frontend. | `"false"` |
+| `kerberoshub.frontend.features.audit.enabled` | Enable or disable the owner/admin Audit events page and navigation link. | `"true"` |
 | `kerberoshub.frontend.features.organisations.enabled` | Enable or disable the organisation feature family, including projects. When empty, child groups apply independently. | `""` |
 | `kerberoshub.frontend.features.organisations.switcherEnabled` | Enable or disable the organisation dropdown and switching. The current organisation remains visible when disabled. | `"false"` |
 | `kerberoshub.frontend.features.organisations.creationEnabled` | Enable or disable organisation creation. Requires organisation switching to be enabled. | `"false"` |

@@ -477,6 +477,9 @@ kerberoshub:
       # Workflows allow you to define automated processes and actions in the front-end.
       workflows:
         enabled: "false" # Enable or disable workflows feature 'true' or 'false'
+      # Audit events are visible to owner/admin users when enabled.
+      audit:
+        enabled: "true" # Enable or disable the Audit events page and navigation link 'true' or 'false'
       # Organisation controls remain visible as a read-only current organisation when switching is disabled.
       organisations:
         enabled: "" # Enable or disable the organisation feature family, including projects; when empty, child groups apply independently
