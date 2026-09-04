@@ -643,6 +643,10 @@ kerberoshub:
     # Tasks with `legal_hold=true` are never deleted. Must match the value
     # used by `kerberoshub.api.defaultTaskRetentionDays`.
     defaultTaskRetentionDays: "0"
+    # Deployment-wide retention for audit events. This is independent from
+    # recording plans, inactive-account cleanup, and the optional global pass.
+    # Set to "0" or a negative value to retain audit events indefinitely.
+    auditEventRetentionDays: "400"
     resources:
       requests:
         memory: 10Mi

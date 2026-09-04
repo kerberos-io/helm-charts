@@ -108,6 +108,8 @@ spec:
               value: "{{ .Values.kerberoshub.cleanup.globalPassDeleteBudget }}"
             - name: DEFAULT_TASK_RETENTION_DAYS
               value: "{{ .Values.kerberoshub.cleanup.defaultTaskRetentionDays }}"
+            - name: AUDIT_EVENT_RETENTION_DAYS
+              value: "{{ .Values.kerberoshub.cleanup.auditEventRetentionDays }}"
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}
