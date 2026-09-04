@@ -477,6 +477,9 @@ kerberoshub:
       # Workflows allow you to define automated processes and actions in the front-end.
       workflows:
         enabled: "false" # Enable or disable workflows feature 'true' or 'false'
+      # Audit events are visible to owner/admin users when enabled.
+      audit:
+        enabled: "true" # Enable or disable the Audit events page and navigation link 'true' or 'false'
       # Organisation controls remain visible as a read-only current organisation when switching is disabled.
       organisations:
         enabled: "" # Enable or disable the organisation feature family, including projects; when empty, child groups apply independently
@@ -643,6 +646,10 @@ kerberoshub:
     # Tasks with `legal_hold=true` are never deleted. Must match the value
     # used by `kerberoshub.api.defaultTaskRetentionDays`.
     defaultTaskRetentionDays: "0"
+    # Deployment-wide retention for audit events. This is independent from
+    # recording plans, inactive-account cleanup, and the optional global pass.
+    # Set to "0" or a negative value to retain audit events indefinitely.
+    auditEventRetentionDays: "400"
     resources:
       requests:
         memory: 10Mi

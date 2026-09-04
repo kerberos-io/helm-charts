@@ -207,6 +207,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.i18n.enabled` | Enable or disable the runtime language switcher in the front-end. When `"false"`, `defaultLanguage` is forced and users cannot change it. | `"true"` |
 | `kerberoshub.frontend.features.i18n.defaultLanguage` | Default language code used by the front-end (e.g. `en`, `nl`, `pl`, `tr`, `fr`, `sv`, `de`). | `"en"` |
 | `kerberoshub.frontend.features.workflows.enabled` | Enable or disable the workflows feature in the frontend. | `"false"` |
+| `kerberoshub.frontend.features.audit.enabled` | Enable or disable the owner/admin Audit events page and navigation link. | `"true"` |
 | `kerberoshub.frontend.features.organisations.enabled` | Enable or disable the organisation feature family, including projects. When empty, child groups apply independently. | `""` |
 | `kerberoshub.frontend.features.organisations.switcherEnabled` | Enable or disable the organisation dropdown and switching. The current organisation remains visible when disabled. | `"false"` |
 | `kerberoshub.frontend.features.organisations.creationEnabled` | Enable or disable organisation creation. Requires organisation switching to be enabled. | `"false"` |
@@ -298,6 +299,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.cleanup.globalPassIntervalHours` | Minimum hours between global cleanup passes. | `"0"` |
 | `kerberoshub.cleanup.globalPassDeleteBudget` | Max documents deleted during a global pass. | `"0"` |
 | `kerberoshub.cleanup.defaultTaskRetentionDays` | Default retention (in days) applied to tasks without an explicit `retention_days`. Tasks older than this (anchored on `creation_date`) are deleted with their `case_media` rows. Set to `"0"` or a negative value to keep tasks forever. Must match `kerberoshub.api.defaultTaskRetentionDays`. | `"0"` |
+| `kerberoshub.cleanup.auditEventRetentionDays` | Deployment-wide audit-event retention in days, independent of recording plans, inactive-account cleanup, and the optional global pass. Set to `"0"` or a negative value to keep audit events indefinitely. | `"400"` |
 | `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `"10Mi"` |
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
 | `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
