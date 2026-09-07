@@ -967,6 +967,7 @@ kerberospipeline:
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    notificationExpiryMinutes: "15" # Maximum recording age before notification delivery; 0 disables expiry.
     resources:
       requests:
         memory: 10Mi

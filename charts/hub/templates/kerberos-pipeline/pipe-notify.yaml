@@ -66,6 +66,8 @@ spec:
         env:
         - name: LOG_LEVEL
           value: "{{ .Values.kerberospipeline.notify.logLevel }}"
+        - name: NOTIFICATION_EXPIRY_MINUTES
+          value: "{{ .Values.kerberospipeline.notify.notificationExpiryMinutes }}"
         # Queue
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
