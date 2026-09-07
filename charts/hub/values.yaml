@@ -540,6 +540,8 @@ kerberoshub:
             enabled: "true" # Enable or disable category filter in media 'true' or 'false'
           markers:
             enabled: "true" # Enable or disable markers filter in media 'true' or 'false'
+          markerOptionsByDate:
+            enabled: "false" # Limit marker-related filter options to the selected recording day
           events:
             enabled: "true" # Enable or disable events filter in media 'true' or 'false'
           tags:

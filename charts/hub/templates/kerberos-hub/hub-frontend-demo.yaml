@@ -365,6 +365,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.category.enabled }}"
         - name: FEATURE_MEDIA_FILTER_MARKERS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.markers.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_MARKER_OPTIONS_BY_DATE_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.markerOptionsByDate.enabled }}"
         - name: FEATURE_MEDIA_FILTER_EVENTS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.events.enabled }}"
         - name: FEATURE_MEDIA_FILTER_TAGS_ENABLED
