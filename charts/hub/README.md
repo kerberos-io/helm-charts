@@ -357,6 +357,7 @@ Below all configuration options and parameters are listed.
 | `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.9"` |
 | `kerberospipeline.notify.replicas` | Number of replicas for `kerberospipeline.notify`. | `1` |
 | `kerberospipeline.notify.logLevel` | Log verbosity level for `kerberospipeline.notify`. | `"info"` |
+| `kerberospipeline.notify.notificationExpiryMinutes` | Maximum recording age in minutes before notification delivery. Set to `"0"` to disable the freshness cutoff. | `"15"` |
 | `kerberospipeline.notify.resources.requests.memory` | Memory request for `kerberospipeline.notify`. | `"10Mi"` |
 | `kerberospipeline.notify.resources.requests.cpu` | CPU request for `kerberospipeline.notify`. | `"10m"` |
 | `kerberospipeline.notifyTest.repository` | The notification service for testing, the different channels. | `"uugai/hub-pipeline-notification-test"` |
