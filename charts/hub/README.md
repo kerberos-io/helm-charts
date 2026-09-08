@@ -491,6 +491,20 @@ As mentioned during the Post installation step, you'll import some `.nosql` file
 
 Within the Kerberos Hub front-end you'll see the option to filter through classifications. This filtered is stored in the `settings` collection. By changing the entries of the `classifications` object, you can add, edit or remove items from the filters.
 
+New deployments should define the shared classification list through
+`classificationCatalog`. Each entry contains the stable classifier output
+`key`, the user-facing `label`, and an `icon` key. Hub API exposes this catalog
+to alerts and filters. When the mounted catalog is unavailable, compatible Hub
+API versions fall back to the legacy `settings` document and then the built-in
+classification list.
+
+```yaml
+classificationCatalog:
+    - key: forklift
+        label: Forklift
+        icon: vehicle
+```
+
 ### Indexing
 
 Following indexes should be executed on the MongoDB database (Kerberos) to improve future performance. Within Kerberos Hub several queries are executed, following indexes will improve the loading times. If not applied you might experience application timeouts or reduced performance when storing lots of data.
