@@ -1,0 +1,51 @@
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.auditDispatcher.enabled -}}
+{{- $destinations := list -}}
+{{- $destinationIDs := dict -}}
+{{- range $index, $destination := .Values.kerberoshub.auditDispatcher.destinations -}}
+  {{- $id := required (printf "id is required for audit destination %d" $index) $destination.id -}}
+  {{- if not (regexMatch "^[a-z][a-z0-9-]{0,62}$" $id) -}}
+    {{- fail (printf "audit destination id %q must match ^[a-z][a-z0-9-]{0,62}$" $id) -}}
+  {{- end -}}
+  {{- if hasKey $destinationIDs $id -}}
+    {{- fail (printf "duplicate audit destination id %q" $id) -}}
+  {{- end -}}
+  {{- $_ := set $destinationIDs $id true -}}
+  {{- $url := required (printf "url is required for audit destination %s" $id) $destination.url -}}
+  {{- $entry := dict
+      "id" $id
+      "type" (default "webhook" $destination.type)
+      "enabled" $destination.enabled
+      "url" $url
+      "timeoutSeconds" (default 10 $destination.timeoutSeconds)
+      "batchSize" (default 100 $destination.batchSize)
+      "maxAttempts" (default 10 $destination.maxAttempts)
+      "startAt" (default "latest" $destination.startAt)
+      "headers" (default dict $destination.headers)
+      "filters" (default dict $destination.filters) -}}
+  {{- $secretRoot := printf "/var/run/secrets/audit-destinations/%s" $id -}}
+  {{- $bearer := default dict $destination.bearerTokenSecret -}}
+  {{- if gt (len $bearer) 0 -}}
+    {{- $secretName := required (printf "bearerTokenSecret.name is required for destination %s" $id) $bearer.name -}}
+    {{- $secretKey := default "token" $bearer.key -}}
+    {{- $_ := set $entry "bearerTokenFile" (printf "%s/bearer-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName $secretKey) | trunc 12)) -}}
+  {{- end -}}
+  {{- $headerFiles := dict -}}
+  {{- range $headerName, $secret := (default dict $destination.secretHeaders) -}}
+    {{- $secretName := required (printf "secretName is required for destination %s header %s" $id $headerName) $secret.secretName -}}
+    {{- $secretKey := required (printf "secretKey is required for destination %s header %s" $id $headerName) $secret.secretKey -}}
+    {{- $_ := set $headerFiles $headerName (printf "%s/header-%s" $secretRoot (sha256sum (printf "%s:%s:%s" $headerName $secretName $secretKey) | trunc 12)) -}}
+  {{- end -}}
+  {{- if gt (len $headerFiles) 0 -}}
+    {{- $_ := set $entry "headerFiles" $headerFiles -}}
+  {{- end -}}
+  {{- $destinations = append $destinations $entry -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hub-audit-dispatcher
+  namespace: {{ .Release.Namespace }}
+data:
+  destinations.json: |
+    {{ dict "version" 1 "destinations" $destinations | toPrettyJson | nindent 4 }}
+{{- end }}
