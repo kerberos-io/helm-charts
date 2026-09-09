@@ -120,6 +120,7 @@ spec:
     metadata:
       annotations:
         checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
+        checksum/classification-catalog: {{ include (print $.Template.BasePath "/configmap-classification-catalog.yaml") . | sha256sum }}
       labels:
         app: hub-api
     spec:
@@ -132,8 +133,10 @@ spec:
       {{- end }}
       {{- $serverTLS := .Values.kerberoshub.api.serverTLS }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
-      {{- if or .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
+        - name: classification-catalog
+          configMap:
+            name: classification-catalog
       {{- with .Values.kerberoshub.api.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -144,7 +147,6 @@ spec:
       {{- end }}
       {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
         {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
-      {{- end }}
       {{- end }}
       {{- with .Values.kerberoshub.api.topologySpreadConstraints }}
       topologySpreadConstraints:
@@ -161,8 +163,10 @@ spec:
           ports:
             - containerPort: 80
               name: http
-          {{- if or .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
+            - name: classification-catalog
+              mountPath: /etc/kerberos/classifications
+              readOnly: true
           {{- with .Values.kerberoshub.api.volumeMounts}}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -174,12 +178,13 @@ spec:
           {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
             {{- include "hub.mongodb.tlsVolumeMount" . | nindent 12 }}
           {{- end }}
-          {{- end }}
           # Mongodb - loaded from ConfigMap
           envFrom:
             - configMapRef:
                 name: mongodb-config
           env:
+            - name: CLASSIFICATION_CATALOG_FILE
+              value: /etc/kerberos/classifications/classifications.json
             - name: ENVIRONMENT
               value: "{{ .Values.environment }}"
             - name: READ_ONLY

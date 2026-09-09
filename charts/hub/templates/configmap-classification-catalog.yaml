@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: classification-catalog
+  namespace: {{ .Release.Namespace }}
+data:
+  classifications.json: |-
+    {{- toPrettyJson .Values.classificationCatalog | nindent 4 }}

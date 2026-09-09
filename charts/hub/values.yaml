@@ -69,6 +69,37 @@ mongodb:
     caFileName: ""
     mountPath: "/etc/mongodb/tls"
     insecureSkipVerify: false
+
+# Classifications supported by Hub filters, alerts, markers, and other
+# downstream processing. Classifier output keys must match these values.
+classificationCatalog:
+  - key: animal
+    label: Animal
+    icon: animal
+  - key: pedestrian
+    label: Pedestrian
+    icon: pedestrian
+  - key: cyclist
+    label: Cyclist
+    icon: cyclist
+  - key: motorbike
+    label: Motorbike
+    icon: motorbike
+  - key: lorry
+    label: Lorry
+    icon: lorry
+  - key: car
+    label: Car
+    icon: car
+  - key: handbag
+    label: Handbag
+    icon: handbag
+  - key: suitcase
+    label: Suitcase
+    icon: suitcase
+  - key: cell phone
+    label: Cell phone
+    icon: cell phone
 ###################################################
 # MQTT configuration (bi-directional communication)
 ###################################################
