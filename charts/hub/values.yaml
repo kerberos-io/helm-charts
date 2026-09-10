@@ -689,9 +689,9 @@ kerberoshub:
         cpu: 10m
   # Dispatches canonical audit_events to one or more external webhook sinks.
   # Credentials are always read from existing Secrets and never stored here.
-  auditDispatcher:
+  audit:
     enabled: false
-    repository: ghcr.io/uug-ai/hub-audit-dispatcher
+    repository: ghcr.io/uug-ai/hub-audit
     pullPolicy: IfNotPresent
     tag: "v0.1.0"
     replicas: 1

@@ -1,0 +1,18 @@
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.audit.enabled .Values.kerberoshub.audit.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hub-audit-servicemonitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    service: hub-audit
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      service: hub-audit
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.kerberoshub.audit.serviceMonitor.interval }}
+      path: /metrics
+{{- end }}

@@ -1,14 +1,14 @@
-{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.auditDispatcher.enabled -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.audit.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hub-audit-dispatcher
+  name: hub-audit
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.kerberoshub.auditDispatcher.replicas }}
+  replicas: {{ .Values.kerberoshub.audit.replicas }}
   selector:
     matchLabels:
-      app: hub-audit-dispatcher
+      app: hub-audit
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -20,9 +20,9 @@ spec:
       annotations:
         checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
       labels:
-        app: hub-audit-dispatcher
+        app: hub-audit
     spec:
-      terminationGracePeriodSeconds: {{ .Values.kerberoshub.auditDispatcher.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.kerberoshub.audit.terminationGracePeriodSeconds }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -34,8 +34,8 @@ spec:
       volumes:
         - name: destinations
           configMap:
-            name: hub-audit-dispatcher
-      {{- range $index, $destination := .Values.kerberoshub.auditDispatcher.destinations }}
+            name: hub-audit
+          {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
       {{- $bearer := default dict $destination.bearerTokenSecret }}
       {{- $secretHeaders := default dict $destination.secretHeaders }}
       {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) }}
@@ -58,21 +58,21 @@ spec:
             {{- end }}
       {{- end }}
       {{- end }}
-      {{- with .Values.kerberoshub.auditDispatcher.volumes }}
+      {{- with .Values.kerberoshub.audit.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
         {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.auditDispatcher.topologySpreadConstraints }}
+      {{- with .Values.kerberoshub.audit.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: hub-audit-dispatcher
-          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.auditDispatcher.repository }}:{{ .Values.kerberoshub.auditDispatcher.tag }}"
-          imagePullPolicy: {{ .Values.kerberoshub.auditDispatcher.pullPolicy }}
-          {{- with .Values.kerberoshub.auditDispatcher.resources }}
+        - name: hub-audit
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.audit.repository }}:{{ .Values.kerberoshub.audit.tag }}"
+          imagePullPolicy: {{ .Values.kerberoshub.audit.pullPolicy }}
+          {{- with .Values.kerberoshub.audit.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -90,9 +90,9 @@ spec:
               port: metrics
           volumeMounts:
             - name: destinations
-              mountPath: /etc/hub-audit-dispatcher
+              mountPath: /etc/hub-audit
               readOnly: true
-          {{- range $index, $destination := .Values.kerberoshub.auditDispatcher.destinations }}
+          {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
           {{- $bearer := default dict $destination.bearerTokenSecret }}
           {{- $secretHeaders := default dict $destination.secretHeaders }}
           {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) }}
@@ -101,7 +101,7 @@ spec:
               readOnly: true
           {{- end }}
           {{- end }}
-          {{- with .Values.kerberoshub.auditDispatcher.volumeMounts }}
+          {{- with .Values.kerberoshub.audit.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
@@ -112,14 +112,14 @@ spec:
                 name: mongodb-config
           env:
             - name: DISPATCH_INTERVAL
-              value: {{ .Values.kerberoshub.auditDispatcher.dispatchInterval | quote }}
+              value: {{ .Values.kerberoshub.audit.dispatchInterval | quote }}
             - name: LEASE_DURATION
-              value: {{ .Values.kerberoshub.auditDispatcher.leaseDuration | quote }}
+              value: {{ .Values.kerberoshub.audit.leaseDuration | quote }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          {{- with .Values.kerberoshub.auditDispatcher.extraEnv }}
+          {{- with .Values.kerberoshub.audit.extraEnv }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.kerberoshub.extraEnv }}
@@ -129,11 +129,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hub-audit-dispatcher
+  name: hub-audit
   namespace: {{ .Release.Namespace }}
   labels:
-    app: hub-audit-dispatcher
-    service: hub-audit-dispatcher
+    app: hub-audit
+    service: hub-audit
 spec:
   ports:
     - name: metrics
@@ -141,5 +141,5 @@ spec:
       targetPort: metrics
       protocol: TCP
   selector:
-    app: hub-audit-dispatcher
+    app: hub-audit
 {{- end }}

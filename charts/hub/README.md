@@ -303,20 +303,20 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.cleanup.auditEventRetentionDays` | Deployment-wide audit-event retention in days, independent of recording plans, inactive-account cleanup, and the optional global pass. Set to `"0"` or a negative value to keep audit events indefinitely. | `"400"` |
 | `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `"10Mi"` |
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
-| `kerberoshub.auditDispatcher.enabled` | Deploy the audit dispatcher that forwards canonical MongoDB `audit_events` to configured destinations. | `false` |
-| `kerberoshub.auditDispatcher.repository` | Audit dispatcher container image repository. | `"ghcr.io/uug-ai/hub-audit-dispatcher"` |
-| `kerberoshub.auditDispatcher.pullPolicy` | Audit dispatcher image pull policy. | `"IfNotPresent"` |
-| `kerberoshub.auditDispatcher.tag` | Audit dispatcher image tag. | `"v0.1.0"` |
-| `kerberoshub.auditDispatcher.replicas` | Number of dispatcher replicas. Per-destination MongoDB leases prevent concurrent delivery. | `1` |
-| `kerberoshub.auditDispatcher.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
-| `kerberoshub.auditDispatcher.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
-| `kerberoshub.auditDispatcher.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
-| `kerberoshub.auditDispatcher.destinations` | Webhook destinations. Each entry supports `id`, `enabled`, `url`, delivery limits, filters, public `headers`, `bearerTokenSecret`, and arbitrary `secretHeaders`. Destination IDs retain independent checkpoints. | `[]` |
-| `kerberoshub.auditDispatcher.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for dispatcher metrics. | `true` |
-| `kerberoshub.auditDispatcher.serviceMonitor.interval` | Dispatcher metrics scrape interval. | `"15s"` |
-| `kerberoshub.auditDispatcher.volumes` | Additional pod volumes, for example a private webhook CA bundle. | `[]` |
-| `kerberoshub.auditDispatcher.volumeMounts` | Additional dispatcher container volume mounts. | `[]` |
-| `kerberoshub.auditDispatcher.extraEnv` | Additional dispatcher environment variables. | `[]` |
+| `kerberoshub.audit.enabled` | Deploy the Hub audit service. Its first responsibility is forwarding canonical MongoDB `audit_events` to configured destinations. | `false` |
+| `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
+| `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
+| `kerberoshub.audit.tag` | Hub audit service image tag. | `"v0.1.0"` |
+| `kerberoshub.audit.replicas` | Number of audit service replicas. Per-destination MongoDB leases prevent concurrent delivery. | `1` |
+| `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
+| `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
+| `kerberoshub.audit.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
+| `kerberoshub.audit.destinations` | Webhook destinations. Each entry supports `id`, `enabled`, `url`, delivery limits, filters, public `headers`, `bearerTokenSecret`, and arbitrary `secretHeaders`. Destination IDs retain independent checkpoints. | `[]` |
+| `kerberoshub.audit.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for audit service metrics. | `true` |
+| `kerberoshub.audit.serviceMonitor.interval` | Audit service metrics scrape interval. | `"15s"` |
+| `kerberoshub.audit.volumes` | Additional pod volumes, for example a private webhook CA bundle. | `[]` |
+| `kerberoshub.audit.volumeMounts` | Additional audit service container volume mounts. | `[]` |
+| `kerberoshub.audit.extraEnv` | Additional audit service environment variables. | `[]` |
 | `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
 | `kerberoshub.monitordevice.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
