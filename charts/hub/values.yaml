@@ -584,6 +584,13 @@ kerberoshub:
           defaultView: "timeline" # Default view for media page 'timeline' or 'grid'
       # Chart feature
       chart:
+        colors:
+          - "#84569f"
+          - "#3ba7ff"
+          - "#ff5c8a"
+          - "#4ad991"
+          - "#ffb84d"
+          - "#ff7043"
         colorChartSelectionFill: "rgba(132, 86, 159, 0.07)"
         colorChartSelectionStroke: "rgba(132, 86, 159, 0.4)"
         colorChartGridStroke: "rgba(0, 106, 255, 0.18)"

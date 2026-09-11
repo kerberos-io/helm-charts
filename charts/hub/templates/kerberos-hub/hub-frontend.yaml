@@ -425,6 +425,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.colorDeviceMarkerBorder }}"
 
         # features > chart
+        - name: CHART_COLORS
+          value: {{ .Values.kerberoshub.frontend.features.chart.colors | toJson | quote }}
         - name: COLOR_CHART_SELECTION_FILL
           value: "{{ .Values.kerberoshub.frontend.features.chart.colorChartSelectionFill }}"
         - name: COLOR_CHART_SELECTION_STROKE

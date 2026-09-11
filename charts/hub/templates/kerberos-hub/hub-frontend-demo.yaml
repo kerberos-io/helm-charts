@@ -193,6 +193,10 @@ spec:
         - name: GOOGLEMAPS_KEY
           value: "{{ .Values.kerberoshub.frontend.googlemaps.apikey }}"
 
+        # features > chart
+        - name: CHART_COLORS
+          value: {{ .Values.kerberoshub.frontend.features.chart.colors | toJson | quote }}
+
         # Zendesk for support
         - name: ZENDESK_URL
           value: "{{ .Values.kerberoshub.frontend.zendesk.url }}"
