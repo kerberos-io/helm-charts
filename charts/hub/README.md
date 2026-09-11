@@ -306,7 +306,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.audit.enabled` | Deploy the Hub audit service. Its first responsibility is forwarding canonical MongoDB `audit_events` to configured destinations. | `false` |
 | `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
 | `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
-| `kerberoshub.audit.tag` | Hub audit service image tag. | `"v0.1.0"` |
+| `kerberoshub.audit.tag` | Hub audit service image tag. | `"v1.0.0"` |
 | `kerberoshub.audit.replicas` | Number of audit service replicas. Per-destination MongoDB leases prevent concurrent delivery. | `1` |
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
