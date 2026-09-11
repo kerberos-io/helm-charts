@@ -687,6 +687,52 @@ kerberoshub:
       requests:
         memory: 10Mi
         cpu: 10m
+  # Dispatches canonical audit_events to one or more external webhook sinks.
+  # Credentials are always read from existing Secrets and never stored here.
+  audit:
+    enabled: false
+    repository: ghcr.io/uug-ai/hub-audit
+    pullPolicy: IfNotPresent
+    tag: "v1.0.0"
+    replicas: 1
+    dispatchInterval: "5s"
+    leaseDuration: "2m"
+    terminationGracePeriodSeconds: 150 # Keep above leaseDuration so an in-flight cycle can finish.
+    topologySpreadConstraints: []
+    volumes: []
+    volumeMounts: []
+    extraEnv: []
+    serviceMonitor:
+      enabled: true
+      interval: 15s
+    destinations: []
+    # - id: primary-siem
+    #   type: webhook
+    #   enabled: true
+    #   url: https://siem.example.com/api/audit
+    #   timeoutSeconds: 10
+    #   batchSize: 100
+    #   maxAttempts: 10
+    #   startAt: latest # latest | beginning, applied only on first creation
+    #   headers:
+    #     X-Source: kerberos-hub
+    #   bearerTokenSecret:
+    #     name: audit-primary-siem
+    #     key: token
+    #   secretHeaders:
+    #     X-Api-Key:
+    #       secretName: audit-primary-siem
+    #       secretKey: api-key
+    #   filters:
+    #     organisationIds: []
+    #     projectIds: []
+    #     actions: []
+    #     categories: []
+    #     outcomes: [] # success | failure
+    # resources:
+    #   requests:
+    #     memory: 32Mi
+    #     cpu: 10m
   # hub-workflows is the standalone, queue-driven workflow engine. It consumes
   # pipeline events and dispatches the stages declared in its workflow
   # definitions, tracking each run in its own `workflow_runs` collection. It shares events

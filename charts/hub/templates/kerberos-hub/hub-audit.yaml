@@ -1,0 +1,145 @@
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.audit.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hub-audit
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.kerberoshub.audit.replicas }}
+  selector:
+    matchLabels:
+      app: hub-audit
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      annotations:
+        checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
+      labels:
+        app: hub-audit
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.kerberoshub.audit.terminationGracePeriodSeconds }}
+      {{- if .Values.kerberoshub.serviceAccount.create }}
+      serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- $mongodbTLS := .Values.mongodb.tls }}
+      volumes:
+        - name: destinations
+          configMap:
+            name: hub-audit
+          {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
+      {{- $bearer := default dict $destination.bearerTokenSecret }}
+      {{- $secretHeaders := default dict $destination.secretHeaders }}
+      {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) }}
+        - name: audit-dest-{{ sha256sum $destination.id | trunc 12 }}
+          projected:
+            sources:
+            {{- if gt (len $bearer) 0 }}
+              - secret:
+                  name: {{ required (printf "bearerTokenSecret.name is required for destination %s" $destination.id) $bearer.name | quote }}
+                  items:
+                    - key: {{ default "token" $bearer.key | quote }}
+                      path: bearer-{{ sha256sum (printf "%s:%s" $bearer.name (default "token" $bearer.key)) | trunc 12 }}
+            {{- end }}
+            {{- range $headerName, $secret := $secretHeaders }}
+              - secret:
+                  name: {{ required (printf "secretName is required for destination %s header %s" $destination.id $headerName) $secret.secretName | quote }}
+                  items:
+                    - key: {{ required (printf "secretKey is required for destination %s header %s" $destination.id $headerName) $secret.secretKey | quote }}
+                      path: header-{{ sha256sum (printf "%s:%s:%s" $headerName $secret.secretName $secret.secretKey) | trunc 12 }}
+            {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.kerberoshub.audit.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
+        {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kerberoshub.audit.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: hub-audit
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.audit.repository }}:{{ .Values.kerberoshub.audit.tag }}"
+          imagePullPolicy: {{ .Values.kerberoshub.audit.pullPolicy }}
+          {{- with .Values.kerberoshub.audit.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: metrics
+              containerPort: 2112
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          volumeMounts:
+            - name: destinations
+              mountPath: /etc/hub-audit
+              readOnly: true
+          {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
+          {{- $bearer := default dict $destination.bearerTokenSecret }}
+          {{- $secretHeaders := default dict $destination.secretHeaders }}
+          {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) }}
+            - name: audit-dest-{{ sha256sum $destination.id | trunc 12 }}
+              mountPath: /var/run/secrets/audit-destinations/{{ $destination.id }}
+              readOnly: true
+          {{- end }}
+          {{- end }}
+          {{- with .Values.kerberoshub.audit.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
+            {{- include "hub.mongodb.tlsVolumeMount" . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
+          env:
+            - name: DISPATCH_INTERVAL
+              value: {{ .Values.kerberoshub.audit.dispatchInterval | quote }}
+            - name: LEASE_DURATION
+              value: {{ .Values.kerberoshub.audit.leaseDuration | quote }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          {{- with .Values.kerberoshub.audit.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.kerberoshub.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub-audit
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: hub-audit
+    service: hub-audit
+spec:
+  ports:
+    - name: metrics
+      port: 2112
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    app: hub-audit
+{{- end }}
