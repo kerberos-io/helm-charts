@@ -548,6 +548,10 @@ kerberoshub:
       # Device page
       devices:
         hideAgent: "false" # Hide the 'add agent' button in the front-end
+        analyticsEnabled: "true" # Enable or disable the Analytics tab on device detail pages 'true' or 'false'
+      # Dashboard page
+      dashboard:
+        sitesFullscreenEnabled: "true" # Enable or disable the fullscreen Sites map 'true' or 'false'
       # Media page
       media:
         filter:

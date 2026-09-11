@@ -314,6 +314,10 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.workflows.enabled }}"
         - name: FEATURE_AUDIT_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.audit.enabled }}"
+        - name: FEATURE_DEVICE_ANALYTICS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.devices.analyticsEnabled }}"
+        - name: FEATURE_DASHBOARD_SITES_FULLSCREEN_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.dashboard.sitesFullscreenEnabled }}"
         - name: FEATURE_ORGANISATIONS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.organisations.enabled }}"
         - name: FEATURE_ORGANISATION_SWITCHER_ENABLED
