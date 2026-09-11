@@ -239,6 +239,8 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.chart.colorChartSelectionStroke` | Stroke color for chart selection regions. | `"rgba(132, 86, 159, 0.4)"` |
 | `kerberoshub.frontend.features.chart.colorChartGridStroke` | Stroke color for chart grid lines. | `"rgba(0, 106, 255, 0.18)"` |
 | `kerberoshub.frontend.features.devices.hideAgent` | Hide agent controls in the devices section of the frontend. | `"false"` |
+| `kerberoshub.frontend.features.devices.analyticsEnabled` | Enable or disable the Analytics tab on device detail pages. | `"true"` |
+| `kerberoshub.frontend.features.dashboard.sitesFullscreenEnabled` | Enable or disable the fullscreen Sites map on the Dashboard. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.date.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.date`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.sites.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sites`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.groups.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.groups`. | `"true"` |
