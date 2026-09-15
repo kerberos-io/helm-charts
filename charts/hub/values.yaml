@@ -578,6 +578,9 @@ kerberoshub:
             enabled: "true" # Enable or disable markers filter in media 'true' or 'false'
           markerOptionsByDate:
             enabled: "false" # Limit marker-related filter options to the selected recording day
+          markerCategoryPriority:
+            enabled: "false" # Order marker options from configured categories before other markers
+            categories: [] # Ordered marker category names, for example ["security", "traffic"]
           events:
             enabled: "true" # Enable or disable events filter in media 'true' or 'false'
           tags:
