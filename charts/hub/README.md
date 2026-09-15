@@ -230,6 +230,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.liveview.hlsEnabled` | Offer HLS as a selectable LIVE transport. | `"true"` |
 | `kerberoshub.frontend.features.liveview.moqEnabled` | Offer MoQ as a selectable LIVE transport. | `"false"` |
 | `kerberoshub.frontend.features.liveview.remoteRecordingEnabled` | Show the manual REC control in live views. | `"true"` |
+| `kerberoshub.frontend.features.liveview.deviceStatusEnabled` | Show device connectivity badges in live view tile headers. | `"true"` |
 | `kerberoshub.frontend.features.liveview.moqRelayUrl` | WebTransport URL of the MoQ relay. | `"https://relay.uug.ai/anon"` |
 | `kerberoshub.frontend.features.liveview.moqBroadcastPrefix` | Prefix used to build MoQ broadcast names. | `"devices"` |
 | `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `"scroll"` |
