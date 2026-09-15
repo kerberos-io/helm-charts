@@ -522,13 +522,15 @@ New deployments should define the shared classification list through
 `key`, the user-facing `label`, and an `icon` key. Hub API exposes this catalog
 to alerts and filters. When the mounted catalog is unavailable, compatible Hub
 API versions fall back to the legacy `settings` document and then the built-in
-classification list.
+classification list. Set `classificationCatalogEnabled: false` to omit the
+ConfigMap and make Hub API use that fallback directly.
 
 ```yaml
+classificationCatalogEnabled: true
 classificationCatalog:
-    - key: forklift
-        label: Forklift
-        icon: vehicle
+  - key: forklift
+    label: Forklift
+    icon: vehicle
 ```
 
 ### Indexing
