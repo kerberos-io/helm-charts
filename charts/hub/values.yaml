@@ -705,11 +705,17 @@ kerberoshub:
     enabled: false
     repository: ghcr.io/uug-ai/hub-audit
     pullPolicy: IfNotPresent
-    tag: "v1.0.0"
+    tag: "v1.0.1"
     replicas: 1
     dispatchInterval: "5s"
     leaseDuration: "2m"
     terminationGracePeriodSeconds: 150 # Keep above leaseDuration so an in-flight cycle can finish.
+    intake:
+      queue: "hub-audit-events"
+      deadletterQueue: "hub-audit-dead-letter"
+      maxRetries: 10
+      prefetchCount: 20
+      persistTimeout: "10s"
     topologySpreadConstraints: []
     volumes: []
     volumeMounts: []

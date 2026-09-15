@@ -1,4 +1,7 @@
-{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.audit.enabled -}}
+{{- if .Values.kerberoshub.audit.enabled -}}
+{{- if ne (upper .Values.queueProvider) "RABBITMQ" -}}
+{{- fail "kerberoshub.audit currently requires queueProvider=RABBITMQ" -}}
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -111,6 +114,24 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            - name: RABBITMQ_HOST
+              value: {{ .Values.rabbitmq.host | quote }}
+            - name: RABBITMQ_EXCHANGE
+              value: {{ .Values.rabbitmq.exchange | quote }}
+            - name: RABBITMQ_USERNAME
+              value: {{ .Values.rabbitmq.username | quote }}
+            - name: RABBITMQ_PASSWORD
+              value: {{ .Values.rabbitmq.password | quote }}
+            - name: AUDIT_QUEUE
+              value: {{ .Values.kerberoshub.audit.intake.queue | quote }}
+            - name: AUDIT_DEADLETTER_QUEUE
+              value: {{ .Values.kerberoshub.audit.intake.deadletterQueue | quote }}
+            - name: AUDIT_MAX_RETRIES
+              value: {{ .Values.kerberoshub.audit.intake.maxRetries | quote }}
+            - name: AUDIT_PREFETCH_COUNT
+              value: {{ .Values.kerberoshub.audit.intake.prefetchCount | quote }}
+            - name: AUDIT_PERSIST_TIMEOUT
+              value: {{ .Values.kerberoshub.audit.intake.persistTimeout | quote }}
             - name: DISPATCH_INTERVAL
               value: {{ .Values.kerberoshub.audit.dispatchInterval | quote }}
             - name: LEASE_DURATION

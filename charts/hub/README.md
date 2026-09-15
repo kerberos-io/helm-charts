@@ -310,11 +310,16 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.audit.enabled` | Deploy the Hub audit service. Its first responsibility is forwarding canonical MongoDB `audit_events` to configured destinations. | `false` |
 | `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
 | `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
-| `kerberoshub.audit.tag` | Hub audit service image tag. | `"v1.0.0"` |
+| `kerberoshub.audit.tag` | Hub audit service image tag. | `"v1.0.1"` |
 | `kerberoshub.audit.replicas` | Number of audit service replicas. Per-destination MongoDB leases prevent concurrent delivery. | `1` |
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
 | `kerberoshub.audit.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
+| `kerberoshub.audit.intake.queue` | Durable RabbitMQ queue receiving normalized audit events from producers. | `"hub-audit-events"` |
+| `kerberoshub.audit.intake.deadletterQueue` | RabbitMQ queue for invalid audit events and exhausted persistence retries. | `"hub-audit-dead-letter"` |
+| `kerberoshub.audit.intake.maxRetries` | Maximum MongoDB persistence retries before an intake event is dead-lettered. | `10` |
+| `kerberoshub.audit.intake.prefetchCount` | Maximum unacknowledged intake events per audit replica. | `20` |
+| `kerberoshub.audit.intake.persistTimeout` | Timeout for one MongoDB persistence attempt. | `"10s"` |
 | `kerberoshub.audit.destinations` | Webhook destinations. Each entry supports `id`, `enabled`, `url`, delivery limits, filters, public `headers`, `bearerTokenSecret`, and arbitrary `secretHeaders`. Destination IDs retain independent checkpoints. | `[]` |
 | `kerberoshub.audit.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for audit service metrics. | `true` |
 | `kerberoshub.audit.serviceMonitor.interval` | Audit service metrics scrape interval. | `"15s"` |
