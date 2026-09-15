@@ -705,7 +705,7 @@ kerberoshub:
     enabled: false
     repository: ghcr.io/uug-ai/hub-audit
     pullPolicy: IfNotPresent
-    tag: "v1.1.0"
+    tag: "v1.0.1"
     replicas: 1
     dispatchInterval: "5s"
     leaseDuration: "2m"
