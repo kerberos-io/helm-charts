@@ -254,6 +254,8 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.media.filter.category.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.category`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.markers.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.markers`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.markerOptionsByDate.enabled` | Limit marker, category, event, and tag filter options to the selected recordings day. | `"false"` |
+| `kerberoshub.frontend.features.media.filter.markerCategoryPriority.enabled` | Order marker filter options from configured categories before other markers. | `"false"` |
+| `kerberoshub.frontend.features.media.filter.markerCategoryPriority.categories` | Ordered exact, case-sensitive marker category names to prioritize. | `[]` |
 | `kerberoshub.frontend.features.media.filter.events.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.events`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.tags.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.tags`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.defaultView` | Default view for the media page: `timeline` or `grid`. | `"timeline"` |
