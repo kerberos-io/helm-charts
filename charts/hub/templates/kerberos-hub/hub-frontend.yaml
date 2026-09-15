@@ -360,6 +360,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.liveview.moqEnabled }}"
         - name: FEATURE_REMOTE_RECORDING_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.liveview.remoteRecordingEnabled }}"
+        - name: FEATURE_LIVE_VIEW_DEVICE_STATUS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.deviceStatusEnabled }}"
         - name: MOQ_RELAY_URL
           value: "{{ .Values.kerberoshub.frontend.features.liveview.moqRelayUrl }}"
         - name: MOQ_BROADCAST_PREFIX
