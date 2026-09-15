@@ -315,8 +315,8 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
 | `kerberoshub.audit.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
-| `kerberoshub.audit.intake.queue` | Durable RabbitMQ queue receiving normalized audit events from producers. | `"hub-audit-events"` |
-| `kerberoshub.audit.intake.deadletterQueue` | RabbitMQ queue for invalid audit events and exhausted persistence retries. | `"hub-audit-dead-letter"` |
+| `kerberoshub.audit.intake.queue` | Durable RabbitMQ queue used by Hub API producers and the audit consumer. | `"hub-audit-events"` |
+| `kerberoshub.audit.intake.deadletterQueue` | RabbitMQ queue used by Hub API and the audit consumer for invalid events and exhausted persistence retries. | `"hub-audit-dead-letter"` |
 | `kerberoshub.audit.intake.maxRetries` | Maximum MongoDB persistence retries before an intake event is dead-lettered. | `10` |
 | `kerberoshub.audit.intake.prefetchCount` | Maximum unacknowledged intake events per audit replica. | `20` |
 | `kerberoshub.audit.intake.persistTimeout` | Timeout for one MongoDB persistence attempt. | `"10s"` |
