@@ -229,7 +229,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.frontend.features.liveview.liveStreamMode` | Transport backing LIVE mode: `webrtc`, `hls`, or `moq`. | `"webrtc"` |
 | `kerberoshub.frontend.features.liveview.hlsEnabled` | Offer HLS as a selectable LIVE transport. | `"true"` |
 | `kerberoshub.frontend.features.liveview.moqEnabled` | Offer MoQ as a selectable LIVE transport. | `"false"` |
-| `kerberoshub.frontend.features.liveview.remoteRecordingEnabled` | Show the manual REC control in live views. | `"true"` |
+| `kerberoshub.frontend.features.liveview.remoteRecordingEnabled` | Show the manual REC control and recording-state overlay in live views. | `"true"` |
 | `kerberoshub.frontend.features.liveview.deviceStatusEnabled` | Show connectivity and recent-motion status in live view tile headers. | `"true"` |
 | `kerberoshub.frontend.features.liveview.moqRelayUrl` | WebTransport URL of the MoQ relay. | `"https://relay.uug.ai/anon"` |
 | `kerberoshub.frontend.features.liveview.moqBroadcastPrefix` | Prefix used to build MoQ broadcast names. | `"devices"` |
