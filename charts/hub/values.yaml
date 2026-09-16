@@ -542,7 +542,7 @@ kerberoshub:
         hlsEnabled: "true" # Offer HLS as a selectable LIVE transport 'true' or 'false'. When 'false' the HLS option is removed from the front-end and streams use webrtc
         moqEnabled: "false" # Offer MoQ as a selectable LIVE transport 'true' or 'false'
         remoteRecordingEnabled: "true" # Show the manual REC control in live views
-        deviceStatusEnabled: "true" # Show device connectivity badges in live view tile headers
+        deviceStatusEnabled: "true" # Show connectivity and recent-motion status in live view tile headers
         moqRelayUrl: "https://relay.uug.ai/anon" # WebTransport URL of the MoQ relay
         moqBroadcastPrefix: "devices" # Prefix used to build devices/<deviceKey>/live.hang broadcast names
         paginationMode: "scroll" # Pagination mode in live view 'scroll', 'numbered' or 'maxStreams'
