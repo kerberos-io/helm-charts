@@ -1,3 +1,4 @@
+{{- if .Values.classificationCatalogEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ metadata:
 data:
   classifications.json: |-
     {{- toPrettyJson .Values.classificationCatalog | nindent 4 }}
+{{- end }}

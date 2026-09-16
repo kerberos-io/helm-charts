@@ -72,6 +72,8 @@ mongodb:
 
 # Classifications supported by Hub filters, alerts, markers, and other
 # downstream processing. Classifier output keys must match these values.
+# Disable this to use the legacy classification catalog stored in MongoDB.
+classificationCatalogEnabled: true
 classificationCatalog:
   - key: animal
     label: Animal
