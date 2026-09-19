@@ -31,6 +31,29 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Sprite Resolution
+
+`kerberospipeline.sprite.width` and `height` set the pixel dimensions of each
+sprite tile, not the complete sheet. Preserve a **16:9 aspect ratio**: for
+example, `240x135` (default), `480x270`, or `640x360`.
+
+Deploy the dimension-aware Hub frontend, Hub API, analysis worker, sprite worker,
+notification worker, and export worker before increasing resolution. Release the updated shared Go
+models and update the Hub API/export worker dependency pins before building those
+services. Newly generated sprites carry their own tile dimensions; existing
+sprites without dimensions retain the `240x135` fallback and need no migration.
+Do not change a global fallback to match the new size. Increasing both dimensions
+by two produces four times as many pixels, increasing decoded memory and usually
+storage and bandwidth. Hover previews retain their display size; fullscreen
+scrubbing uses the higher-resolution tiles.
+
+```yaml
+kerberospipeline:
+    sprite:
+        width: "480"
+        height: "270"
+```
+
 ### Parameters
 
 Below all configuration options and parameters are listed.
@@ -436,8 +459,8 @@ Below all configuration options and parameters are listed.
 | `kerberospipeline.sprite.replicas` | Number of replicas for `kerberospipeline.sprite`. | `5` |
 | `kerberospipeline.sprite.logLevel` | Log verbosity level for `kerberospipeline.sprite`. | `"info"` |
 | `kerberospipeline.sprite.interval` | Configuration value for `kerberospipeline.sprite.interval`. | `"1"` |
-| `kerberospipeline.sprite.width` | Configuration value for `kerberospipeline.sprite.width`. | `"240"` |
-| `kerberospipeline.sprite.height` | Configuration value for `kerberospipeline.sprite.height`. | `"135"` |
+| `kerberospipeline.sprite.width` | Tile width in pixels; preserve width:height = 16:9. | `"240"` |
+| `kerberospipeline.sprite.height` | Tile height in pixels; preserve width:height = 16:9. | `"135"` |
 | `kerberospipeline.sprite.resources.requests.memory` | Memory request for `kerberospipeline.sprite`. | `"512Mi"` |
 | `kerberospipeline.sprite.resources.requests.cpu` | CPU request for `kerberospipeline.sprite`. | `"500m"` |
 | `kerberospipeline.sprite.resources.limits.memory` | Memory limit for `kerberospipeline.sprite`. | `"2Gi"` |
