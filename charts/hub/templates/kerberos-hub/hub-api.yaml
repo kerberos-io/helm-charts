@@ -470,9 +470,9 @@ spec:
             - name: VAULT_SPRITE_INTERVAL
               value: "{{ .Values.kerberosvault.sprite.interval }}"
             - name: VAULT_SPRITE_WIDTH
-              value: "{{ .Values.kerberosvault.sprite.width }}"
+              value: "{{ .Values.kerberospipeline.sprite.width }}"
             - name: VAULT_SPRITE_HEIGHT
-              value: "{{ .Values.kerberosvault.sprite.height }}"
+              value: "{{ .Values.kerberospipeline.sprite.height }}"
             {{- if .Values.kerberoshub.extraEnv }}
             {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
             {{- end }}
