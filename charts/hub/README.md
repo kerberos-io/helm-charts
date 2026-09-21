@@ -39,6 +39,22 @@ When upgrading to `0.144.0`, move `kerberoshub.audit.enabled` and
 `kerberoshub.audit.intake` to `audit.enabled` and `audit.intake`. Consumer
 workload settings remain under `kerberoshub.audit`.
 
+Auditing is globally disabled by default. Setting `audit.enabled: true` deploys
+the audit consumer and enables every supported producer by default. A producer
+is enabled only when both the global switch and its service switch are true; set
+the service's `audit.enabled` value to `false` only when that service must opt
+out.
+
+```yaml
+audit:
+    enabled: true
+
+kerberospipeline:
+    notify:
+        audit:
+            enabled: false # Optional per-service opt-out.
+```
+
 | Name                                        | Description                                                                                                                | Value |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----- |
 | `license` | The license key you received from support@kerberos.io. If not available request one. | `"L/+DAwEBB2xpY2Vuc2UB/4QAAQIBB1BheWxvYWQBCgABCVNpZ25hdHVyZQEKAAAA/gMk/4QB/gEZ/8sQACxnaXRodWIuY29tL3V1Zy1haS9odWItbGljZW5zZS9tb2RlbHMuTGljZW5zZX8DAQEHTGljZW5zZQH/gAABDAECSWQB/4IAAQNLZXkBDAABB0NvbXBhbnkBDAABB0V4cFRpbWUBBAABBERheXMBBAABB0NhbWVyYXMBBAABBVNpdGVzAQQAAQZWYXVsdHMBBAABCk1lZGlhTGltaXQBBAABCVBlcnBldHVhbAECAAEGQWN0aXZlAQIAAQlJcEFkZHJlc3MBDAAAABj/gQEBAQhPYmplY3RJRAH/ggABBgEYAAAy/4AvAQwAAAAAAAAAAAAAAAACDGZyZWUtbGljZW5zZQH81iZi6gH+AtoBEAEUARQDAQAB/gIAfeXxQb6kaPfAgOWeSAE6qEiQviFD6sciNmNfMel1mEL53FeV0GQe4cYBip9wyJag35az8A1yppxSymZD5V4my2FckyN2zmEW4E2sO/v+8eKepiAGYEzrKtfNCLxdWLmrHd0zjYQ3qk+PNfoPyzCOefeulw3aFsqBlzg9wDkF8cRx6tUW0qNTzki6sFGOuLoxS49cWqsftAvZmt+CRWa8u0VArIAjOpywN0RIZCkEYzp5RYF3LSVyWYEyvVhjE19DDnevzpJyCHRsIHTRcpTQkhboeapOdlEz8cx+PaOvxktN8hBWceTAH+nw96FARG7y6Cpjw3xo+NV1xb0tvRXGaGoK77JnErKLhd/haXji98rGvMakDt18WSbQfTVS84+Fw+/gKGsW3uS3fROAaZw1kZj4PgsEPZDvbVkCVyuS0O87UoYqpxH8S4by8cTF3wDP7FwyIRZbEbYjN2wzHSmlADYOBtdsdb1VGm7wvtB85vML9n7ZSlIpJdqfci06mGks102mDyG2LRMhUEvpUW3D/weErIvj2WiAwf6r0EUj+LO8VmAsYkME9da7FXEN6Vg/5f1u485LOpYki332RaDOhDn2eMG9DVb/HnmQSFagX+XXc/QwfsWiehCgKYGk4jQpyklTqoGu8BAt6Sm8CaoH8ngZ3cHLQT5DcZElV36/N/wA"` |
