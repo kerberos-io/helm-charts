@@ -275,6 +275,8 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.9.51"
     replicas: 2
+    audit:
+      enabled: true
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-api Service (e.g. when an
     # external/shared Service is managed elsewhere).
@@ -1066,6 +1068,8 @@ kerberospipeline:
     pullPolicy: IfNotPresent
     tag: "v1.3.18"
     replicas: 1 # Number of pods for the service.
+    audit:
+      enabled: true
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
     notificationExpiryMinutes: "15" # Maximum recording age before notification delivery; 0 disables expiry.
