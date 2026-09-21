@@ -39,8 +39,7 @@ does not enable ordering. Commented examples appear beside the service settings
 in `values.yaml`; replace the empty map rather than adding duplicate YAML keys.
 Annotations render on Deployment `metadata`, not on pod templates or Services.
 
-The optional overlay [examples/argocd-pipeline-sync-waves.yaml](examples/argocd-pipeline-sync-waves.yaml)
-uses the following order, leaving gaps of ten:
+The inline examples use the following order, leaving gaps of ten:
 
 | Wave | `kerberospipeline` keys |
 | --- | --- |
@@ -52,8 +51,9 @@ uses the following order, leaving gaps of ten:
 | 60 | `sequence` |
 | 70 | `monitor` |
 
-Merge these fields into your environment values or add the example as a values
-file. It does not change image tags or enable disabled services such as sprite.
+Enable the annotation in each service's existing environment values section.
+No separate example values file is required. These annotations do not change
+image tags or enable disabled services such as sprite.
 Deploy the compatible analysis bridge before replying workers, and select the
 fixed counting release; waves do not enforce minimum compatible image versions.
 The chart's default image tags are not a compatibility-tested rollout bundle.

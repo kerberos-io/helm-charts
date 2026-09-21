@@ -2,7 +2,14 @@
 set -euo pipefail
 
 CHART_DIR="${1:-charts/hub}"
-EXAMPLE="${CHART_DIR}/examples/argocd-pipeline-sync-waves.yaml"
+
+# Supply per-service test overrides without requiring a separate values file.
+WAVE_FLAGS=()
+for setting in event:10 notify:20 throttler:30 analysis:40 thumbnail:50 sprite:50 dominantColor:50 counting:50 sequence:60 monitor:70; do
+  service="${setting%%:*}"
+  wave="${setting#*:}"
+  WAVE_FLAGS+=(--set-string "kerberospipeline.${service}.deploymentAnnotations.argocd\\.argoproj\\.io/sync-wave=${wave}")
+done
 
 # Only read Deployment metadata, never pod-template or Service annotations.
 extract_waves() {
@@ -50,15 +57,15 @@ for mode in all pipeline; do
     echo "Empty annotations must be omitted" >&2
     exit 1
   fi
-  example_render="$(helm template hub "$CHART_DIR" -f "$EXAMPLE" --set "mode=$mode" --set kerberospipeline.sprite.enabled=true)"
-  assert_waves "$example_render" "$expected"
-  echo "OK ($mode): defaults opt out; example assigns all ten Deployment waves"
+  configured_render="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set "mode=$mode" --set kerberospipeline.sprite.enabled=true)"
+  assert_waves "$configured_render" "$expected"
+  echo "OK ($mode): defaults opt out; per-service values assign all ten Deployment waves"
 done
 
-disabled_sprite="$(helm template hub "$CHART_DIR" -f "$EXAMPLE" --set mode=pipeline)"
+disabled_sprite="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set mode=pipeline)"
 assert_waves "$disabled_sprite" "$(printf '%s\n' "$expected" | grep -v '^pipe-sprite ')"
 
-ui_render="$(helm template hub "$CHART_DIR" -f "$EXAMPLE" --set mode=ui --set kerberospipeline.sprite.enabled=true)"
+ui_render="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set mode=ui --set kerberospipeline.sprite.enabled=true)"
 assert_waves "$ui_render" ""
 
 # Exercise zero/negative strings and an unrelated annotation on the same map.
