@@ -1,4 +1,4 @@
-{{- if .Values.kerberoshub.audit.enabled -}}
+{{- if .Values.audit.enabled -}}
 {{- if ne (upper .Values.queueProvider) "RABBITMQ" -}}
 {{- fail "kerberoshub.audit currently requires queueProvider=RABBITMQ" -}}
 {{- end -}}
@@ -123,15 +123,15 @@ spec:
             - name: RABBITMQ_PASSWORD
               value: {{ .Values.rabbitmq.password | quote }}
             - name: AUDIT_QUEUE
-              value: {{ .Values.kerberoshub.audit.intake.queue | quote }}
+              value: {{ .Values.audit.intake.queue | quote }}
             - name: AUDIT_DEADLETTER_QUEUE
-              value: {{ .Values.kerberoshub.audit.intake.deadletterQueue | quote }}
+              value: {{ .Values.audit.intake.deadletterQueue | quote }}
             - name: AUDIT_MAX_RETRIES
-              value: {{ .Values.kerberoshub.audit.intake.maxRetries | quote }}
+              value: {{ .Values.audit.intake.maxRetries | quote }}
             - name: AUDIT_PREFETCH_COUNT
-              value: {{ .Values.kerberoshub.audit.intake.prefetchCount | quote }}
+              value: {{ .Values.audit.intake.prefetchCount | quote }}
             - name: AUDIT_PERSIST_TIMEOUT
-              value: {{ .Values.kerberoshub.audit.intake.persistTimeout | quote }}
+              value: {{ .Values.audit.intake.persistTimeout | quote }}
             - name: DISPATCH_INTERVAL
               value: {{ .Values.kerberoshub.audit.dispatchInterval | quote }}
             - name: LEASE_DURATION

@@ -135,6 +135,16 @@ rabbitmq:
   username: "yourusername"
   password: "yourpassword"
   exchange: ""
+# Shared audit transport. The master switch controls the consumer and all
+# producers; individual services may opt out through their own audit setting.
+audit:
+  enabled: false
+  intake:
+    queue: "hub-audit-events"
+    deadletterQueue: "hub-audit-dead-letter"
+    maxRetries: 10
+    prefetchCount: 20
+    persistTimeout: "10s"
 # If you already have a Kafka cluster you might use this instead of RabbitMQ.
 kafka:
   broker: "kafka1.yourdomain.com:9094" # can be internal dns name or external
@@ -710,7 +720,6 @@ kerberoshub:
   # Dispatches canonical audit_events to one or more external webhook sinks.
   # Credentials are always read from existing Secrets and never stored here.
   audit:
-    enabled: false
     repository: ghcr.io/uug-ai/hub-audit
     pullPolicy: IfNotPresent
     tag: "v1.0.1"
@@ -718,12 +727,6 @@ kerberoshub:
     dispatchInterval: "5s"
     leaseDuration: "2m"
     terminationGracePeriodSeconds: 150 # Keep above leaseDuration so an in-flight cycle can finish.
-    intake:
-      queue: "hub-audit-events"
-      deadletterQueue: "hub-audit-dead-letter"
-      maxRetries: 10
-      prefetchCount: 20
-      persistTimeout: "10s"
     topologySpreadConstraints: []
     volumes: []
     volumeMounts: []

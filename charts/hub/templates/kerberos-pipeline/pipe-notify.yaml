@@ -94,12 +94,12 @@ spec:
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
         - name: AUDIT_ENABLED
-          value: {{ and .Values.kerberoshub.audit.enabled .Values.kerberospipeline.notify.audit.enabled | quote }}
-        {{- if and .Values.kerberoshub.audit.enabled .Values.kerberospipeline.notify.audit.enabled }}
+          value: {{ and .Values.audit.enabled .Values.kerberospipeline.notify.audit.enabled | quote }}
+        {{- if and .Values.audit.enabled .Values.kerberospipeline.notify.audit.enabled }}
         - name: AUDIT_QUEUE
-          value: {{ .Values.kerberoshub.audit.intake.queue | quote }}
+          value: {{ .Values.audit.intake.queue | quote }}
         - name: AUDIT_DEADLETTER_QUEUE
-          value: {{ .Values.kerberoshub.audit.intake.deadletterQueue | quote }}
+          value: {{ .Values.audit.intake.deadletterQueue | quote }}
         {{- end }}
 
         # Kerberos Vault
