@@ -374,6 +374,8 @@ spec:
               value: "{{ .Values.rabbitmq.username }}"
             - name: RABBITMQ_PASSWORD
               value: "{{ .Values.rabbitmq.password }}"
+            - name: AUDIT_ENABLED
+              value: {{ .Values.kerberoshub.audit.enabled | quote }}
             {{- if .Values.kerberoshub.audit.enabled }}
             - name: AUDIT_QUEUE
               value: {{ .Values.kerberoshub.audit.intake.queue | quote }}
