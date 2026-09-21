@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-counting
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.counting.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.counting.replicas }}
   selector:

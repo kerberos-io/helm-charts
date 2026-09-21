@@ -996,6 +996,10 @@ kerberoshub:
 # The pipeline is a critical component of Kerberos Hub, and should be monitored closely.
 kerberospipeline:
   event:
+    deploymentAnnotations: {}
+    # Example (opt-in Argo CD ordering):
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "10"
     repository: ghcr.io/uug-ai/hub-pipeline-event
     pullPolicy: IfNotPresent
     tag: "v1.3.1"
@@ -1015,6 +1019,9 @@ kerberospipeline:
         cpu: 10m
   monitor:
     repository: ghcr.io/uug-ai/hub-pipeline-monitor
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "70"
     pullPolicy: IfNotPresent
     tag: "v1.3.13"
     replicas: 1 # Number of pods for the service.
@@ -1033,6 +1040,9 @@ kerberospipeline:
         cpu: 10m
   sequence:
     repository: ghcr.io/uug-ai/hub-pipeline-sequence
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "60"
     pullPolicy: IfNotPresent
     tag: "v1.6.26"
     replicas: 1 # Number of pods for the service.
@@ -1050,6 +1060,9 @@ kerberospipeline:
         cpu: 10m
   throttler:
     repository: uugai/hub-pipeline-throttler
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "30"
     pullPolicy: IfNotPresent
     tag: "v1.2.1"
     replicas: 1 # Number of pods for the service.
@@ -1068,6 +1081,9 @@ kerberospipeline:
         cpu: 10m
   notify:
     repository: ghcr.io/uug-ai/hub-pipeline-notification
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "20"
     pullPolicy: IfNotPresent
     tag: "v1.3.18"
     replicas: 1 # Number of pods for the service.
@@ -1108,6 +1124,9 @@ kerberospipeline:
         #      claimName: custom-layout-claim
   analysis:
     repository: ghcr.io/uug-ai/hub-pipeline-analysis
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "40"
     pullPolicy: IfNotPresent
     tag: "v1.8.5"
     replicas: 1 # Number of pods for the service.
@@ -1126,6 +1145,9 @@ kerberospipeline:
         cpu: 10m
   dominantColor:
     repository: ghcr.io/uug-ai/hub-pipeline-dominantcolors
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "50"
     pullPolicy: IfNotPresent
     tag: "v2.0.3"
     replicas: 3 # Number of pods for the service.
@@ -1147,6 +1169,9 @@ kerberospipeline:
         cpu: 1000m
   thumbnail:
     repository: ghcr.io/uug-ai/hub-pipeline-thumbnail
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "50"
     pullPolicy: IfNotPresent
     tag: "v1.3.10"
     replicas: 2 # Number of pods for the service.
@@ -1173,6 +1198,9 @@ kerberospipeline:
         cpu: 1000m
   counting:
     repository: uugai/hub-pipeline-counting
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "50"
     pullPolicy: IfNotPresent
     tag: "v2.0.0"
     replicas: 1 # Number of pods for the service.
@@ -1191,6 +1219,9 @@ kerberospipeline:
         cpu: 10m
   sprite:
     enabled: false # Enable or disable the sprite generation 'true' or 'false
+    deploymentAnnotations: {}
+    # deploymentAnnotations:
+    #   argocd.argoproj.io/sync-wave: "50"
     repository: ghcr.io/uug-ai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
     tag: "v1.1.16"

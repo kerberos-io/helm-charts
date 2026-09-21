@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-sequence
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.sequence.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.sequence.replicas }}
   selector:

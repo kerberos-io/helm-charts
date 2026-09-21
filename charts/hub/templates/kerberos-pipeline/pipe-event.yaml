@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-event
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.event.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.event.replicas }}
   selector:

@@ -31,6 +31,43 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Optional Argo CD pipeline ordering
+
+Each listed pipeline service accepts `deploymentAnnotations` in its existing
+values section. The default is `{}`, so installing or upgrading the chart alone
+does not enable ordering. Commented examples appear beside the service settings
+in `values.yaml`; replace the empty map rather than adding duplicate YAML keys.
+Annotations render on Deployment `metadata`, not on pod templates or Services.
+
+The inline examples use the following order, leaving gaps of ten:
+
+| Wave | `kerberospipeline` keys |
+| --- | --- |
+| 10 | `event` |
+| 20 | `notify` |
+| 30 | `throttler` |
+| 40 | `analysis` |
+| 50 | `thumbnail`, `sprite`, `dominantColor`, `counting` |
+| 60 | `sequence` |
+| 70 | `monitor` |
+
+Enable the annotation in each service's existing environment values section.
+No separate example values file is required. These annotations do not change
+image tags or enable disabled services such as sprite.
+Deploy the compatible analysis bridge before replying workers, and select the
+fixed counting release; waves do not enforce minimum compatible image versions.
+The chart's default image tags are not a compatibility-tested rollout bundle.
+
+Argo CD applies lower waves first and waits for sync/health before proceeding
+within the same Application. Unannotated resources remain at wave zero. A
+single-service image update does not restart earlier services, but an unhealthy
+earlier wave can block it. Separate Applications and external classifier/workflow
+workers require their own coordination. Helm itself does not enforce these waves.
+
+Waves are not a substitute for message compatibility, readiness checks, or
+stopping old RabbitMQ consumers. This example does not add health probes or
+change the Deployment rolling-update strategy.
+
 ### Parameters
 
 Below all configuration options and parameters are listed.
