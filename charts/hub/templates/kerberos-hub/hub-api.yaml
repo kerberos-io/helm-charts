@@ -468,7 +468,7 @@ spec:
             - name: VAULT_SPRITE_SECRET_KEY
               value: "{{ .Values.kerberosvault.sprite.secretKey }}"
             - name: VAULT_SPRITE_INTERVAL
-              value: "{{ .Values.kerberosvault.sprite.interval }}"
+              value: "{{ .Values.kerberospipeline.sprite.interval }}"
             - name: VAULT_SPRITE_WIDTH
               value: "{{ .Values.kerberospipeline.sprite.width }}"
             - name: VAULT_SPRITE_HEIGHT
