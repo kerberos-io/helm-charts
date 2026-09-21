@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-analysis
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.analysis.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.analysis.replicas }}
   selector:

@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-throttler
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.throttler.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.throttler.replicas }}
   selector:
