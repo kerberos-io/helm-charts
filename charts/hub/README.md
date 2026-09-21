@@ -310,7 +310,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.cleanup.auditEventRetentionDays` | Deployment-wide audit-event retention in days, independent of recording plans, inactive-account cleanup, and the optional global pass. Set to `"0"` or a negative value to keep audit events indefinitely. | `"400"` |
 | `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `"10Mi"` |
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
-| `kerberoshub.audit.enabled` | Deploy the Hub audit service and enable Hub API audit publishing through `AUDIT_ENABLED`. | `false` |
+| `kerberoshub.audit.enabled` | Deploy the Hub audit service and enable audit publishing from Hub API and the notification worker through `AUDIT_ENABLED`. | `false` |
 | `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
 | `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
 | `kerberoshub.audit.tag` | Hub audit service image tag. | `"v1.0.1"` |
