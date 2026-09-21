@@ -374,11 +374,13 @@ spec:
               value: "{{ .Values.rabbitmq.username }}"
             - name: RABBITMQ_PASSWORD
               value: "{{ .Values.rabbitmq.password }}"
-            {{- if .Values.kerberoshub.audit.enabled }}
+            - name: AUDIT_ENABLED
+              value: {{ and .Values.audit.enabled .Values.kerberoshub.api.audit.enabled | quote }}
+            {{- if and .Values.audit.enabled .Values.kerberoshub.api.audit.enabled }}
             - name: AUDIT_QUEUE
-              value: {{ .Values.kerberoshub.audit.intake.queue | quote }}
+              value: {{ .Values.audit.intake.queue | quote }}
             - name: AUDIT_DEADLETTER_QUEUE
-              value: {{ .Values.kerberoshub.audit.intake.deadletterQueue | quote }}
+              value: {{ .Values.audit.intake.deadletterQueue | quote }}
             {{- end }}
 
             # Slack notifications (this will send events/logs to a specific channel).

@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-dominantcolor
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.dominantColor.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.dominantColor.replicas }}
   selector:

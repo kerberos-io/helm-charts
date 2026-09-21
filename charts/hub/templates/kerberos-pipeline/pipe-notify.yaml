@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-notify
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.notify.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.notify.replicas }}
   selector:
@@ -93,6 +97,14 @@ spec:
           value: "{{ .Values.rabbitmq.username }}"
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
+        - name: AUDIT_ENABLED
+          value: {{ and .Values.audit.enabled .Values.kerberospipeline.notify.audit.enabled | quote }}
+        {{- if and .Values.audit.enabled .Values.kerberospipeline.notify.audit.enabled }}
+        - name: AUDIT_QUEUE
+          value: {{ .Values.audit.intake.queue | quote }}
+        - name: AUDIT_DEADLETTER_QUEUE
+          value: {{ .Values.audit.intake.deadletterQueue | quote }}
+        {{- end }}
 
         # Kerberos Vault
         - name: STORAGE_URI

@@ -1,4 +1,4 @@
-{{- if .Values.kerberoshub.audit.enabled -}}
+{{- if .Values.audit.enabled -}}
 {{- $destinations := list -}}
 {{- $destinationIDs := dict -}}
 {{- range $index, $destination := .Values.kerberoshub.audit.destinations -}}

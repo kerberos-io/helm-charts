@@ -54,9 +54,66 @@ kerberospipeline:
         height: "270"
 ```
 
+### Optional Argo CD pipeline ordering
+
+Each listed pipeline service accepts `deploymentAnnotations` in its existing
+values section. The default is `{}`, so installing or upgrading the chart alone
+does not enable ordering. Commented examples appear beside the service settings
+in `values.yaml`; replace the empty map rather than adding duplicate YAML keys.
+Annotations render on Deployment `metadata`, not on pod templates or Services.
+
+The inline examples use the following order, leaving gaps of ten:
+
+| Wave | `kerberospipeline` keys |
+| --- | --- |
+| 10 | `event` |
+| 20 | `notify` |
+| 30 | `throttler` |
+| 40 | `analysis` |
+| 50 | `thumbnail`, `sprite`, `dominantColor`, `counting` |
+| 60 | `sequence` |
+| 70 | `monitor` |
+
+Enable the annotation in each service's existing environment values section.
+No separate example values file is required. These annotations do not change
+image tags or enable disabled services such as sprite.
+Deploy the compatible analysis bridge before replying workers, and select the
+fixed counting release; waves do not enforce minimum compatible image versions.
+The chart's default image tags are not a compatibility-tested rollout bundle.
+
+Argo CD applies lower waves first and waits for sync/health before proceeding
+within the same Application. Unannotated resources remain at wave zero. A
+single-service image update does not restart earlier services, but an unhealthy
+earlier wave can block it. Separate Applications and external classifier/workflow
+workers require their own coordination. Helm itself does not enforce these waves.
+
+Waves are not a substitute for message compatibility, readiness checks, or
+stopping old RabbitMQ consumers. This example does not add health probes or
+change the Deployment rolling-update strategy.
+
 ### Parameters
 
 Below all configuration options and parameters are listed.
+
+When upgrading to `0.144.0`, move `kerberoshub.audit.enabled` and
+`kerberoshub.audit.intake` to `audit.enabled` and `audit.intake`. Consumer
+workload settings remain under `kerberoshub.audit`.
+
+Auditing is globally disabled by default. Setting `audit.enabled: true` deploys
+the audit consumer and enables every supported producer by default. A producer
+is enabled only when both the global switch and its service switch are true; set
+the service's `audit.enabled` value to `false` only when that service must opt
+out.
+
+```yaml
+audit:
+    enabled: true
+
+kerberospipeline:
+    notify:
+        audit:
+            enabled: false # Optional per-service opt-out.
+```
 
 | Name                                        | Description                                                                                                                | Value |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----- |
@@ -94,6 +151,12 @@ Below all configuration options and parameters are listed.
 | `rabbitmq.username` | RabbitMQ username, by default `'yourusername'` | `"yourusername"` |
 | `rabbitmq.password` | RabbitMQ password, by default `'yourpassword'` | `"yourpassword"` |
 | `rabbitmq.exchange` | RabbitMQ exchange, by default `''` | `""` |
+| `audit.enabled` | Deploy the Hub audit consumer and act as the master switch for all audit producers. | `false` |
+| `audit.intake.queue` | Shared durable RabbitMQ queue used by audit producers and the audit consumer. | `"hub-audit-events"` |
+| `audit.intake.deadletterQueue` | Shared RabbitMQ queue used for invalid audit events and exhausted persistence retries. | `"hub-audit-dead-letter"` |
+| `audit.intake.maxRetries` | Maximum MongoDB persistence retries before an intake event is dead-lettered. | `10` |
+| `audit.intake.prefetchCount` | Maximum unacknowledged intake events per audit replica. | `20` |
+| `audit.intake.persistTimeout` | Timeout for one MongoDB persistence attempt. | `"10s"` |
 | `kafka.broker` | Kafka brokers, by default `'kafka1.yourdomain.com:9094,kafka2.yourdomain.com:9094'` | `"kafka1.yourdomain.com:9094"` |
 | `kafka.username` | Kafka username, by default `'yourusername'` | `"yourusername"` |
 | `kafka.password` | Kafka password, by default `'yourpassword'` | `"yourpassword"` |
@@ -144,6 +207,7 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.9.8"` |
 | `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `2` |
+| `kerberoshub.api.audit.enabled` | Enable audit publishing from Hub API when global auditing is enabled. | `true` |
 | `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `"info"` |
 | `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `"this-is-a-secret-please-change-to-random-string"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
@@ -333,7 +397,6 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.cleanup.auditEventRetentionDays` | Deployment-wide audit-event retention in days, independent of recording plans, inactive-account cleanup, and the optional global pass. Set to `"0"` or a negative value to keep audit events indefinitely. | `"400"` |
 | `kerberoshub.cleanup.resources.requests.memory` | Memory request for `kerberoshub.cleanup`. | `"10Mi"` |
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
-| `kerberoshub.audit.enabled` | Deploy the Hub audit service. Its first responsibility is forwarding canonical MongoDB `audit_events` to configured destinations. | `false` |
 | `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
 | `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
 | `kerberoshub.audit.tag` | Hub audit service image tag. | `"v1.0.1"` |
@@ -341,11 +404,6 @@ Below all configuration options and parameters are listed.
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
 | `kerberoshub.audit.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
-| `kerberoshub.audit.intake.queue` | Durable RabbitMQ queue used by Hub API producers and the audit consumer. | `"hub-audit-events"` |
-| `kerberoshub.audit.intake.deadletterQueue` | RabbitMQ queue used by Hub API and the audit consumer for invalid events and exhausted persistence retries. | `"hub-audit-dead-letter"` |
-| `kerberoshub.audit.intake.maxRetries` | Maximum MongoDB persistence retries before an intake event is dead-lettered. | `10` |
-| `kerberoshub.audit.intake.prefetchCount` | Maximum unacknowledged intake events per audit replica. | `20` |
-| `kerberoshub.audit.intake.persistTimeout` | Timeout for one MongoDB persistence attempt. | `"10s"` |
 | `kerberoshub.audit.destinations` | Webhook destinations. Each entry supports `id`, `enabled`, `url`, delivery limits, filters, public `headers`, `bearerTokenSecret`, and arbitrary `secretHeaders`. Destination IDs retain independent checkpoints. | `[]` |
 | `kerberoshub.audit.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for audit service metrics. | `true` |
 | `kerberoshub.audit.serviceMonitor.interval` | Audit service metrics scrape interval. | `"15s"` |
@@ -406,6 +464,7 @@ Below all configuration options and parameters are listed.
 | `kerberospipeline.notify.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.9"` |
 | `kerberospipeline.notify.replicas` | Number of replicas for `kerberospipeline.notify`. | `1` |
+| `kerberospipeline.notify.audit.enabled` | Enable audit publishing from the notification worker when global auditing is enabled. | `true` |
 | `kerberospipeline.notify.logLevel` | Log verbosity level for `kerberospipeline.notify`. | `"info"` |
 | `kerberospipeline.notify.notificationExpiryMinutes` | Maximum recording age in minutes before notification delivery. Set to `"0"` to disable the freshness cutoff. | `"15"` |
 | `kerberospipeline.notify.resources.requests.memory` | Memory request for `kerberospipeline.notify`. | `"10Mi"` |

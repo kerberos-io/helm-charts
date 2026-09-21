@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-sprite
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.sprite.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.sprite.replicas }}
   selector:

@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: pipe-monitor
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.kerberospipeline.monitor.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.kerberospipeline.monitor.replicas }}
   selector:
