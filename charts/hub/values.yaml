@@ -1236,8 +1236,10 @@ kerberospipeline:
     #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn,
     interval: "1" # Number of secondes between each thumbnail in the sprite
-    width: "240" # Should not be changed for the moment (hard coded in UI)
-    height: "135" # Should not be changed for the moment (hard coded in UI)
+    # Tile size in pixels. Preserve width:height = 16:9 (e.g. 240x135, 480x270, 640x360).
+    # Deploy dimension-aware sprite/analysis workers, Hub API and frontend before increasing.
+    width: "240"
+    height: "135"
     resources:
       requests:
         memory: 512Mi
