@@ -99,6 +99,32 @@ spec:
         - name: RABBITMQ_PASSWORD
           value: "{{ $root.Values.rabbitmq.password }}"
 
+        {{- with $svc.rabbitmqDestination }}
+        # Outbound RabbitMQ destination for an integration boundary worker. Empty
+        # host/credential values inherit the Hub broker while remaining a separate
+        # connection and queue from the stage's inbound dispatch queue.
+        - name: FORWARDER_RABBITMQ_HOST
+          value: {{ default $root.Values.rabbitmq.host .host | quote }}
+        - name: FORWARDER_RABBITMQ_USERNAME
+          value: {{ default $root.Values.rabbitmq.username .username | quote }}
+        - name: FORWARDER_RABBITMQ_PASSWORD
+          value: {{ default $root.Values.rabbitmq.password .password | quote }}
+        - name: FORWARDER_RABBITMQ_QUEUE
+          value: {{ required (printf "kerberoshub.services.%s.rabbitmqDestination.queue is required" $name) .queue | quote }}
+        - name: FORWARDER_RABBITMQ_VHOST
+          value: {{ default "/" .virtualHost | quote }}
+        - name: FORWARDER_RABBITMQ_TLS
+          value: {{ default false .tls | quote }}
+        - name: FORWARDER_RABBITMQ_TLS_INSECURE_SKIP_VERIFY
+          value: {{ default false .tlsInsecureSkipVerify | quote }}
+        - name: FORWARDER_RABBITMQ_TLS_CA_CERT_FILE
+          value: {{ default "" .tlsCACertFile | quote }}
+        - name: FORWARDER_RABBITMQ_DECLARE_QUEUE
+          value: {{ .declareQueue | quote }}
+        - name: FORWARDER_RABBITMQ_DEADLETTER_QUEUE
+          value: {{ default (printf "%s.forwarder-dead-letter" .queue) .deadletterQueue | quote }}
+        {{- end }}
+
         # Kerberos Vault — global storage credentials this stage uses to fetch
         # the media it operates on.
         - name: KERBEROS_STORAGE_URI

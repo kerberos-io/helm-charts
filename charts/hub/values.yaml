@@ -814,7 +814,18 @@ kerberoshub:
     # Every stage `operation` must have a deployed worker under
     # kerberoshub.services.<operation> (deploy the objecttracking / loitering
     # workers below).
-    definitions: {}
+    definitions:
+      # Minimal opt-in workflow for validating the external forwarding boundary.
+      # Enable this definition together with services.forwarder and the workflows
+      # master switch. Every automatically opened run is sent to the configured
+      # FORWARDER_RABBITMQ_QUEUE and completes after confirmed delivery.
+      forwarder-test:
+        enabled: false
+        triggers:
+          - type: automatic
+        stages:
+          - operation: forwarder
+            dispatch: always
     #tracking-workflow:
     #  enabled: true
     #  triggers:
@@ -864,6 +875,41 @@ kerberoshub:
       resources:
         requests:
           memory: 10Mi
+          cpu: 10m
+    # hub-workflows-forwarder — an opt-in boundary worker for testing external
+    # workflow delivery. It consumes WorkflowRun dispatches from `queue`, strips
+    # internal credentials, and publishes a versioned invocation to the separate
+    # RabbitMQ destination below.
+    forwarder:
+      enabled: false
+      repository: ghcr.io/uug-ai/hub-workflows-forwarder
+      pullPolicy: IfNotPresent
+      tag: "v0.1.0"
+      replicas: 1
+      topologySpreadConstraints: []
+      logLevel: "info"
+      queue: "kcloud-forwarder-queue.fifo"
+      rabbitmqDestination:
+        # Empty connection values inherit the chart's top-level rabbitmq values,
+        # which makes the first test use a second queue on the existing broker.
+        host: ""
+        username: ""
+        password: ""
+        queue: "hub-workflows-forwarder-test"
+        virtualHost: "/"
+        tls: false
+        tlsInsecureSkipVerify: false
+        tlsCACertFile: ""
+        # The test queue and its dead-letter queue are durable quorum queues.
+        # Set this false when both queues are provisioned outside this service.
+        declareQueue: true
+        deadletterQueue: "hub-workflows-forwarder-test.forwarder-dead-letter"
+      env:
+        FORWARDER_OPERATION: "forwarder"
+        FORWARDER_MAX_RETRIES: "5"
+      resources:
+        requests:
+          memory: 16Mi
           cpu: 10m
           # ---------------------------------------------------------------------
           # EXAMPLE custom stage worker (commented out) — hub-loitering.
