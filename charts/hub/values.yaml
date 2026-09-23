@@ -906,6 +906,8 @@ kerberoshub:
         deadletterQueue: "hub-workflows-forwarder-test.forwarder-dead-letter"
       env:
         FORWARDER_OPERATION: "forwarder"
+        FORWARDER_COMPLETION_MODE: "callback"
+        FORWARDER_CALLBACK_BASE_URL: "https://api.cloud.kerberos.io"
         FORWARDER_MAX_RETRIES: "5"
       resources:
         requests:
