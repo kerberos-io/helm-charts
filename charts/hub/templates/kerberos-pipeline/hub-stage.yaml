@@ -125,6 +125,11 @@ spec:
           value: {{ default (printf "%s.forwarder-dead-letter" .queue) .deadletterQueue | quote }}
         {{- end }}
 
+        {{- with $svc.callback }}
+        - name: FORWARDER_CALLBACK_BASE_URL
+          value: {{ default (printf "%s://%s" $root.Values.kerberoshub.api.schema $root.Values.kerberoshub.api.url) .baseURL | quote }}
+        {{- end }}
+
         # Kerberos Vault — global storage credentials this stage uses to fetch
         # the media it operates on.
         - name: KERBEROS_STORAGE_URI
