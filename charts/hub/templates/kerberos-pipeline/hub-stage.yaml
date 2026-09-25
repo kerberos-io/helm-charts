@@ -18,6 +18,9 @@
   redaction) declares its destination provider with the named field
   services.<name>.storageProvider, rendered as KERBEROS_STORAGE_PROVIDER; a
   read-only stage omits it and gets no provider env.
+
+  Worker-specific settings go in services.<name>.env (plain values) and
+  services.<name>.secretEnv (references to keys in an existing Secret).
 */ -}}
 {{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) .Values.kerberoshub.workflows.enabled -}}
 {{- $root := . -}}
@@ -122,6 +125,19 @@ spec:
         {{- range $key, $value := $svc.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
+        {{- end }}        {{- with $svc.secretEnv }}
+
+        # Per-stage secret env. Each key under services.<name>.secretEnv maps a
+        # container env var to a key in an existing Kubernetes Secret
+        # ({name, key}), so credentials such as a model API key stay out of
+        # values. The Secret must exist in the release namespace.
+        {{- range $key, $ref := . }}
+        - name: {{ $key }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ required (printf "kerberoshub.services.%s.secretEnv.%s.name is required" $name $key) $ref.name | quote }}
+              key: {{ required (printf "kerberoshub.services.%s.secretEnv.%s.key is required" $name $key) $ref.key | quote }}
+        {{- end }}
         {{- end }}
 ---
 apiVersion: v1
