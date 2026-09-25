@@ -828,6 +828,14 @@ kerberoshub:
     #      # (no condition ⇒ gate on the upstream's presence, not a value).
     #      needs:
     #        - operation: objecttracking
+    #vlm-workflow:
+    #  # Describe every recording with the hub-vlm worker (services.vlm below).
+    #  enabled: true
+    #  triggers:
+    #    - type: automatic
+    #  stages:
+    #    - operation: vlm
+    #      dispatch: always
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed
@@ -838,6 +846,8 @@ kerberoshub:
   #     Deploying a worker (services.<name>.enabled) is independent from routing
   #     to it (a workflows.definitions stage of the same operation) — it runs only
   #     when its own `enabled` is true AND the workflows engine is enabled.
+  #     Worker-specific settings go in `env` (plain key/values) and `secretEnv`
+  #     (ENV_NAME: {name, key} of an existing Secret, for credentials).
   services:
     # hub-workflows — the workflows engine (orchestrator). Consumes the engine
     # queue, evaluates the boot-loaded config workflows (WORKFLOW_DEFINITIONS)
@@ -916,6 +926,43 @@ kerberoshub:
           #    requests:
           #      memory: 10Mi
           #      cpu: 10m
+          # ---------------------------------------------------------------------
+          # EXAMPLE stage worker (commented out) — hub-vlm (operation "vlm").
+          #
+          # Samples frames from the recording, describes them with an Azure OpenAI
+          # vision model and emits timeline markers plus a recording description.
+          # Route to it with a workflows.definitions stage `- operation: vlm`.
+          # See https://github.com/uug-ai/hub-vlm for every VLM_* / AZURE_OPENAI_*
+          # setting. Create the API key Secret first, e.g.
+          #   kubectl create secret generic hub-vlm-azure-openai \
+          #     --from-literal=apiKey=<azure-openai-api-key>
+          #vlm:
+          #  # Deploy the hub-vlm worker.
+          #  enabled: true
+          #  repository: ghcr.io/uug-ai/hub-vlm
+          #  pullPolicy: IfNotPresent
+          #  tag: "v1.0.0"
+          #  replicas: 1 # Number of pods for the worker.
+          #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+          #  logLevel: "info" # possible values: trace, debug, info, warn, error
+          #  # Queue this worker consumes dispatched messages from (VLM_QUEUE).
+          #  queue: "hub-vlm-queue"
+          #  env:
+          #    AZURE_OPENAI_ENDPOINT: "https://<resource>.openai.azure.com"
+          #    AZURE_OPENAI_DEPLOYMENT: "gpt-5.4-mini" # Name of the model deployment.
+          #    AZURE_OPENAI_REASONING_EFFORT: "low" # none | minimal | low | medium | high
+          #    VLM_MAX_FRAMES: "8" # Frames sampled per recording (max 32).
+          #    VLM_FRAME_WIDTH: "1024" # Maximum frame width in pixels.
+          #    VLM_SET_DESCRIPTION: "true" # Write the summary to the recording description.
+          #  # The API key is read from an existing Secret, never from values.
+          #  secretEnv:
+          #    AZURE_OPENAI_API_KEY:
+          #      name: hub-vlm-azure-openai
+          #      key: apiKey
+          #  resources:
+          #    requests:
+          #      memory: 128Mi
+          #      cpu: 100m
   monitordevice:
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent
