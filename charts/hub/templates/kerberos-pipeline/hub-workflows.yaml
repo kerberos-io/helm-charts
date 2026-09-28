@@ -81,6 +81,9 @@ spec:
           value: "{{ .Values.kerberoshub.services.workflows.queue }}"
         - name: WORKFLOW_DEFINITIONS
           value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
+        # Operation→queue catalog so DB workflows reach workers no config workflow references.
+        - name: WORKFLOW_STAGE_QUEUES
+          value: {{ include "kerberoshub.workflows.stageQueues" . | quote }}
 
         # RabbitMQ settings
         - name: RABBITMQ_HOST
