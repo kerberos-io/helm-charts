@@ -836,6 +836,16 @@ kerberoshub:
     #  stages:
     #    - operation: vlm
     #      dispatch: always
+    # Stages tenants may place on the workflow editor canvas next to the device
+    # node. Each entry needs a deployed worker (services.<operation>.queue);
+    # entries without one are hidden. Empty means the editor offers no stages.
+    editorStages: []
+    #  - operation: vlm
+    #    name: Describe recording
+    #    description: Summarise the recording with a vision language model.
+    #  - operation: forwarder
+    #    name: Forward to my system
+    #    description: Send the result to the external destination configured for the forwarder.
   # Workflow deployments. Every workflows-subsystem Deployment's image/tag/
   # replicas/resources/queue lives here in a single, uniform shape:
   #   - `workflows` is the engine itself (the orchestrator). It is deployed

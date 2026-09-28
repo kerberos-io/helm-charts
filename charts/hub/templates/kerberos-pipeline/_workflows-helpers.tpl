@@ -59,8 +59,10 @@ use this only to embed the same queue on a synthetic stage.
 {{- define "kerberoshub.workflows.stageQueues" -}}
 {{- $queues := dict -}}
 {{- range $operation, $service := (.Values.kerberoshub.services | default dict) -}}
+{{- if ne $operation "workflows" -}}
 {{- with $service.queue -}}
 {{- $_ := set $queues $operation . -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- $queues | toJson -}}

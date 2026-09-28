@@ -313,6 +313,9 @@ spec:
             # workflows (for example the one-stage case redaction modal flow).
             - name: WORKFLOW_STAGE_QUEUES
               value: {{ include "kerberoshub.workflows.stageQueues" . | quote }}
+            # Stages tenants may place in the workflow editor (see workflows.editorStages).
+            - name: WORKFLOW_EDITOR_STAGES
+              value: {{ .Values.kerberoshub.workflows.editorStages | default list | toJson | quote }}
 
             # Stripe for billing
             - name: STRIPE_KEY
