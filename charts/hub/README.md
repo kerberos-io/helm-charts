@@ -91,6 +91,66 @@ Waves are not a substitute for message compatibility, readiness checks, or
 stopping old RabbitMQ consumers. This example does not add health probes or
 change the Deployment rolling-update strategy.
 
+### Deployment-global workflow identity
+
+`kerberoshub.workflows.definitions` is a map keyed by workflow name. Enabled
+definitions are passed as the same `WORKFLOW_DEFINITIONS` JSON to Hub API and the
+workflow engine. These deployment-global, ops-managed workflows are read-only
+through the API; manage them in Helm values. There are no per-project on/off
+overrides.
+
+Supply an explicit, stable `id` for new definitions:
+
+```yaml
+kerberoshub:
+    workflows:
+        enabled: true
+        definitions:
+            tracking-workflow:
+                id: "ec7e72bc4cedd32018e1f92a"
+                enabled: true
+                stages:
+                    - operation: objecttracking
+```
+
+The worker and its queue must also be configured under
+`kerberoshub.services.objecttracking`. As before, omitted triggers default to a
+single automatic trigger and disabled definitions are not sent to either service.
+
+Identity is separate from mutable names and content versions. Keep an explicit
+ID unchanged when renaming or revising a workflow; changing it creates an
+independent identity, not a new version of the existing workflow. The chart
+does not generate random IDs or introduce a version field.
+
+For compatibility, an omitted `id` remains omitted from the rendered JSON. The
+backend derives the effective ID as the first 24 hexadecimal characters of
+SHA-256 over the **exact map key**, including case and whitespace. Before
+renaming an existing ID-less definition, pin its current derived ID explicitly
+to preserve references and history. For example:
+
+```sh
+printf '%s' 'tracking-workflow' | sha256sum | cut -c1-24
+# ec7e72bc4cedd32018e1f92a
+```
+
+The chart ships an empty definitions map. Its commented `tracking-workflow` and
+`vlm-workflow` examples pin their current name-derived IDs for compatibility.
+
+Explicit IDs must be quoted, non-zero, 24-character hexadecimal strings (Mongo
+ObjectIDs); uppercase is accepted and normalized to lowercase in JSON. Empty,
+null, all-zero, malformed, and non-string IDs fail Helm rendering with the
+definition name and validation requirement. Duplicate effective IDs also fail,
+naming both definitions and the colliding ID, whether explicit/explicit or
+explicit/name-derived. Validation includes disabled definitions and runs even
+when the engine is disabled, so identities remain reserved. Omit the `id` key
+entirely to use the legacy fallback; invalid explicit IDs never fall back.
+
+Run the render-only queue and identity checks (Helm and Python 3 required):
+
+```sh
+./scripts/check-workflows-queue-consistency.sh charts/hub
+```
+
 ### Parameters
 
 Below all configuration options and parameters are listed.

@@ -791,6 +791,13 @@ kerberoshub:
     # more config workflows.
     #
     # Each definition:
+    #   id        optional stable identity: quote a non-zero 24-hex Mongo ObjectID.
+    #             Recommended for new definitions; rendered lowercase. Omit for
+    #             legacy SHA256(exact map key)[:24] identity. Pin that old ID before
+    #             renaming an existing workflow; changing id creates a new identity.
+    #             Invalid IDs and duplicate effective IDs fail Helm rendering,
+    #             including disabled definitions. Name/version are not identity
+    #             when id is explicit. No per-project on/off overrides are provided.
     #   enabled   include this workflow (soft-delete toggle).
     #   source    always rendered as "config" (a Helm-defined, ops-managed,
     #             deployment-global workflow — read-only in the API).
@@ -815,27 +822,31 @@ kerberoshub:
     # kerberoshub.services.<operation> (deploy the objecttracking / loitering
     # workers below).
     definitions: {}
-    #tracking-workflow:
-    #  enabled: true
-    #  triggers:
-    #    - type: automatic
-    #  stages:
-    #    - operation: objecttracking
-    #      dispatch: always
-    #    - operation: loitering
-    #      dispatch: conditional
-    #      # Fire loitering once objecttracking has resolved — a readiness join
-    #      # (no condition ⇒ gate on the upstream's presence, not a value).
-    #      needs:
-    #        - operation: objecttracking
-    #vlm-workflow:
-    #  # Describe every recording with the hub-vlm worker (services.vlm below).
-    #  enabled: true
-    #  triggers:
-    #    - type: automatic
-    #  stages:
-    #    - operation: vlm
-    #      dispatch: always
+    # Replace {} above with the indented examples below to enable them. Their IDs
+    # are pinned to the existing name-derived identities; do not regenerate them.
+    #  tracking-workflow:
+    #    id: "ec7e72bc4cedd32018e1f92a"
+    #    enabled: true
+    #    triggers:
+    #      - type: automatic
+    #    stages:
+    #      - operation: objecttracking
+    #        dispatch: always
+    #      - operation: loitering
+    #        dispatch: conditional
+    #        # Fire loitering once objecttracking has resolved — a readiness join
+    #        # (no condition ⇒ gate on the upstream's presence, not a value).
+    #        needs:
+    #          - operation: objecttracking
+    #  vlm-workflow:
+    #    id: "9e3666c56854b2befdb1f645"
+    #    # Describe every recording with the hub-vlm worker (services.vlm below).
+    #    enabled: true
+    #    triggers:
+    #      - type: automatic
+    #    stages:
+    #      - operation: vlm
+    #        dispatch: always
     # Stages tenants may place on the workflow editor canvas next to the device
     # node. Each entry needs a deployed worker (services.<operation>.queue);
     # entries without one are hidden. Empty means the editor offers no stages.
