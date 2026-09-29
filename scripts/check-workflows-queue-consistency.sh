@@ -12,6 +12,9 @@
 # producer and consumer silently drift onto different queue names and messages
 # pile up with no consumer. This check fails the build before that can ship.
 #
+# Also checks workflow identity validation and identical WORKFLOW_DEFINITIONS
+# in the API and engine. Requires Helm and Python 3 (standard library only).
+#
 # Usage: scripts/check-workflows-queue-consistency.sh [chart-dir]
 #        (chart-dir defaults to charts/hub, relative to the repo root)
 
@@ -94,4 +97,137 @@ probe_out="$(helm template hub "${CHART_DIR}" "${RENDER_FLAGS[@]}" \
 mapfile -t probe_vals < <(printf '%s\n' "${probe_out}" | extract_workflows_queue)
 assert_all_equal "${PROBE}" "override probe" "${probe_vals[@]}" || exit 1
 
-echo "All WORKFLOWS_QUEUE consistency checks passed."
+assert_definitions() {
+  local rendered="$1" expected="$2" label="$3"
+  printf '%s\n' "$rendered" | python3 -c '
+import json
+import re
+import sys
+
+expected = json.loads(sys.argv[1])
+label = sys.argv[2]
+actual = {}
+for document in sys.stdin.read().split("\n---"):
+    match = re.search(r"(?m)^[ \t]*- name: WORKFLOW_DEFINITIONS[ \t]*\n[ \t]*value: (\".*\")$", document)
+    if not match:
+        continue
+    name = re.search(r"(?m)^metadata:\n  name: (.+)$", document).group(1)
+    assert name not in actual, f"duplicate WORKFLOW_DEFINITIONS in {name}"
+    actual[name] = json.loads(json.loads(match.group(1)))
+assert set(actual) == {"hub-api", "hub-workflows"}, f"unexpected deployments: {set(actual)}"
+for name, definitions in actual.items():
+    assert definitions == expected, f"{label}: {name}: {definitions!r} != {expected!r}"
+print(f"OK ({label}): API and engine receive identical expected workflow definitions")
+' "$expected" "$label"
+}
+
+assert_render_failure() {
+  local label="$1" expected="$2"; shift 2
+  local output
+  if output="$(helm template hub "${CHART_DIR}" "${RENDER_FLAGS[@]}" "$@" 2>&1)"; then
+    echo "FAIL (${label}): Helm accepted invalid workflow identities" >&2
+    return 1
+  fi
+  if [[ "$output" != *"$expected"* ]]; then
+    printf 'FAIL (%s): expected diagnostic %s, got:\n%s\n' "$label" "$expected" "$output" >&2
+    return 1
+  fi
+  echo "OK (${label}): Helm rejected invalid workflow identities"
+}
+
+assert_definitions "$default_out" '[]' "empty defaults"
+
+echo "== Checking explicit and legacy workflow definitions =="
+identity_fixture='{
+  " Legacy Workflow ": {
+    "enabled": true,
+    "stages": [
+      {"operation": "queuecheck"},
+      {"operation": "external", "dispatch": "conditional", "needs": [{"operation": "queuecheck"}], "needsMode": "all"}
+    ]
+  },
+  "explicit": {
+    "id": "ABCDEF0123456789ABCDEF01",
+    "enabled": true,
+    "triggers": [{"type": "automatic", "devices": [{"key": "fixture-device"}]}],
+    "stages": []
+  },
+  "disabled": {"id": "abcdef0123456789abcdef02", "enabled": false}
+}'
+expected_definitions='[
+  {
+    "name": " Legacy Workflow ", "enabled": true, "source": "config",
+    "triggers": [{"type": "automatic"}],
+    "stages": [
+      {"operation": "queuecheck", "dispatch": "always", "queue": "queuecheck-fixture-queue"},
+      {"operation": "external", "dispatch": "conditional", "needs": [{"operation": "queuecheck"}], "needsMode": "all"}
+    ]
+  },
+  {
+    "name": "explicit", "id": "abcdef0123456789abcdef01", "enabled": true, "source": "config",
+    "triggers": [{"type": "automatic", "devices": [{"key": "fixture-device"}]}],
+    "stages": []
+  }
+]'
+identity_out="$(helm template hub "${CHART_DIR}" "${RENDER_FLAGS[@]}" \
+  --set-json "kerberoshub.workflows.definitions=$identity_fixture")"
+assert_definitions "$identity_out" "$expected_definitions" "explicit ID lowercase; legacy omission; disabled filtering; triggers and stages unchanged"
+
+renamed_out="$(helm template hub "${CHART_DIR}" "${RENDER_FLAGS[@]}" \
+  --set-json "kerberoshub.workflows.definitions=${identity_fixture/\"explicit\"/\"renamed\"}")"
+assert_definitions "$renamed_out" "${expected_definitions/\"explicit\"/\"renamed\"}" "explicit identity survives rename"
+
+legacy_only_out="$(helm template hub "${CHART_DIR}" "${RENDER_FLAGS[@]}" \
+  --set-json 'kerberoshub.workflows.definitions={"legacy":{"enabled":true}}')"
+assert_definitions "$legacy_only_out" \
+  '[{"name":"legacy","enabled":true,"source":"config","triggers":[{"type":"automatic"}],"stages":[]}]' \
+  "legacy-only values unchanged"
+
+echo "== Checking bundled example identity pins =="
+python3 - "$CHART_DIR/values.yaml" <<'PY'
+import hashlib
+import pathlib
+import re
+import sys
+
+values = pathlib.Path(sys.argv[1]).read_text()
+for name in ("tracking-workflow", "vlm-workflow"):
+    expected = hashlib.sha256(name.encode()).hexdigest()[:24]
+    match = re.search(r"(?m)^    #  " + re.escape(name) + r':\n    #    id: "([^"]+)"$', values)
+    assert match and match.group(1) == expected, f"{name} must preserve its name-derived ID {expected}"
+    print(f"OK ({name}): example pins existing identity {expected}")
+PY
+
+echo "== Rejecting invalid explicit IDs, including disabled definitions =="
+invalid_ids=('""' 'null' '"000000000000000000000000"' '0' '123' 'true' 'false' '[]' '{}'
+  '"abc"' '"zzzzzzzzzzzzzzzzzzzzzzzz"' '"abcdef0123456789abcdef01 "'
+  '"abcdef0123456789abcdef0"' '"abcdef0123456789abcdef012"')
+invalid_diagnostic='kerberoshub.workflows.definitions["invalid"].id must be a non-zero 24-character hexadecimal string'
+for enabled in true false; do
+  for id in "${invalid_ids[@]}"; do
+    assert_render_failure "id=$id, enabled=$enabled" "$invalid_diagnostic" \
+      --set-json "kerberoshub.workflows.definitions={\"invalid\":{\"enabled\":$enabled,\"id\":$id}}"
+  done
+done
+
+# Validation must not depend on either consumer being rendered.
+for mode in all ui pipeline; do
+  assert_render_failure "engine disabled, mode=$mode" "$invalid_diagnostic" \
+    --set "mode=$mode" --set kerberoshub.workflows.enabled=false \
+    --set-json 'kerberoshub.workflows.definitions={"invalid":{"enabled":false,"id":null}}'
+done
+
+echo "== Rejecting duplicate effective IDs =="
+legacy_id="$(python3 -c 'import hashlib; print(hashlib.sha256(b" Legacy Workflow ").hexdigest()[:24])')"
+for first_enabled in true false; do
+  for second_enabled in true false; do
+    assert_render_failure "explicit collision, enabled=$first_enabled/$second_enabled" \
+      'duplicate effective workflow id "abcdef0123456789abcdef01" for "first" and "second"' \
+      --set-json "kerberoshub.workflows.definitions={\"first\":{\"enabled\":$first_enabled,\"id\":\"ABCDEF0123456789ABCDEF01\"},\"second\":{\"enabled\":$second_enabled,\"id\":\"abcdef0123456789abcdef01\"}}"
+    assert_render_failure "explicit/derived collision, enabled=$first_enabled/$second_enabled" \
+      "duplicate effective workflow id \"$legacy_id\" for \" Legacy Workflow \" and \"explicit\"" \
+      --set-json "kerberoshub.workflows.definitions={\" Legacy Workflow \":{\"enabled\":$first_enabled},\"explicit\":{\"enabled\":$second_enabled,\"id\":\"${legacy_id^^}\"}}"
+  done
+done
+
+echo "All workflow queue and identity checks passed."

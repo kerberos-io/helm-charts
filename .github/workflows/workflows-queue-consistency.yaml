@@ -1,9 +1,10 @@
-name: Workflows queue consistency
+name: Workflows queue and identity consistency
 
 # Fails the build if the analysis producer, the workflows engine and the stage
 # workers would render onto different WORKFLOWS_QUEUE names — the silent
 # producer/consumer queue-name drift that leaves runs piling up with no
-# consumer. Pure `helm template` render check, no cluster required.
+# consumer. Also validates stable workflow identities and API/engine definition
+# consistency. Pure `helm template` render checks, no cluster required.
 on:
   workflow_dispatch:
   pull_request:
@@ -27,5 +28,5 @@ jobs:
         with:
           version: v3.16.2
 
-      - name: Check WORKFLOWS_QUEUE consistency
+      - name: Check workflow queue and identity consistency
         run: ./scripts/check-workflows-queue-consistency.sh charts/hub
