@@ -145,12 +145,6 @@ explicit/name-derived. Validation includes disabled definitions and runs even
 when the engine is disabled, so identities remain reserved. Omit the `id` key
 entirely to use the legacy fallback; invalid explicit IDs never fall back.
 
-Run the render-only queue and identity checks (Helm and Python 3 required):
-
-```sh
-./scripts/check-workflows-queue-consistency.sh charts/hub
-```
-
 ### Parameters
 
 Below all configuration options and parameters are listed.
