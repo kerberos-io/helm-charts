@@ -266,6 +266,11 @@ kerberospipeline:
 | `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `"this-is-a-secret-please-change-to-random-string"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
+| `kerberoshub.api.disableAgentHeartbeat` | Temporarily stop serving the polled `GET /devices` list (hub-api returns `204` without database reads). Devices still load once through `/session/bootstrap`; online/offline status stops refreshing. | `false` |
+| `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
+| `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |
+| `kerberoshub.api.mediaProxy.key` | Key used to encrypt proxied media URLs (`openssl rand -hex 32`). Defaults to a key derived from `jwtSecret`. | `""` |
+| `kerberoshub.api.mediaProxy.ttl` | Lifetime of proxied media URLs (Go duration, max `168h`). | `"24h"` |
 | `kerberoshub.api.resources.requests.memory` | Memory request for `kerberoshub.api`. | `"100Mi"` |
 | `kerberoshub.api.resources.requests.cpu` | CPU request for `kerberoshub.api`. | `"250m"` |
 | `kerberoshub.api.resources.limits.memory` | Memory limit for `kerberoshub.api`. | `"100Mi"` |
@@ -391,6 +396,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.media.filter.devices.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.devices`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.objectDetection.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.objectDetection`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.star.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.star`. | `"true"` |
+| `kerberoshub.frontend.features.media.filter.analysis.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.analysis`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.region.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.region`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.sort.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sort`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.category.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.category`. | `"true"` |
