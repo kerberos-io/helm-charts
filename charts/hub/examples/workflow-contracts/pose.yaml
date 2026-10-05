@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=../../schemas/workflow-contract.schema.json
+# Hypothetical custom worker output; not an installed stage or universal pose schema.
+schemaVersion: 1
+stage: pose
+contractVersion: 1
+fields:
+  - id: keypoint
+    label: Keypoint
+    path: people.*.keypoints.*.name
+    type: string
+    operators: [in]
+    choices:
+      file: ../catalogs/pose-keypoints.json
+  - id: posture
+    label: Posture
+    path: people.*.posture
+    type: string
+    operators: [in]
+    choices:
+      values: [standing, sitting, lying]
+  - id: confidence
+    label: Keypoint confidence
+    path: people.*.keypoints.*.confidence
+    type: number
+    operators: [gt, gte, lt, lte]
+    minimum: 0
+    maximum: 1

@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../schemas/workflow-contract.schema.json
+# Metadata only; no current API loader consumes this contract.
+schemaVersion: 1
+stage: start
+contractVersion: 1
+
+# Paths refer to the safe initial context, not the full event or credentials.
+fields:
+  - id: device
+    label: Device
+    path: device.deviceKey
+    type: string
+    operators: [eq, in]
+    choices:
+      source: project.devices
+  - id: sites
+    label: Sites
+    path: device.siteIds.*
+    type: string
+    operators: [in]
+    choices:
+      source: project.sites
+  - id: groups
+    label: Groups
+    path: device.groupIds.*
+    type: string
+    operators: [in]
+    choices:
+      source: project.groups
+  - id: classifications
+    label: Initial classifications
+    path: inputs.classify.details.*.classified
+    type: string
+    operators: [in]
+    optional: true
+    choices:
+      file: ../catalogs/classifications.json
+
+# Existing structured controls, not fields produced by Start.
+controls:
+  - id: weeklySchedule
+    label: Weekly schedule
+  - id: conditions
+    label: Advanced conditions

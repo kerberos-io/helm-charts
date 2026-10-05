@@ -1,0 +1,9 @@
+# Packaging only; does not activate contract loading or deploy a pose worker.
+workflowConfiguration:
+  enabled: true
+  existingConfigMap: custom-workflow-configuration
+  items:
+    - key: pose.yaml
+      path: workflow-contracts/pose.yaml
+    - key: pose-keypoints.json
+      path: catalogs/pose-keypoints.json

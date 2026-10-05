@@ -659,8 +659,10 @@ As mentioned during the Post installation step, you'll import some `.nosql` file
 
 Within the Kerberos Hub front-end you'll see the option to filter through classifications. This filtered is stored in the `settings` collection. By changing the entries of the `classifications` object, you can add, edit or remove items from the filters.
 
-New deployments should define the shared classification list through
-`classificationCatalog`. Each entry contains the stable classifier output
+The default shared classification list lives in
+[`configuration/catalogs/classifications.json`](configuration/catalogs/classifications.json),
+independently of workflow contracts. Set `classificationCatalog` to a list to
+replace those defaults; unset or `null` uses the bundled file. Each entry contains the stable classifier output
 `key`, the user-facing `label`, and an `icon` key. Hub API exposes this catalog
 to alerts and filters. When the mounted catalog is unavailable, compatible Hub
 API versions fall back to the legacy `settings` document and then the built-in
@@ -674,6 +676,160 @@ classificationCatalog:
     label: Forklift
     icon: vehicle
 ```
+
+### Workflow condition contracts (preparatory)
+
+This chart defines the initial v1 metadata format and opt-in file packaging.
+**Hub API and the frontend do not yet consume these contracts.** Enabling the
+packaging only mounts files; it neither enables an editor feature nor registers
+workers or changes execution. No new loader environment variable is set.
+
+The earlier device-bound workflow configurations were development fixtures, not
+a recommended deployment model. Charts describe capabilities, not selected
+devices, project IDs, concrete workflow edges, or user-authored conditions.
+Device filtering is optional. Saved selections belong in individual workflows.
+
+The configuration is split into independent shared catalogs and their consumers:
+
+```text
+configuration/
+  catalogs/
+    classifications.json
+  workflow-contracts/
+    start.yaml
+schemas/
+  catalog.schema.json
+  workflow-contract.schema.json
+```
+
+- [Start contract](configuration/workflow-contracts/start.yaml): current device,
+  site, group and initial-classification presets, plus schedule/condition controls.
+- [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
+  worker output, demonstrating a file catalog, inline choices and a numeric field.
+  This example does not deploy a worker or claim a universal pose-model format.
+- [Contract schema](schemas/workflow-contract.schema.json): format, source-name
+  documentation and YAML editor completion via the `$schema` comment.
+- [Catalog schema](schemas/catalog.schema.json): shared JSON lists of
+  `{key, label, icon?}`, compatible with the current classification file format.
+
+Each contract defines a `stage` type, a `schemaVersion`, a `contractVersion` and
+its own `fields`. A field declares `id`, `label`, `path`, scalar `type` and
+supported `operators`; `optional`, numeric bounds and `choices` are optional.
+The `type` describes each wildcard-selected candidate, not the containing array.
+IDs must be unique within a contract. Increment `contractVersion` when changing
+its meaning/output shape; the future runtime must bind workflows to compatible
+versions rather than silently reinterpreting saved conditions.
+
+#### Choice origins
+
+Use exactly one of these, or omit `choices` for typed user input:
+
+```yaml
+choices:
+  source: project.devices
+```
+
+```yaml
+choices:
+  file: ../catalogs/classifications.json
+```
+
+```yaml
+choices:
+  values: [standing, sitting, lying]
+```
+
+The supported system-resource vocabulary for v1 is:
+
+| `choices.source` | User-facing labels | Stored comparison values |
+| --- | --- | --- |
+| `project.devices` | Authorized device names | Stable device keys |
+| `project.sites` | Authorized site names | Stable site IDs |
+| `project.groups` | Authorized group names | Stable group IDs |
+
+These are direct built-in API resolver identifiers, not database paths or
+deployer-selected authorization scopes. They still require implementation in the
+future loader. Resolvers must reuse existing project/resource authorization and
+legacy-owner compatibility; metadata cannot grant access.
+
+File references resolve relative to the mounted contract, within the shared
+configuration root. V1 uses `../catalogs/<name>.json`; no URLs, arbitrary file
+access or recursive catalog references. Catalog keys are stable strings, with
+labels for display; inline lists may contain strings, numbers or booleans matching
+the field type. Catalogs are reusable by filters, alerts and other consumers,
+not owned by workflows. A library may ship a catalog without implementing an API.
+
+#### Bundled and external packaging
+
+`workflowConfiguration.enabled` defaults to `false`. With it enabled and
+`existingConfigMap` empty, the chart mounts the bundled Start contract and the
+**effective** classification list under `/etc/kerberos/configuration`, using
+the directory layout above. The projected volume reuses the existing
+classification ConfigMap, including `classificationCatalog` overrides, rather
+than storing another copy in the workflow ConfigMap.
+
+The existing classification ConfigMap, mount path, `CLASSIFICATION_CATALOG_FILE`
+and API endpoint remain unchanged. `classificationCatalog: []` remains an
+explicit empty list, not a request for chart defaults; the current API falls
+back to settings/built-in values for an empty/invalid catalog. The preparatory
+bundle does not reproduce that runtime fallback and must not be treated as a
+resolved API catalog. The future loader must share the existing classification
+loader. Bundled packaging requires `classificationCatalogEnabled: true`; an
+external bundle can be packaged independently.
+
+Custom deployers can maintain files in their own repository, create a ConfigMap
+in the release namespace, and use the unchanged chart. For example, from this
+chart directory (replace the namespace):
+
+```sh
+kubectl -n YOUR_NAMESPACE create configmap custom-workflow-configuration \
+  --from-file=pose.yaml=examples/workflow-contracts/pose.yaml \
+  --from-file=pose-keypoints.json=examples/catalogs/pose-keypoints.json
+```
+
+Then use [the example values overlay](examples/workflow-configuration-values.yaml).
+`existingConfigMap` replaces the entire bundled configuration, not individual
+files. Include Start and its referenced catalog too if the custom bundle needs
+them. `items` explicitly maps ConfigMap keys to files in `workflow-contracts/`
+and `catalogs/`; files are mounted read-only, without `subPath`. ConfigMap size
+limits apply. Mount the same shared catalog ConfigMap into other consumers as
+needed; do not maintain divergent copies of its contents.
+
+The chart checks item paths and required options but cannot inspect an existing
+ConfigMap at render time. Validate its files against the supplied schemas.
+Bundled changes update the pod checksum. For externally managed ConfigMaps,
+manage rollout/reload in your deployment tooling; the chart cannot checksum
+their contents.
+
+Helm validates `values.schema.json`, **not** arbitrary bundled YAML/JSON files.
+The standalone schemas support authoring validation. The future loader must
+also reject duplicate field/catalog keys, unknown sources, missing/invalid
+files, incompatible bounds, unsupported contract versions and unsafe paths.
+Validation failures must be surfaced, not silently replaced with empty choices.
+
+#### Runtime semantics to preserve when wiring consumers
+
+Start paths refer to sanitized initial context, never credentials. Other stage
+paths are relative to that node instance's result. Conditions may use Start and
+all available upstream node outputs, not just the immediately preceding stage;
+future or unrelated parallel results are unavailable. Node instances remain
+distinct. Conditional branches and missing outputs require explicit availability
+handling, even for a field not marked `optional`.
+
+Wildcard positive comparisons match any candidate. Independent wildcard
+conditions can match different objects; use the existing same-element `anyMatch`
+semantics when predicates must match one detection/keypoint.
+
+The existing Start controls retain their behavior: alternatives within a scope
+category are OR; populated device/site/group/classification categories, schedule
+and advanced conditions are AND. `conditionMode` only combines the advanced
+conditions. Empty selections/schedules are unrestricted. Multiple automatic
+Start edges are OR for creating one run; only matched entry branches dispatch.
+Manual runs are created before continuation conditions are evaluated, and their
+automatic trigger settings remain dormant. Schedule uses recording time and an
+IANA timezone, not an invented output field. The advanced editor retains logical
+groups and existence checks; neither scheduling nor logical groups are scalar
+output fields. Contracts do not redefine the saved workflow wire format.
 
 ### Indexing
 
