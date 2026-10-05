@@ -9,6 +9,27 @@
       "required": ["enabled", "existingConfigMap", "items"],
       "properties": {
         "enabled": {"type": "boolean"},
+        "extraConfigMaps": {
+          "type": "array",
+          "description": "Add files without replacing the bundled Start contract or classification catalog.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "items"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 253,
+                "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+              },
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"$ref": "#/definitions/configMapItem"}
+              }
+            }
+          }
+        },
         "existingConfigMap": {
           "type": "string",
           "maxLength": 253,
@@ -16,16 +37,19 @@
         },
         "items": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["key", "path"],
-            "properties": {
-              "key": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
-              "path": {"type": "string", "pattern": "^(workflow-contracts|catalogs)/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.(yaml|json)$"}
-            }
-          }
+          "items": {"$ref": "#/definitions/configMapItem"}
         }
+      }
+    }
+  },
+  "definitions": {
+    "configMapItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "path"],
+      "properties": {
+        "key": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
+        "path": {"type": "string", "pattern": "^(workflow-contracts|catalogs)/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.(yaml|json)$"}
       }
     }
   }

@@ -777,29 +777,46 @@ resolved API catalog. The future loader must share the existing classification
 loader. Bundled packaging requires `classificationCatalogEnabled: true`; an
 external bundle can be packaged independently.
 
-Custom deployers can maintain files in their own repository, create a ConfigMap
-in the release namespace, and use the unchanged chart. For example, from this
+Custom deployers can maintain files in their own repository, create ConfigMaps
+in the release namespace, and use the unchanged chart. `extraConfigMaps` adds
+their files alongside the bundled Start contract and production classification
+catalog. Catalogs can be supplied separately from contracts and mounted into
+other consumers without copying their contents. For example, from this
 chart directory (replace the namespace):
 
 ```sh
-kubectl -n YOUR_NAMESPACE create configmap custom-workflow-configuration \
-  --from-file=pose.yaml=examples/workflow-contracts/pose.yaml \
+kubectl -n YOUR_NAMESPACE create configmap custom-workflow-contracts \
+  --from-file=pose.yaml=examples/workflow-contracts/pose.yaml
+kubectl -n YOUR_NAMESPACE create configmap shared-pose-catalog \
   --from-file=pose-keypoints.json=examples/catalogs/pose-keypoints.json
 ```
 
 Then use [the example values overlay](examples/workflow-configuration-values.yaml).
-`existingConfigMap` replaces the entire bundled configuration, not individual
-files. Include Start and its referenced catalog too if the custom bundle needs
-them. `items` explicitly maps ConfigMap keys to files in `workflow-contracts/`
-and `catalogs/`; files are mounted read-only, without `subPath`. ConfigMap size
-limits apply. Mount the same shared catalog ConfigMap into other consumers as
-needed; do not maintain divergent copies of its contents.
+Each `extraConfigMaps` entry has a `name` and `items` mapping ConfigMap keys to
+files in `workflow-contracts/` and `catalogs/`. A single read-only projected
+volume combines these with the built-in sources, without `subPath`. Paths must
+be unique across all sources, including the bundled `workflow-contracts/start.yaml`
+and `catalogs/classifications.json`. Collisions fail rendering instead of
+silently overriding data. Use `classificationCatalog` to override classification
+choices rather than shadowing the shared file. ConfigMap size limits apply.
+
+The older `existingConfigMap` plus top-level `items` option remains a full
+replacement for compatibility with `0.149.0`. Prefer `extraConfigMaps` for new
+deployments. When explicitly using replacement mode, include Start and its
+catalog if required; extra ConfigMaps extend that replacement base instead.
+Duplicate paths between the replacement base and extras are also rejected.
 
 The chart checks item paths and required options but cannot inspect an existing
 ConfigMap at render time. Validate its files against the supplied schemas.
 Bundled changes update the pod checksum. For externally managed ConfigMaps,
 manage rollout/reload in your deployment tooling; the chart cannot checksum
-their contents.
+their contents. Missing referenced ConfigMaps or keys prevent Kubernetes from
+mounting the volume: create them before syncing Hub (for example using an earlier
+Argo CD sync wave). This is distinct from invalid contract/catalog contents,
+which the future application loader should report per section without stopping
+Hub. Content diagnostics should be advisory in CI, while rendering/mount
+configuration errors and failing tests remain blocking. Unavailable sections
+must carry explicit errors, never become unrestricted choices or conditions.
 
 Helm validates `values.schema.json`, **not** arbitrary bundled YAML/JSON files.
 The standalone schemas support authoring validation. The future loader must

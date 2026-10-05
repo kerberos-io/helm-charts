@@ -82,8 +82,12 @@ classificationCatalogEnabled: true
 # contracts. Enabling this mounts files but does not activate a new editor/runtime.
 workflowConfiguration:
   enabled: false
+  # Extend the bundled Start contract and shared classification catalog.
+  # Each entry supplies name and items [{key, path}], in the release namespace.
+  # Paths must not collide with bundled files or other ConfigMap items.
+  extraConfigMaps: []
+  # Legacy replacement option. Prefer extraConfigMaps for new deployments.
   # Empty uses the bundled Start contract and effective classification catalog.
-  # Otherwise mount this existing ConfigMap instead; it must be in this namespace.
   existingConfigMap: ""
   # Required only with existingConfigMap: map ConfigMap keys to relative files
   # under /etc/kerberos/configuration (workflow-contracts/... or catalogs/...).

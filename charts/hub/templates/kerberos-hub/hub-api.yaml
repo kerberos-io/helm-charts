@@ -144,14 +144,14 @@ spec:
       volumes:
       {{- if $workflowConfiguration.enabled }}
         - name: workflow-configuration
-          {{- if $workflowConfiguration.existingConfigMap }}
-          configMap:
-            name: {{ $workflowConfiguration.existingConfigMap | quote }}
-            items:
-              {{- toYaml $workflowConfiguration.items | nindent 14 }}
-          {{- else }}
           projected:
             sources:
+              {{- if $workflowConfiguration.existingConfigMap }}
+              - configMap:
+                  name: {{ $workflowConfiguration.existingConfigMap | quote }}
+                  items:
+                    {{- toYaml $workflowConfiguration.items | nindent 20 }}
+              {{- else }}
               - configMap:
                   name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
                   items:
@@ -162,7 +162,13 @@ spec:
                   items:
                     - key: classifications.json
                       path: catalogs/classifications.json
-          {{- end }}
+              {{- end }}
+              {{- range $workflowConfiguration.extraConfigMaps }}
+              - configMap:
+                  name: {{ .name | quote }}
+                  items:
+                    {{- toYaml .items | nindent 20 }}
+              {{- end }}
       {{- end }}
       {{- if $classificationCatalogEnabled }}
         - name: classification-catalog
