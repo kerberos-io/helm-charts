@@ -74,9 +74,9 @@ mongodb:
 # downstream processing. Classifier output keys must match these values.
 # Disable this to use the legacy classification catalog stored in MongoDB.
 classificationCatalogEnabled: true
-# null uses configuration/catalogs/classifications.json. A supplied list replaces
-# the defaults, including an explicit [] (which retains the API fallback behavior).
-classificationCatalog: null
+# classificationCatalog is optional and omitted by default, which uses
+# configuration/catalogs/classifications.json. Set it to a list to override.
+# Explicit null also uses defaults; [] retains the API fallback behavior.
 
 # Preparatory configuration packaging only: the API does not yet load workflow
 # contracts. Enabling this mounts files but does not activate a new editor/runtime.

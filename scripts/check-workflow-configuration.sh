@@ -29,6 +29,10 @@ expect_failure() {
   assert_contains "$output" "$expected"
 }
 
+if grep -q '^classificationCatalog:' "$CHART_DIR/values.yaml"; then
+  echo "FAIL: classificationCatalog should be omitted from default values" >&2
+  exit 1
+fi
 default_out="$(helm template hub "$CHART_DIR")"
 assert_absent "$default_out" "name: workflow-configuration"
 assert_absent "$default_out" "checksum/workflow-configuration"
@@ -36,6 +40,12 @@ assert_contains "$default_out" "value: /etc/kerberos/classifications/classificat
 legacy_out="$(helm template hub "$CHART_DIR" --set workflowConfiguration=null)"
 if [ "$default_out" != "$legacy_out" ]; then
   echo "FAIL: absent workflowConfiguration changed the default render" >&2
+  exit 1
+fi
+
+null_out="$(helm template hub "$CHART_DIR" --set classificationCatalog=null)"
+if [ "$default_out" != "$null_out" ]; then
+  echo "FAIL: omitted and null classificationCatalog render differently" >&2
   exit 1
 fi
 
