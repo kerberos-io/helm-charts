@@ -511,6 +511,7 @@ kerberospipeline:
 | `kerberospipeline.monitor.tag` | The Docker image tag/version. | `"v1.3.9"` |
 | `kerberospipeline.monitor.replicas` | Number of replicas for `kerberospipeline.monitor`. | `1` |
 | `kerberospipeline.monitor.logLevel` | Monitor log level. Set to `debug` for per-event processing checkpoints. | `"info"` |
+| `kerberospipeline.monitor.latestMediaUpdateIntervalSeconds` | Minimum recording-time gap, in seconds, between writes of a device's `latestMedia` snapshot. Reduces writes to the devices collection; the device's latest recording can lag by up to this interval. `0` writes on every recording. | `300` |
 | `kerberospipeline.monitor.resources.requests.memory` | Memory request for `kerberospipeline.monitor`. | `"10Mi"` |
 | `kerberospipeline.monitor.resources.requests.cpu` | CPU request for `kerberospipeline.monitor`. | `"10m"` |
 | `kerberospipeline.sequence.repository` | The [sequencer microservice](https://doc.kerberos.io/hub/pipeline/#sequencer), grouping recordings in chunks/groups. | `"ghcr.io/uug-ai/hub-pipeline-sequence"` |

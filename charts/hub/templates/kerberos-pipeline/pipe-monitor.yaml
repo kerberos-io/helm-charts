@@ -71,6 +71,8 @@ spec:
         # Application
         - name: LOG_LEVEL
           value: "{{ .Values.kerberospipeline.monitor.logLevel }}"
+        - name: LATEST_MEDIA_UPDATE_INTERVAL_SECONDS
+          value: {{ .Values.kerberospipeline.monitor.latestMediaUpdateIntervalSeconds | quote }}
 
         # Queue      
         - name: QUEUE_SYSTEM

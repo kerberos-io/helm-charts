@@ -1103,6 +1103,10 @@ kerberospipeline:
     #  - name: extra
     #    mountPath: /data
     logLevel: "info" # possible values: debug, info, warn, error
+    # Minimum recording-time gap (seconds) between two writes of a device's
+    # latestMedia snapshot; 0 writes on every recording. Requires hub-pipeline-monitor
+    # with latest-media throttling (older images ignore it).
+    latestMediaUpdateIntervalSeconds: 300
     resources:
       requests:
         memory: 10Mi
