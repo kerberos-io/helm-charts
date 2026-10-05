@@ -65,6 +65,7 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-workflows") | nindent 8 }}
         - name: LOG_LEVEL
           value: "{{ .Values.kerberoshub.services.workflows.logLevel }}"
         - name: QUEUE_SYSTEM

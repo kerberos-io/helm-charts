@@ -191,6 +191,7 @@ kerberospipeline:
 | `mongodb.authenticationMechanism` | MongoDB authentication mechanism (for example `SCRAM-SHA-256`). | `"SCRAM-SHA-256"` |
 | `mongodb.username` | MongoDB user account, we are using in the hub installation `'root'`. | `"yourusername"` |
 | `mongodb.password` | MongoDB user password, by default `'yourmongodbpassword'` | `"yourpassword"` |
+| `mongodb.appNamePerService` | When `mongodb.uri` is set, override its `appName` per workload with the service name (for example `hub-api`, `hub-pipeline-monitor`), so the MongoDB Atlas query profiler shows which service issued each operation. | `true` |
 | `mongodb.retryWrites` | Enable or disable MongoDB retryable writes. | `"true"` |
 | `mongodb.flavor` | Backend engine flavor: `"mongodb"` (native MongoDB / Atlas) or `"documentdb"` (AWS DocumentDB). The `documentdb` flavor disables features DocumentDB does not support (geospatial queries/indexes, complex `$lookup` pipelines). When set to `documentdb`, also set `mongodb.retryWrites: "false"`. | `"mongodb"` |
 | `mongodb.tls.enabled` | Enable TLS for MongoDB connections. When `mongodb.uri` is set, the chart appends missing `tls=true` and `tlsCAFile` query parameters. | `false` |

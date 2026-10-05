@@ -225,6 +225,7 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-api") | nindent 12 }}
             {{- if $classificationCatalogEnabled }}
             - name: CLASSIFICATION_CATALOG_FILE
               value: /etc/kerberos/classifications/classifications.json
