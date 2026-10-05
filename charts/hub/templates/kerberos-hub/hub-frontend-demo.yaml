@@ -369,6 +369,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.objectDetection.enabled }}"
         - name: FEATURE_MEDIA_FILTER_STAR_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.star.enabled }}"
+        - name: FEATURE_MEDIA_FILTER_ANALYSIS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.filter.analysis.enabled }}"
         - name: FEATURE_MEDIA_FILTER_REGION_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.region.enabled }}"
         - name: FEATURE_MEDIA_FILTER_SORT_ENABLED
