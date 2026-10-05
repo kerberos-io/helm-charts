@@ -306,6 +306,27 @@ spec:
             - name: KERBEROS_JWT_SECRET
               value: "{{ .Values.kerberoshub.api.jwtSecret }}"
 
+            # Temporarily stop serving the polled GET /devices list (204, no DB reads).
+            - name: DISABLE_AGENT_HEARTBEAT
+              value: {{ .Values.kerberoshub.api.disableAgentHeartbeat | default false | quote }}
+
+            # Media proxy: hide Vault/storage endpoints behind hub-api URLs.
+            {{- $mediaProxy := .Values.kerberoshub.api.mediaProxy | default dict }}
+            - name: MEDIA_PROXY_ENABLED
+              value: {{ $mediaProxy.enabled | default false | quote }}
+            {{- if $mediaProxy.publicUrl }}
+            - name: MEDIA_PROXY_PUBLIC_URL
+              value: {{ $mediaProxy.publicUrl | quote }}
+            {{- end }}
+            {{- if $mediaProxy.key }}
+            - name: MEDIA_PROXY_KEY
+              value: {{ $mediaProxy.key | quote }}
+            {{- end }}
+            {{- if $mediaProxy.ttl }}
+            - name: MEDIA_PROXY_TTL
+              value: {{ $mediaProxy.ttl | quote }}
+            {{- end }}
+
             # SSO (OIDC) setup
             - name: SSO_DOMAINS
               value:  "{{- range .Values.kerberoshub.api.sso }}{{ .domain }};{{- end }}"

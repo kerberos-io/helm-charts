@@ -281,6 +281,19 @@ kerberoshub:
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
     url: "api.yourdomain.com"
+    # Temporarily stop serving the polled GET /devices list: hub-api answers 204
+    # without querying MongoDB. The frontend still loads devices once through
+    # /session/bootstrap, but device online/offline status stops refreshing.
+    disableAgentHeartbeat: false
+    # Media proxy: when enabled, hub-api wraps every media URL it receives from
+    # Kerberos Vault into an opaque hub-api URL ({schema}://{url}/media/proxy?t=...)
+    # and streams the object itself, so clients never see Vault or the
+    # underlying storage endpoint. Increases hub-api egress/bandwidth.
+    mediaProxy:
+      enabled: false
+      publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.
+      key: "" # Optional encryption key (openssl rand -hex 32); defaults to a key derived from jwtSecret. Must be identical on all replicas.
+      ttl: "" # Optional lifetime of proxied URLs (Go duration, e.g. "12h"); defaults to 24h, max 168h.
     resources:
       requests:
         memory: 100Mi
@@ -569,6 +582,8 @@ kerberoshub:
             enabled: "true" # Enable or disable object detection filter in media 'true' or 'false'
           star:
             enabled: "true" # Enable or disable star filter in media 'true' or 'false'
+          analysis:
+            enabled: "true" # Enable or disable the "with analysis" filter (hides recordings without markers, description or detections) in media 'true' or 'false'
           region:
             enabled: "true" # Enable or disable region filter in media 'true' or 'false'
           sort:
