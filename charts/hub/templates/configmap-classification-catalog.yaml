@@ -6,5 +6,5 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   classifications.json: |-
-    {{- toPrettyJson .Values.classificationCatalog | nindent 4 }}
+    {{- include "hub.classificationCatalog" . | nindent 4 }}
 {{- end }}

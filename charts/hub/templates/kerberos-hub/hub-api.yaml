@@ -1,4 +1,5 @@
 {{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
+{{- $workflowConfiguration := .Values.workflowConfiguration | default dict -}}
 {{- if .Values.kerberoshub.api.serviceEnabled }}
 apiVersion: v1
 kind: Service
@@ -123,6 +124,9 @@ spec:
         {{- if .Values.classificationCatalogEnabled }}
         checksum/classification-catalog: {{ include (print $.Template.BasePath "/configmap-classification-catalog.yaml") . | sha256sum }}
         {{- end }}
+        {{- if and $workflowConfiguration.enabled (not $workflowConfiguration.existingConfigMap) }}
+        checksum/workflow-configuration: {{ include (print $.Template.BasePath "/configmap-workflow-configuration.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app: hub-api
     spec:
@@ -136,8 +140,30 @@ spec:
       {{- $serverTLS := .Values.kerberoshub.api.serverTLS }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
       {{- $classificationCatalogEnabled := .Values.classificationCatalogEnabled }}
-      {{- if or $classificationCatalogEnabled .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
+      {{- if $workflowConfiguration.enabled }}
+        - name: workflow-configuration
+          {{- if $workflowConfiguration.existingConfigMap }}
+          configMap:
+            name: {{ $workflowConfiguration.existingConfigMap | quote }}
+            items:
+              {{- toYaml $workflowConfiguration.items | nindent 14 }}
+          {{- else }}
+          projected:
+            sources:
+              - configMap:
+                  name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
+                  items:
+                    - key: start.yaml
+                      path: workflow-contracts/start.yaml
+              - configMap:
+                  name: classification-catalog
+                  items:
+                    - key: classifications.json
+                      path: catalogs/classifications.json
+          {{- end }}
+      {{- end }}
       {{- if $classificationCatalogEnabled }}
         - name: classification-catalog
           configMap:
@@ -170,8 +196,13 @@ spec:
           ports:
             - containerPort: 80
               name: http
-          {{- if or $classificationCatalogEnabled .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+          {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
+          {{- if $workflowConfiguration.enabled }}
+            - name: workflow-configuration
+              mountPath: /etc/kerberos/configuration
+              readOnly: true
+          {{- end }}
           {{- if $classificationCatalogEnabled }}
             - name: classification-catalog
               mountPath: /etc/kerberos/classifications

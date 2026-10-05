@@ -1,0 +1,12 @@
+{{- include "hub.workflowConfiguration.validate" . -}}
+{{- $config := .Values.workflowConfiguration | default dict -}}
+{{- if and $config.enabled (not $config.existingConfigMap) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
+data:
+  start.yaml: |-
+    {{- .Files.Get "configuration/workflow-contracts/start.yaml" | nindent 4 }}
+{{- end }}

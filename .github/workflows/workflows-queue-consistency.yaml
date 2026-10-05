@@ -11,6 +11,7 @@ on:
     paths:
       - 'charts/hub/**'
       - 'scripts/check-workflows-queue-consistency.sh'
+      - 'scripts/check-workflow-configuration.sh'
       - '.github/workflows/workflows-queue-consistency.yaml'
 
 permissions:
@@ -30,3 +31,6 @@ jobs:
 
       - name: Check workflow queue and identity consistency
         run: ./scripts/check-workflows-queue-consistency.sh charts/hub
+
+      - name: Check workflow configuration and classification catalog
+        run: bash scripts/check-workflow-configuration.sh charts/hub
