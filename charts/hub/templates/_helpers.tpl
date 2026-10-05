@@ -33,6 +33,42 @@
 {{- $uri -}}
 {{- end -}}
 
+{{/*
+MongoDB URI with appName set to one workload, so the Atlas query profiler and
+currentOp attribute each operation to the service that issued it. Renders
+nothing when no URI is configured or mongodb.appNamePerService is false.
+Usage: include "hub.mongodb.appUri" (dict "root" $ "app" "hub-api")
+*/}}
+{{- define "hub.mongodb.appUri" -}}
+{{- $uri := include "hub.mongodb.uri" .root -}}
+{{- if and $uri .root.Values.mongodb.appNamePerService -}}
+  {{- if regexMatch "(?i)[?&]appName=" $uri -}}
+    {{- $uri = regexReplaceAll "(?i)([?&])appName=[^&]*" $uri (printf "${1}appName=%s" .app) -}}
+  {{- else -}}
+    {{- $separator := "&" -}}
+    {{- if not (contains "?" $uri) -}}
+      {{- $separator = "?" -}}
+    {{- else if or (hasSuffix "?" $uri) (hasSuffix "&" $uri) -}}
+      {{- $separator = "" -}}
+    {{- end -}}
+    {{- $uri = printf "%s%sappName=%s" $uri $separator .app -}}
+  {{- end -}}
+  {{- $uri -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Container env entry that overrides MONGODB_URI from mongodb-config with the
+workload's own appName. An explicit env entry takes precedence over envFrom.
+Usage: {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-api") | nindent 12 }}
+*/}}
+{{- define "hub.mongodb.appUriEnv" -}}
+{{- with include "hub.mongodb.appUri" . -}}
+- name: MONGODB_URI
+  value: {{ . | quote }}
+{{- end -}}
+{{- end -}}
+
 {{/* Render the shared MongoDB CA Secret volume. */}}
 {{- define "hub.mongodb.tlsVolume" -}}
 - name: mongodb-tls

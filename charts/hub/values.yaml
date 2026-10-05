@@ -46,6 +46,10 @@ mongodb:
   # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
   # If uri is set, the below properties are not used (host, adminDatabase, username, password)
   #uri: "mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+  # When uri is set, give each workload its own appName (hub-api,
+  # hub-pipeline-monitor, ...) instead of the one in uri, so the Atlas query
+  # profiler and currentOp show which service issued an operation.
+  appNamePerService: true
 
   # Self-hosted mongodb, you could also use the uri property above.
   host: mongodb.mongodb

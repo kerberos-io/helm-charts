@@ -64,6 +64,7 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-pipeline-notification-test") | nindent 8 }}
         - name: QUEUE_SYSTEM
           value: "{{ .Values.queueProvider }}"
 

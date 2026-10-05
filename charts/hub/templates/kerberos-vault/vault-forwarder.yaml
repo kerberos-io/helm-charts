@@ -62,6 +62,7 @@ spec:
           - configMapRef:
               name: mongodb-config
           env:
+          {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "vault-forwarder") | nindent 10 }}
           - name: ITERATION_SPEED
             value: "5"
           - name: BUFFER_TIME
