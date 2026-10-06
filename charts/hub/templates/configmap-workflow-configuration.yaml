@@ -1,6 +1,6 @@
 {{- include "hub.workflowConfiguration.validate" . -}}
-{{- $config := .Values.workflowConfiguration | default dict -}}
-{{- if and $config.enabled (not $config.existingConfigMap) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and $config.enabled $config.includeDefaults (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

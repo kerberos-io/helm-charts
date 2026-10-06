@@ -1,5 +1,5 @@
 {{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
-{{- $workflowConfiguration := .Values.workflowConfiguration | default dict -}}
+{{- $workflowConfiguration := include "hub.workflowConfiguration.settings" . | fromYaml -}}
 {{- if .Values.kerberoshub.api.serviceEnabled }}
 apiVersion: v1
 kind: Service
@@ -124,7 +124,7 @@ spec:
         {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) }}
         checksum/classification-catalog: {{ include (print $.Template.BasePath "/configmap-classification-catalog.yaml") . | sha256sum }}
         {{- end }}
-        {{- if and $workflowConfiguration.enabled (not $workflowConfiguration.existingConfigMap) }}
+        {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults }}
         checksum/workflow-configuration: {{ include (print $.Template.BasePath "/configmap-workflow-configuration.yaml") . | sha256sum }}
         {{- end }}
       labels:
@@ -146,12 +146,7 @@ spec:
         - name: workflow-configuration
           projected:
             sources:
-              {{- if $workflowConfiguration.existingConfigMap }}
-              - configMap:
-                  name: {{ $workflowConfiguration.existingConfigMap | quote }}
-                  items:
-                    {{- toYaml $workflowConfiguration.items | nindent 20 }}
-              {{- else }}
+              {{- if $workflowConfiguration.includeDefaults }}
               - configMap:
                   name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
                   items:
@@ -163,7 +158,7 @@ spec:
                     - key: classifications.json
                       path: catalogs/classifications.json
               {{- end }}
-              {{- range $workflowConfiguration.extraConfigMaps }}
+              {{- range $workflowConfiguration.configMaps }}
               - configMap:
                   name: {{ .name | quote }}
                   items:

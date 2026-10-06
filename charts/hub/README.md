@@ -689,9 +689,9 @@ classificationCatalogExistingConfigMap: hub-classification-catalog
 This takes precedence over `classificationCatalog` and bundled defaults. Helm
 does not create or checksum the external ConfigMap. The API mount and bundled
 Start metadata both reference it; in bundled mode, do not add it again to
-`workflowConfiguration.extraConfigMaps`. When explicitly replacing the bundled
-workflow configuration, map any required catalog through the replacement's items
-or `extraConfigMaps`; the API's catalog selection remains independent.
+`workflowConfiguration.configMaps`. With `includeDefaults: false`, map any required
+catalog explicitly through `configMaps`; the API's catalog selection remains
+independent.
 Disabling `classificationCatalogEnabled` disables the API catalog mount regardless
 of this setting. The external ConfigMap and key must exist before the API pod can
 start. Manage updates and any required rollout/reload through deployment tooling;
@@ -783,7 +783,7 @@ not owned by workflows. A library may ship a catalog without implementing an API
 #### Bundled and external packaging
 
 `workflowConfiguration.enabled` defaults to `false`. With it enabled and
-`existingConfigMap` empty, the chart mounts the bundled Start contract and the
+`includeDefaults` omitted or `true`, the chart mounts the bundled Start contract and the
 **effective** classification list under `/etc/kerberos/configuration`, using
 the directory layout above. The projected volume reuses the existing
 classification ConfigMap, including `classificationCatalog` overrides or
@@ -800,7 +800,7 @@ loader. Bundled packaging requires `classificationCatalogEnabled: true`; an
 external bundle can be packaged independently.
 
 Custom deployers can maintain files in their own repository, create ConfigMaps
-in the release namespace, and use the unchanged chart. `extraConfigMaps` adds
+in the release namespace, and use the unchanged chart. `configMaps` adds
 their files alongside the bundled Start contract and production classification
 catalog. Catalogs can be supplied separately from contracts and mounted into
 other consumers without copying their contents. For example, from this
@@ -814,20 +814,47 @@ kubectl -n YOUR_NAMESPACE create configmap shared-pose-catalog \
 ```
 
 Then use [the example values overlay](examples/workflow-configuration-values.yaml).
-Each `extraConfigMaps` entry has a `name` and `items` mapping ConfigMap keys to
+Each `configMaps` entry has a `name` and `items` mapping ConfigMap keys to
 files in `workflow-contracts/` and `catalogs/`. A single read-only projected
 volume combines these with the built-in sources, without `subPath`. Paths must
-be unique across all sources, including the bundled `workflow-contracts/start.yaml`
-and `catalogs/classifications.json`. Collisions fail rendering instead of
+be unique across all sources, including `workflow-contracts/start.yaml`
+and `catalogs/classifications.json` when defaults are included. Collisions fail rendering instead of
 silently overriding data. Use `classificationCatalog` or
 `classificationCatalogExistingConfigMap` to override classification choices rather
 than shadowing the shared file. ConfigMap size limits apply.
 
-The older `existingConfigMap` plus top-level `items` option remains a full
-replacement for compatibility with `0.149.0`. Prefer `extraConfigMaps` for new
-deployments. When explicitly using replacement mode, include Start and its
-catalog if required; extra ConfigMaps extend that replacement base instead.
-Duplicate paths between the replacement base and extras are also rejected.
+To manage the complete bundle yourself, set `includeDefaults: false` and supply
+a nonempty `configMaps` list. No Start ConfigMap is generated and no default files
+are projected. The standalone classification API remains independently configured:
+
+```yaml
+workflowConfiguration:
+  enabled: true
+  includeDefaults: false
+  configMaps:
+    - name: hub-start-contract
+      items:
+        - key: start.yaml
+          path: workflow-contracts/start.yaml
+    - name: hub-classification-catalog
+      items:
+        - key: classifications.json
+          path: catalogs/classifications.json
+```
+
+The older `existingConfigMap`, top-level `items`, and `extraConfigMaps` options
+retain their behavior: a nonempty `existingConfigMap` replaces the defaults,
+while `extraConfigMaps` extends either that replacement or the defaults.
+New deployments should use `includeDefaults` and `configMaps`. Do not mix the
+interfaces, even with empty legacy fields. Remove legacy keys from all values
+overlays when migrating. The chart omits both interfaces from its defaults so
+Helm's value merging does not create a mixed configuration.
+
+Migration: replace legacy extras with `configMaps` and keep `includeDefaults: true`
+for additive mode. For legacy replacement mode, set `includeDefaults: false`,
+move `existingConfigMap` and its `items` into the first `configMaps` entry, and
+append any legacy extras. This produces the same mounts without a special base
+ConfigMap. Duplicate destinations remain errors, never order-dependent overrides.
 
 The chart checks item paths and required options but cannot inspect an existing
 ConfigMap at render time. Validate its files against the supplied schemas.

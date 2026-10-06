@@ -89,16 +89,14 @@ classificationCatalogExistingConfigMap: ""
 # contracts. Enabling this mounts files but does not activate a new editor/runtime.
 workflowConfiguration:
   enabled: false
-  # Extend the bundled Start contract and shared classification catalog.
-  # Each entry supplies name and items [{key, path}], in the release namespace.
-  # Paths must not collide with bundled files or other ConfigMap items.
-  extraConfigMaps: []
-  # Legacy replacement option. Prefer extraConfigMaps for new deployments.
-  # Empty uses the bundled Start contract and effective classification catalog.
-  existingConfigMap: ""
-  # Required only with existingConfigMap: map ConfigMap keys to relative files
-  # under /etc/kerberos/configuration (workflow-contracts/... or catalogs/...).
-  items: []
+  # Omitted includeDefaults means true; false requires a nonempty configMaps list.
+  # includeDefaults: true
+  # configMaps: []
+  # Each ConfigMap supplies name and items [{key, path}] in the release namespace.
+  # Paths under workflow-contracts/ or catalogs/ must be unique across all sources.
+  # Legacy existingConfigMap/items/extraConfigMaps remain supported, but cannot
+  # be mixed with includeDefaults/configMaps. Both interfaces are omitted here
+  # so Helm's default merging does not introduce a false mixed configuration.
 ###################################################
 # MQTT configuration (bi-directional communication)
 ###################################################

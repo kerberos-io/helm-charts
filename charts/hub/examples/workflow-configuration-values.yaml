@@ -1,7 +1,8 @@
 # Packaging only; does not activate contract loading or deploy a pose worker.
 workflowConfiguration:
   enabled: true
-  extraConfigMaps:
+  includeDefaults: true
+  configMaps:
     - name: custom-workflow-contracts
       items:
         - key: pose.yaml
