@@ -145,12 +145,6 @@ explicit/name-derived. Validation includes disabled definitions and runs even
 when the engine is disabled, so identities remain reserved. Omit the `id` key
 entirely to use the legacy fallback; invalid explicit IDs never fall back.
 
-Run the render-only queue and identity checks (Helm and Python 3 required):
-
-```sh
-./scripts/check-workflows-queue-consistency.sh charts/hub
-```
-
 ### Parameters
 
 Below all configuration options and parameters are listed.
@@ -684,6 +678,26 @@ classificationCatalog:
     icon: vehicle
 ```
 
+To manage the catalog outside Helm, create a ConfigMap in the release namespace
+with a `classifications.json` key containing the same JSON array, then set:
+
+```yaml
+classificationCatalogEnabled: true
+classificationCatalogExistingConfigMap: hub-classification-catalog
+```
+
+This takes precedence over `classificationCatalog` and bundled defaults. Helm
+does not create or checksum the external ConfigMap. The API mount and bundled
+Start metadata both reference it; in bundled mode, do not add it again to
+`workflowConfiguration.extraConfigMaps`. When explicitly replacing the bundled
+workflow configuration, map any required catalog through the replacement's items
+or `extraConfigMaps`; the API's catalog selection remains independent.
+Disabling `classificationCatalogEnabled` disables the API catalog mount regardless
+of this setting. The external ConfigMap and key must exist before the API pod can
+start. Manage updates and any required rollout/reload through deployment tooling;
+Helm cannot inspect or validate its contents. The catalog schema remains available
+for authoring validation.
+
 ### Workflow condition contracts (preparatory)
 
 This chart defines the initial v1 metadata format and opt-in file packaging.
@@ -772,10 +786,11 @@ not owned by workflows. A library may ship a catalog without implementing an API
 `existingConfigMap` empty, the chart mounts the bundled Start contract and the
 **effective** classification list under `/etc/kerberos/configuration`, using
 the directory layout above. The projected volume reuses the existing
-classification ConfigMap, including `classificationCatalog` overrides, rather
+classification ConfigMap, including `classificationCatalog` overrides or
+`classificationCatalogExistingConfigMap`, rather
 than storing another copy in the workflow ConfigMap.
 
-The existing classification ConfigMap, mount path, `CLASSIFICATION_CATALOG_FILE`
+The default classification ConfigMap name, mount path, `CLASSIFICATION_CATALOG_FILE`
 and API endpoint remain unchanged. `classificationCatalog: []` remains an
 explicit empty list, not a request for chart defaults; the current API falls
 back to settings/built-in values for an empty/invalid catalog. The preparatory
@@ -784,29 +799,47 @@ resolved API catalog. The future loader must share the existing classification
 loader. Bundled packaging requires `classificationCatalogEnabled: true`; an
 external bundle can be packaged independently.
 
-Custom deployers can maintain files in their own repository, create a ConfigMap
-in the release namespace, and use the unchanged chart. For example, from this
+Custom deployers can maintain files in their own repository, create ConfigMaps
+in the release namespace, and use the unchanged chart. `extraConfigMaps` adds
+their files alongside the bundled Start contract and production classification
+catalog. Catalogs can be supplied separately from contracts and mounted into
+other consumers without copying their contents. For example, from this
 chart directory (replace the namespace):
 
 ```sh
-kubectl -n YOUR_NAMESPACE create configmap custom-workflow-configuration \
-  --from-file=pose.yaml=examples/workflow-contracts/pose.yaml \
+kubectl -n YOUR_NAMESPACE create configmap custom-workflow-contracts \
+  --from-file=pose.yaml=examples/workflow-contracts/pose.yaml
+kubectl -n YOUR_NAMESPACE create configmap shared-pose-catalog \
   --from-file=pose-keypoints.json=examples/catalogs/pose-keypoints.json
 ```
 
 Then use [the example values overlay](examples/workflow-configuration-values.yaml).
-`existingConfigMap` replaces the entire bundled configuration, not individual
-files. Include Start and its referenced catalog too if the custom bundle needs
-them. `items` explicitly maps ConfigMap keys to files in `workflow-contracts/`
-and `catalogs/`; files are mounted read-only, without `subPath`. ConfigMap size
-limits apply. Mount the same shared catalog ConfigMap into other consumers as
-needed; do not maintain divergent copies of its contents.
+Each `extraConfigMaps` entry has a `name` and `items` mapping ConfigMap keys to
+files in `workflow-contracts/` and `catalogs/`. A single read-only projected
+volume combines these with the built-in sources, without `subPath`. Paths must
+be unique across all sources, including the bundled `workflow-contracts/start.yaml`
+and `catalogs/classifications.json`. Collisions fail rendering instead of
+silently overriding data. Use `classificationCatalog` or
+`classificationCatalogExistingConfigMap` to override classification choices rather
+than shadowing the shared file. ConfigMap size limits apply.
+
+The older `existingConfigMap` plus top-level `items` option remains a full
+replacement for compatibility with `0.149.0`. Prefer `extraConfigMaps` for new
+deployments. When explicitly using replacement mode, include Start and its
+catalog if required; extra ConfigMaps extend that replacement base instead.
+Duplicate paths between the replacement base and extras are also rejected.
 
 The chart checks item paths and required options but cannot inspect an existing
 ConfigMap at render time. Validate its files against the supplied schemas.
 Bundled changes update the pod checksum. For externally managed ConfigMaps,
 manage rollout/reload in your deployment tooling; the chart cannot checksum
-their contents.
+their contents. Missing referenced ConfigMaps or keys prevent Kubernetes from
+mounting the volume: create them before syncing Hub (for example using an earlier
+Argo CD sync wave). This is distinct from invalid contract/catalog contents,
+which the future application loader should report per section without stopping
+Hub. Content diagnostics should be advisory in CI, while rendering/mount
+configuration errors and failing tests remain blocking. Unavailable sections
+must carry explicit errors, never become unrestricted choices or conditions.
 
 Helm validates `values.schema.json`, **not** arbitrary bundled YAML/JSON files.
 The standalone schemas support authoring validation. The future loader must

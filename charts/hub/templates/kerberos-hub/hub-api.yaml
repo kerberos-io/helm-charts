@@ -121,7 +121,7 @@ spec:
     metadata:
       annotations:
         checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
-        {{- if .Values.classificationCatalogEnabled }}
+        {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) }}
         checksum/classification-catalog: {{ include (print $.Template.BasePath "/configmap-classification-catalog.yaml") . | sha256sum }}
         {{- end }}
         {{- if and $workflowConfiguration.enabled (not $workflowConfiguration.existingConfigMap) }}
@@ -144,30 +144,41 @@ spec:
       volumes:
       {{- if $workflowConfiguration.enabled }}
         - name: workflow-configuration
-          {{- if $workflowConfiguration.existingConfigMap }}
-          configMap:
-            name: {{ $workflowConfiguration.existingConfigMap | quote }}
-            items:
-              {{- toYaml $workflowConfiguration.items | nindent 14 }}
-          {{- else }}
           projected:
             sources:
+              {{- if $workflowConfiguration.existingConfigMap }}
+              - configMap:
+                  name: {{ $workflowConfiguration.existingConfigMap | quote }}
+                  items:
+                    {{- toYaml $workflowConfiguration.items | nindent 20 }}
+              {{- else }}
               - configMap:
                   name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
                   items:
                     - key: start.yaml
                       path: workflow-contracts/start.yaml
               - configMap:
-                  name: classification-catalog
+                  name: {{ include "hub.classificationCatalog.configMapName" . }}
                   items:
                     - key: classifications.json
                       path: catalogs/classifications.json
-          {{- end }}
+              {{- end }}
+              {{- range $workflowConfiguration.extraConfigMaps }}
+              - configMap:
+                  name: {{ .name | quote }}
+                  items:
+                    {{- toYaml .items | nindent 20 }}
+              {{- end }}
       {{- end }}
       {{- if $classificationCatalogEnabled }}
         - name: classification-catalog
           configMap:
-            name: classification-catalog
+            name: {{ include "hub.classificationCatalog.configMapName" . }}
+            {{- if .Values.classificationCatalogExistingConfigMap }}
+            items:
+              - key: classifications.json
+                path: classifications.json
+            {{- end }}
       {{- end }}
       {{- with .Values.kerberoshub.api.volumes }}
         {{- toYaml . | nindent 8 }}

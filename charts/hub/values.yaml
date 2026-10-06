@@ -78,6 +78,9 @@ mongodb:
 # downstream processing. Classifier output keys must match these values.
 # Disable this to use the legacy classification catalog stored in MongoDB.
 classificationCatalogEnabled: true
+# Optional existing ConfigMap in the release namespace with classifications.json.
+# When set, do not create a catalog ConfigMap; this takes precedence over the list.
+classificationCatalogExistingConfigMap: ""
 # classificationCatalog is optional and omitted by default, which uses
 # configuration/catalogs/classifications.json. Set it to a list to override.
 # Explicit null also uses defaults; [] retains the API fallback behavior.
@@ -86,8 +89,12 @@ classificationCatalogEnabled: true
 # contracts. Enabling this mounts files but does not activate a new editor/runtime.
 workflowConfiguration:
   enabled: false
+  # Extend the bundled Start contract and shared classification catalog.
+  # Each entry supplies name and items [{key, path}], in the release namespace.
+  # Paths must not collide with bundled files or other ConfigMap items.
+  extraConfigMaps: []
+  # Legacy replacement option. Prefer extraConfigMaps for new deployments.
   # Empty uses the bundled Start contract and effective classification catalog.
-  # Otherwise mount this existing ConfigMap instead; it must be in this namespace.
   existingConfigMap: ""
   # Required only with existingConfigMap: map ConfigMap keys to relative files
   # under /etc/kerberos/configuration (workflow-contracts/... or catalogs/...).
