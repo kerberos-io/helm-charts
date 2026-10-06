@@ -698,7 +698,7 @@ kerberoshub:
     maxDays: "365" # Hard maximum age (days) for global orphan cleanup.
     runIntervalMinutes: "10" # Minutes between cleanup cycles.
     cleanupUsernames: "" # Optional comma-separated usernames to target.
-    batchSize: "250" # Delete batch size per collection operation.
+    batchSize: "1000" # Documents selected and deleted per batch round-trip; lower if deletes time out.
     userBatchSize: "100" # Users processed per in-memory batch.
     maxUsersPerRun: "100" # Hard cap of users processed each run.
     progressEvery: "100" # Print progress every N processed users.

@@ -440,7 +440,7 @@ kerberospipeline:
 | `kerberoshub.cleanup.maxDays` | Hard maximum age (in days) used by the optional global cleanup pass. | `"365"` |
 | `kerberoshub.cleanup.runIntervalMinutes` | Minutes between cleanup cycles. | `"10"` |
 | `kerberoshub.cleanup.cleanupUsernames` | Optional comma-separated usernames to target. | `""` |
-| `kerberoshub.cleanup.batchSize` | Delete batch size per collection operation. | `"250"` |
+| `kerberoshub.cleanup.batchSize` | Documents selected and deleted per batch round-trip. Lower it if delete operations time out on a heavily loaded cluster. | `"1000"` |
 | `kerberoshub.cleanup.userBatchSize` | Number of users processed per inner batch. | `"100"` |
 | `kerberoshub.cleanup.maxUsersPerRun` | Maximum users processed per run. | `"100"` |
 | `kerberoshub.cleanup.progressEvery` | Print progress every N processed users. | `"100"` |
