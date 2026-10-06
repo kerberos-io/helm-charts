@@ -114,6 +114,7 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-audit") | nindent 12 }}
             - name: RABBITMQ_HOST
               value: {{ .Values.rabbitmq.host | quote }}
             - name: RABBITMQ_EXCHANGE

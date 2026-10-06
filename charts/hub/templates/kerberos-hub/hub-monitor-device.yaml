@@ -64,6 +64,7 @@ spec:
             - configMapRef:
                 name: mongodb-config
           env:
+            {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-monitor-device") | nindent 12 }}
             - name: LOG_LEVEL
               value: "{{ .Values.kerberoshub.monitordevice.logLevel }}"
             - name: READ_ONLY

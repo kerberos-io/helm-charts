@@ -66,6 +66,7 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-cleanup") | nindent 12 }}
             - name: MODE
               value: "{{ .Values.kerberoshub.cleanup.mode }}"
             - name: LOG_LEVEL

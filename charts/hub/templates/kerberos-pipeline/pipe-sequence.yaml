@@ -68,6 +68,7 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-pipeline-sequence") | nindent 8 }}
         - name: CLOUD_PROVIDER
           value: "{{ .Values.cloudProvider }}"
         - name: QUEUE_SYSTEM

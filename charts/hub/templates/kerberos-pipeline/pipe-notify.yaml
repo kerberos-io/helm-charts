@@ -68,6 +68,7 @@ spec:
         - configMapRef:
             name: mongodb-config
         env:
+        {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-pipeline-notification") | nindent 8 }}
         - name: LOG_LEVEL
           value: "{{ .Values.kerberospipeline.notify.logLevel }}"
         - name: NOTIFICATION_EXPIRY_MINUTES
