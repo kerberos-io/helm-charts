@@ -1,4 +1,4 @@
-{{- if .Values.classificationCatalogEnabled }}
+{{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -121,7 +121,7 @@ spec:
     metadata:
       annotations:
         checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
-        {{- if .Values.classificationCatalogEnabled }}
+        {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) }}
         checksum/classification-catalog: {{ include (print $.Template.BasePath "/configmap-classification-catalog.yaml") . | sha256sum }}
         {{- end }}
         {{- if and $workflowConfiguration.enabled (not $workflowConfiguration.existingConfigMap) }}
@@ -158,7 +158,7 @@ spec:
                     - key: start.yaml
                       path: workflow-contracts/start.yaml
               - configMap:
-                  name: classification-catalog
+                  name: {{ include "hub.classificationCatalog.configMapName" . }}
                   items:
                     - key: classifications.json
                       path: catalogs/classifications.json
@@ -173,7 +173,12 @@ spec:
       {{- if $classificationCatalogEnabled }}
         - name: classification-catalog
           configMap:
-            name: classification-catalog
+            name: {{ include "hub.classificationCatalog.configMapName" . }}
+            {{- if .Values.classificationCatalogExistingConfigMap }}
+            items:
+              - key: classifications.json
+                path: classifications.json
+            {{- end }}
       {{- end }}
       {{- with .Values.kerberoshub.api.volumes }}
         {{- toYaml . | nindent 8 }}

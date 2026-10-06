@@ -678,6 +678,26 @@ classificationCatalog:
     icon: vehicle
 ```
 
+To manage the catalog outside Helm, create a ConfigMap in the release namespace
+with a `classifications.json` key containing the same JSON array, then set:
+
+```yaml
+classificationCatalogEnabled: true
+classificationCatalogExistingConfigMap: hub-classification-catalog
+```
+
+This takes precedence over `classificationCatalog` and bundled defaults. Helm
+does not create or checksum the external ConfigMap. The API mount and bundled
+Start metadata both reference it; in bundled mode, do not add it again to
+`workflowConfiguration.extraConfigMaps`. When explicitly replacing the bundled
+workflow configuration, map any required catalog through the replacement's items
+or `extraConfigMaps`; the API's catalog selection remains independent.
+Disabling `classificationCatalogEnabled` disables the API catalog mount regardless
+of this setting. The external ConfigMap and key must exist before the API pod can
+start. Manage updates and any required rollout/reload through deployment tooling;
+Helm cannot inspect or validate its contents. The catalog schema remains available
+for authoring validation.
+
 ### Workflow condition contracts (preparatory)
 
 This chart defines the initial v1 metadata format and opt-in file packaging.
@@ -766,10 +786,11 @@ not owned by workflows. A library may ship a catalog without implementing an API
 `existingConfigMap` empty, the chart mounts the bundled Start contract and the
 **effective** classification list under `/etc/kerberos/configuration`, using
 the directory layout above. The projected volume reuses the existing
-classification ConfigMap, including `classificationCatalog` overrides, rather
+classification ConfigMap, including `classificationCatalog` overrides or
+`classificationCatalogExistingConfigMap`, rather
 than storing another copy in the workflow ConfigMap.
 
-The existing classification ConfigMap, mount path, `CLASSIFICATION_CATALOG_FILE`
+The default classification ConfigMap name, mount path, `CLASSIFICATION_CATALOG_FILE`
 and API endpoint remain unchanged. `classificationCatalog: []` remains an
 explicit empty list, not a request for chart defaults; the current API falls
 back to settings/built-in values for an empty/invalid catalog. The preparatory
@@ -798,8 +819,9 @@ files in `workflow-contracts/` and `catalogs/`. A single read-only projected
 volume combines these with the built-in sources, without `subPath`. Paths must
 be unique across all sources, including the bundled `workflow-contracts/start.yaml`
 and `catalogs/classifications.json`. Collisions fail rendering instead of
-silently overriding data. Use `classificationCatalog` to override classification
-choices rather than shadowing the shared file. ConfigMap size limits apply.
+silently overriding data. Use `classificationCatalog` or
+`classificationCatalogExistingConfigMap` to override classification choices rather
+than shadowing the shared file. ConfigMap size limits apply.
 
 The older `existingConfigMap` plus top-level `items` option remains a full
 replacement for compatibility with `0.149.0`. Prefer `extraConfigMaps` for new

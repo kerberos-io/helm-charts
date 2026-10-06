@@ -78,6 +78,9 @@ mongodb:
 # downstream processing. Classifier output keys must match these values.
 # Disable this to use the legacy classification catalog stored in MongoDB.
 classificationCatalogEnabled: true
+# Optional existing ConfigMap in the release namespace with classifications.json.
+# When set, do not create a catalog ConfigMap; this takes precedence over the list.
+classificationCatalogExistingConfigMap: ""
 # classificationCatalog is optional and omitted by default, which uses
 # configuration/catalogs/classifications.json. Set it to a list to override.
 # Explicit null also uses defaults; [] retains the API fallback behavior.

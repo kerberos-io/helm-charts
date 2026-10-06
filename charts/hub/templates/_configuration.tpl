@@ -1,3 +1,7 @@
+{{- define "hub.classificationCatalog.configMapName" -}}
+{{- default "classification-catalog" .Values.classificationCatalogExistingConfigMap -}}
+{{- end -}}
+
 {{/* Keep the legacy endpoint and the preparatory bundle on the same chart data. */}}
 {{- define "hub.classificationCatalog" -}}
 {{- if kindIs "invalid" .Values.classificationCatalog -}}
