@@ -903,17 +903,20 @@ This is a configuration check, not a live worker-health check. The chart's queue
 catalog does not prove that a worker pod is running; deployers still manage the
 worker's enabled state and deployment.
 
-Start is structural rather than a worker operation: it requires a valid Start
-contract at `workflow-contracts/start.yaml`, but no worker queue. The editor does
-not substitute implicit built-in metadata when deciding whether a new node is
-available. Missing/invalid contracts are reported as unavailable, including when
-saving disabled drafts.
+Start is structural rather than a worker operation and always exists: every
+workflow has exactly one Start node and it needs no worker queue. Without a
+`workflow-contracts/start.yaml`, a compatible API applies a built-in default
+identical to the bundled one; a valid file replaces it entirely. An invalid or
+untrusted Start contract does not remove Start: it falls back to a restricted
+Start without selectors or controls and reports diagnostics in the editor, so a
+mistake never re-exposes fields the deployer meant to hide.
 
-Enable `workflowConfiguration.enabled` and provide the required contracts before
-using contract-gated authoring. The chart currently bundles Start and ANPR only;
-other editor operations need deployer-supplied contracts. Leaving configuration
-disabled does not stop existing workflows, but prevents authoring new nodes
-unless their contracts are supplied through another configuration mount.
+Enable `workflowConfiguration.enabled` and provide stage contracts before using
+contract-gated stages. The chart currently bundles Start and ANPR only; other
+editor operations need deployer-supplied contracts. Leaving configuration
+disabled does not stop existing workflows: Start remains authorable with its
+built-in default, but no new stage nodes can be added unless their contracts
+are supplied through another configuration mount.
 
 The contract-gating API currently supports schema and contract version 1. It
 reads configuration on demand, accepting direct YAML/JSON contract files and
