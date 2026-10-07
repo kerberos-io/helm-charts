@@ -723,6 +723,10 @@ kerberoshub:
     # recording plans, inactive-account cleanup, and the optional global pass.
     # Set to "0" or a negative value to retain audit events indefinitely.
     auditEventRetentionDays: "400"
+    # Deployment-wide cap for workflow runs, anchored on run execution time.
+    # Runs always expire with their media; this only shortens their lifetime.
+    # Set to "0" or a negative value to let runs follow media retention only.
+    workflowRunRetentionDays: "0"
     resources:
       requests:
         memory: 10Mi
