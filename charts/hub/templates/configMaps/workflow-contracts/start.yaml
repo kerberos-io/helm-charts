@@ -35,6 +35,21 @@ fields:
     optional: true
     choices:
       file: ../catalogs/classifications.json
+  # Condition-only context fields (not selectors): advanced conditions on
+  # Start connections may test only declared fields, under device. or inputs.
+  - id: deviceName
+    label: Camera name
+    path: device.deviceName
+    type: string
+    operators: [eq, in, contains, matches]
+  - id: objectClass
+    label: Detected object
+    path: inputs.classify.details.*.classified
+    type: string
+    operators: [eq, ne, in, exists]
+    optional: true
+    choices:
+      file: ../catalogs/classifications.json
 
 # Controls offered for new authoring; an omitted control is not offered.
 controls:

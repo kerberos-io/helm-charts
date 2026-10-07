@@ -731,8 +731,14 @@ Deployers describe what a node exposes; Hub code owns what that means:
 | Start `controls` and `triggerModes` offered for new authoring | Schedule, condition and trigger execution |
 
 Worker images, queues, resources and credentials stay in `kerberoshub.services`.
-Generic output-field widgets for stage conditions are separate work. No new
-loader environment variable is set.
+No new loader environment variable is set.
+
+Conditions are not free-form: a new or changed predicate on a connection may
+only test a declared field of Start or of a stage upstream of that connection
+(stage outputs are addressed as `results.<stage>.<path>`), with one of its
+declared operators and a value of its type, within its bounds and, for equality
+on enumerated choices, one of its options. Predicates already stored keep
+running and can be removed, but not edited.
 
 The earlier device-bound workflow configurations were development fixtures, not
 a recommended deployment model. Charts describe capabilities, not selected
@@ -800,6 +806,12 @@ under `examples/` are illustrative, not installed presets.
 
 These are editor condition presets, not worker deployment settings. Only
 classifications are marked optional: initial classification data may be absent.
+The bundled Start contract also declares two condition-only context fields,
+`deviceName` (`device.deviceName`) and `objectClass` (the classification path
+with `eq`/`ne`/`in`/`exists`). Other Start field IDs are not selectors; they must
+use paths under `device.` or `inputs.` and only extend what advanced conditions
+may test.
+
 Site/group arrays can be empty. A contract may omit any of these fields, the
 `weeklySchedule`/`conditions` controls (omitted offers none) or a trigger mode
 (`triggerModes` omitted offers both). Omissions affect new authoring only:

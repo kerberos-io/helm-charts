@@ -34,7 +34,7 @@
     },
     "fields": {
       "type": "array",
-      "description": "Start selectors, or the typed outputs a worker returns. An empty array is valid.",
+      "description": "Typed values conditions may test: a worker's outputs (relative to its result, addressed as results.<stage>.<path>), or for start the selectors device, sites, groups and classifications plus condition-only context fields under device. or inputs. New conditions may only use declared fields. An empty array is valid.",
       "items": {"$ref": "#/definitions/field"},
       "maxItems": 128
     },
