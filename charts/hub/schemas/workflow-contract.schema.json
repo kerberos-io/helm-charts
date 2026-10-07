@@ -14,7 +14,7 @@
     "contractVersion": {"type": "integer", "minimum": 1},
     "fields": {
       "type": "array",
-      "minItems": 1,
+      "description": "Declared condition fields. An empty array is valid for a node with no exposed condition fields.",
       "items": {"$ref": "#/definitions/field"}
     },
     "controls": {

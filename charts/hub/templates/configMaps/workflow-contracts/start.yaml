@@ -1,5 +1,5 @@
-# yaml-language-server: $schema=../../schemas/workflow-contract.schema.json
-# Metadata only; no current API loader consumes this contract.
+{{/* Validate the rendered start.yaml payload against schemas/workflow-contract.schema.json in the chart root. */}}
+{{- define "hub.workflowConfiguration.start" -}}
 schemaVersion: 1
 stage: start
 contractVersion: 1
@@ -42,3 +42,16 @@ controls:
     label: Weekly schedule
   - id: conditions
     label: Advanced conditions
+{{ end -}}
+{{- include "hub.workflowConfiguration.validate" . -}}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and $config.enabled $config.includeDefaults (not (hasKey $config.replacements "workflow-contracts/start.yaml")) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
+data:
+  start.yaml: |-
+    {{- include "hub.workflowConfiguration.start" . | nindent 4 }}
+{{- end }}

@@ -79,21 +79,25 @@ mongodb:
 # Disable this to use the legacy classification catalog stored in MongoDB.
 classificationCatalogEnabled: true
 # Optional existing ConfigMap in the release namespace with classifications.json.
-# When set, do not create a catalog ConfigMap; this takes precedence over the list.
+# When set, do not create a catalog ConfigMap; this replaces bundled defaults.
 classificationCatalogExistingConfigMap: ""
-# classificationCatalog is optional and omitted by default, which uses
-# configuration/catalogs/classifications.json. Set it to a list to override.
-# Explicit null also uses defaults; [] retains the API fallback behavior.
+# Defaults live in templates/configMaps/catalogs/classifications.yaml.
+# Inline classificationCatalog values are no longer accepted (including null/[]).
+# Use a ConfigMap item with path: catalogs/classifications.json and replace: true.
 
-# Preparatory configuration packaging only: the API does not yet load workflow
-# contracts. Enabling this mounts files but does not activate a new editor/runtime.
+# Configuration packaging only: consuming contracts requires a compatible
+# API/frontend. Enabling this mounts files but does not register stage workers.
 workflowConfiguration:
   enabled: false
   # Omitted includeDefaults means true; false requires a nonempty configMaps list.
   # includeDefaults: true
   # configMaps: []
-  # Each ConfigMap supplies name and items [{key, path}] in the release namespace.
-  # Paths under workflow-contracts/ or catalogs/ must be unique across all sources.
+  # Each ConfigMap supplies name and items [{key, path, replace?}] in the release namespace.
+  # An item with replace: true replaces one bundled file while retaining other defaults.
+  # Replacement requires includeDefaults: true and a known bundled destination path.
+  # Unmarked collisions and repeated custom destinations are rejected.
+  # Replacing catalogs/classifications.json also supplies the classification API:
+  # do not combine it with classificationCatalogExistingConfigMap.
   # Legacy existingConfigMap/items/extraConfigMaps remain supported, but cannot
   # be mixed with includeDefaults/configMaps. Both interfaces are omitted here
   # so Helm's default merging does not introduce a false mixed configuration.

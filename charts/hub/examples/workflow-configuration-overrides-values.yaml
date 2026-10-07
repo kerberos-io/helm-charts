@@ -1,0 +1,25 @@
+# Create these ConfigMaps in the release namespace before deploying the chart.
+# Keys contain complete contracts/catalogs; they are not merged with chart data.
+# Remove the retired classificationCatalog key from every values overlay.
+# Do not also set classificationCatalogExistingConfigMap.
+classificationCatalogEnabled: true
+workflowConfiguration:
+  enabled: true
+  includeDefaults: true
+  configMaps:
+    - name: deployment-workflow-overrides
+      items:
+        - key: start.yaml
+          path: workflow-contracts/start.yaml
+          replace: true
+        - key: deployment-classifications.json
+          path: catalogs/classifications.json
+          replace: true
+    - name: custom-workflow-contracts
+      items:
+        - key: pose.yaml
+          path: workflow-contracts/pose.yaml
+    - name: shared-pose-catalog
+      items:
+        - key: pose-keypoints.json
+          path: catalogs/pose-keypoints.json

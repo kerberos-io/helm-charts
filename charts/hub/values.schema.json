@@ -7,7 +7,10 @@
       "maxLength": 253,
       "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
     },
-    "classificationCatalog": {"type": ["array", "null"]},
+    "classificationCatalog": {
+      "not": {},
+      "description": "Removed in 0.155.0. Store the complete catalog in a ConfigMap and use workflowConfiguration.configMaps with replace: true at catalogs/classifications.json."
+    },
     "workflowConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -22,11 +25,12 @@
         "enabled": {"type": "boolean"},
         "includeDefaults": {
           "type": "boolean",
-          "description": "Include bundled Start metadata and the effective classification catalog; true when omitted."
+          "description": "Include bundled files not explicitly replaced by configMaps items; true when omitted."
         },
         "configMaps": {
           "type": "array",
-          "items": {"$ref": "#/definitions/configMapSource"}
+          "items": {"$ref": "#/definitions/configMapSource"},
+          "description": "Add files or explicitly replace a bundled file using replace: true on an item."
         },
         "extraConfigMaps": {
           "type": "array",
@@ -69,7 +73,11 @@
       "required": ["key", "path"],
       "properties": {
         "key": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
-        "path": {"type": "string", "pattern": "^(workflow-contracts|catalogs)/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.(yaml|json)$"}
+        "path": {"type": "string", "pattern": "^(workflow-contracts|catalogs)/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.(yaml|json)$"},
+        "replace": {
+          "type": "boolean",
+          "description": "Replace this whole bundled file, not individual fields/entries. Requires configMaps and includeDefaults: true; the path must identify a bundled file."
+        }
       }
     }
   }

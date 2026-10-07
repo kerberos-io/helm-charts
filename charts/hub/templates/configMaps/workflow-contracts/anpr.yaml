@@ -1,0 +1,53 @@
+{{/* Validate the rendered anpr.yaml payload against schemas/workflow-contract.schema.json in the chart root. */}}
+{{- define "hub.workflowConfiguration.anpr" -}}
+schemaVersion: 1
+stage: anpr
+contractVersion: 1
+
+# Paths are relative to this node's result, after the engine groups persisted blocks.
+# No choices: users supply typed values rather than selecting from a catalog.
+fields:
+  - id: plate
+    label: Number plate
+    path: detections.*.tracks.*.meta.plate
+    type: string
+    operators: [eq, in, contains, matches, exists]
+    optional: true
+  - id: unread
+    label: Plate unread
+    path: detections.*.tracks.*.meta.unread
+    type: boolean
+    operators: [eq, exists]
+    optional: true
+  - id: vehicleClass
+    label: Vehicle class
+    path: detections.*.tracks.*.meta.classifiedAs
+    type: string
+    operators: [eq, in, exists]
+    optional: true
+  - id: ocrConfidence
+    label: OCR confidence
+    path: markers.*.metadata.confidence
+    type: number
+    operators: [eq, gt, gte, lt, lte, exists]
+    minimum: 0
+    maximum: 1
+    optional: true
+  - id: ocrEngine
+    label: OCR engine
+    path: markers.*.metadata.engine
+    type: string
+    operators: [eq, in, exists]
+    optional: true
+{{ end -}}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and $config.enabled $config.includeDefaults (not (hasKey $config.replacements "workflow-contracts/anpr.yaml")) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hub.workflowConfiguration.anpr.configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  anpr.yaml: |-
+    {{- include "hub.workflowConfiguration.anpr" . | nindent 4 }}
+{{- end }}
