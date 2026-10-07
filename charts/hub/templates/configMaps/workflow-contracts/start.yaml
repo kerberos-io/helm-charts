@@ -36,12 +36,15 @@ fields:
     choices:
       file: ../catalogs/classifications.json
 
-# Existing structured controls, not fields produced by Start.
+# Controls offered for new authoring; an omitted control is not offered.
 controls:
   - id: weeklySchedule
     label: Weekly schedule
   - id: conditions
     label: Advanced conditions
+
+# Trigger modes offered for new authoring; omitted offers both.
+triggerModes: [automatic, manual]
 {{ end -}}
 {{- include "hub.workflowConfiguration.validate" . -}}
 {{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}

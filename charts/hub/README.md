@@ -713,16 +713,26 @@ start. Manage updates and any required rollout/reload through deployment tooling
 Helm cannot inspect or validate its contents. The catalog schema remains available
 for authoring validation.
 
-### Workflow condition contracts (preparatory)
+### Workflow editor contracts
 
-This chart defines the initial v1 metadata format and opt-in file packaging.
+This chart defines the v1 contract format and opt-in file packaging.
 **Consuming contracts requires compatible Hub API and frontend versions.**
 Enabling packaging only mounts files; it neither enables an editor feature nor
 registers workers or changes execution. Compatible APIs use validated contracts
-to gate custom-editor node availability, in addition to the configured editor
-stage allow-list and worker routing. The Start-specific field editor supports
-the four established bindings below; generic output-field widgets are separate
-work. No new loader environment variable is set.
+to gate custom-editor node availability, together with worker routing.
+
+Deployers describe what a node exposes; Hub code owns what that means:
+
+| Contract controls | Code owns |
+| --- | --- |
+| `presentation`: name, description, approved icon, colour token | Widgets, layout and theme colours |
+| `params`: settings authors enter on a worker stage | Validation, secret masking and storage |
+| `fields`: Start selectors and typed stage outputs, labels, order, choices, bounds | Operator semantics, authorized resource lookups, Start's bindings |
+| Start `controls` and `triggerModes` offered for new authoring | Schedule, condition and trigger execution |
+
+Worker images, queues, resources and credentials stay in `kerberoshub.services`.
+Generic output-field widgets for stage conditions are separate work. No new
+loader environment variable is set.
 
 The earlier device-bound workflow configurations were development fixtures, not
 a recommended deployment model. Charts describe capabilities, not selected
@@ -747,11 +757,15 @@ schemas/
 ```
 
 - [Start contract ConfigMap](templates/configMaps/workflow-contracts/start.yaml): current device,
-  site, group and initial-classification presets, plus schedule/condition controls.
+  site, group and initial-classification presets, schedule/condition controls and
+  both trigger modes.
 - [ANPR contract ConfigMap](templates/configMaps/workflow-contracts/anpr.yaml):
-  plate/read-status and OCR metadata from the ANPR worker; no catalog required.
+  presentation plus plate/read-status and OCR metadata from the ANPR worker; no
+  catalog required. It declares no `params`, so any settings come from
+  `kerberoshub.workflows.editorStages`.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
-  worker output, demonstrating a file catalog, inline choices and a numeric field.
+  worker, demonstrating presentation, settings (`params`), a file catalog, inline
+  choices and a numeric field.
   This example does not deploy a worker or claim a universal pose-model format.
 - [Contract schema](schemas/workflow-contract.schema.json): format, source-name
   documentation and YAML editor completion for standalone contracts via the
@@ -786,8 +800,10 @@ under `examples/` are illustrative, not installed presets.
 
 These are editor condition presets, not worker deployment settings. Only
 classifications are marked optional: initial classification data may be absent.
-Site/group arrays can be empty. Weekly schedule and advanced conditions are
-descriptive controls whose behavior remains code-owned.
+Site/group arrays can be empty. A contract may omit any of these fields, the
+`weeklySchedule`/`conditions` controls (omitted offers none) or a trigger mode
+(`triggerModes` omitted offers both). Omissions affect new authoring only:
+values already saved in workflows are kept, keep running and can be cleared.
 
 The catalog preserves the API/frontend compatibility defaults: `animal`,
 `pedestrian`, `cyclist`, `motorbike`, `lorry`, `car`, `handbag`, `suitcase` and
@@ -831,10 +847,10 @@ Important output semantics:
   with a marker requires their detection-reference linkage.
 
 ANPR metadata is bundled whenever default workflow packaging is enabled, even
-if its worker is disabled. It neither deploys the worker nor adds an editor
-stage automatically. Keep worker deployment and editor availability configured
-separately; a contract is necessary but not sufficient to offer a stage in the
-custom editor.
+if its worker is disabled. It does not deploy the worker. Because a valid
+contract plus worker routing offers a stage, ANPR becomes authorable as soon as
+its worker queue is configured; replace or omit the bundled contract to prevent
+that.
 
 This chart source layout does not change the mounted layout:
 
@@ -847,8 +863,9 @@ This chart source layout does not change the mounted layout:
     anpr.yaml
 ```
 
-Each contract defines a `stage` type, a `schemaVersion`, a `contractVersion` and
-its own `fields`. `fields: []` is valid for a node without exposed condition
+Each contract defines a `stage` type, a `schemaVersion`, a `contractVersion`,
+optional `presentation` and (worker stages only) `params`, and its own `fields`.
+`controls` and `triggerModes` are Start-only. `fields: []` is valid for a node without exposed condition
 fields; omitting the `fields` property is invalid. A field declares `id`, `label`, `path`, scalar `type` and
 supported `operators`; `optional`, numeric bounds and `choices` are optional.
 The `type` describes each wildcard-selected candidate, not the containing array.
@@ -859,13 +876,16 @@ versions rather than silently reinterpreting saved conditions.
 #### Contract-gated custom editor
 
 With a compatible API/frontend, adding or changing a custom-workflow stage node
-requires all of the following:
+requires both of the following:
 
-- Its operation is declared in `kerberoshub.workflows.editorStages`.
 - Its operation has configured worker routing (normally from
   `kerberoshub.services.<operation>.queue`).
 - A valid supported contract for that operation is present under
   `workflow-contracts/`, and any referenced catalogs are valid.
+
+The contract is the allow-list. `kerberoshub.workflows.editorStages` is optional
+metadata: a stage's name, description and params are used only where its
+contract omits `presentation` or `params`.
 
 This is a configuration check, not a live worker-health check. The chart's queue
 catalog does not prove that a worker pod is running; deployers still manage the
@@ -886,7 +906,7 @@ unless their contracts are supplied through another configuration mount.
 The contract-gating API currently supports schema and contract version 1. It
 reads configuration on demand, accepting direct YAML/JSON contract files and
 JSON catalogs inside the configured root, including Kubernetes projected-volume
-symlinks. Files are limited to 64 KiB, contracts to 128 fields (Start to 32),
+symlinks. Files are limited to 64 KiB, contracts to 128 fields and 64 params,
 inline choices to 256 values, and catalogs to 1024 entries. Unsupported versions,
 duplicate declarations, unreadable files and invalid references produce
 availability diagnostics, not implicit built-in replacements.

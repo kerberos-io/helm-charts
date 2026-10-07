@@ -865,9 +865,10 @@ kerberoshub:
     #    stages:
     #      - operation: vlm
     #        dispatch: always
-    # Stages tenants may place on the workflow editor canvas next to the device
-    # node. Each entry needs a deployed worker (services.<operation>.queue);
-    # entries without one are hidden. Empty means the editor offers no stages.
+    # Optional editor metadata (name, description, params) per operation. With
+    # workflowConfiguration contracts, a stage is offered when it has a valid
+    # contract and a deployed worker (services.<operation>.queue); contract
+    # presentation and params take precedence over these entries.
     editorStages: []
     #  - operation: vlm
     #    name: Describe recording

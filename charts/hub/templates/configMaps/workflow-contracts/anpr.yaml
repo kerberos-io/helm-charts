@@ -3,6 +3,11 @@
 schemaVersion: 1
 stage: anpr
 contractVersion: 1
+presentation:
+  name: Number plate recognition
+  description: Read number plates and vehicle classes in the recording.
+  icon: car
+  color: amber
 
 # Paths are relative to this node's result, after the engine groups persisted blocks.
 # No choices: users supply typed values rather than selecting from a catalog.

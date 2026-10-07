@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Hub workflow condition contract v1 (preparatory)",
+  "title": "Hub workflow editor contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "stage", "contractVersion", "fields"],
@@ -11,11 +11,32 @@
       "pattern": "^[a-z][a-z0-9-]*$",
       "description": "Stage type, not a node instance. start describes initial context."
     },
-    "contractVersion": {"type": "integer", "minimum": 1},
+    "contractVersion": {"const": 1},
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How the editor shows this node. Icons and colours come from approved sets.",
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 80},
+        "description": {"type": "string", "minLength": 1, "maxLength": 500},
+        "icon": {"enum": ["play", "camera", "person", "eye-crossed", "car", "clock", "mlModel", "share"]},
+        "color": {
+          "enum": ["blue", "teal", "rose", "amber", "indigo", "violet", "green", "grey"],
+          "description": "Theme colour token."
+        }
+      }
+    },
+    "params": {
+      "type": "array",
+      "maxItems": 64,
+      "description": "Worker-stage settings authors enter, stored per node. An explicit list (even empty) replaces kerberoshub.workflows.editorStages params. Not supported on start.",
+      "items": {"$ref": "#/definitions/param"}
+    },
     "fields": {
       "type": "array",
-      "description": "Declared condition fields. An empty array is valid for a node with no exposed condition fields.",
-      "items": {"$ref": "#/definitions/field"}
+      "description": "Start selectors, or the typed outputs a worker returns. An empty array is valid.",
+      "items": {"$ref": "#/definitions/field"},
+      "maxItems": 128
     },
     "controls": {
       "type": "array",
@@ -27,7 +48,16 @@
           "id": {"enum": ["weeklySchedule", "conditions"]},
           "label": {"type": "string", "minLength": 1}
         }
-      }
+      },
+      "description": "Start only. Controls offered for new authoring; omitted offers none. conditions applies to edges leaving Start.",
+      "maxItems": 16
+    },
+    "triggerModes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["automatic", "manual"]},
+      "description": "Start only. Trigger modes offered for new authoring; omitted offers both."
     }
   },
   "definitions": {
@@ -39,9 +69,15 @@
           "type": "string",
           "description": "Built-in authorized project-resource resolver; not a database path.",
           "oneOf": [
-            {"const": "project.devices", "description": "Device keys as values, device names as labels."},
+            {
+              "const": "project.devices",
+              "description": "Device keys as values, device names as labels."
+            },
             {"const": "project.sites", "description": "Site IDs as values, site names as labels."},
-            {"const": "project.groups", "description": "Group IDs as values, group names as labels."}
+            {
+              "const": "project.groups",
+              "description": "Group IDs as values, group names as labels."
+            }
           ]
         },
         "file": {
@@ -56,11 +92,7 @@
           "items": {"type": ["string", "number", "boolean"]}
         }
       },
-      "oneOf": [
-        {"required": ["source"]},
-        {"required": ["file"]},
-        {"required": ["values"]}
-      ]
+      "oneOf": [{"required": ["source"]}, {"required": ["file"]}, {"required": ["values"]}]
     },
     "field": {
       "type": "object",
@@ -131,12 +163,76 @@
         {
           "if": {"properties": {"type": {"enum": ["integer", "number", "boolean"]}}},
           "then": {
-            "properties": {
-              "choices": {"not": {"anyOf": [{"required": ["file"]}, {"required": ["source"]}]}}
-            }
+            "properties": {"choices": {"not": {"anyOf": [{"required": ["file"]}, {"required": ["source"]}]}}}
           }
         }
       ]
+    },
+    "param": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+          "maxLength": 64,
+          "description": "Key in node data; unique within the contract."
+        },
+        "label": {"type": "string", "minLength": 1, "maxLength": 160},
+        "description": {"type": "string", "minLength": 1, "maxLength": 500},
+        "group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Editor section; params sharing a group appear together."
+        },
+        "placeholder": {"type": "string", "minLength": 1, "maxLength": 160},
+        "type": {"enum": ["string", "number", "boolean", "select", "secret"]},
+        "required": {"type": "boolean"},
+        "default": {},
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 160}
+        },
+        "optionLabels": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1, "maxLength": 160}
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"const": "select"}}},
+          "then": {"required": ["options"]},
+          "else": {"not": {"anyOf": [{"required": ["options"]}, {"required": ["optionLabels"]}]}}
+        },
+        {
+          "if": {"properties": {"type": {"const": "secret"}}},
+          "then": {"not": {"required": ["default"]}}
+        },
+        {
+          "if": {"properties": {"type": {"enum": ["string", "select"]}}},
+          "then": {"properties": {"default": {"type": "string"}}}
+        },
+        {
+          "if": {"properties": {"type": {"const": "number"}}},
+          "then": {"properties": {"default": {"type": "number"}}}
+        },
+        {
+          "if": {"properties": {"type": {"const": "boolean"}}},
+          "then": {"properties": {"default": {"type": "boolean"}}}
+        }
+      ]
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"stage": {"const": "start"}}, "required": ["stage"]},
+      "then": {"not": {"required": ["params"]}},
+      "else": {"not": {"anyOf": [{"required": ["controls"]}, {"required": ["triggerModes"]}]}}
+    }
+  ]
 }

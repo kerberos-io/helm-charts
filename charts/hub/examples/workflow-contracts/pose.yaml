@@ -3,6 +3,23 @@
 schemaVersion: 1
 stage: pose
 contractVersion: 1
+presentation:
+  name: Detect poses
+  description: Estimate body keypoints and posture for people in the recording.
+  icon: person
+  color: teal
+# Settings authors enter per node; the worker receives them as node data.
+params:
+  - name: minConfidence
+    label: Minimum keypoint confidence
+    type: number
+    default: 0.5
+  - name: model
+    label: Model
+    type: select
+    options: [fast, accurate]
+    optionLabels: {fast: Fast, accurate: Accurate}
+    default: fast
 fields:
   - id: keypoint
     label: Keypoint
