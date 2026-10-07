@@ -44,7 +44,8 @@
       "incomplete": "Enter all 4 characters to continue.",
       "unlock": "Unlock encrypted data",
       "switchAccount": "or switch account",
-      "ariaCharacter": "Passphrase character"
+      "ariaCharacter": "Passphrase character",
+      "rememberCode": "Remember code for 24 hours on this device"
     },
     "darkMode": {
       "switchToLight": "Switch to light mode",
@@ -124,6 +125,7 @@
     "recording": "Recording",
     "dayOverview": "Day overview",
     "analytics": "Analytics",
+    "markers": "Markers",
     "watchlist": "Watchlist",
     "cases": "Cases",
     "alerts": "Alerts",
@@ -134,7 +136,257 @@
     "allOf": "All {{name}}s",
     "accounts": "Accounts",
     "roles": "Roles",
+    "audit": "Audit events",
     "settings": "Settings",
+    "context": {
+      "label": "Workspace",
+      "title": "Switch workspace",
+      "open": "Choose organisation and project",
+      "resize": "Resize organisation column"
+    },
+    "projects": {
+      "label": "Project",
+      "open": "Show projects",
+      "search": "Search projects",
+      "noResults": "No matching projects",
+      "fallback": "Project 1",
+      "empty": "No projects",
+      "unavailable": "Projects unavailable",
+      "loading": "Loading projects..."
+    },
+    "organisations": {
+      "label": "Organisation",
+      "search": "Search organisations",
+      "noResults": "No matching organisations",
+      "current": "Current organisation",
+      "none": "No organisation",
+      "select": "Select organisation",
+      "unavailable": "Organisation unavailable",
+      "loading": "Loading organisations...",
+      "empty": "No organisations yet",
+      "create": "Create organisation",
+      "name": "Organisation name",
+      "modal": {
+        "title": "Create organisation",
+        "subtitle": "Add the essentials now. Company and contact details can be completed later.",
+        "create": "Create organisation",
+        "tabs": {
+          "general": "General",
+          "company": "Company",
+          "contact": "Contact & location"
+        },
+        "fields": {
+          "name": "Organisation name *",
+          "description": "Description",
+          "domain": "Email domain",
+          "legalName": "Legal name",
+          "tradingName": "Trading name",
+          "industry": "Industry",
+          "website": "Website",
+          "email": "Contact email",
+          "phone": "Contact phone",
+          "street": "Street address",
+          "street2": "Address line 2",
+          "city": "City",
+          "region": "State / region",
+          "postalCode": "Postal code",
+          "country": "Country"
+        },
+        "placeholders": {
+          "name": "For example, Acme Security",
+          "description": "What this organisation is used for",
+          "domain": "example.com",
+          "website": "https://example.com",
+          "email": "contact@example.com"
+        },
+        "errors": {
+          "form": "Please complete all the missing fields.",
+          "nameRequired": "Enter an organisation name.",
+          "nameLength": "Use at least 2 characters.",
+          "email": "Enter a valid email address."
+        }
+      },
+      "settings": {
+        "title": "Organisation settings",
+        "open": "Open organisation settings",
+        "loading": "Loading organisation...",
+        "loadFailed": "The organisation could not be loaded.",
+        "save": "Save changes",
+        "saving": "Saving...",
+        "tabs": {
+          "general": "General",
+          "company": "Company",
+          "address": "Billing address",
+          "contacts": "Contacts",
+          "regional": "Regional",
+          "users": "Users",
+          "subscription": "Subscription"
+        },
+        "cards": {
+          "userTitle": "{{count}} user",
+          "usersTitle": "{{count}} users",
+          "usersSubtitle": "People with access to this organisation",
+          "usersFooter": "Organisation users",
+          "viewUsers": "View users"
+        },
+        "subscription": {
+          "currentPlan": "Current plan",
+          "noPlan": "No active plan",
+          "description": "Manage the plan, billing method, limits, and integrations for this organisation.",
+          "manage": "Manage subscription",
+          "status": {
+            "no-plan": "No subscription is currently active.",
+            "active": "The subscription is active.",
+            "cancelled": "The subscription has been cancelled.",
+            "reached-limit": "The subscription limit has been reached."
+          }
+        },
+        "users": {
+          "title": "Organisation users",
+          "descriptionSingle": "{{count}} person currently has access to this organisation.",
+          "description": "{{count}} people currently have access to this organisation.",
+          "manage": "Manage users",
+          "inactive": "Inactive",
+          "empty": "No users found",
+          "emptyDescription": "Add users to give them access to this organisation."
+        },
+        "contacts": {
+          "primary": "Primary contact",
+          "financial": "Financial contact",
+          "technical": "Technical contact"
+        },
+        "fields": {
+          "name": "Organisation name *",
+          "description": "Description",
+          "domain": "Email domain",
+          "legalName": "Legal name",
+          "tradingName": "Trading name",
+          "registrationNumber": "Registration number",
+          "vatNumber": "VAT number",
+          "industry": "Industry",
+          "website": "Website",
+          "email": "Contact email",
+          "phone": "Contact phone",
+          "street": "Street address",
+          "street2": "Address line 2",
+          "city": "City",
+          "region": "State / region",
+          "postalCode": "Postal code",
+          "country": "Country",
+          "timezone": "Timezone",
+          "locale": "Locale",
+          "currency": "Currency",
+          "contactName": "Name",
+          "contactEmail": "Email",
+          "contactPhone": "Phone"
+        },
+        "placeholders": {
+          "domain": "example.com",
+          "website": "https://example.com",
+          "email": "contact@example.com",
+          "timezone": "Europe/Brussels",
+          "locale": "en-US",
+          "currency": "EUR"
+        },
+        "errors": {
+          "form": "Please correct the highlighted fields.",
+          "nameRequired": "Enter an organisation name.",
+          "nameLength": "Use at least 2 characters.",
+          "email": "Enter a valid email address."
+        }
+      }
+    },
+    "projects": {
+      "label": "Project",
+      "current": "Current project",
+      "none": "No project",
+      "select": "Select project",
+      "unavailable": "Project unavailable",
+      "loading": "Loading projects...",
+      "empty": "No projects yet",
+      "search": "Search projects",
+      "create": "Create project",
+      "name": "Project name",
+      "settings": {
+        "title": "Project settings",
+        "details": "Project details",
+        "tabs": {
+          "general": "General",
+          "credentials": "Credentials"
+        },
+        "encryption": "Encryption keys",
+        "publicKey": "RSA public key",
+        "privateKey": "RSA private key",
+        "legacyPublicKey": "Agent public key",
+        "legacyPrivateKey": "Agent private key",
+        "encryptionKey": "Encryption key",
+        "secretKeys": "Secret keys",
+        "generate": "Generate credentials",
+        "regenerate": "Regenerate credentials",
+        "generating": "Generating keys...",
+        "generateHint": "Generate keys for this project.",
+        "oneTimeHint": "Copy these keys now. They will not be shown again.",
+        "copyPublicKey": "Copy RSA public key",
+        "copyPrivateKey": "Copy RSA private key",
+        "copyLegacyPublicKey": "Copy Agent public key",
+        "copyLegacyPrivateKey": "Copy Agent private key",
+        "copyEncryptionKey": "Copy encryption key",
+        "pincode": {
+          "generateTitle": "Generate project credentials?",
+          "generateMessage": "Generate new keys for this project.",
+          "label": "PIN code (optional)",
+          "hint": "Enter exactly 4 digits to encrypt the stored encryption key. The PIN is never saved.",
+          "error": "Enter exactly 4 digits or leave the PIN empty.",
+          "statusLabel": "PIN protection",
+          "enabled": "Enabled",
+          "disabled": "Disabled"
+        },
+        "import": {
+          "open": "Bring your own keys",
+          "title": "Bring your own keys",
+          "description": "Import an RSA-4096 public key generated outside the platform and provide your encryption key.",
+          "replacementWarning": "This replaces the current credentials. Cameras using them may disconnect.",
+          "formatHint": "The public key may be OpenSSL PEM or single-line Base64 DER. The encryption key must contain exactly 32 hexadecimal characters.",
+          "encryptionKeyError": "Enter exactly 32 hexadecimal characters.",
+          "cancel": "Cancel",
+          "confirm": "Import credentials",
+          "importing": "Importing..."
+        },
+        "regenerateWarning": {
+          "title": "Regenerate project credentials?",
+          "message": "This immediately replaces the current public, private and encryption keys. This action cannot be undone.",
+          "cameraImpact": "Cameras using the current credentials may disconnect and must be configured with the new credentials.",
+          "cancel": "Cancel",
+          "confirm": "Regenerate credentials"
+        }
+      },
+      "modal": {
+        "title": "Create project",
+        "subtitle": "A project keeps its devices, sites and recordings separate from the rest of the organisation.",
+        "create": "Create project",
+        "fields": {
+          "name": "Project name *",
+          "slug": "Handle *",
+          "description": "Description"
+        },
+        "placeholders": {
+          "name": "For example, Warehouse North",
+          "slug": "warehouse-north",
+          "description": "What this project is used for"
+        },
+        "hints": {
+          "slug": "Lowercase letters, numbers and single hyphens. Used to reference the project later."
+        },
+        "errors": {
+          "form": "Please complete all the missing fields.",
+          "nameRequired": "Enter a project name.",
+          "nameLength": "Use at least 2 characters.",
+          "slugRequired": "Enter a handle.",
+          "slugFormat": "Use lowercase letters, numbers and single hyphens only.",
+          "slugLength": "Use at most 63 characters."
+        }
+      }
+    },
     "plansIntegrations": "Plans & integrations",
     "dataUploaded": "Data uploaded",
     "dailyLimit": "{{percent}}% – {{usage}}/{{max}} GB daily limit",
@@ -208,6 +460,57 @@
     "Vault": "Vault"
   },
   "pages": {
+    "audit": {
+      "title": "Audit events",
+      "refresh": "Refresh",
+      "loadError": "Audit events could not be loaded. Try again.",
+      "metadata": "Metadata",
+      "noMetadata": "No metadata was recorded for this event.",
+      "changes": "Changes",
+      "filters": {
+        "actor": "Actor",
+        "actorPlaceholder": "Name or ID",
+        "action": "Action",
+        "target": "Target",
+        "targetPlaceholder": "Name or ID",
+        "operation": "Operation",
+        "permission": "Permission",
+        "category": "Category",
+        "outcome": "Outcome",
+        "search": "Search all fields",
+        "searchPlaceholder": "Actor, action, target, device...",
+        "from": "From",
+        "to": "To",
+        "any": "Any",
+        "clear": "Clear filters"
+      },
+      "table": {
+        "timestamp": "Timestamp",
+        "actor": "Actor",
+        "action": "Action",
+        "target": "Target",
+        "outcome": "Outcome",
+        "details": "Event details",
+        "showDetails": "Show metadata",
+        "hideDetails": "Hide metadata"
+      },
+      "authorization": "Authorization",
+      "request": "Request",
+      "policy": "Policy",
+      "granted": "Granted",
+      "denied": "Denied",
+      "noResults": {
+        "title": "No audit events found",
+        "description": "Events will appear here as activity is recorded."
+      },
+      "pagination": {
+        "showing": "Showing {{start}}–{{end}} of {{total}}",
+        "rows": "Rows",
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {{page}}"
+      }
+    },
     "floorplans": {
       "noneUploaded": "No floor plans uploaded yet",
       "uploadFirstHint": "Upload your first floor plan to visualize your devices on this site",
@@ -260,6 +563,13 @@
       "completeAllFields": "Please complete all the missing fields",
       "nameExists": "This name already exists",
       "badgeColor": "Badge color (HEX)",
+      "fineTuneLocation": "Fine-tune map position",
+      "fineTuneInstructions": "Move the map so the pin marks the exact site location.",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "invalidCoordinates": "Enter valid coordinates.",
+      "selectAddressBeforeFineTune": "Select an address before fine-tuning its map position.",
+      "resetLocation": "Reset position",
       "vaultSaveToUse": "Save changes to use this Vault",
       "vaultCheckCredentials": "Check credentials and try again"
     },
@@ -304,6 +614,85 @@
     "analytics": {
       "manageAlerts": "Manage alerts",
       "subscribePrompt": "Subscribe to a plan to generate notifications",
+      "markers": {
+        "title": "Markers",
+        "overview": "Overview",
+        "searchPlaceholder": "Search marker names, e.g. a license plate",
+        "clearFilters": "Clear filters",
+        "loading": "Loading markers",
+        "loadError": "Markers could not be loaded. Please try again.",
+        "invalidDateRange": "The start date must be before the end date.",
+        "openDetails": "Open marker details",
+        "openMarkerDetails": "Open details for marker {{name}}",
+        "openMedia": "Open recording",
+        "noMedia": "No linked recording",
+        "mediaErrorTitle": "Recording unavailable",
+        "mediaErrorMessage": "The recording linked to this marker could not be opened.",
+        "detail": {
+          "title": "Marker details",
+          "recording": "Marker recording",
+          "loadingRecording": "Loading linked recording...",
+          "videoUnavailable": "The linked recording has no playable video.",
+          "markerPosition": "Marker starts {{offset}} into this recording",
+          "openFullRecording": "Open full recording",
+          "overview": "Overview",
+          "start": "Start",
+          "end": "End",
+          "description": "Description",
+          "classification": "Classification",
+          "metadata": "Metadata",
+          "source": "Source",
+          "engine": "Engine",
+          "modelVersion": "Model version",
+          "boundingBox": "Bounding box",
+          "rawMetadata": "Raw metadata",
+          "comments": "Comments",
+          "identifiers": "Identifiers",
+          "markerId": "Marker ID",
+          "deviceId": "Device ID",
+          "siteId": "Site ID",
+          "groupId": "Group ID",
+          "organisationId": "Organisation ID",
+          "mediaKey": "Media key",
+          "audit": "Audit information"
+        },
+        "filters": {
+          "categories": "Categories",
+          "from": "From",
+          "to": "To",
+          "sort": "Sort markers"
+        },
+        "sort": {
+          "latest": "Latest first",
+          "oldest": "Oldest first",
+          "nameAsc": "Name A-Z",
+          "nameDesc": "Name Z-A"
+        },
+        "table": {
+          "timestamp": "Timestamp",
+          "marker": "Marker",
+          "categories": "Categories",
+          "device": "Device",
+          "duration": "Duration",
+          "source": "Source",
+          "signals": "Events & tags",
+          "events": "Events",
+          "tags": "Tags",
+          "confidence": "Confidence",
+          "media": "Recording"
+        },
+        "noResults": {
+          "title": "No markers found",
+          "description": "Adjust the filters or search for another marker name."
+        },
+        "pagination": {
+          "showing": "Showing {{start}}-{{end}}",
+          "rows": "Rows",
+          "previous": "Previous",
+          "next": "Next",
+          "page": "Page {{page}}"
+        }
+      },
       "noAlerts": {
         "description": "Create an alert or enable existing ones to start receiving analytics.",
         "button": "Alerts"
@@ -340,6 +729,19 @@
       "placeholderDescription": "To create your first case go to the media section, and select a media item. Create a new case and assign it to the relevant person.",
       "goToMedia": "Go to Media",
       "myCases": "My cases",
+      "loadError": "Something went wrong while loading the case. Please try again.",
+      "autoplayNextOn": "Autoplay next: On",
+      "autoplayNextOff": "Autoplay next: Off",
+      "mediaProcessing": "Processing",
+      "mediaFailed": "Failed",
+      "a11y": {
+        "toggleCase": "Toggle case details",
+        "statusOpen": "Case status: open",
+        "statusApproved": "Case status: approved",
+        "statusRejected": "Case status: rejected",
+        "loadingCases": "Loading cases",
+        "caseThumbnail": "Case thumbnail"
+      },
       "actions": {
         "reopenCase": "Reopen case",
         "approveCase": "Approve case",
@@ -563,6 +965,8 @@
       "filter": {
         "date": "Date",
         "region": "Region",
+        "regionExcluded": "Not in results",
+        "regionExcludedHint": "No region drawn on this camera, so it is left out of the results. Draw a region to include it again.",
         "categories": "Categories",
         "markers": "Markers",
         "events": "Events",
@@ -570,7 +974,15 @@
         "newest": "Newest",
         "oldest": "Oldest",
         "showAllRecordings": "Show all recordings",
-        "showStarredRecordings": "Show starred recordings only"
+        "showStarredRecordings": "Show starred recordings only",
+        "synchronisedPlayer": "Synchronised player",
+        "synchronisedPlayerHint": "Play all recordings of the selected region, one player per camera",
+        "synchronisedPlayerRequirement": "Select a time region of maximum 60 minutes on the timeline to enable the synchronised player",
+        "synchronisedPlayerPlay": "Play",
+        "synchronisedPlayerPause": "Pause",
+        "synchronisedPlayerNoFootage": "No recording at this moment",
+        "synchronisedPlayerEmpty": "No playable recordings found in the selected time region.",
+        "timelinePreviewPlayVideo": "Play video"
       },
       "emptyState": {
         "selectDayAndDevice": "Select day and device",
@@ -586,8 +998,12 @@
       "timeline": {
         "title": "Timeline",
         "clearSelectedTime": "Clear selected time",
+        "selectionStart": "Start of the selected time range",
+        "selectionEnd": "End of the selected time range",
         "fetching": "Fetching timeline rows for selected devices.",
-        "noRecordings": "No recordings are available for the selected date and devices."
+        "noRecordings": "No recordings are available for the selected date and devices.",
+        "resizeHint": "Drag to resize the timeline",
+        "rowHeight": "Drag to change the height of the recording bars"
       },
       "chart": {
         "title": "Chart",
@@ -608,8 +1024,13 @@
         "copyVideoUrl": "Copy Video URL",
         "verifyVideo": "Verify video",
         "shareRecording": "Share Recording",
+        "runWorkflow": "Run workflow",
+        "runWorkflowSubtitle": "Choose a workflow to run on this recording.",
+        "noMediaWorkflows": "No workflows are available for recordings.",
         "newCase": "New case",
         "addToCase": "Add to case",
+        "assignToCase": "Assign to case",
+        "caseActions": "Case actions",
         "share": "Share",
         "save": "Save",
         "loading": "Loading...",
@@ -1126,7 +1547,7 @@
           "k1": "Add a Dataset",
           "k2": "Are you sure you want to remove device",
           "k3": "Search dataset..",
-          "k4": "Set up your first Kerberos Agent",
+          "k4": "Set up your first Agent",
           "k5": "No devices are available",
           "k6": "Subscribe to a plan",
           "k7": "Dataset",
@@ -1174,12 +1595,12 @@
           },
           "new": {
             "new": {
-              "k1": "Before you will see your recordings shown up on Kerberos Hub, you first need to install and configure a Kerberos Agent. A Kerberos Agent is a piece of software that processes a device, and will make recordings when a portion of the video stream has changed. These recordings will then be send to, and processed by the Kerberos Hub application.",
-              "k2": "After you've properly installed one or more Kerberos Agents, you can link it to the Kerberos Hub application using your",
+              "k1": "Before you will see your recordings shown up on Kerberos Hub, you first need to install and configure an Agent. An Agent is a piece of software that processes a device, and will make recordings when a portion of the video stream has changed. These recordings will then be send to, and processed by the Kerberos Hub application.",
+              "k2": "After you've properly installed one or more Agents, you can link it to the Kerberos Hub application using your",
               "k3": "cloud credentials",
               "k4": ". When linked successfully, your device will show up on the devices page.",
               "k5": "Get started",
-              "k6": "We have different ways to get your Kerberos Agent up and running. You can install the Kerberos Agent using a prebuilt Docker container, inside your Kubernetes Cluster, on your Raspberry Pi (or any other compatible board) or on a simple VM. Please select the most appropriate solution to get started. Visit",
+              "k6": "We have different ways to get your Agent up and running. You can install the Agent using a prebuilt Docker container, inside your Kubernetes Cluster, on your Raspberry Pi (or any other compatible board) or on a simple VM. Please select the most appropriate solution to get started. Visit",
               "k7": "our documentation website to learn more",
               "k8": "A Docker image (amd64, armv7, arm64) is",
               "k9": "available on the Docker Hub",
@@ -1189,8 +1610,8 @@
               "k13": "Go to the plan page",
               "k14": "on your cloud account and copy your cloud credentials.",
               "k15": "When created successfully, you can navigate to the Kerberos Factory interface, and enter your cloud credentials in your deployment of global configuration.",
-              "k16": "Your new Kerberos Agent will show up on the devices page.",
-              "k17": "If you want to manage Kerberos Agents at scale with Kubernetes, then",
+              "k16": "Your new Agent will show up on the devices page.",
+              "k17": "If you want to manage Agents at scale with Kubernetes, then",
               "k18": "Kerberos Factory is what you are looking for",
               "k19": "Setup a Kubernetes cluster or use your existing Kubernetes cluster.",
               "k20": "Install the different components of",
@@ -1199,7 +1620,7 @@
               "k23": "Go to the plans & integrations page",
               "k24": "on your Kerberos Hub account and copy your credentials.",
               "k25": "When configured Kerberos Factory successfully, you can modify the global settings, and enter your credentials.",
-              "k26": "All Kerberos Agent you will now add, will show up on your devices page.",
+              "k26": "All Agent you will now add, will show up on your devices page.",
               "k27": "KiOS is a custom linux OS, created for the Raspberry Pi, which runs Kerberos.io out-of-the-box. This is the most simple and basic installation procedure.",
               "k28": "Download",
               "k29": "the KiOS installer",
@@ -1626,7 +2047,7 @@
           "k11": "Delete attachment",
           "k12": "Are you sure you want to delete this attachment? This action cannot be undone.",
           "k13": "Yes, delete",
-          "k14": "Redact faces"
+          "k14": "Redact"
         }
       },
       "media": {
@@ -1686,7 +2107,7 @@
             "blocks": {
               "face_redaction": {
                 "face_redaction": {
-                  "k1": "Edit video",
+                  "k1": "Redact video",
                   "k2": "Edit video tools",
                   "k3": "This editing tool is coming soon.",
                   "k4": "No detections available",
@@ -1702,9 +2123,7 @@
                   "k14": "fps",
                   "k15": "Detection run",
                   "k16": "Select a detection run",
-                  "k17": "No detections",
-                  "k18": "Automatic tracks unavailable",
-                  "k19": "Automatic face tracks are disabled. You can still draw redaction boxes manually on the player and submit."
+                  "k17": "No detections"
                 }
               },
               "motionmap": {
@@ -1930,13 +2349,15 @@
           "k62": "Expiry date",
           "k63": "Open update access token",
           "k64": "No access tokens found",
-          "k65": "date, time",
+          "k65": "time",
           "k66": "ip",
-          "k67": "browser",
-          "k68": "os",
+          "k67": "device",
+          "k68": "status",
           "k69": "No login history found.",
           "k70": "My account",
-          "k71": "Manage your profile, billing methods and invoices"
+          "k71": "Manage your profile, billing methods and invoices",
+          "k72": "Success",
+          "k73": "Failed"
         }
       },
       "roles": {
@@ -2145,9 +2566,9 @@
           "k20": "Kerberos Hub credentials",
           "k21": "Cloud credentials",
           "k22": "Media storage region",
-          "k23": "Your media can be stored in one of the following regions. Different Kerberos agents can store in different regions.",
+          "k23": "Your media can be stored in one of the following regions. Different Agents can store in different regions.",
           "k24": "Copy",
-          "k25": "Use the below credentials to connect your Kerberos Agents to your Kerberos Hub.",
+          "k25": "Use the below credentials to connect your Agents to your Kerberos Hub.",
           "k26": "Use the below credentials to connect your devices to our cloud.",
           "k27": "How to connect Agents to Kerberos Hub",
           "k28": "Public key",
@@ -2586,7 +3007,7 @@
               "k2": "draft",
               "k3": "Device detail",
               "k4": "Kerberos Factory",
-              "k5": "Kerberos Agent",
+              "k5": "Agent",
               "k6": "n/a",
               "k7": "Remove device"
             }
@@ -2822,7 +3243,7 @@
             "k2": "PREVIEW",
             "k3": "Switch to live [Shift + L]",
             "k4": "LIVE",
-            "k5": "Make sure you are using the latest Kerberos agent and a Gold subscription",
+            "k5": "Make sure you are using the latest Agent and a Gold subscription",
             "k6": "You are not allowed to watch a live stream.",
             "k7": "Turn sound off",
             "k8": "Turn sound on",
@@ -2834,7 +3255,22 @@
             "k14": "Device Idle",
             "k15": "The agent is online, but the device stream seems to be offline",
             "k16": "No permissions",
-            "k17": "You aren't allowed to view this livestream."
+            "k17": "You aren't allowed to view this livestream.",
+            "k18": "Record",
+            "k19": "Recording",
+            "k20": "REC",
+            "k21": "Stop recording",
+            "k22": "Camera is set to continuous recording",
+            "k23": "Show motion detection",
+            "k24": "Hide motion detection",
+            "k25": "Recent recordings",
+            "k26": "No recordings available",
+            "k27": "Back 5 seconds",
+            "k28": "Play",
+            "k29": "Pause",
+            "k30": "Forward 5 seconds",
+            "k31": "Previous time window",
+            "k32": "Next time window"
           }
         },
         "tags": {
@@ -2892,6 +3328,13 @@
             "k1": "Chart time range",
             "k2": "Start time",
             "k3": "End time"
+          }
+        },
+        "time_spinner": {
+          "time_spinner": {
+            "hours": "Hours",
+            "minutes": "Minutes",
+            "seconds": "Seconds"
           }
         },
         "video_js": {
