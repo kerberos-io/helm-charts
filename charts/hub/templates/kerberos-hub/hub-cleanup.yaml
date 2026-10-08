@@ -111,6 +111,8 @@ spec:
               value: "{{ .Values.kerberoshub.cleanup.defaultTaskRetentionDays }}"
             - name: AUDIT_EVENT_RETENTION_DAYS
               value: "{{ .Values.kerberoshub.cleanup.auditEventRetentionDays }}"
+            - name: WORKFLOW_RUN_RETENTION_DAYS
+              value: "{{ .Values.kerberoshub.cleanup.workflowRunRetentionDays | default "0" }}"
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}
