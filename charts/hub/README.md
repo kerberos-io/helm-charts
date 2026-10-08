@@ -858,8 +858,14 @@ Important output semantics:
 - Vehicles removed by the movement and jump gates produce neither a track nor a
   marker, so the lists can be empty.
 - Track confidence is a constant 0.9 and is deliberately not offered.
-- hub-anpr does not read per-node settings yet; its behaviour is configured with
-  `ANPR_*` environment variables on the worker.
+- Node settings (`params`) override the worker's `ANPR_*` environment variables
+  per run: vehicle classes to read (`plateClasses`, a multiselect from the
+  classification catalog), minimum movement, maximum jump, frames to read,
+  agreeing reads required and minimum OCR confidence. Their defaults equal the
+  worker's built-in defaults and are stored on nodes when a workflow is saved,
+  so a deployment that changes those environment variables should change the
+  contract defaults as well. Requires hub-anpr with node settings and an engine
+  that dispatches settings to every stage.
 
 ANPR metadata is bundled whenever default workflow packaging is enabled, even
 if its worker is disabled. It does not deploy the worker. Because a valid

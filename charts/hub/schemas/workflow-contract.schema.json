@@ -189,9 +189,11 @@
           "description": "Editor section; params sharing a group appear together."
         },
         "placeholder": {"type": "string", "minLength": 1, "maxLength": 160},
-        "type": {"enum": ["string", "number", "boolean", "select", "secret"]},
+        "type": {"enum": ["string", "number", "boolean", "select", "multiselect", "secret"]},
         "required": {"type": "boolean"},
-        "default": {},
+        "default": {
+          "description": "Value the editor pre-fills and the API stores when a node leaves the setting unset; never for secrets. Typically the worker's own default."
+        },
         "options": {
           "type": "array",
           "minItems": 1,
@@ -202,13 +204,28 @@
         "optionLabels": {
           "type": "object",
           "additionalProperties": {"type": "string", "minLength": 1, "maxLength": 160}
+        },
+        "minimum": {"type": "number", "description": "Inclusive lower bound for a number setting."},
+        "maximum": {"type": "number", "description": "Inclusive upper bound for a number setting."},
+        "choices": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file"],
+          "properties": {
+            "file": {"type": "string", "pattern": "^\\.\\./catalogs/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.json$"}
+          },
+          "description": "Options for a select or multiselect setting from a shared catalog file (keys become options, labels become optionLabels). Use instead of options."
         }
       },
       "allOf": [
         {
-          "if": {"properties": {"type": {"const": "select"}}},
-          "then": {"required": ["options"]},
-          "else": {"not": {"anyOf": [{"required": ["options"]}, {"required": ["optionLabels"]}]}}
+          "if": {"properties": {"type": {"enum": ["select", "multiselect"]}}},
+          "then": {"oneOf": [{"required": ["options"]}, {"required": ["choices"]}]},
+          "else": {
+            "not": {
+              "anyOf": [{"required": ["options"]}, {"required": ["optionLabels"]}, {"required": ["choices"]}]
+            }
+          }
         },
         {
           "if": {"properties": {"type": {"const": "secret"}}},
@@ -219,8 +236,15 @@
           "then": {"properties": {"default": {"type": "string"}}}
         },
         {
+          "if": {"properties": {"type": {"const": "multiselect"}}},
+          "then": {
+            "properties": {"default": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}}
+          }
+        },
+        {
           "if": {"properties": {"type": {"const": "number"}}},
-          "then": {"properties": {"default": {"type": "number"}}}
+          "then": {"properties": {"default": {"type": "number"}}},
+          "else": {"not": {"anyOf": [{"required": ["minimum"]}, {"required": ["maximum"]}]}}
         },
         {
           "if": {"properties": {"type": {"const": "boolean"}}},

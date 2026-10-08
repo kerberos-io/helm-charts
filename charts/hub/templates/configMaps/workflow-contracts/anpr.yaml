@@ -9,6 +9,57 @@ presentation:
   icon: car
   color: amber
 
+# Node settings hub-anpr reads per run (see its README, "Node settings"). Each
+# overrides the matching ANPR_* environment variable; the defaults below equal
+# the worker's built-in defaults. A deployment that changes those variables
+# should change these defaults too, because new nodes store them on save.
+params:
+  - name: plateClasses
+    label: Read plates for
+    description: Vehicle classes whose plates are read (ANPR_PLATE_CLASSES).
+    type: multiselect
+    choices: {file: ../catalogs/classifications.json}
+    default: [car]
+    group: Which vehicles
+  - name: minMovement
+    label: Minimum movement
+    description: Skip vehicles that barely moved; 0 reads every vehicle (ANPR_READ_MOVEMENT_MIN).
+    type: number
+    minimum: 0
+    default: 0
+    group: Which vehicles
+  - name: maxJump
+    label: Maximum jump between frames
+    description: Drop unstable tracks; 0 disables the check (ANPR_READ_MAX_JUMP).
+    type: number
+    minimum: 0
+    default: 0
+    group: Which vehicles
+  - name: readFrames
+    label: Frames to read per vehicle
+    description: Frames OCR'd per vehicle; 0 disables OCR (ANPR_READ_FRAMES).
+    type: number
+    minimum: 0
+    maximum: 10
+    default: 1
+    group: Recognition
+  - name: readQuorum
+    label: Agreeing reads required
+    description: Reads that must agree before a plate is accepted; 0 accepts any read (ANPR_READ_QUORUM).
+    type: number
+    minimum: 0
+    maximum: 10
+    default: 0
+    group: Recognition
+  - name: minConfidence
+    label: Minimum OCR confidence
+    description: Ignore reads below this confidence (ANPR_READ_CONF_MIN).
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0
+    group: Recognition
+
 # Paths are relative to results.anpr (models.WorkflowAnprResult): one track and
 # one marker per vehicle. Plate, unread and class can be tied to the same
 # vehicle with "Must match the same item"; OCR confidence and engine live on
