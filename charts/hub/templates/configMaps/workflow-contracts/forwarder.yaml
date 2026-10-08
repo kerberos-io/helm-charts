@@ -5,13 +5,79 @@ stage: forwarder
 contractVersion: 1
 presentation:
   name: Forward to my system
-  description: Send the run's data to the external destination configured for the forwarder.
+  description: Send the run's data to your own RabbitMQ destination.
   icon: share
   color: green
 
-# The destination, delivery mode (delivered or callback) and which run data is
-# forwarded are deployment configuration of hub-workflows-forwarder, optionally
-# per workflow; the worker reads no per-node settings, so none are declared.
+# Custom workflows supply their own connection; deployment credentials are never
+# inherited. These non-secret defaults are stored on save, not read from the worker.
+params:
+  - name: broker
+    label: Provider
+    description: Custom workflows use their own RabbitMQ destination. Shared deployment integrations are reserved for global workflows.
+    type: select
+    required: true
+    options: [rabbitmq]
+    optionLabels: {rabbitmq: RabbitMQ}
+    default: rabbitmq
+    group: Delivery
+  - name: mode
+    label: Completion mode
+    description: Complete after delivery, or wait for the external result. Callback requires a deployment-configured Hub callback URL.
+    type: select
+    required: true
+    options: [delivered, callback]
+    optionLabels: {delivered: Complete after delivery, callback: Wait for result}
+    default: delivered
+    group: Delivery
+  - name: host
+    label: Host
+    description: Your RabbitMQ destination host. Required before enabling the workflow.
+    type: string
+    required: true
+    placeholder: rabbitmq.example.com
+    group: RabbitMQ destination
+  - name: port
+    label: Port
+    description: Your RabbitMQ destination port, a whole number (usually 5671 with TLS or 5672 without TLS).
+    type: number
+    required: true
+    minimum: 1
+    maximum: 65535
+    group: RabbitMQ destination
+  - name: queue
+    label: Queue
+    description: Your destination queue. Its dead-letter queue is this name followed by .forwarder-dead-letter.
+    type: string
+    required: true
+    group: RabbitMQ destination
+  - name: vhost
+    label: Virtual host
+    description: Your RabbitMQ virtual host. Use / for the broker's default virtual host.
+    type: string
+    required: true
+    placeholder: /
+    group: RabbitMQ destination
+  - name: tls
+    label: Use TLS
+    description: Encrypt the connection and verify the broker certificate using system trust roots. Deployment TLS overrides are never inherited.
+    type: boolean
+    required: true
+    default: true
+    group: RabbitMQ destination
+  - name: username
+    label: Username
+    description: Your RabbitMQ destination username. Deployment credentials are never used.
+    type: string
+    required: true
+    group: RabbitMQ credentials
+  - name: password
+    label: Password
+    description: Your RabbitMQ destination password. Required before enabling the workflow; masked after saving.
+    type: secret
+    required: true
+    group: RabbitMQ credentials
+
 # It contributes no output fields: connections after it can still use Start and
 # earlier stages in Extra conditions.
 fields: []

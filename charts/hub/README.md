@@ -771,9 +771,9 @@ schemas/
   catalog required. It declares no `params`, so any settings come from
   `kerberoshub.workflows.editorStages`.
 - [Forwarder contract ConfigMap](templates/configMaps/workflow-contracts/forwarder.yaml):
-  presentation only. `hub-workflows-forwarder` takes its destination, delivery
-  mode and forwarded data from its own deployment configuration (optionally per
-  workflow), reads no per-node settings and contributes no output fields.
+  presentation and required per-node delivery and RabbitMQ destination settings
+  for custom workflows. Deployment-global workflows keep their deployment
+  bindings. No output fields are declared.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
   worker, demonstrating presentation, settings (`params`), a file catalog, inline
   choices and a numeric field.
@@ -876,6 +876,34 @@ that.
 The forwarder contract follows the same rule: the forwarder becomes authorable
 wherever its worker queue is configured. Replace or omit the bundled contract to
 prevent that.
+
+Its nine required custom-workflow settings are `broker`,
+`mode`, `host`, `port` (whole number, 1-65535), `queue`, `vhost`, `tls`,
+`username` and `password`. The contract defaults `broker` to `rabbitmq`, `mode`
+to `delivered` and `tls` to `true`; those values are stored on save. Destination
+and credentials must be supplied before enabling a custom workflow. The password is a secret:
+the API masks it on reads and the engine includes it only in worker dispatches.
+Changing other node settings requires re-entering saved secrets.
+
+Custom workflows never inherit deployment connection settings or credentials.
+They use their own RabbitMQ connection, verified TLS with system trust roots
+when enabled, and their own `<queue>.forwarder-dead-letter` queue. Incomplete
+custom settings fail closed even if a replacement contract makes them optional.
+Shared destinations and custom HTTPS webhooks are not supported in this phase.
+Deployment-global workflows continue using their configured RabbitMQ or HTTPS
+bindings without node overrides. `mode: callback` requires a
+configured callback base URL (`FORWARDER_CALLBACK_BASE_URL` for the
+environment-backed worker); the external service supplies its own Hub token.
+Custom invocations carry the run's inputs and results, not deployment-specific
+field mappings. TLS certificate and queue declaration policies are not node
+settings.
+
+Deploy the engine that stamps the top-level `forwarderDestinationMode`
+(`deployment` or `custom`) before the enforcing worker. Missing or invalid mode
+is rejected; drain old unstamped dispatches before the worker upgrade. Update
+existing custom workflows with complete settings. The mode is engine-owned,
+not contract-defined, and the forwarder queue must accept trusted engine
+publishers only.
 
 This chart source layout does not change the mounted layout:
 
