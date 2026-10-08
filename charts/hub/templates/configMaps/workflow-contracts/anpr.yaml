@@ -5,45 +5,71 @@ stage: anpr
 contractVersion: 1
 presentation:
   name: Number plate recognition
-  description: Read number plates and vehicle classes in the recording.
+  description: Read the number plates of vehicles in the recording.
   icon: car
   color: amber
 
-# Paths are relative to this node's result, after the engine groups persisted blocks.
-# No choices: users supply typed values rather than selecting from a catalog.
+# Paths are relative to results.anpr (models.WorkflowAnprResult): one track and
+# one marker per vehicle. Plate, unread and class can be tied to the same
+# vehicle with "Must match the same item"; OCR confidence and engine live on
+# the markers and cannot be tied to a plate.
 fields:
   - id: plate
     label: Number plate
     path: detections.*.tracks.*.meta.plate
     type: string
-    operators: [eq, in, contains, matches, exists]
+    operators: [eq, in, contains, matches]   # stored uppercase, letters and digits only, e.g. AB123CD
     optional: true
   - id: unread
-    label: Plate unread
+    label: Plate could not be read
     path: detections.*.tracks.*.meta.unread
     type: boolean
-    operators: [eq, exists]
+    operators: [eq]
     optional: true
   - id: vehicleClass
-    label: Vehicle class
+    label: Vehicle class (from classification)
     path: detections.*.tracks.*.meta.classifiedAs
     type: string
-    operators: [eq, in, exists]
+    operators: [eq, in]
     optional: true
+    choices: {file: ../catalogs/classifications.json}
   - id: ocrConfidence
     label: OCR confidence
     path: markers.*.metadata.confidence
     type: number
-    operators: [eq, gt, gte, lt, lte, exists]
+    operators: [gte, gt, lte, lt]   # read plates only; about 0-1 for fast, 0.5 for tesseract
     minimum: 0
-    maximum: 1
     optional: true
   - id: ocrEngine
     label: OCR engine
     path: markers.*.metadata.engine
     type: string
-    operators: [eq, in, exists]
+    operators: [eq, in]   # read plates only
     optional: true
+    choices: {values: [fast, tesseract, tesseract+opencv, http]}
+  - id: secondsVisible
+    label: Seconds visible
+    path: markers.*.duration
+    type: integer
+    operators: [gte, lte]
+    minimum: 0
+    optional: true
+
+# Connections leaving this stage; Extra conditions are appended collapsed.
+panel:
+  sections:
+    - id: plate
+      label: Plate
+      fields:
+        - {field: plate, widget: text, operator: contains, label: Plate contains (e.g. AB123)}
+        - {field: unread, widget: toggle, label: Plate could not be read}
+    - id: recognition
+      label: Recognition
+      collapsed: true
+      fields:
+        - {field: ocrConfidence, widget: number, operator: gte, label: Minimum OCR confidence}
+        - {field: vehicleClass, widget: multiselect}
+        - {field: secondsVisible, widget: number, operator: gte, label: Visible for at least (seconds)}
 {{ end -}}
 {{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
 {{- if and $config.enabled $config.includeDefaults (not (hasKey $config.replacements "workflow-contracts/anpr.yaml")) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}

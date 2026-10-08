@@ -824,39 +824,37 @@ literal output/comparison values, not aliases: `motorbike` does not match
 `motorcycle`. Deployments using a different detector vocabulary must supply the
 appropriate complete catalog rather than relabeling keys silently.
 
-##### ANPR: typed fields without a catalog
+##### ANPR: the stage result
 
-The ANPR contract describes the existing `hub-anpr` worker's output. The engine
-groups its persisted detection and marker blocks into the node's result. Paths
-are relative to that result, not prefixed with `results.anpr`: the consuming
-editor must bind them to the selected node instance.
+The ANPR contract describes `results.anpr` as `models.WorkflowAnprResult`
+defines it: the engine groups hub-anpr's ingest blocks into one detection run
+(`detections`) with one track per vehicle, and one marker per vehicle
+(`markers`). Paths are relative to that result.
 
 | ANPR field | Relative result path | Input |
 | --- | --- | --- |
-| `plate` | `detections.*.tracks.*.meta.plate` | Plate text or a list of plate strings |
+| `plate` | `detections.*.tracks.*.meta.plate` | Uppercase letters and digits without separators (`AB123CD`); empty when unread |
 | `unread` | `detections.*.tracks.*.meta.unread` | Boolean |
-| `vehicleClass` | `detections.*.tracks.*.meta.classifiedAs` | Class text or a list of class strings |
-| `ocrConfidence` | `markers.*.metadata.confidence` | Number from 0 to 1 |
-| `ocrEngine` | `markers.*.metadata.engine` | Engine text or a list of engine strings |
+| `vehicleClass` | `detections.*.tracks.*.meta.classifiedAs` | Classification label copied from classify (only `ANPR_PLATE_CLASSES`, by default `car`) |
+| `ocrConfidence` | `markers.*.metadata.confidence` | Number; only for read plates; about 0–1 for `fast`, 0.5 for `tesseract`, unclamped for `http` |
+| `ocrEngine` | `markers.*.metadata.engine` | `fast`, `tesseract`, `tesseract+opencv` or `http`; only for read plates |
+| `secondsVisible` | `markers.*.duration` | Whole seconds the vehicle was visible |
 
-These fields omit `choices` entirely. The contract format uses `type` and
-`operators` to describe typed user input; no empty catalog, fake enumerations or
-reference to the classification catalog is needed.
+The panel offers "Plate contains" and "Plate could not be read", plus a
+collapsed Recognition section (minimum OCR confidence, vehicle class, seconds
+visible). `exists` is not offered: plate, unread and class are present for every
+vehicle, so it would always match.
 
 Important output semantics:
 
-- An unread track has `meta.plate: ""` and `meta.unread: true`; its display label
-  is `unread`, which is not a plate value. Existence of `meta.plate` alone does not
-  prove a successful read.
-- OCR confidence comes from marker metadata, not detection-track confidence
-  (currently a fixed `0.90`). It is absent for unread plates; zero can mean the
-  OCR engine supplied no score.
-- All fields are optional because movement/jump filtering can remove every
-  track/marker, and OCR engine metadata can be absent.
-- Wildcards can match different tracks or markers. Separate plate/confidence
-  predicates do not establish that the score belongs to the same plate. A
-  same-object check within one array needs `anyMatch`; correlating a detection
-  with a marker requires their detection-reference linkage.
+- Wildcards fan out independently. Plate, unread and class are on the same
+  track and can be tied to one vehicle with "Must match the same item"; OCR
+  confidence and engine are on the markers and cannot be tied to a plate.
+- Vehicles removed by the movement and jump gates produce neither a track nor a
+  marker, so the lists can be empty.
+- Track confidence is a constant 0.9 and is deliberately not offered.
+- hub-anpr does not read per-node settings yet; its behaviour is configured with
+  `ANPR_*` environment variables on the worker.
 
 ANPR metadata is bundled whenever default workflow packaging is enabled, even
 if its worker is disabled. It does not deploy the worker. Because a valid
