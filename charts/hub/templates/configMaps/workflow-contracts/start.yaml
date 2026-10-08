@@ -1,0 +1,75 @@
+{{/* Validate the rendered start.yaml payload against schemas/workflow-contract.schema.json in the chart root. */}}
+{{- define "hub.workflowConfiguration.start" -}}
+schemaVersion: 1
+stage: start
+contractVersion: 1
+
+# Paths refer to the safe initial context, not the full event or credentials.
+fields:
+  - id: device
+    label: Device
+    path: device.deviceKey
+    type: string
+    operators: [eq, in]
+    choices:
+      source: project.devices
+  - id: sites
+    label: Sites
+    path: device.siteIds.*
+    type: string
+    operators: [in]
+    choices:
+      source: project.sites
+  - id: groups
+    label: Groups
+    path: device.groupIds.*
+    type: string
+    operators: [in]
+    choices:
+      source: project.groups
+  - id: classifications
+    label: Initial classifications
+    path: inputs.classify.details.*.classified
+    type: string
+    operators: [in]
+    optional: true
+    choices:
+      file: ../catalogs/classifications.json
+  # Condition-only context fields (not selectors): advanced conditions on
+  # Start connections may test only declared fields, under device. or inputs.
+  - id: deviceName
+    label: Camera name
+    path: device.deviceName
+    type: string
+    operators: [eq, in, contains, matches]
+  - id: objectClass
+    label: Detected object
+    path: inputs.classify.details.*.classified
+    type: string
+    operators: [eq, ne, in, exists]
+    optional: true
+    choices:
+      file: ../catalogs/classifications.json
+
+# Controls offered for new authoring; an omitted control is not offered.
+controls:
+  - id: weeklySchedule
+    label: Weekly schedule
+  - id: conditions
+    label: Advanced conditions
+
+# Trigger modes offered for new authoring; omitted offers both.
+triggerModes: [automatic, manual]
+{{ end -}}
+{{- include "hub.workflowConfiguration.validate" . -}}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and $config.enabled $config.includeDefaults (not (hasKey $config.replacements "workflow-contracts/start.yaml")) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Release.Namespace }}
+data:
+  start.yaml: |-
+    {{- include "hub.workflowConfiguration.start" . | nindent 4 }}
+{{- end }}

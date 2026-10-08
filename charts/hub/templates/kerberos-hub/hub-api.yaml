@@ -1,5 +1,6 @@
 {{- if or (eq .Values.mode "all") (eq .Values.mode "ui") -}}
 {{- $workflowConfiguration := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- $catalogReplacement := index $workflowConfiguration.replacements "catalogs/classifications.json" | default dict -}}
 {{- if .Values.kerberoshub.api.serviceEnabled }}
 apiVersion: v1
 kind: Service
@@ -120,12 +121,18 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config-mongodb: {{ include (print $.Template.BasePath "/configmap-mongodb.yaml") . | sha256sum }}
-        {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) }}
-        checksum/classification-catalog: {{ include (print $.Template.BasePath "/configmap-classification-catalog.yaml") . | sha256sum }}
+        checksum/config-mongodb: {{ include (print $.Template.BasePath "/configMaps/configmap-mongodb.yaml") . | sha256sum }}
+        {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) (not $catalogReplacement) }}
+        checksum/classification-catalog: {{ include (print $.Template.BasePath "/configMaps/catalogs/classifications.yaml") . | sha256sum }}
         {{- end }}
-        {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults }}
-        checksum/workflow-configuration: {{ include (print $.Template.BasePath "/configmap-workflow-configuration.yaml") . | sha256sum }}
+        {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/start.yaml")) }}
+        checksum/workflow-configuration: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/start.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/anpr.yaml")) }}
+        checksum/workflow-contract-anpr: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/anpr.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/forwarder.yaml")) }}
+        checksum/workflow-contract-forwarder: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/forwarder.yaml") . | sha256sum }}
         {{- end }}
       labels:
         app: hub-api
@@ -147,16 +154,34 @@ spec:
           projected:
             sources:
               {{- if $workflowConfiguration.includeDefaults }}
+              {{- if not (hasKey $workflowConfiguration.replacements "workflow-contracts/start.yaml") }}
               - configMap:
                   name: {{ printf "%s-workflow-configuration" .Release.Name | trunc 63 | trimSuffix "-" }}
                   items:
                     - key: start.yaml
                       path: workflow-contracts/start.yaml
+              {{- end }}
+              {{- if not (hasKey $workflowConfiguration.replacements "workflow-contracts/anpr.yaml") }}
+              - configMap:
+                  name: {{ include "hub.workflowConfiguration.anpr.configMapName" . }}
+                  items:
+                    - key: anpr.yaml
+                      path: workflow-contracts/anpr.yaml
+              {{- end }}
+              {{- if not (hasKey $workflowConfiguration.replacements "workflow-contracts/forwarder.yaml") }}
+              - configMap:
+                  name: {{ include "hub.workflowConfiguration.forwarder.configMapName" . }}
+                  items:
+                    - key: forwarder.yaml
+                      path: workflow-contracts/forwarder.yaml
+              {{- end }}
+              {{- if not $catalogReplacement }}
               - configMap:
                   name: {{ include "hub.classificationCatalog.configMapName" . }}
                   items:
                     - key: classifications.json
                       path: catalogs/classifications.json
+              {{- end }}
               {{- end }}
               {{- range $workflowConfiguration.configMaps }}
               - configMap:
@@ -169,9 +194,9 @@ spec:
         - name: classification-catalog
           configMap:
             name: {{ include "hub.classificationCatalog.configMapName" . }}
-            {{- if .Values.classificationCatalogExistingConfigMap }}
+            {{- if or .Values.classificationCatalogExistingConfigMap $catalogReplacement }}
             items:
-              - key: classifications.json
+              - key: {{ default "classifications.json" $catalogReplacement.key | quote }}
                 path: classifications.json
             {{- end }}
       {{- end }}

@@ -1,0 +1,135 @@
+{{/* Validate the rendered anpr.yaml payload against schemas/workflow-contract.schema.json in the chart root. */}}
+{{- define "hub.workflowConfiguration.anpr" -}}
+schemaVersion: 1
+stage: anpr
+contractVersion: 1
+presentation:
+  name: Number plate recognition
+  description: Read the number plates of vehicles in the recording.
+  icon: car
+  color: amber
+
+# Node settings hub-anpr reads per run (see its README, "Node settings"). Each
+# overrides the matching ANPR_* environment variable; the defaults below equal
+# the worker's built-in defaults. A deployment that changes those variables
+# should change these defaults too, because new nodes store them on save.
+params:
+  - name: plateClasses
+    label: Read plates for
+    description: Vehicle classes whose plates are read (ANPR_PLATE_CLASSES).
+    type: multiselect
+    choices: {file: ../catalogs/classifications.json}
+    default: [car]
+    group: Which vehicles
+  - name: minMovement
+    label: Minimum movement
+    description: Skip vehicles that barely moved; 0 reads every vehicle (ANPR_READ_MOVEMENT_MIN).
+    type: number
+    minimum: 0
+    default: 0
+    group: Which vehicles
+  - name: maxJump
+    label: Maximum jump between frames
+    description: Drop unstable tracks; 0 disables the check (ANPR_READ_MAX_JUMP).
+    type: number
+    minimum: 0
+    default: 0
+    group: Which vehicles
+  - name: readFrames
+    label: Frames to read per vehicle
+    description: Frames OCR'd per vehicle; 0 disables OCR (ANPR_READ_FRAMES).
+    type: number
+    minimum: 0
+    maximum: 10
+    default: 1
+    group: Recognition
+  - name: readQuorum
+    label: Agreeing reads required
+    description: Reads that must agree before a plate is accepted; 0 accepts any read (ANPR_READ_QUORUM).
+    type: number
+    minimum: 0
+    maximum: 10
+    default: 0
+    group: Recognition
+  - name: minConfidence
+    label: Minimum OCR confidence
+    description: Ignore reads below this confidence (ANPR_READ_CONF_MIN).
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0
+    group: Recognition
+
+# Paths are relative to results.anpr (models.WorkflowAnprResult): one track and
+# one marker per vehicle. Plate, unread and class can be tied to the same
+# vehicle with "Must match the same item"; OCR confidence and engine live on
+# the markers and cannot be tied to a plate.
+fields:
+  - id: plate
+    label: Number plate
+    path: detections.*.tracks.*.meta.plate
+    type: string
+    operators: [eq, in, contains, matches]   # stored uppercase, letters and digits only, e.g. AB123CD
+    optional: true
+  - id: unread
+    label: Plate could not be read
+    path: detections.*.tracks.*.meta.unread
+    type: boolean
+    operators: [eq]
+    optional: true
+  - id: vehicleClass
+    label: Vehicle class (from classification)
+    path: detections.*.tracks.*.meta.classifiedAs
+    type: string
+    operators: [eq, in]
+    optional: true
+    choices: {file: ../catalogs/classifications.json}
+  - id: ocrConfidence
+    label: OCR confidence
+    path: markers.*.metadata.confidence
+    type: number
+    operators: [gte, gt, lte, lt]   # read plates only; about 0-1 for fast, 0.5 for tesseract
+    minimum: 0
+    optional: true
+  - id: ocrEngine
+    label: OCR engine
+    path: markers.*.metadata.engine
+    type: string
+    operators: [eq, in]   # read plates only
+    optional: true
+    choices: {values: [fast, tesseract, tesseract+opencv, http]}
+  - id: secondsVisible
+    label: Seconds visible
+    path: markers.*.duration
+    type: integer
+    operators: [gte, lte]
+    minimum: 0
+    optional: true
+
+# Connections leaving this stage; Extra conditions are appended collapsed.
+panel:
+  sections:
+    - id: plate
+      label: Plate
+      fields:
+        - {field: plate, widget: text, operator: contains, label: Plate contains (e.g. AB123)}
+        - {field: unread, widget: toggle, label: Plate could not be read}
+    - id: recognition
+      label: Recognition
+      collapsed: true
+      fields:
+        - {field: ocrConfidence, widget: number, operator: gte, label: Minimum OCR confidence}
+        - {field: vehicleClass, widget: multiselect}
+        - {field: secondsVisible, widget: number, operator: gte, label: Visible for at least (seconds)}
+{{ end -}}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and $config.enabled $config.includeDefaults (not (hasKey $config.replacements "workflow-contracts/anpr.yaml")) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hub.workflowConfiguration.anpr.configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  anpr.yaml: |-
+    {{- include "hub.workflowConfiguration.anpr" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,24 @@
+{{- define "hub.classificationCatalog.defaults" -}}
+[
+  {"key": "animal", "label": "Animal", "icon": "animal"},
+  {"key": "pedestrian", "label": "Pedestrian", "icon": "pedestrian"},
+  {"key": "cyclist", "label": "Cyclist", "icon": "cyclist"},
+  {"key": "motorbike", "label": "Motorbike", "icon": "motorbike"},
+  {"key": "lorry", "label": "Lorry", "icon": "lorry"},
+  {"key": "car", "label": "Car", "icon": "car"},
+  {"key": "handbag", "label": "Handbag", "icon": "handbag"},
+  {"key": "suitcase", "label": "Suitcase", "icon": "suitcase"},
+  {"key": "cell phone", "label": "Cell phone", "icon": "cell phone"}
+]
+{{- end -}}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) (not (hasKey $config.replacements "catalogs/classifications.json")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: classification-catalog
+  namespace: {{ .Release.Namespace }}
+data:
+  classifications.json: |-
+    {{- include "hub.classificationCatalog.defaults" . | mustFromJson | toPrettyJson | nindent 4 }}
+{{- end -}}

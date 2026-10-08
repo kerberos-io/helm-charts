@@ -662,85 +662,340 @@ As mentioned during the Post installation step, you'll import some `.nosql` file
 Within the Kerberos Hub front-end you'll see the option to filter through classifications. This filtered is stored in the `settings` collection. By changing the entries of the `classifications` object, you can add, edit or remove items from the filters.
 
 The default shared classification list lives in
-[`configuration/catalogs/classifications.json`](configuration/catalogs/classifications.json),
-independently of workflow contracts. Set `classificationCatalog` to a list to
-replace those defaults; unset or `null` uses the bundled file. Each entry contains the stable classifier output
+[`templates/configMaps/catalogs/classifications.yaml`](templates/configMaps/catalogs/classifications.yaml),
+independently of workflow contracts. The chart uses this bundled definition
+unless a deployer provides a ConfigMap override. Each entry contains the stable classifier output
 `key`, the user-facing `label`, and an `icon` key. Hub API exposes this catalog
 to alerts and filters. When the mounted catalog is unavailable, compatible Hub
 API versions fall back to the legacy `settings` document and then the built-in
 classification list. Set `classificationCatalogEnabled: false` to omit the
 ConfigMap and make Hub API use that fallback directly.
 
-```yaml
-classificationCatalogEnabled: true
-classificationCatalog:
-  - key: forklift
-    label: Forklift
-    icon: vehicle
-```
+Starting with chart **0.155.0**, the inline `classificationCatalog` values key is
+removed. Supplying it fails validation, including `null` and `[]`; it is never
+silently ignored or replaced with bundled defaults.
 
-To manage the catalog outside Helm, create a ConfigMap in the release namespace
-with a `classifications.json` key containing the same JSON array, then set:
+To customize the catalog, create a ConfigMap in the release namespace containing
+the complete JSON array, then use the per-file replacement interface:
 
 ```yaml
 classificationCatalogEnabled: true
-classificationCatalogExistingConfigMap: hub-classification-catalog
+workflowConfiguration:
+  enabled: true
+  includeDefaults: true
+  configMaps:
+    - name: hub-classification-catalog
+      items:
+        - key: classifications.json
+          path: catalogs/classifications.json
+          replace: true
 ```
 
-This takes precedence over `classificationCatalog` and bundled defaults. Helm
-does not create or checksum the external ConfigMap. The API mount and bundled
-Start metadata both reference it; in bundled mode, do not add it again to
-`workflowConfiguration.configMaps`. With `includeDefaults: false`, map any required
-catalog explicitly through `configMaps`; the API's catalog selection remains
-independent.
+To migrate, copy the existing list exactly (preserving keys, labels and icons)
+into the ConfigMap's JSON data, remove `classificationCatalog` from every values
+overlay and command-line override, and deploy the ConfigMap before the chart
+upgrade. A `null` value is not a migration: remove the key. The bundled list
+remains the default when no override is configured. If an old `[]` intentionally
+selected the API's runtime fallback, use `classificationCatalogEnabled: false`
+and configure workflow packaging without bundled defaults instead.
+
+The existing `classificationCatalogExistingConfigMap: hub-classification-catalog`
+option remains supported, including for deployments without workflow packaging.
+It requires the key `classifications.json`. Do not combine it with a per-file
+catalog replacement. Helm does not create or checksum either kind of external
+catalog. With bundled workflow packaging, the API mount and Start metadata
+reference the same effective ConfigMap. With `includeDefaults: false`, map any
+required catalog explicitly through `configMaps`; the API's catalog selection
+remains independent.
 Disabling `classificationCatalogEnabled` disables the API catalog mount regardless
 of this setting. The external ConfigMap and key must exist before the API pod can
 start. Manage updates and any required rollout/reload through deployment tooling;
 Helm cannot inspect or validate its contents. The catalog schema remains available
 for authoring validation.
 
-### Workflow condition contracts (preparatory)
+### Workflow editor contracts
 
-This chart defines the initial v1 metadata format and opt-in file packaging.
-**Hub API and the frontend do not yet consume these contracts.** Enabling the
-packaging only mounts files; it neither enables an editor feature nor registers
-workers or changes execution. No new loader environment variable is set.
+This chart defines the v1 contract format and opt-in file packaging.
+**Consuming contracts requires compatible Hub API and frontend versions.**
+Enabling packaging only mounts files; it neither enables an editor feature nor
+registers workers or changes execution. Compatible APIs use validated contracts
+to gate custom-editor node availability, together with worker routing.
+
+Deployers describe what a node exposes; Hub code owns what that means:
+
+| Contract controls | Code owns |
+| --- | --- |
+| `presentation`: name, description, approved icon, colour token | Widgets, layout and theme colours |
+| `params`: settings authors enter on a worker stage | Validation, secret masking and storage |
+| `fields`: Start selectors and typed stage outputs, labels, order, choices, bounds | Operator semantics, authorized resource lookups, Start's bindings |
+| Start `controls` and `triggerModes` offered for new authoring | Schedule, condition and trigger execution |
+
+Worker images, queues, resources and credentials stay in `kerberoshub.services`.
+No new loader environment variable is set.
+
+Conditions are not free-form: a new or changed predicate on a connection may
+only test a declared field of Start or of a stage upstream of that connection
+(stage outputs are addressed as `results.<stage>.<path>`), with one of its
+declared operators and a value of its type, within its bounds and, for equality
+on enumerated choices, one of its options. Predicates already stored keep
+running and can be removed, but not edited.
 
 The earlier device-bound workflow configurations were development fixtures, not
 a recommended deployment model. Charts describe capabilities, not selected
 devices, project IDs, concrete workflow edges, or user-authored conditions.
 Device filtering is optional. Saved selections belong in individual workflows.
 
-The configuration is split into independent shared catalogs and their consumers:
+ConfigMap templates live together under `templates/configMaps/`, with bundled
+catalogs and workflow contracts in their own subdirectories:
 
 ```text
-configuration/
+templates/configMaps/
+  configmap-mongodb.yaml
+  configmap-hub-audit.yaml
   catalogs/
-    classifications.json
+    classifications.yaml
   workflow-contracts/
     start.yaml
+    anpr.yaml
+    forwarder.yaml
 schemas/
   catalog.schema.json
   workflow-contract.schema.json
 ```
 
-- [Start contract](configuration/workflow-contracts/start.yaml): current device,
-  site, group and initial-classification presets, plus schedule/condition controls.
+- [Start contract ConfigMap](templates/configMaps/workflow-contracts/start.yaml): current device,
+  site, group and initial-classification presets, schedule/condition controls and
+  both trigger modes.
+- [ANPR contract ConfigMap](templates/configMaps/workflow-contracts/anpr.yaml):
+  presentation plus plate/read-status and OCR metadata from the ANPR worker; no
+  catalog required. It declares no `params`, so any settings come from
+  `kerberoshub.workflows.editorStages`.
+- [Forwarder contract ConfigMap](templates/configMaps/workflow-contracts/forwarder.yaml):
+  presentation and required per-node delivery and RabbitMQ destination settings
+  for custom workflows. Deployment-global workflows keep their deployment
+  bindings. No output fields are declared.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
-  worker output, demonstrating a file catalog, inline choices and a numeric field.
+  worker, demonstrating presentation, settings (`params`), a file catalog, inline
+  choices and a numeric field.
   This example does not deploy a worker or claim a universal pose-model format.
 - [Contract schema](schemas/workflow-contract.schema.json): format, source-name
-  documentation and YAML editor completion via the `$schema` comment.
+  documentation and YAML editor completion for standalone contracts via the
+  `$schema` comment.
 - [Catalog schema](schemas/catalog.schema.json): shared JSON lists of
   `{key, label, icon?}`, compatible with the current classification file format.
 
-Each contract defines a `stage` type, a `schemaVersion`, a `contractVersion` and
-its own `fields`. A field declares `id`, `label`, `path`, scalar `type` and
+The bundled contract and catalog templates define their payloads as named Helm
+templates and emit ConfigMaps when enabled. These are Kubernetes templates, not standalone contract
+files; Helm cannot access files under `templates/` through `.Files.Get`.
+Validate their rendered data against the schemas. The standalone custom examples
+remain plain YAML/JSON files.
+
+Do not associate the contract schema with an entire Helm template or ConfigMap:
+it describes only the contract document inside `data`. The schemas are included
+in the chart package, but are not mounted into pods. Helm validates
+`values.schema.json`, not these payload schemas. Unique field IDs/catalog keys
+and resolvable catalog references also require semantic checks; a JSON Schema
+pass alone does not establish runtime compatibility.
+
+#### Current bundled defaults
+
+Start, ANPR, the forwarder and the shared classification catalog are bundled. The pose files
+under `examples/` are illustrative, not installed presets.
+
+| Start field | Context path | Operators | Choices |
+| --- | --- | --- | --- |
+| `device` | `device.deviceKey` | `eq`, `in` | `project.devices` |
+| `sites` | `device.siteIds.*` | `in` | `project.sites` |
+| `groups` | `device.groupIds.*` | `in` | `project.groups` |
+| `classifications` | `inputs.classify.details.*.classified` | `in` | `../catalogs/classifications.json` |
+
+These are editor condition presets, not worker deployment settings. Only
+classifications are marked optional: initial classification data may be absent.
+The bundled Start contract also declares two condition-only context fields,
+`deviceName` (`device.deviceName`) and `objectClass` (the classification path
+with `eq`/`ne`/`in`/`exists`). Other Start field IDs are not selectors; they must
+use paths under `device.` or `inputs.` and only extend what advanced conditions
+may test.
+
+Site/group arrays can be empty. A contract may omit any of these fields, the
+`weeklySchedule`/`conditions` controls (omitted offers none) or a trigger mode
+(`triggerModes` omitted offers both). Omissions affect new authoring only:
+values already saved in workflows are kept, keep running and can be cleared.
+
+The catalog preserves the API/frontend compatibility defaults: `animal`,
+`pedestrian`, `cyclist`, `motorbike`, `lorry`, `car`, `handbag`, `suitcase` and
+`cell phone`. It is not an exhaustive vocabulary for every detector. Keys are
+literal output/comparison values, not aliases: `motorbike` does not match
+`motorcycle`. Deployments using a different detector vocabulary must supply the
+appropriate complete catalog rather than relabeling keys silently.
+
+##### ANPR: the stage result
+
+The ANPR contract describes `results.anpr` as `models.WorkflowAnprResult`
+defines it: the engine groups hub-anpr's ingest blocks into one detection run
+(`detections`) with one track per vehicle, and one marker per vehicle
+(`markers`). Paths are relative to that result.
+
+| ANPR field | Relative result path | Input |
+| --- | --- | --- |
+| `plate` | `detections.*.tracks.*.meta.plate` | Uppercase letters and digits without separators (`AB123CD`); empty when unread |
+| `unread` | `detections.*.tracks.*.meta.unread` | Boolean |
+| `vehicleClass` | `detections.*.tracks.*.meta.classifiedAs` | Classification label copied from classify (only `ANPR_PLATE_CLASSES`, by default `car`) |
+| `ocrConfidence` | `markers.*.metadata.confidence` | Number; only for read plates; about 0–1 for `fast`, 0.5 for `tesseract`, unclamped for `http` |
+| `ocrEngine` | `markers.*.metadata.engine` | `fast`, `tesseract`, `tesseract+opencv` or `http`; only for read plates |
+| `secondsVisible` | `markers.*.duration` | Whole seconds the vehicle was visible |
+
+The panel offers "Plate contains" and "Plate could not be read", plus a
+collapsed Recognition section (minimum OCR confidence, vehicle class, seconds
+visible). `exists` is not offered: plate, unread and class are present for every
+vehicle, so it would always match.
+
+Important output semantics:
+
+- Wildcards fan out independently. Plate, unread and class are on the same
+  track and can be tied to one vehicle with "Must match the same item"; OCR
+  confidence and engine are on the markers and cannot be tied to a plate.
+- Vehicles removed by the movement and jump gates produce neither a track nor a
+  marker, so the lists can be empty.
+- Track confidence is a constant 0.9 and is deliberately not offered.
+- Node settings (`params`) override the worker's `ANPR_*` environment variables
+  per run: vehicle classes to read (`plateClasses`, a multiselect from the
+  classification catalog), minimum movement, maximum jump, frames to read,
+  agreeing reads required and minimum OCR confidence. Their defaults equal the
+  worker's built-in defaults and are stored on nodes when a workflow is saved,
+  so a deployment that changes those environment variables should change the
+  contract defaults as well. Requires hub-anpr with node settings and an engine
+  that dispatches settings to every stage.
+
+ANPR metadata is bundled whenever default workflow packaging is enabled, even
+if its worker is disabled. It does not deploy the worker. Because a valid
+contract plus worker routing offers a stage, ANPR becomes authorable as soon as
+its worker queue is configured; replace or omit the bundled contract to prevent
+that.
+
+The forwarder contract follows the same rule: the forwarder becomes authorable
+wherever its worker queue is configured. Replace or omit the bundled contract to
+prevent that.
+
+Its nine required custom-workflow settings are `broker`,
+`mode`, `host`, `port` (whole number, 1-65535), `queue`, `vhost`, `tls`,
+`username` and `password`. The contract defaults `broker` to `rabbitmq`, `mode`
+to `delivered` and `tls` to `true`; those values are stored on save. Destination
+and credentials must be supplied before enabling a custom workflow. The password is a secret:
+the API masks it on reads and the engine includes it only in worker dispatches.
+Changing other node settings requires re-entering saved secrets.
+
+Custom workflows never inherit deployment connection settings or credentials.
+They use their own RabbitMQ connection, verified TLS with system trust roots
+when enabled, and their own `<queue>.forwarder-dead-letter` queue. Incomplete
+custom settings fail closed even if a replacement contract makes them optional.
+Shared destinations and custom HTTPS webhooks are not supported in this phase.
+Deployment-global workflows continue using their configured RabbitMQ or HTTPS
+bindings without node overrides. `mode: callback` requires a
+configured callback base URL (`FORWARDER_CALLBACK_BASE_URL` for the
+environment-backed worker); the external service supplies its own Hub token.
+Custom invocations carry the run's inputs and results, not deployment-specific
+field mappings. TLS certificate and queue declaration policies are not node
+settings.
+
+Deploy the engine that stamps the top-level `forwarderDestinationMode`
+(`deployment` or `custom`) before the enforcing worker. Missing or invalid mode
+is rejected; drain old unstamped dispatches before the worker upgrade. Update
+existing custom workflows with complete settings. The mode is engine-owned,
+not contract-defined, and the forwarder queue must accept trusted engine
+publishers only.
+
+This chart source layout does not change the mounted layout:
+
+```text
+/etc/kerberos/configuration/
+  catalogs/
+    classifications.json
+  workflow-contracts/
+    start.yaml
+    anpr.yaml
+    forwarder.yaml
+```
+
+Each contract defines a `stage` type, a `schemaVersion`, a `contractVersion`,
+optional `presentation` and (worker stages only) `params`, and its own `fields`.
+`controls` and `triggerModes` are Start-only. `fields: []` is valid for a node without exposed condition
+fields; omitting the `fields` property is invalid. A field declares `id`, `label`, `path`, scalar `type` and
 supported `operators`; `optional`, numeric bounds and `choices` are optional.
 The `type` describes each wildcard-selected candidate, not the containing array.
 IDs must be unique within a contract. Increment `contractVersion` when changing
 its meaning/output shape; the future runtime must bind workflows to compatible
 versions rather than silently reinterpreting saved conditions.
+
+#### Field paths and connection panels
+
+Every contract path addresses the workflow condition root
+(`models.WorkflowConditionRootSchema`): Start fields use absolute paths, stage
+fields are relative to `results.<stage>`. A compatible API rejects Start paths
+that are not in that schema (for example a typo such as `device.devicename`)
+and lists the valid alternatives; worker-defined `inputs.<operation>` data and
+stage outputs are accepted as declared.
+
+`panel` lays out the inputs on connections leaving a node. Sections place
+declared fields with an editor widget (`multiselect`, `select`, `text`,
+`number`, `toggle`), Start's weekly schedule (`controls: [weeklySchedule]`) or
+the Extra conditions catch-all (`picker: true`), which offers every declared
+field of Start and the stages before the connection. Connections also show the
+panels of earlier steps, collapsed. Contracts without a panel get a default one,
+so existing contracts keep working; on Start a panel replaces the top-level
+`controls` list. See the pose example and the contract schema for the full
+format.
+
+#### Contract-gated custom editor
+
+With a compatible API/frontend, adding or changing a custom-workflow stage node
+requires both of the following:
+
+- Its operation has configured worker routing (normally from
+  `kerberoshub.services.<operation>.queue`).
+- A valid supported contract for that operation is present under
+  `workflow-contracts/`, and any referenced catalogs are valid.
+
+The contract is the allow-list. `kerberoshub.workflows.editorStages` is optional
+metadata: a stage's name, description and params are used only where its
+contract omits `presentation` or `params`.
+
+This is a configuration check, not a live worker-health check. The chart's queue
+catalog does not prove that a worker pod is running; deployers still manage the
+worker's enabled state and deployment.
+
+Start is structural rather than a worker operation and always exists: every
+workflow has exactly one Start node and it needs no worker queue. Without a
+`workflow-contracts/start.yaml`, a compatible API applies a built-in default
+identical to the bundled one; a valid file replaces it entirely. An invalid or
+untrusted Start contract does not remove Start: it falls back to a restricted
+Start without selectors or controls and reports diagnostics in the editor, so a
+mistake never re-exposes fields the deployer meant to hide.
+
+Enable `workflowConfiguration.enabled` and provide stage contracts before using
+contract-gated stages. The chart currently bundles Start, ANPR and the forwarder; other
+editor operations need deployer-supplied contracts. Leaving configuration
+disabled does not stop existing workflows: Start remains authorable with its
+built-in default, but no new stage nodes can be added unless their contracts
+are supplied through another configuration mount.
+
+The contract-gating API currently supports schema and contract version 1. It
+reads configuration on demand, accepting direct YAML/JSON contract files and
+JSON catalogs inside the configured root, including Kubernetes projected-volume
+symlinks. Files are limited to 64 KiB, contracts to 128 fields and 64 params,
+inline choices to 256 values, and catalogs to 1024 entries. Unsupported versions,
+duplicate declarations, unreadable files and invalid references produce
+availability diagnostics, not implicit built-in replacements.
+
+Previously saved nodes whose contracts become unavailable remain visible and
+keep their stored settings. They can be removed or repositioned, but their
+settings and connections cannot be changed while unavailable. Other compatible
+edits to the workflow remain possible. Removing a node also removes its incident
+connections. This authoring rule does not disable existing workflows, change
+manual/automatic execution, or change deployment-global workflow definitions.
+
+The schemas describe data formats, not executable plugins. Contract availability
+does not yet provide a generic output-field editor for every stage.
 
 #### Choice origins
 
@@ -770,8 +1025,7 @@ The supported system-resource vocabulary for v1 is:
 | `project.groups` | Authorized group names | Stable group IDs |
 
 These are direct built-in API resolver identifiers, not database paths or
-deployer-selected authorization scopes. They still require implementation in the
-future loader. Resolvers must reuse existing project/resource authorization and
+deployer-selected authorization scopes. Consumers must reuse existing project/resource authorization and
 legacy-owner compatibility; metadata cannot grant access.
 
 File references resolve relative to the mounted contract, within the shared
@@ -784,25 +1038,26 @@ not owned by workflows. A library may ship a catalog without implementing an API
 #### Bundled and external packaging
 
 `workflowConfiguration.enabled` defaults to `false`. With it enabled and
-`includeDefaults` omitted or `true`, the chart mounts the bundled Start contract and the
+`includeDefaults` omitted or `true`, the chart mounts the bundled Start/ANPR contracts and the
 **effective** classification list under `/etc/kerberos/configuration`, using
 the directory layout above. The projected volume reuses the existing
-classification ConfigMap, including `classificationCatalog` overrides or
-`classificationCatalogExistingConfigMap`, rather
+classification ConfigMap, including `classificationCatalogExistingConfigMap`
+overrides or explicit per-file replacements, rather
 than storing another copy in the workflow ConfigMap.
 
 The default classification ConfigMap name, mount path, `CLASSIFICATION_CATALOG_FILE`
-and API endpoint remain unchanged. `classificationCatalog: []` remains an
-explicit empty list, not a request for chart defaults; the current API falls
-back to settings/built-in values for an empty/invalid catalog. The preparatory
+and API endpoint remain unchanged. Inline `classificationCatalog` values,
+including `[]` and `null`, are rejected from chart 0.155.0 onward. The current API
+still falls back to settings/built-in values for an empty/invalid mounted catalog. The preparatory
 bundle does not reproduce that runtime fallback and must not be treated as a
-resolved API catalog. The future loader must share the existing classification
-loader. Bundled packaging requires `classificationCatalogEnabled: true`; an
+resolved API catalog. The Start-specific loader shares the existing classification
+resolver; other consumers must preserve that consistency.
+Bundled packaging requires `classificationCatalogEnabled: true`; an
 external bundle can be packaged independently.
 
 Custom deployers can maintain files in their own repository, create ConfigMaps
 in the release namespace, and use the unchanged chart. `configMaps` adds
-their files alongside the bundled Start contract and production classification
+their files alongside the bundled Start/ANPR contracts and effective classification
 catalog. Catalogs can be supplied separately from contracts and mounted into
 other consumers without copying their contents. For example, from this
 chart directory (replace the namespace):
@@ -818,11 +1073,76 @@ Then use [the example values overlay](examples/workflow-configuration-values.yam
 Each `configMaps` entry has a `name` and `items` mapping ConfigMap keys to
 files in `workflow-contracts/` and `catalogs/`. A single read-only projected
 volume combines these with the built-in sources, without `subPath`. Paths must
-be unique across all sources, including `workflow-contracts/start.yaml`
-and `catalogs/classifications.json` when defaults are included. Collisions fail rendering instead of
-silently overriding data. Use `classificationCatalog` or
-`classificationCatalogExistingConfigMap` to override classification choices rather
-than shadowing the shared file. ConfigMap size limits apply.
+be unique in the final projection. Unmarked collisions fail rendering instead
+of silently overriding data. ConfigMap size limits apply.
+
+##### Replacing individual bundled files
+
+Keep `includeDefaults: true` and set `replace: true` on a `configMaps` item to
+replace that entire bundled file while retaining all other defaults:
+
+```yaml
+workflowConfiguration:
+  enabled: true
+  includeDefaults: true
+  configMaps:
+    - name: deployment-start-contract
+      items:
+        - key: start.yaml
+          path: workflow-contracts/start.yaml
+          replace: true
+    - name: custom-workflow-contracts
+      items:
+        - key: pose.yaml
+          path: workflow-contracts/pose.yaml
+    - name: shared-pose-catalog
+      items:
+        - key: pose-keypoints.json
+          path: catalogs/pose-keypoints.json
+```
+
+Here the chart still provides the effective classification catalog, but the
+Start contract comes from the deployment. Non-replaced defaults follow the
+pinned chart version; replaced files are maintained by the deployer and are
+not automatically merged with later chart versions.
+
+Replacement targets must already be bundled paths: currently
+`workflow-contracts/start.yaml`, `workflow-contracts/anpr.yaml`,
+`workflow-contracts/forwarder.yaml` and `catalogs/classifications.json`. Unknown
+targets, repeated destinations, and replacements with `includeDefaults: false`
+or the legacy interface fail rendering. For a new custom path, omit `replace`.
+The flag is consumed by Helm and is not emitted into Kubernetes volume items.
+
+ANPR can be replaced independently, without adding any catalog:
+
+```yaml
+workflowConfiguration:
+  enabled: true
+  includeDefaults: true
+  configMaps:
+    - name: deployment-anpr-contract
+      items:
+        - key: anpr.yaml
+          path: workflow-contracts/anpr.yaml
+          replace: true
+```
+
+This suppresses the bundled ANPR ConfigMap and checksum while retaining the
+default Start contract and classification catalog.
+
+A replacement for `catalogs/classifications.json` also supplies the standalone
+classification API. Both mounts use that ConfigMap and key, even when its key
+is not named `classifications.json`. The chart does not generate or checksum the
+replaced ConfigMap. To avoid two competing sources, do not combine this
+replacement with a nonempty `classificationCatalogExistingConfigMap`. That
+existing ConfigMap option remains supported when no per-file catalog replacement
+is configured. The retired inline `classificationCatalog` key is rejected
+regardless of the selected configuration.
+`classificationCatalogEnabled` must remain true when including defaults.
+
+This is whole-file replacement, not field-level YAML merging or catalog-entry
+extension. See [the replacement example](examples/workflow-configuration-overrides-values.yaml)
+for replacing both built-in files while adding a custom contract and catalog.
 
 To manage the complete bundle yourself, set `includeDefaults: false` and supply
 a nonempty `configMaps` list. No Start ConfigMap is generated and no default files
@@ -864,14 +1184,14 @@ manage rollout/reload in your deployment tooling; the chart cannot checksum
 their contents. Missing referenced ConfigMaps or keys prevent Kubernetes from
 mounting the volume: create them before syncing Hub (for example using an earlier
 Argo CD sync wave). This is distinct from invalid contract/catalog contents,
-which the future application loader should report per section without stopping
+which the contract-gating API reports as availability diagnostics without stopping
 Hub. Content diagnostics should be advisory in CI, while rendering/mount
 configuration errors and failing tests remain blocking. Unavailable sections
 must carry explicit errors, never become unrestricted choices or conditions.
 
 Helm validates `values.schema.json`, **not** arbitrary bundled YAML/JSON files.
-The standalone schemas support authoring validation. The future loader must
-also reject duplicate field/catalog keys, unknown sources, missing/invalid
+The standalone schemas support authoring validation. The contract-gating API
+also rejects duplicate field/catalog keys, unknown sources, missing/invalid
 files, incompatible bounds, unsupported contract versions and unsafe paths.
 Validation failures must be surfaced, not silently replaced with empty choices.
 
