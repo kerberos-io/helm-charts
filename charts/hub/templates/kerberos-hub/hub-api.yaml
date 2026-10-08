@@ -131,6 +131,9 @@ spec:
         {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/anpr.yaml")) }}
         checksum/workflow-contract-anpr: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/anpr.yaml") . | sha256sum }}
         {{- end }}
+        {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/forwarder.yaml")) }}
+        checksum/workflow-contract-forwarder: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/forwarder.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app: hub-api
     spec:
@@ -164,6 +167,13 @@ spec:
                   items:
                     - key: anpr.yaml
                       path: workflow-contracts/anpr.yaml
+              {{- end }}
+              {{- if not (hasKey $workflowConfiguration.replacements "workflow-contracts/forwarder.yaml") }}
+              - configMap:
+                  name: {{ include "hub.workflowConfiguration.forwarder.configMapName" . }}
+                  items:
+                    - key: forwarder.yaml
+                      path: workflow-contracts/forwarder.yaml
               {{- end }}
               {{- if not $catalogReplacement }}
               - configMap:

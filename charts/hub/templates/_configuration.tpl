@@ -1,9 +1,13 @@
 {{- define "hub.workflowConfiguration.bundledPaths" -}}
-{{- list "workflow-contracts/start.yaml" "workflow-contracts/anpr.yaml" "catalogs/classifications.json" | toYaml -}}
+{{- list "workflow-contracts/start.yaml" "workflow-contracts/anpr.yaml" "workflow-contracts/forwarder.yaml" "catalogs/classifications.json" | toYaml -}}
 {{- end -}}
 
 {{- define "hub.workflowConfiguration.anpr.configMapName" -}}
 {{- printf "%s-workflow-contract-anpr" (.Release.Name | trunc 40 | trimSuffix "-") -}}
+{{- end -}}
+
+{{- define "hub.workflowConfiguration.forwarder.configMapName" -}}
+{{- printf "%s-workflow-contract-forwarder" (.Release.Name | trunc 40 | trimSuffix "-") -}}
 {{- end -}}
 
 {{- define "hub.classificationCatalog.configMapName" -}}

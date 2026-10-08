@@ -1,0 +1,29 @@
+{{/* Validate the rendered forwarder.yaml payload against schemas/workflow-contract.schema.json in the chart root. */}}
+{{- define "hub.workflowConfiguration.forwarder" -}}
+schemaVersion: 1
+stage: forwarder
+contractVersion: 1
+presentation:
+  name: Forward to my system
+  description: Send the run's data to the external destination configured for the forwarder.
+  icon: share
+  color: green
+
+# The destination, delivery mode (delivered or callback) and which run data is
+# forwarded are deployment configuration of hub-workflows-forwarder, optionally
+# per workflow; the worker reads no per-node settings, so none are declared.
+# It contributes no output fields: connections after it can still use Start and
+# earlier stages in Extra conditions.
+fields: []
+{{ end -}}
+{{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
+{{- if and $config.enabled $config.includeDefaults (not (hasKey $config.replacements "workflow-contracts/forwarder.yaml")) (or (eq .Values.mode "all") (eq .Values.mode "ui")) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hub.workflowConfiguration.forwarder.configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  forwarder.yaml: |-
+    {{- include "hub.workflowConfiguration.forwarder" . | nindent 4 }}
+{{- end }}

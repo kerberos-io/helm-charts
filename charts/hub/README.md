@@ -757,6 +757,7 @@ templates/configMaps/
   workflow-contracts/
     start.yaml
     anpr.yaml
+    forwarder.yaml
 schemas/
   catalog.schema.json
   workflow-contract.schema.json
@@ -769,6 +770,10 @@ schemas/
   presentation plus plate/read-status and OCR metadata from the ANPR worker; no
   catalog required. It declares no `params`, so any settings come from
   `kerberoshub.workflows.editorStages`.
+- [Forwarder contract ConfigMap](templates/configMaps/workflow-contracts/forwarder.yaml):
+  presentation only. `hub-workflows-forwarder` takes its destination, delivery
+  mode and forwarded data from its own deployment configuration (optionally per
+  workflow), reads no per-node settings and contributes no output fields.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
   worker, demonstrating presentation, settings (`params`), a file catalog, inline
   choices and a numeric field.
@@ -794,7 +799,7 @@ pass alone does not establish runtime compatibility.
 
 #### Current bundled defaults
 
-Start, ANPR and the shared classification catalog are bundled. The pose files
+Start, ANPR, the forwarder and the shared classification catalog are bundled. The pose files
 under `examples/` are illustrative, not installed presets.
 
 | Start field | Context path | Operators | Choices |
@@ -862,6 +867,10 @@ contract plus worker routing offers a stage, ANPR becomes authorable as soon as
 its worker queue is configured; replace or omit the bundled contract to prevent
 that.
 
+The forwarder contract follows the same rule: the forwarder becomes authorable
+wherever its worker queue is configured. Replace or omit the bundled contract to
+prevent that.
+
 This chart source layout does not change the mounted layout:
 
 ```text
@@ -871,6 +880,7 @@ This chart source layout does not change the mounted layout:
   workflow-contracts/
     start.yaml
     anpr.yaml
+    forwarder.yaml
 ```
 
 Each contract defines a `stage` type, a `schemaVersion`, a `contractVersion`,
@@ -929,7 +939,7 @@ Start without selectors or controls and reports diagnostics in the editor, so a
 mistake never re-exposes fields the deployer meant to hide.
 
 Enable `workflowConfiguration.enabled` and provide stage contracts before using
-contract-gated stages. The chart currently bundles Start and ANPR only; other
+contract-gated stages. The chart currently bundles Start, ANPR and the forwarder; other
 editor operations need deployer-supplied contracts. Leaving configuration
 disabled does not stop existing workflows: Start remains authorable with its
 built-in default, but no new stage nodes can be added unless their contracts
@@ -1063,8 +1073,8 @@ pinned chart version; replaced files are maintained by the deployer and are
 not automatically merged with later chart versions.
 
 Replacement targets must already be bundled paths: currently
-`workflow-contracts/start.yaml`, `workflow-contracts/anpr.yaml` and
-`catalogs/classifications.json`. Unknown
+`workflow-contracts/start.yaml`, `workflow-contracts/anpr.yaml`,
+`workflow-contracts/forwarder.yaml` and `catalogs/classifications.json`. Unknown
 targets, repeated destinations, and replacements with `includeDefaults: false`
 or the legacy interface fail rendering. For a new custom path, omit `replace`.
 The flag is consumed by Helm and is not emitted into Kubernetes volume items.
