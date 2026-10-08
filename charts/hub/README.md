@@ -885,6 +885,25 @@ IDs must be unique within a contract. Increment `contractVersion` when changing
 its meaning/output shape; the future runtime must bind workflows to compatible
 versions rather than silently reinterpreting saved conditions.
 
+#### Field paths and connection panels
+
+Every contract path addresses the workflow condition root
+(`models.WorkflowConditionRootSchema`): Start fields use absolute paths, stage
+fields are relative to `results.<stage>`. A compatible API rejects Start paths
+that are not in that schema (for example a typo such as `device.devicename`)
+and lists the valid alternatives; worker-defined `inputs.<operation>` data and
+stage outputs are accepted as declared.
+
+`panel` lays out the inputs on connections leaving a node. Sections place
+declared fields with an editor widget (`multiselect`, `select`, `text`,
+`number`, `toggle`), Start's weekly schedule (`controls: [weeklySchedule]`) or
+the Extra conditions catch-all (`picker: true`), which offers every declared
+field of Start and the stages before the connection. Connections also show the
+panels of earlier steps, collapsed. Contracts without a panel get a default one,
+so existing contracts keep working; on Start a panel replaces the top-level
+`controls` list. See the pose example and the contract schema for the full
+format.
+
 #### Contract-gated custom editor
 
 With a compatible API/frontend, adding or changing a custom-workflow stage node

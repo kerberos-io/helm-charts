@@ -34,7 +34,7 @@
     },
     "fields": {
       "type": "array",
-      "description": "Typed values conditions may test: a worker's outputs (relative to its result, addressed as results.<stage>.<path>), or for start the selectors device, sites, groups and classifications plus condition-only context fields under device. or inputs. New conditions may only use declared fields. An empty array is valid.",
+      "description": "Typed values conditions may test. Start: the selectors device, sites, groups and classifications plus condition-only fields whose path exists in the condition root schema (models.WorkflowConditionRootSchema), e.g. device.deviceName or inputs.classify.details.*.isStatic; other inputs.<operation> paths are worker-defined. Stage: outputs relative to results.<stage>. New conditions may only use declared fields. An empty array is valid.",
       "items": {"$ref": "#/definitions/field"},
       "maxItems": 128
     },
@@ -58,7 +58,8 @@
       "uniqueItems": true,
       "items": {"enum": ["automatic", "manual"]},
       "description": "Start only. Trigger modes offered for new authoring; omitted offers both."
-    }
+    },
+    "panel": {"$ref": "#/definitions/panel"}
   },
   "definitions": {
     "choices": {
@@ -226,6 +227,63 @@
           "then": {"properties": {"default": {"type": "boolean"}}}
         }
       ]
+    },
+    "panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sections"],
+      "description": "Layout of connections leaving this node. Without it, a default panel is used. A section with picker: true positions the Extra conditions catch-all; without one it is appended collapsed. On start, a panel replaces the top-level controls list.",
+      "properties": {
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {"$ref": "#/definitions/panelSection"}
+        }
+      }
+    },
+    "panelSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$", "maxLength": 80},
+        "label": {"type": "string", "minLength": 1, "maxLength": 160},
+        "collapsed": {"type": "boolean"},
+        "picker": {
+          "type": "boolean",
+          "description": "This section is the Extra conditions catch-all over every declared field of Start and upstream stages; it holds no fields or controls."
+        },
+        "controls": {
+          "type": "array",
+          "items": {"const": "weeklySchedule"},
+          "maxItems": 1,
+          "description": "Start only."
+        },
+        "fields": {"type": "array", "maxItems": 32, "items": {"$ref": "#/definitions/panelField"}}
+      },
+      "if": {"properties": {"picker": {"const": true}}, "required": ["picker"]},
+      "then": {"not": {"anyOf": [{"required": ["fields"]}, {"required": ["controls"]}]}}
+    },
+    "panelField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "widget"],
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "ID of a field declared in this contract; each field is placed at most once."
+        },
+        "label": {"type": "string", "minLength": 1, "maxLength": 160},
+        "widget": {
+          "enum": ["multiselect", "select", "text", "number", "toggle"],
+          "description": "multiselect: string with choices (in); select: choices (eq, ne); text: string (eq, contains, matches, ne, in); number: integer or number (gte, gt, lte, lt, eq, ne); toggle: boolean (eq, ne)."
+        },
+        "operator": {
+          "enum": ["eq", "ne", "in", "contains", "matches", "gt", "gte", "lt", "lte"],
+          "description": "Fixed operator; must be declared by the field and supported by the widget. Defaults to the first widget operator the field declares."
+        }
+      }
     }
   },
   "allOf": [
@@ -233,6 +291,7 @@
       "if": {"properties": {"stage": {"const": "start"}}, "required": ["stage"]},
       "then": {"not": {"required": ["params"]}},
       "else": {"not": {"anyOf": [{"required": ["controls"]}, {"required": ["triggerModes"]}]}}
-    }
+    },
+    {"if": {"required": ["panel"]}, "then": {"not": {"required": ["controls"]}}}
   ]
 }

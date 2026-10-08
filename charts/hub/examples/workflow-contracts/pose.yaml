@@ -42,3 +42,12 @@ fields:
     operators: [gt, gte, lt, lte]
     minimum: 0
     maximum: 1
+# Connections leaving this stage: one section with fixed inputs, then the
+# Extra conditions catch-all (appended collapsed when not placed explicitly).
+panel:
+  sections:
+    - id: posture
+      label: Posture
+      fields:
+        - {field: posture, widget: multiselect}
+        - {field: confidence, widget: number, operator: gte, label: Minimum confidence}
