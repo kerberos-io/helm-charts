@@ -294,6 +294,9 @@ kerberoshub:
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     schema: "https"
     url: "api.yourdomain.com"
+    # Additional complete HTTP(S) origins allowed to call the Hub API.
+    # The configured frontend origins remain allowed automatically.
+    corsAllowedOrigins: []
     # Temporarily stop serving the polled GET /devices list: hub-api answers 204
     # without querying MongoDB. The frontend still loads devices once through
     # /session/bootstrap, but device online/offline status stops refreshing.
@@ -1226,6 +1229,11 @@ kerberospipeline:
     #  - name: extra
     #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    # In-memory cache for hot-path MongoDB lookups (site vault per device).
+    # Site changes apply after at most one TTL; each replica caches separately.
+    dbCache:
+      enabled: false
+      ttl: "5m" # Go duration, e.g. "30s", "5m"
     resources:
       requests:
         memory: 10Mi

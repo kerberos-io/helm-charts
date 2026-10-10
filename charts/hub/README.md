@@ -267,6 +267,7 @@ kerberospipeline:
 | `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `"this-is-a-secret-please-change-to-random-string"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
+| `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
 | `kerberoshub.api.disableAgentHeartbeat` | Temporarily stop serving the polled `GET /devices` list (hub-api returns `204` without database reads). Devices still load once through `/session/bootstrap`; online/offline status stops refreshing. | `false` |
 | `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
 | `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |
@@ -542,6 +543,8 @@ kerberospipeline:
 | `kerberospipeline.analysis.tag` | The Docker image tag/version. | `"v1.7.8"` |
 | `kerberospipeline.analysis.replicas` | Number of replicas for `kerberospipeline.analysis`. | `1` |
 | `kerberospipeline.analysis.logLevel` | Log verbosity level for `kerberospipeline.analysis`. | `"info"` |
+| `kerberospipeline.analysis.dbCache.enabled` | Cache hot-path MongoDB lookups (site vault per device) in memory. Site changes apply after at most one TTL. | `false` |
+| `kerberospipeline.analysis.dbCache.ttl` | Lifetime of a cached lookup, as a Go duration (e.g. `"30s"`, `"5m"`). | `"5m"` |
 | `kerberospipeline.analysis.resources.requests.memory` | Memory request for `kerberospipeline.analysis`. | `"10Mi"` |
 | `kerberospipeline.analysis.resources.requests.cpu` | CPU request for `kerberospipeline.analysis`. | `"10m"` |
 | `kerberospipeline.dominantColor.repository` | The dominant color microservices is computing a top 3 color histogram. | `"ghcr.io/uug-ai/hub-pipeline-dominantcolors"` |

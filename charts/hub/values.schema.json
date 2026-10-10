@@ -11,6 +11,23 @@
       "not": {},
       "description": "Removed in 0.155.0. Store the complete catalog in a ConfigMap and use workflowConfiguration.configMaps with replace: true at catalogs/classifications.json."
     },
+    "kerberoshub": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "object",
+          "properties": {
+            "corsAllowedOrigins": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^https?://[^/?#]+$"
+              }
+            }
+          }
+        }
+      }
+    },
     "workflowConfiguration": {
       "type": "object",
       "additionalProperties": false,
