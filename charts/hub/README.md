@@ -267,6 +267,7 @@ kerberospipeline:
 | `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `"this-is-a-secret-please-change-to-random-string"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
+| `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
 | `kerberoshub.api.disableAgentHeartbeat` | Temporarily stop serving the polled `GET /devices` list (hub-api returns `204` without database reads). Devices still load once through `/session/bootstrap`; online/offline status stops refreshing. | `false` |
 | `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
 | `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |

@@ -290,6 +290,9 @@ spec:
             {{- if and .Values.kerberoshub.frontend.demoEnabled .Values.kerberoshub.frontend.demoUrl }}
             {{- $corsOrigins = append $corsOrigins (printf "%s://%s" .Values.kerberoshub.frontend.schema .Values.kerberoshub.frontend.demoUrl) }}
             {{- end }}
+            {{- range .Values.kerberoshub.api.corsAllowedOrigins }}
+            {{- $corsOrigins = append $corsOrigins . }}
+            {{- end }}
             - name: CORS_ALLOWED_ORIGINS
               value: {{ join "," $corsOrigins | quote }}
             {{ if .Values.isPrivate }}
