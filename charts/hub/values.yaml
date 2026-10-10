@@ -1226,6 +1226,11 @@ kerberospipeline:
     #  - name: extra
     #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    # In-memory cache for hot-path MongoDB lookups (site vault per device).
+    # Site changes apply after at most one TTL; each replica caches separately.
+    dbCache:
+      enabled: false
+      ttl: "5m" # Go duration, e.g. "30s", "5m"
     resources:
       requests:
         memory: 10Mi

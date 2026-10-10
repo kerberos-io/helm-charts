@@ -121,6 +121,12 @@ spec:
         # Sprites
         - name: SPRITE_ENABLED
           value: "{{ .Values.kerberospipeline.sprite.enabled }}"
+
+        # In-memory cache for hot-path MongoDB lookups
+        - name: DB_CACHE_ENABLED
+          value: {{ .Values.kerberospipeline.analysis.dbCache.enabled | default false | quote }}
+        - name: DB_CACHE_TTL
+          value: {{ .Values.kerberospipeline.analysis.dbCache.ttl | default "5m" | quote }}
         
         {{- if .Values.opentelemetry.enabled }}
         # Open Telemetry tracing
