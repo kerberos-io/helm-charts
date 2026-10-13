@@ -178,6 +178,17 @@ opentelemetry:
     # the collector terminates TLS. A scheme-less value defaults to TLS and
     # fails against a plaintext collector ("server gave HTTP response to HTTPS client").
     endpoint: "http://otel-collector:4318"
+  # Trace sampling, passed to the services as OTEL_TRACES_SAMPLER and
+  # OTEL_TRACES_SAMPLER_ARG. Leave empty to keep the SDK default, which records
+  # every trace. Example: keep ~10% of traces, and follow the parent's decision
+  # for spans that continue an upstream trace:
+  #   type: "parentbased_traceidratio"
+  #   arg: "0.1"
+  # Supported types: always_on, always_off, traceidratio, parentbased_always_on,
+  # parentbased_always_off, parentbased_traceidratio.
+  sampler:
+    type: ""
+    arg: ""
 ############################################
 # OpenAI configuration (semantic search)
 #
