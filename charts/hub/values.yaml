@@ -1279,8 +1279,9 @@ kerberospipeline:
     # deploymentAnnotations:
     #   argocd.argoproj.io/sync-wave: "50"
     pullPolicy: IfNotPresent
-    tag: "v1.3.10"
+    tag: "v1.3.15"
     replicas: 2 # Number of pods for the service.
+    prefetchCount: 0 # Max unacknowledged RabbitMQ messages per pod; 0 = service default (5).
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
@@ -1330,8 +1331,9 @@ kerberospipeline:
     #   argocd.argoproj.io/sync-wave: "50"
     repository: ghcr.io/uug-ai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
-    tag: "v1.1.16"
+    tag: "v1.1.21"
     replicas: 5 # Number of pods for the service.
+    prefetchCount: 0 # Max unacknowledged RabbitMQ messages per pod; 0 = service default (5).
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:

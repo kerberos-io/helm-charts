@@ -562,6 +562,8 @@ kerberospipeline:
 | `kerberospipeline.thumbnail.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.4"` |
 | `kerberospipeline.thumbnail.replicas` | Number of replicas for `kerberospipeline.thumbnail`. | `2` |
+| `kerberospipeline.thumbnail.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-thumbnail ≥ v1.3.15. | `0` |
+| `kerberospipeline.sprite.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-sprite ≥ v1.1.21. | `0` |
 | `kerberospipeline.thumbnail.logLevel` | Log verbosity level for `kerberospipeline.thumbnail`. | `"info"` |
 | `kerberospipeline.thumbnail.quality` | Configuration value for `kerberospipeline.thumbnail.quality`. | `"1"` |
 | `kerberospipeline.thumbnail.width` | Configuration value for `kerberospipeline.thumbnail.width`. | `"600"` |

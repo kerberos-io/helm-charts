@@ -87,6 +87,10 @@ spec:
           value: "{{ .Values.rabbitmq.username }}"
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
+        {{- with .Values.kerberospipeline.sprite.prefetchCount }}
+        - name: RABBITMQ_PREFETCH_COUNT
+          value: {{ . | quote }}
+        {{- end }}
 
         # There is an option to store the sprites in a storage provider in Kerberos Vault.
         - name: VAULT_SPRITE_ENABLED

@@ -87,6 +87,10 @@ spec:
           value: "{{ .Values.rabbitmq.username }}"
         - name: RABBITMQ_PASSWORD
           value: "{{ .Values.rabbitmq.password }}"
+        {{- with .Values.kerberospipeline.thumbnail.prefetchCount }}
+        - name: RABBITMQ_PREFETCH_COUNT
+          value: {{ . | quote }}
+        {{- end }}
 
         # Thumbnail generation
         - name: THUMBNAIL_QUALITY
