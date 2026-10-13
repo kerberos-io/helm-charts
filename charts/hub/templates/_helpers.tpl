@@ -82,3 +82,19 @@ Usage: {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-api") | nin
   mountPath: {{ .Values.mongodb.tls.mountPath }}
   readOnly: true
 {{- end -}}
+
+{{/*
+OpenTelemetry sampler env entries, rendered only when configured. The OTel SDKs
+read these natively; unset keeps the SDK default (parentbased_always_on).
+Usage: {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
+*/}}
+{{- define "hub.opentelemetry.samplerEnv" -}}
+{{- with .Values.opentelemetry.sampler.type }}
+- name: OTEL_TRACES_SAMPLER
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.opentelemetry.sampler.arg }}
+- name: OTEL_TRACES_SAMPLER_ARG
+  value: {{ . | quote }}
+{{- end }}
+{{- end -}}

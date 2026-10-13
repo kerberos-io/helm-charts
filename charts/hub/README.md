@@ -223,6 +223,8 @@ kerberospipeline:
 | `opentelemetry.enabled` | Enable or disable OpenTelemetry instrumentation. | `false` |
 | `opentelemetry.routingEnabled` | Enable or disable OpenTelemetry routing/export behavior. | `false` |
 | `opentelemetry.collector.endpoint` | OpenTelemetry collector endpoint used for trace export. | `"http://otel-collector:4317"` |
+| `opentelemetry.sampler.type` | Trace sampler, exported as `OTEL_TRACES_SAMPLER` (e.g. `parentbased_traceidratio`). Empty keeps the SDK default (sample everything). | `""` |
+| `opentelemetry.sampler.arg` | Sampler argument, exported as `OTEL_TRACES_SAMPLER_ARG` (e.g. `"0.1"` for ~10% of traces). | `""` |
 | `openai.enabled` | Enable or disable OpenAI-backed semantic features. | `false` |
 | `openai.apikey` | OpenAI API key used when OpenAI integration is enabled. | `"xxx"` |
 | `kerberosvault.uri` | The default Kerberos Vault uri (you can add multiple within the app), by default `'https://api.storage.yourdomain.com'` | `"https://api.vault.yourdomain.com"` |
