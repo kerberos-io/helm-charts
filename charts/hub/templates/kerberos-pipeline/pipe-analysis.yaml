@@ -122,6 +122,10 @@ spec:
         - name: SPRITE_ENABLED
           value: "{{ .Values.kerberospipeline.sprite.enabled }}"
 
+        # Dominant colors
+        - name: DOMINANTCOLOR_ENABLED
+          value: "{{ .Values.kerberospipeline.dominantColor.enabled }}"
+
         # In-memory cache for hot-path MongoDB lookups
         - name: DB_CACHE_ENABLED
           value: {{ .Values.kerberospipeline.analysis.dbCache.enabled | default false | quote }}

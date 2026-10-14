@@ -76,7 +76,7 @@ The inline examples use the following order, leaving gaps of ten:
 
 Enable the annotation in each service's existing environment values section.
 No separate example values file is required. These annotations do not change
-image tags or enable disabled services such as sprite.
+image tags or enable disabled services such as sprite or dominantColor.
 Deploy the compatible analysis bridge before replying workers, and select the
 fixed counting release; waves do not enforce minimum compatible image versions.
 The chart's default image tags are not a compatibility-tested rollout bundle.
@@ -550,6 +550,7 @@ kerberospipeline:
 | `kerberospipeline.analysis.dbCache.ttl` | Lifetime of a cached lookup, as a Go duration (e.g. `"30s"`, `"5m"`). | `"5m"` |
 | `kerberospipeline.analysis.resources.requests.memory` | Memory request for `kerberospipeline.analysis`. | `"10Mi"` |
 | `kerberospipeline.analysis.resources.requests.cpu` | CPU request for `kerberospipeline.analysis`. | `"10m"` |
+| `kerberospipeline.dominantColor.enabled` | Deploy `pipe-dominantcolor` and let the analysis stage schedule it (`DOMINANTCOLOR_ENABLED`). Requires an analysis image that reads the flag. | `false` |
 | `kerberospipeline.dominantColor.repository` | The dominant color microservices is computing a top 3 color histogram. | `"ghcr.io/uug-ai/hub-pipeline-dominantcolors"` |
 | `kerberospipeline.dominantColor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `"v2.0.2"` |

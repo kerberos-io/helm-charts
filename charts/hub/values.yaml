@@ -1232,7 +1232,7 @@ kerberospipeline:
     # deploymentAnnotations:
     #   argocd.argoproj.io/sync-wave: "40"
     pullPolicy: IfNotPresent
-    tag: "v1.8.5"
+    tag: "v1.8.22"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1253,6 +1253,10 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   dominantColor:
+    # Opt-in: deploys pipe-dominantcolor and tells the analysis stage to schedule
+    # it (DOMINANTCOLOR_ENABLED). Requires an analysis image that reads the flag;
+    # older images always publish to the dominantcolor queue.
+    enabled: false # Enable or disable dominant color extraction 'true' or 'false'
     repository: ghcr.io/uug-ai/hub-pipeline-dominantcolors
     deploymentAnnotations: {}
     # deploymentAnnotations:

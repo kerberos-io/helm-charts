@@ -1,4 +1,4 @@
-{{- if or (eq .Values.mode "all") (eq .Values.mode "pipeline") -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "pipeline")) (eq .Values.kerberospipeline.dominantColor.enabled true) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
