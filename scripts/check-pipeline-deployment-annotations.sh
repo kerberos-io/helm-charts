@@ -51,21 +51,21 @@ expected="$(printf '%s\n' \
   'pipe-counting 50' 'pipe-sequence 60' 'pipe-monitor 70' | sort)"
 
 for mode in all pipeline; do
-  default_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set kerberospipeline.sprite.enabled=true)"
+  default_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set kerberospipeline.sprite.enabled=true --set kerberospipeline.dominantColor.enabled=true)"
   assert_waves "$default_render" ""
   if printf '%s\n' "$default_render" | grep -q '^  annotations: null'; then
     echo "Empty annotations must be omitted" >&2
     exit 1
   fi
-  configured_render="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set "mode=$mode" --set kerberospipeline.sprite.enabled=true)"
+  configured_render="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set "mode=$mode" --set kerberospipeline.sprite.enabled=true --set kerberospipeline.dominantColor.enabled=true)"
   assert_waves "$configured_render" "$expected"
   echo "OK ($mode): defaults opt out; per-service values assign all ten Deployment waves"
 done
 
-disabled_sprite="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set mode=pipeline)"
-assert_waves "$disabled_sprite" "$(printf '%s\n' "$expected" | grep -v '^pipe-sprite ')"
+disabled_optional="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set mode=pipeline)"
+assert_waves "$disabled_optional" "$(printf '%s\n' "$expected" | grep -v -e '^pipe-sprite ' -e '^pipe-dominantcolor ')"
 
-ui_render="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set mode=ui --set kerberospipeline.sprite.enabled=true)"
+ui_render="$(helm template hub "$CHART_DIR" "${WAVE_FLAGS[@]}" --set mode=ui --set kerberospipeline.sprite.enabled=true --set kerberospipeline.dominantColor.enabled=true)"
 assert_waves "$ui_render" ""
 
 # Exercise zero/negative strings and an unrelated annotation on the same map.

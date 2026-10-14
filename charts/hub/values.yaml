@@ -1253,6 +1253,10 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   dominantColor:
+    # Opt-in: deploys pipe-dominantcolor and tells the analysis stage to schedule
+    # it (DOMINANTCOLOR_ENABLED). Requires an analysis image that reads the flag;
+    # older images always publish to the dominantcolor queue.
+    enabled: false # Enable or disable dominant color extraction 'true' or 'false'
     repository: ghcr.io/uug-ai/hub-pipeline-dominantcolors
     deploymentAnnotations: {}
     # deploymentAnnotations:
