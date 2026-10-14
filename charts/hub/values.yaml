@@ -1232,7 +1232,7 @@ kerberospipeline:
     # deploymentAnnotations:
     #   argocd.argoproj.io/sync-wave: "40"
     pullPolicy: IfNotPresent
-    tag: "v1.8.5"
+    tag: "v1.8.22"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
