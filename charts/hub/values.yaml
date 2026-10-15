@@ -839,7 +839,9 @@ kerberoshub:
     #   triggers  how a run OPENS. Omit for a single bare automatic trigger
     #             (opens for every recording); the per-stage `needs` then decide
     #             which stages FIRE. Narrow with device/schedule triggers, e.g.
-    #             `- {type: automatic, devices: [{key: <device-key>}]}`.
+    #             `- {type: automatic, devices: [{key: <device-key>}]}`, or by
+    #             device label across organisations, e.g.
+    #             `- {type: automatic, labels: [anpr-pilot]}` (see labelTriggers).
     #   stages    the executable stages, each {operation, dispatch?, needs?,
     #             needsMode?}. dispatch is "always" (default) or "conditional";
     #             a conditional stage's `needs` are upstream dependencies, each
@@ -857,6 +859,12 @@ kerberoshub:
     # kerberoshub.services.<operation> (deploy the objecttracking / loitering
     # workers below).
     definitions: {}
+    # Allow global definitions to select devices by label (`labels` in a
+    # trigger, or a device.labels condition). Owners set device labels, so any
+    # owner could enroll devices into such a workflow: enable only where owners
+    # are the deployment's administrators (self-hosted), never on multi-tenant
+    # SaaS. When false, the engine refuses to load label-scoped definitions.
+    labelTriggers: false
     # Replace {} above with the indented examples below to enable them. Their IDs
     # are pinned to the existing name-derived identities; do not regenerate them.
     #  tracking-workflow:

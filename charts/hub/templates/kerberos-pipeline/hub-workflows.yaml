@@ -86,6 +86,10 @@ spec:
         # Operation→queue catalog so DB workflows reach workers no config workflow references.
         - name: WORKFLOW_STAGE_QUEUES
           value: {{ include "kerberoshub.workflows.stageQueues" . | quote }}
+        # Lets global definitions select devices by owner-set label; only for
+        # deployments whose owners are trusted (see kerberoshub.workflows.labelTriggers).
+        - name: WORKFLOW_LABEL_TRIGGERS_ENABLED
+          value: {{ .Values.kerberoshub.workflows.labelTriggers | default false | toString | quote }}
 
         # RabbitMQ settings
         - name: RABBITMQ_HOST

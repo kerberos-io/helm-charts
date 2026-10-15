@@ -99,6 +99,30 @@ workflow engine. These deployment-global, ops-managed workflows are read-only
 through the API; manage them in Helm values. There are no per-project on/off
 overrides.
 
+To run a global workflow on specific devices across organisations, select them
+by device label. Owners tag devices with labels in Hub:
+
+```yaml
+kerberoshub:
+  workflows:
+    labelTriggers: true
+    definitions:
+      anpr-pilot:
+        id: "6720f3a1c2d4e5f60718293a"
+        enabled: true
+        triggers:
+          - type: automatic
+            labels: ["anpr-pilot"]
+        stages:
+          - operation: anpr
+```
+
+Because owners set labels, any owner could enroll devices into such a
+workflow. `labelTriggers` is therefore `false` by default and the engine refuses
+label-scoped global definitions until it is enabled. Enable it only on
+deployments whose owners are trusted administrators (self-hosted), never on
+multi-tenant SaaS.
+
 Supply an explicit, stable `id` for new definitions:
 
 ```yaml
