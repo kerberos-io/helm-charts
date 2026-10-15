@@ -100,9 +100,15 @@ through the API; manage them in Helm values. There are no per-project on/off
 overrides.
 
 To run a global workflow on specific devices across organisations, select them
-by device label. Owners tag devices with labels in Hub:
+by device label. Define the labels in the root `deviceLabels` catalog; owners
+assign them to devices in Hub (only catalog labels can be assigned):
 
 ```yaml
+deviceLabels:
+  - value: anpr-pilot
+    name: ANPR pilot
+    description: Runs licence plate recognition on this camera
+
 kerberoshub:
   workflows:
     labelTriggers: true
@@ -117,8 +123,10 @@ kerberoshub:
           - operation: anpr
 ```
 
-Because owners set labels, any owner could enroll devices into such a
-workflow. `labelTriggers` is therefore `false` by default and the engine refuses
+Every label a trigger selects must be in `deviceLabels`; otherwise rendering
+fails, so a typo cannot silently match no device. An empty catalog disables
+device labels. Because owners set labels, any owner could enroll devices into
+such a workflow. `labelTriggers` is therefore `false` by default and the engine refuses
 label-scoped global definitions until it is enabled. Enable it only on
 deployments whose owners are trusted administrators (self-hosted), never on
 multi-tenant SaaS.

@@ -21,6 +21,29 @@ workflow later cannot silently alias another workflow's runs or references.
 {{- end -}}
 {{- $_ := set $identities $id $name -}}
 {{- end -}}
+{{- include "kerberoshub.workflows.validateLabels" . -}}
+{{- end -}}
+
+{{/*
+Every label a workflow trigger selects must exist in the device label catalog
+(root deviceLabels), so a typo fails rendering instead of never matching a
+device. Disabled definitions are checked too, so enabling one cannot fail later.
+*/}}
+{{- define "kerberoshub.workflows.validateLabels" -}}
+{{- include "kerberoshub.deviceLabels.validate" . -}}
+{{- $catalog := dict -}}
+{{- range $label := (.Values.deviceLabels | default list) -}}
+{{- $_ := set $catalog $label.value true -}}
+{{- end -}}
+{{- range $name, $wf := .Values.kerberoshub.workflows.definitions -}}
+{{- range $i, $trigger := ($wf.triggers | default list) -}}
+{{- range $label := ($trigger.labels | default list) -}}
+{{- if not (hasKey $catalog (toString $label)) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d].labels: %q is not in deviceLabels; add it to the device label catalog" $name $i (toString $label)) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

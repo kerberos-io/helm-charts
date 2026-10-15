@@ -85,6 +85,20 @@ classificationCatalogExistingConfigMap: ""
 # Inline classificationCatalog values are no longer accepted (including null/[]).
 # Use a ConfigMap item with path: catalogs/classifications.json and replace: true.
 
+# Device label catalog: the labels owners can assign to devices in Hub (a
+# multi-select on the device page). Labels group devices across organisations;
+# global workflows can select devices by label (see kerberoshub.workflows
+# labelTriggers). Empty (the default) disables device labels.
+#   value        stored label: 1-64 characters of a-z, 0-9, ".", "_", ":" or
+#                "-", starting and ending with a letter or digit; unique.
+#   name         display name (defaults to value).
+#   description  optional help text shown with the label.
+# Workflow trigger labels must exist here; otherwise rendering fails.
+deviceLabels: []
+#  - value: anpr-pilot
+#    name: ANPR pilot
+#    description: Runs licence plate recognition on this camera
+
 # Configuration packaging only: consuming contracts requires a compatible
 # API/frontend. Enabling this mounts files but does not register stage workers.
 workflowConfiguration:
@@ -860,10 +874,11 @@ kerberoshub:
     # workers below).
     definitions: {}
     # Allow global definitions to select devices by label (`labels` in a
-    # trigger, or a device.labels condition). Owners set device labels, so any
-    # owner could enroll devices into such a workflow: enable only where owners
-    # are the deployment's administrators (self-hosted), never on multi-tenant
-    # SaaS. When false, the engine refuses to load label-scoped definitions.
+    # trigger, or a device.labels condition). Labels come from the root
+    # deviceLabels catalog; owners assign them, so any owner could enroll
+    # devices into such a workflow: enable only where owners are the
+    # deployment's administrators (self-hosted), never on multi-tenant SaaS.
+    # When false, the engine refuses to load label-scoped definitions.
     labelTriggers: false
     # Replace {} above with the indented examples below to enable them. Their IDs
     # are pinned to the existing name-derived identities; do not regenerate them.
