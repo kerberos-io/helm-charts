@@ -396,11 +396,11 @@ spec:
             # it stores in the database; the config workflows are never persisted.
             - name: WORKFLOW_DEFINITIONS
               value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
-            # Device label catalog (root deviceLabels): the only labels owners
-            # can assign to devices. Empty (deviceLabelsEnabled false or no
-            # labels) disables device labels.
-            - name: DEVICE_LABELS
-              value: {{ include "kerberoshub.deviceLabels.json" . | quote }}
+            # System tag catalog (deviceTags.system): the only system tags
+            # owners can assign to devices. Empty (disabled or no tags)
+            # disables system tags.
+            - name: DEVICE_SYSTEM_TAGS
+              value: {{ include "kerberoshub.deviceTags.system.json" . | quote }}
             # Deployment service routing catalog used by API-owned embedded
             # workflows (for example the one-stage case redaction modal flow).
             - name: WORKFLOW_STAGE_QUEUES

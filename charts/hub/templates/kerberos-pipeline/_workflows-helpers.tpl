@@ -21,38 +21,39 @@ workflow later cannot silently alias another workflow's runs or references.
 {{- end -}}
 {{- $_ := set $identities $id $name -}}
 {{- end -}}
-{{- include "kerberoshub.workflows.validateLabels" . -}}
+{{- include "kerberoshub.workflows.validateSystemTags" . -}}
 {{- end -}}
 
 {{/*
-Every label a workflow trigger selects must exist in the device label catalog
-(root deviceLabels), so a typo fails rendering instead of never matching a
-device. While deviceLabelsEnabled is false, no definition may select devices by
-label (trigger labels or device.labels conditions). Disabled definitions are
-checked too, so enabling one cannot fail later.
+Every system tag a workflow trigger selects must exist in the system tag
+catalog (deviceTags.system.catalog), so a typo fails rendering instead of
+never matching a device. While deviceTags.system.enabled is false, no
+definition may select devices by system tag (trigger systemTags or
+device.systemTags conditions). Disabled definitions are checked too, so
+enabling one cannot fail later.
 */}}
-{{- define "kerberoshub.workflows.validateLabels" -}}
-{{- include "kerberoshub.deviceLabels.validate" . -}}
+{{- define "kerberoshub.workflows.validateSystemTags" -}}
+{{- include "kerberoshub.deviceTags.system.validate" . -}}
 {{- $catalog := dict -}}
-{{- range $label := (.Values.deviceLabels | default list) -}}
-{{- $_ := set $catalog $label.value true -}}
+{{- range $tag := (include "kerberoshub.deviceTags.system.catalog" . | fromJsonArray) -}}
+{{- $_ := set $catalog (toString $tag.value) true -}}
 {{- end -}}
-{{- $enabled := .Values.deviceLabelsEnabled -}}
+{{- $enabled := include "kerberoshub.deviceTags.system.enabled" . -}}
 {{- range $name, $wf := .Values.kerberoshub.workflows.definitions -}}
 {{- if $wf -}}
 {{- range $i, $trigger := ($wf.triggers | default list) -}}
-{{- range $label := ($trigger.labels | default list) -}}
+{{- range $tag := ($trigger.systemTags | default list) -}}
 {{- if not $enabled -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] selects devices by label, but deviceLabelsEnabled is false" $name $i) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] selects devices by system tag, but deviceTags.system.enabled is false" $name $i) -}}
 {{- end -}}
-{{- if not (hasKey $catalog (toString $label)) -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d].labels: %q is not in deviceLabels; add it to the device label catalog" $name $i (toString $label)) -}}
+{{- if not (hasKey $catalog (toString $tag)) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d].systemTags: %q is not in deviceTags.system.catalog; add it to the system tag catalog" $name $i (toString $tag)) -}}
 {{- end -}}
 {{- end -}}
 {{- if not $enabled -}}
 {{- range $condition := ($trigger.conditions | default list) -}}
-{{- if hasPrefix "device.labels" (toString (get (default dict $condition) "path")) -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] has a device.labels condition, but deviceLabelsEnabled is false" $name $i) -}}
+{{- if hasPrefix "device.systemTags" (toString (get (default dict $condition) "path")) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] has a device.systemTags condition, but deviceTags.system.enabled is false" $name $i) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -60,8 +61,8 @@ checked too, so enabling one cannot fail later.
 {{- if not $enabled -}}
 {{- range $stage := ($wf.stages | default list) -}}
 {{- range $need := ((default dict $stage).needs | default list) -}}
-{{- if hasPrefix "device.labels" (toString (get (default dict (get (default dict $need) "condition")) "path")) -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q] stage %q has a device.labels condition, but deviceLabelsEnabled is false" $name (toString (get (default dict $stage) "operation"))) -}}
+{{- if hasPrefix "device.systemTags" (toString (get (default dict (get (default dict $need) "condition")) "path")) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q] stage %q has a device.systemTags condition, but deviceTags.system.enabled is false" $name (toString (get (default dict $stage) "operation"))) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

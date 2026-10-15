@@ -100,16 +100,17 @@ through the API; manage them in Helm values. There are no per-project on/off
 overrides.
 
 To run a global workflow on specific devices across organisations, select them
-by device label. Turn on `deviceLabelsEnabled` and define the labels in the
-root `deviceLabels` catalog; owners assign them to devices in Hub (only catalog
-labels can be assigned):
+by system tag. Enable `deviceTags.system` and define the tags in its catalog;
+owners assign them to devices in Hub (only catalog tags can be assigned):
 
 ```yaml
-deviceLabelsEnabled: true
-deviceLabels:
-  - value: anpr-pilot
-    name: ANPR pilot
-    description: Runs licence plate recognition on this camera
+deviceTags:
+  system:
+    enabled: true
+    catalog:
+      - value: anpr-pilot
+        name: ANPR pilot
+        description: Runs licence plate recognition on this camera
 
 kerberoshub:
   workflows:
@@ -119,18 +120,18 @@ kerberoshub:
         enabled: true
         triggers:
           - type: automatic
-            labels: ["anpr-pilot"]
+            systemTags: ["anpr-pilot"]
         stages:
           - operation: anpr
 ```
 
-Every label a trigger selects must be in `deviceLabels`; otherwise rendering
-fails, so a typo cannot silently match no device. Because owners set labels,
-any owner could enroll devices into such a workflow, so `deviceLabelsEnabled`
-is `false` by default. While it is off, Hub API gets an empty catalog (labels
-cannot be set) and rendering fails on any workflow that selects devices by
-label. Enable it only on deployments whose owners are trusted administrators
-(self-hosted), never on multi-tenant SaaS.
+Every tag a trigger selects must be in the catalog; otherwise rendering fails,
+so a typo cannot silently match no device. Because owners set system tags, any
+owner could enroll devices into such a workflow, so `deviceTags.system.enabled`
+is `false` by default. While it is off, Hub API gets an empty catalog (system
+tags cannot be set) and rendering fails on any workflow that selects devices by
+system tag. Enable it only on deployments whose owners are trusted
+administrators (self-hosted), never on multi-tenant SaaS.
 
 Supply an explicit, stable `id` for new definitions:
 

@@ -85,24 +85,27 @@ classificationCatalogExistingConfigMap: ""
 # Inline classificationCatalog values are no longer accepted (including null/[]).
 # Use a ConfigMap item with path: catalogs/classifications.json and replace: true.
 
-# Device labels: owners tag devices with labels from the catalog below (a
-# multi-select on the device page), and global workflows select devices across
-# organisations by label (`labels` in a trigger). Owners set labels, so any
-# owner could enroll devices into such a workflow: enable only where owners
-# are the deployment's administrators (self-hosted), never on multi-tenant
-# SaaS. When false, hub-api gets an empty catalog (labels cannot be set) and
-# rendering fails on workflows that select devices by label.
-deviceLabelsEnabled: false
-# The label catalog, the only labels owners can assign:
-#   value        stored label: 1-64 characters of a-z, 0-9, ".", "_", ":" or
-#                "-", starting and ending with a letter or digit; unique.
-#   name         display name (defaults to value).
-#   description  optional help text shown with the label.
-# Workflow trigger labels must exist here; otherwise rendering fails.
-deviceLabels: []
-#  - value: anpr-pilot
-#    name: ANPR pilot
-#    description: Runs licence plate recognition on this camera
+# Device tags, grouped by type. System tags are defined here and assigned by
+# owners (a multi-select on the device page); global workflows select devices
+# across organisations by system tag (`systemTags` in a trigger). Owners set
+# them, so any owner could enroll devices into such a workflow: enable only
+# where owners are the deployment's administrators (self-hosted), never on
+# multi-tenant SaaS. While disabled, hub-api gets an empty catalog (system tags
+# cannot be set) and rendering fails on workflows that select devices by
+# system tag.
+deviceTags:
+  system:
+    enabled: false
+    # The only system tags owners can assign:
+    #   value        stored tag: 1-64 characters of a-z, 0-9, ".", "_", ":" or
+    #                "-", starting and ending with a letter or digit; unique.
+    #   name         display name (defaults to value).
+    #   description  optional help text shown with the tag.
+    # Workflow trigger systemTags must exist here; otherwise rendering fails.
+    catalog: []
+    #  - value: anpr-pilot
+    #    name: ANPR pilot
+    #    description: Runs licence plate recognition on this camera
 
 # Configuration packaging only: consuming contracts requires a compatible
 # API/frontend. Enabling this mounts files but does not register stage workers.
@@ -860,7 +863,7 @@ kerberoshub:
     #             which stages FIRE. Narrow with device/schedule triggers, e.g.
     #             `- {type: automatic, devices: [{key: <device-key>}]}`, or by
     #             device label across organisations, e.g.
-    #             `- {type: automatic, labels: [anpr-pilot]}` (see deviceLabelsEnabled).
+    #             `- {type: automatic, systemTags: [anpr-pilot]}` (see deviceTags).
     #   stages    the executable stages, each {operation, dispatch?, needs?,
     #             needsMode?}. dispatch is "always" (default) or "conditional";
     #             a conditional stage's `needs` are upstream dependencies, each
