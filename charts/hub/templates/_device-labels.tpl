@@ -28,15 +28,18 @@ and "-", starting and ending with a letter or digit. Values are unique.
 
 {{/*
 The device label catalog as JSON (DEVICE_LABELS on hub-api): each entry with
-its value, a name (defaulting to the value) and an optional description.
+its value, a name (defaulting to the value) and an optional description. Empty
+while deviceLabelsEnabled is false, which disables labels in hub-api.
 */}}
 {{- define "kerberoshub.deviceLabels.json" -}}
 {{- include "kerberoshub.deviceLabels.validate" . -}}
 {{- $labels := list -}}
+{{- if .Values.deviceLabelsEnabled -}}
 {{- range $label := (.Values.deviceLabels | default list) -}}
 {{- $entry := dict "value" $label.value "name" (default $label.value $label.name) -}}
 {{- with $label.description }}{{- $_ := set $entry "description" . -}}{{- end }}
 {{- $labels = append $labels $entry -}}
+{{- end -}}
 {{- end -}}
 {{- $labels | toJson -}}
 {{- end -}}

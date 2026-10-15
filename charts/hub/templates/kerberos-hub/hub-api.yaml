@@ -397,7 +397,8 @@ spec:
             - name: WORKFLOW_DEFINITIONS
               value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
             # Device label catalog (root deviceLabels): the only labels owners
-            # can assign to devices. Empty disables device labels.
+            # can assign to devices. Empty (deviceLabelsEnabled false or no
+            # labels) disables device labels.
             - name: DEVICE_LABELS
               value: {{ include "kerberoshub.deviceLabels.json" . | quote }}
             # Deployment service routing catalog used by API-owned embedded

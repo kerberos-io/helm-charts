@@ -27,7 +27,9 @@ workflow later cannot silently alias another workflow's runs or references.
 {{/*
 Every label a workflow trigger selects must exist in the device label catalog
 (root deviceLabels), so a typo fails rendering instead of never matching a
-device. Disabled definitions are checked too, so enabling one cannot fail later.
+device. While deviceLabelsEnabled is false, no definition may select devices by
+label (trigger labels or device.labels conditions). Disabled definitions are
+checked too, so enabling one cannot fail later.
 */}}
 {{- define "kerberoshub.workflows.validateLabels" -}}
 {{- include "kerberoshub.deviceLabels.validate" . -}}
@@ -35,11 +37,33 @@ device. Disabled definitions are checked too, so enabling one cannot fail later.
 {{- range $label := (.Values.deviceLabels | default list) -}}
 {{- $_ := set $catalog $label.value true -}}
 {{- end -}}
+{{- $enabled := .Values.deviceLabelsEnabled -}}
 {{- range $name, $wf := .Values.kerberoshub.workflows.definitions -}}
+{{- if $wf -}}
 {{- range $i, $trigger := ($wf.triggers | default list) -}}
 {{- range $label := ($trigger.labels | default list) -}}
+{{- if not $enabled -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] selects devices by label, but deviceLabelsEnabled is false" $name $i) -}}
+{{- end -}}
 {{- if not (hasKey $catalog (toString $label)) -}}
 {{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d].labels: %q is not in deviceLabels; add it to the device label catalog" $name $i (toString $label)) -}}
+{{- end -}}
+{{- end -}}
+{{- if not $enabled -}}
+{{- range $condition := ($trigger.conditions | default list) -}}
+{{- if hasPrefix "device.labels" (toString (get (default dict $condition) "path")) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] has a device.labels condition, but deviceLabelsEnabled is false" $name $i) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if not $enabled -}}
+{{- range $stage := ($wf.stages | default list) -}}
+{{- range $need := ((default dict $stage).needs | default list) -}}
+{{- if hasPrefix "device.labels" (toString (get (default dict (get (default dict $need) "condition")) "path")) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q] stage %q has a device.labels condition, but deviceLabelsEnabled is false" $name (toString (get (default dict $stage) "operation"))) -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
