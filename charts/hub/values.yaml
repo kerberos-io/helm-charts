@@ -95,7 +95,7 @@ classificationCatalogExistingConfigMap: ""
 # system tag.
 deviceTags:
   system:
-    enabled: false
+    enabled: false # a boolean (true/false), not a string
     # The only system tags owners can assign:
     #   value        stored tag: 1-64 characters of a-z, 0-9, ".", "_", ":" or
     #                "-", starting and ending with a letter or digit; unique.

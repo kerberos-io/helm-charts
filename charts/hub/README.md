@@ -129,9 +129,18 @@ Every tag a trigger selects must be in the catalog; otherwise rendering fails,
 so a typo cannot silently match no device. Because owners set system tags, any
 owner could enroll devices into such a workflow, so `deviceTags.system.enabled`
 is `false` by default. While it is off, Hub API gets an empty catalog (system
-tags cannot be set) and rendering fails on any workflow that selects devices by
-system tag. Enable it only on deployments whose owners are trusted
-administrators (self-hosted), never on multi-tenant SaaS.
+tags cannot be set) and rendering fails on any workflow that mentions system
+tags anywhere (trigger `systemTags`, or a `device.systemTags` condition at any
+depth, in any key casing). Enable it only on deployments whose owners are
+trusted administrators (self-hosted), never on multi-tenant SaaS.
+
+The engine reads keys case-insensitively and ignores unknown ones, so a typo
+could silently widen a workflow to every device. Workflow definitions may
+therefore only use the keys `id`, `enabled`, `triggers` and `stages`, and
+triggers only the trigger fields the engine knows, spelled exactly; anything
+else fails rendering. System-tag workflows also need a hub-workflows image
+that understands `systemTags` (uug-ai/hub-workflows#87 or later): an older
+engine drops the field and would run the workflow on every device.
 
 Supply an explicit, stable `id` for new definitions:
 

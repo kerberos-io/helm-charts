@@ -25,12 +25,20 @@ workflow later cannot silently alias another workflow's runs or references.
 {{- end -}}
 
 {{/*
-Every system tag a workflow trigger selects must exist in the system tag
-catalog (deviceTags.system.catalog), so a typo fails rendering instead of
-never matching a device. While deviceTags.system.enabled is false, no
-definition may select devices by system tag (trigger systemTags or
-device.systemTags conditions). Disabled definitions are checked too, so
-enabling one cannot fail later.
+Guard the definitions that can select devices by system tag. The engine reads
+JSON keys case-insensitively and ignores unknown ones, so a misspelled or
+re-cased key silently changes what a definition selects (a dropped
+systemTags scope makes a global workflow run on every device). Therefore:
+  - definitions and triggers may only use the keys the engine knows, spelled
+    exactly (definition: id, enabled, triggers, stages; trigger: the
+    models.WorkflowTrigger fields);
+  - while deviceTags.system.enabled is false, no definition may mention system
+    tags anywhere (trigger systemTags, or a device.systemTags condition at any
+    depth, in triggers, shared conditions or stage needs), matched
+    case-insensitively on the whole definition;
+  - every system tag a trigger selects must be in deviceTags.system.catalog,
+    so a typo fails rendering instead of never matching a device.
+Disabled definitions are checked too, so enabling one cannot fail later.
 */}}
 {{- define "kerberoshub.workflows.validateSystemTags" -}}
 {{- include "kerberoshub.deviceTags.system.validate" . -}}
@@ -39,31 +47,33 @@ enabling one cannot fail later.
 {{- $_ := set $catalog (toString $tag.value) true -}}
 {{- end -}}
 {{- $enabled := include "kerberoshub.deviceTags.system.enabled" . -}}
+{{- $definitionKeys := list "id" "enabled" "triggers" "stages" -}}
+{{- $triggerKeys := list "type" "edgeId" "sharedConditions" "devices" "siteIds" "groupIds" "systemTags" "classifications" "conditionMode" "conditions" "weeklySchedule" "surfaces" -}}
 {{- range $name, $wf := .Values.kerberoshub.workflows.definitions -}}
 {{- if $wf -}}
-{{- range $i, $trigger := ($wf.triggers | default list) -}}
-{{- range $tag := ($trigger.systemTags | default list) -}}
-{{- if not $enabled -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] selects devices by system tag, but deviceTags.system.enabled is false" $name $i) -}}
+{{- if not (kindIs "map" $wf) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q] must be an object" $name) -}}
 {{- end -}}
+{{- if and (not $enabled) (contains "systemtags" (lower (toJson $wf))) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q] selects devices by system tag (systemTags or a device.systemTags condition), but deviceTags.system.enabled is false" $name) -}}
+{{- end -}}
+{{- range $key, $_ := $wf -}}
+{{- if not (has $key $definitionKeys) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q]: unknown key %q (allowed: %s). Keys are case-sensitive; a misspelled key would be ignored" $name $key (join ", " $definitionKeys)) -}}
+{{- end -}}
+{{- end -}}
+{{- range $i, $trigger := ($wf.triggers | default list) -}}
+{{- if not (kindIs "map" $trigger) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] must be an object" $name $i) -}}
+{{- end -}}
+{{- range $key, $_ := $trigger -}}
+{{- if not (has $key $triggerKeys) -}}
+{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d]: unknown key %q (allowed: %s). Keys are case-sensitive; a misspelled key would be ignored and widen the trigger" $name $i $key (join ", " $triggerKeys)) -}}
+{{- end -}}
+{{- end -}}
+{{- range $tag := ($trigger.systemTags | default list) -}}
 {{- if not (hasKey $catalog (toString $tag)) -}}
 {{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d].systemTags: %q is not in deviceTags.system.catalog; add it to the system tag catalog" $name $i (toString $tag)) -}}
-{{- end -}}
-{{- end -}}
-{{- if not $enabled -}}
-{{- range $condition := ($trigger.conditions | default list) -}}
-{{- if hasPrefix "device.systemTags" (toString (get (default dict $condition) "path")) -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q].triggers[%d] has a device.systemTags condition, but deviceTags.system.enabled is false" $name $i) -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-{{- if not $enabled -}}
-{{- range $stage := ($wf.stages | default list) -}}
-{{- range $need := ((default dict $stage).needs | default list) -}}
-{{- if hasPrefix "device.systemTags" (toString (get (default dict (get (default dict $need) "condition")) "path")) -}}
-{{- fail (printf "kerberoshub.workflows.definitions[%q] stage %q has a device.systemTags condition, but deviceTags.system.enabled is false" $name (toString (get (default dict $stage) "operation"))) -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

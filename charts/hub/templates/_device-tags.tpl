@@ -5,6 +5,11 @@ list of {value, name?, description?}. value uses the stored device tag form
 "-", starting and ending with a letter or digit. Values are unique.
 */}}
 {{- define "kerberoshub.deviceTags.system.validate" -}}
+{{- $deviceTags := .Values.deviceTags | default dict -}}
+{{- $system := $deviceTags.system | default dict -}}
+{{- if and (hasKey $system "enabled") (not (kindIs "bool" $system.enabled)) -}}
+{{- fail (printf "deviceTags.system.enabled must be true or false (a boolean, not %q)" (toString $system.enabled)) -}}
+{{- end -}}
 {{- $seen := dict -}}
 {{- range $i, $tag := (include "kerberoshub.deviceTags.system.catalog" . | fromJsonArray) -}}
 {{- if not (kindIs "map" $tag) -}}
@@ -42,7 +47,7 @@ Whether system tags are enabled (deviceTags.system.enabled): "true" or "".
 {{- define "kerberoshub.deviceTags.system.enabled" -}}
 {{- $deviceTags := .Values.deviceTags | default dict -}}
 {{- $system := $deviceTags.system | default dict -}}
-{{- if $system.enabled -}}true{{- end -}}
+{{- if and (kindIs "bool" $system.enabled) $system.enabled -}}true{{- end -}}
 {{- end -}}
 
 {{/*
