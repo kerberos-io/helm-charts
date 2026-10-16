@@ -99,6 +99,51 @@ workflow engine. These deployment-global, ops-managed workflows are read-only
 through the API; manage them in Helm values. There are no per-project on/off
 overrides.
 
+To run a global workflow on specific devices across organisations, select them
+by system tag. Enable `deviceTags.system` and define the tags in its catalog;
+owners assign them to devices in Hub (only catalog tags can be assigned):
+
+```yaml
+deviceTags:
+  system:
+    enabled: true
+    catalog:
+      - key: anpr-pilot
+        label: ANPR pilot
+        description: Runs licence plate recognition on this camera
+
+kerberoshub:
+  workflows:
+    definitions:
+      anpr-pilot:
+        id: "6720f3a1c2d4e5f60718293a"
+        enabled: true
+        triggers:
+          - type: automatic
+            systemTags: ["anpr-pilot"]
+        stages:
+          - operation: anpr
+```
+
+Every tag a trigger selects must be in the catalog; otherwise rendering fails,
+so a typo cannot silently match no device. Because owners set system tags, any
+owner could enroll devices into such a workflow, so `deviceTags.system.enabled`
+is `false` by default. When it is on, the catalog is rendered into the
+`device-system-tags` ConfigMap and mounted into Hub API
+(`DEVICE_SYSTEM_TAGS_FILE`), like the classification catalog. While it is off,
+Hub API gets no catalog (system tags cannot be set) and rendering fails on any workflow that mentions system
+tags anywhere (trigger `systemTags`, or a `device.systemTags` condition at any
+depth, in any key casing). Enable it only on deployments whose owners are
+trusted administrators (self-hosted), never on multi-tenant SaaS.
+
+The engine reads keys case-insensitively and ignores unknown ones, so a typo
+could silently widen a workflow to every device. Workflow definitions may
+therefore only use the keys `id`, `enabled`, `triggers` and `stages`, and
+triggers only the trigger fields the engine knows, spelled exactly; anything
+else fails rendering. System-tag workflows also need a hub-workflows image
+that understands `systemTags` (uug-ai/hub-workflows#87 or later): an older
+engine drops the field and would run the workflow on every device.
+
 Supply an explicit, stable `id` for new definitions:
 
 ```yaml
