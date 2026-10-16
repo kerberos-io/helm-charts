@@ -11,6 +11,40 @@
       "not": {},
       "description": "Removed in 0.155.0. Store the complete catalog in a ConfigMap and use workflowConfiguration.configMaps with replace: true at catalogs/classifications.json."
     },
+    "deviceTags": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Owners may assign system tags and global workflows may select devices by them. Only for deployments whose owners are trusted (self-hosted)."
+            },
+            "catalog": {
+              "type": "array",
+              "description": "The system tags owners can assign, in the Hub shared choice catalog format (key, label) plus an optional description. Keys must be unique (checked when rendering).",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["key", "label"],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "pattern": "^[a-z0-9]([a-z0-9._:-]*[a-z0-9])?$"
+                  },
+                  "label": {"type": "string", "minLength": 1},
+                  "description": {"type": "string"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "kerberoshub": {
       "type": "object",
       "properties": {

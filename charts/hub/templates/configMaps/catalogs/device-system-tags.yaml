@@ -1,0 +1,12 @@
+{{- if include "kerberoshub.deviceTags.system.enabled" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: device-system-tags
+  namespace: {{ .Release.Namespace }}
+data:
+  # Rendered from deviceTags.system.catalog; hub-api reads it through
+  # DEVICE_SYSTEM_TAGS_FILE.
+  system-tags.json: |-
+    {{- include "kerberoshub.deviceTags.system.json" . | mustFromJson | toPrettyJson | nindent 4 }}
+{{- end -}}

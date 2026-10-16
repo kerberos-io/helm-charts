@@ -44,7 +44,7 @@ Disabled definitions are checked too, so enabling one cannot fail later.
 {{- include "kerberoshub.deviceTags.system.validate" . -}}
 {{- $catalog := dict -}}
 {{- range $tag := (include "kerberoshub.deviceTags.system.catalog" . | fromJsonArray) -}}
-{{- $_ := set $catalog (toString $tag.value) true -}}
+{{- $_ := set $catalog (toString $tag.key) true -}}
 {{- end -}}
 {{- $enabled := include "kerberoshub.deviceTags.system.enabled" . -}}
 {{- $definitionKeys := list "id" "enabled" "triggers" "stages" -}}

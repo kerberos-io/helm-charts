@@ -125,6 +125,9 @@ spec:
         {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) (not $catalogReplacement) }}
         checksum/classification-catalog: {{ include (print $.Template.BasePath "/configMaps/catalogs/classifications.yaml") . | sha256sum }}
         {{- end }}
+        {{- if include "kerberoshub.deviceTags.system.enabled" . }}
+        checksum/device-system-tags: {{ include (print $.Template.BasePath "/configMaps/catalogs/device-system-tags.yaml") . | sha256sum }}
+        {{- end }}
         {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/start.yaml")) }}
         checksum/workflow-configuration: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/start.yaml") . | sha256sum }}
         {{- end }}
@@ -147,7 +150,8 @@ spec:
       {{- $serverTLS := .Values.kerberoshub.api.serverTLS }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
       {{- $classificationCatalogEnabled := .Values.classificationCatalogEnabled }}
-      {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- $deviceSystemTagsEnabled := include "kerberoshub.deviceTags.system.enabled" . }}
+      {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled $deviceSystemTagsEnabled .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
       {{- if $workflowConfiguration.enabled }}
         - name: workflow-configuration
@@ -200,6 +204,11 @@ spec:
                 path: classifications.json
             {{- end }}
       {{- end }}
+      {{- if $deviceSystemTagsEnabled }}
+        - name: device-system-tags
+          configMap:
+            name: device-system-tags
+      {{- end }}
       {{- with .Values.kerberoshub.api.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -227,7 +236,7 @@ spec:
           ports:
             - containerPort: 80
               name: http
-          {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+          {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled $deviceSystemTagsEnabled .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
           {{- if $workflowConfiguration.enabled }}
             - name: workflow-configuration
@@ -237,6 +246,11 @@ spec:
           {{- if $classificationCatalogEnabled }}
             - name: classification-catalog
               mountPath: /etc/kerberos/classifications
+              readOnly: true
+          {{- end }}
+          {{- if $deviceSystemTagsEnabled }}
+            - name: device-system-tags
+              mountPath: /etc/kerberos/device-tags
               readOnly: true
           {{- end }}
           {{- with .Values.kerberoshub.api.volumeMounts}}
@@ -260,6 +274,12 @@ spec:
             {{- if $classificationCatalogEnabled }}
             - name: CLASSIFICATION_CATALOG_FILE
               value: /etc/kerberos/classifications/classifications.json
+            {{- end }}
+            {{- if $deviceSystemTagsEnabled }}
+            # System tag catalog (deviceTags.system.catalog): the only system
+            # tags owners can assign. Unset (disabled) disables system tags.
+            - name: DEVICE_SYSTEM_TAGS_FILE
+              value: /etc/kerberos/device-tags/system-tags.json
             {{- end }}
             - name: ENVIRONMENT
               value: "{{ .Values.environment }}"
@@ -396,11 +416,6 @@ spec:
             # it stores in the database; the config workflows are never persisted.
             - name: WORKFLOW_DEFINITIONS
               value: {{ include "kerberoshub.workflows.workflowDefinitions" . | quote }}
-            # System tag catalog (deviceTags.system): the only system tags
-            # owners can assign to devices. Empty (disabled or no tags)
-            # disables system tags.
-            - name: DEVICE_SYSTEM_TAGS
-              value: {{ include "kerberoshub.deviceTags.system.json" . | quote }}
             # Deployment service routing catalog used by API-owned embedded
             # workflows (for example the one-stage case redaction modal flow).
             - name: WORKFLOW_STAGE_QUEUES

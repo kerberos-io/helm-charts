@@ -108,8 +108,8 @@ deviceTags:
   system:
     enabled: true
     catalog:
-      - value: anpr-pilot
-        name: ANPR pilot
+      - key: anpr-pilot
+        label: ANPR pilot
         description: Runs licence plate recognition on this camera
 
 kerberoshub:
@@ -128,8 +128,10 @@ kerberoshub:
 Every tag a trigger selects must be in the catalog; otherwise rendering fails,
 so a typo cannot silently match no device. Because owners set system tags, any
 owner could enroll devices into such a workflow, so `deviceTags.system.enabled`
-is `false` by default. While it is off, Hub API gets an empty catalog (system
-tags cannot be set) and rendering fails on any workflow that mentions system
+is `false` by default. When it is on, the catalog is rendered into the
+`device-system-tags` ConfigMap and mounted into Hub API
+(`DEVICE_SYSTEM_TAGS_FILE`), like the classification catalog. While it is off,
+Hub API gets no catalog (system tags cannot be set) and rendering fails on any workflow that mentions system
 tags anywhere (trigger `systemTags`, or a `device.systemTags` condition at any
 depth, in any key casing). Enable it only on deployments whose owners are
 trusted administrators (self-hosted), never on multi-tenant SaaS.

@@ -1,33 +1,18 @@
 {{/*
-Validate the deployment's system tag catalog (deviceTags.system.catalog): a
-list of {value, name?, description?}. value uses the stored device tag form
-(models.NormalizeDeviceTags): 1-64 characters of a-z, 0-9, ".", "_", ":" and
-"-", starting and ending with a letter or digit. Values are unique.
+The system tag catalog (deviceTags.system.catalog) uses the Hub shared choice
+catalog format: {key, label, description?}. values.schema.json validates each
+entry (key in stored device tag form, models.NormalizeDeviceTags: 1-64
+characters of a-z, 0-9, ".", "_", ":" and "-", starting and ending with a
+letter or digit) and that enabled is a boolean; keys must also be unique.
 */}}
 {{- define "kerberoshub.deviceTags.system.validate" -}}
-{{- $deviceTags := .Values.deviceTags | default dict -}}
-{{- $system := $deviceTags.system | default dict -}}
-{{- if and (hasKey $system "enabled") (not (kindIs "bool" $system.enabled)) -}}
-{{- fail (printf "deviceTags.system.enabled must be true or false (a boolean, not %q)" (toString $system.enabled)) -}}
-{{- end -}}
 {{- $seen := dict -}}
-{{- range $i, $tag := (include "kerberoshub.deviceTags.system.catalog" . | fromJsonArray) -}}
-{{- if not (kindIs "map" $tag) -}}
-{{- fail (printf "deviceTags.system.catalog[%d] must be an object with a value" $i) -}}
+{{- range $tag := (include "kerberoshub.deviceTags.system.catalog" . | fromJsonArray) -}}
+{{- $key := toString $tag.key -}}
+{{- if hasKey $seen $key -}}
+{{- fail (printf "deviceTags.system.catalog: duplicate key %q" $key) -}}
 {{- end -}}
-{{- $value := $tag.value -}}
-{{- if or (not (kindIs "string" $value)) (gt (len (toString $value)) 64) (not (regexMatch "^[a-z0-9]([a-z0-9._:-]*[a-z0-9])?$" (toString $value))) -}}
-{{- fail (printf "deviceTags.system.catalog[%d].value %q must be 1-64 characters of a-z, 0-9, '.', '_', ':' or '-', starting and ending with a letter or digit" $i (toString $value)) -}}
-{{- end -}}
-{{- if hasKey $seen $value -}}
-{{- fail (printf "deviceTags.system.catalog: duplicate value %q" $value) -}}
-{{- end -}}
-{{- $_ := set $seen $value true -}}
-{{- range $field := list "name" "description" -}}
-{{- if and (hasKey $tag $field) (not (kindIs "string" (index $tag $field))) -}}
-{{- fail (printf "deviceTags.system.catalog[%d].%s must be a string" $i $field) -}}
-{{- end -}}
-{{- end -}}
+{{- $_ := set $seen $key true -}}
 {{- end -}}
 {{- end -}}
 
@@ -51,20 +36,16 @@ Whether system tags are enabled (deviceTags.system.enabled): "true" or "".
 {{- end -}}
 
 {{/*
-The system tag catalog as JSON (DEVICE_SYSTEM_TAGS on hub-api): each entry
-with its value, a name (defaulting to the value) and an optional description.
-Empty while deviceTags.system.enabled is false, which disables system tags in
-hub-api.
+The system tag catalog file hub-api reads (DEVICE_SYSTEM_TAGS_FILE), rendered
+from deviceTags.system.catalog into the device-system-tags ConfigMap.
 */}}
 {{- define "kerberoshub.deviceTags.system.json" -}}
 {{- include "kerberoshub.deviceTags.system.validate" . -}}
 {{- $tags := list -}}
-{{- if include "kerberoshub.deviceTags.system.enabled" . -}}
 {{- range $tag := (include "kerberoshub.deviceTags.system.catalog" . | fromJsonArray) -}}
-{{- $entry := dict "value" $tag.value "name" (default $tag.value $tag.name) -}}
+{{- $entry := dict "key" $tag.key "label" $tag.label -}}
 {{- with $tag.description }}{{- $_ := set $entry "description" . -}}{{- end }}
 {{- $tags = append $tags $entry -}}
-{{- end -}}
 {{- end -}}
 {{- $tags | toJson -}}
 {{- end -}}
