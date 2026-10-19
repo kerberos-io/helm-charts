@@ -82,8 +82,15 @@ classificationCatalogEnabled: true
 # When set, do not create a catalog ConfigMap; this replaces bundled defaults.
 classificationCatalogExistingConfigMap: ""
 # Defaults live in templates/configMaps/catalogs/classifications.yaml.
-# Inline classificationCatalog values are no longer accepted (including null/[]).
-# Use a ConfigMap item with path: catalogs/classifications.json and replace: true.
+# Optionally define the complete catalog inline instead; it replaces the
+# defaults in the chart's classification-catalog ConfigMap (and so the bundled
+# catalogs/classifications.json). Entries are {key, label, icon?} with unique
+# keys. Do not combine it with classificationCatalogExistingConfigMap or a
+# catalogs/classifications.json replacement in workflowConfiguration.
+# classificationCatalog:
+#   - key: car
+#     label: Car
+#     icon: car
 
 # Device tags, grouped by type. System tags are defined here and assigned by
 # owners (a multi-select on the device page); global workflows select devices
@@ -121,7 +128,7 @@ workflowConfiguration:
   # Replacement requires includeDefaults: true and a known bundled destination path.
   # Unmarked collisions and repeated custom destinations are rejected.
   # Replacing catalogs/classifications.json also supplies the classification API:
-  # do not combine it with classificationCatalogExistingConfigMap.
+  # do not combine it with classificationCatalogExistingConfigMap or classificationCatalog.
   # Legacy existingConfigMap/items/extraConfigMaps remain supported, but cannot
   # be mixed with includeDefaults/configMaps. Both interfaces are omitted here
   # so Helm's default merging does not introduce a false mixed configuration.

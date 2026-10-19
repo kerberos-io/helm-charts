@@ -8,8 +8,19 @@
       "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
     },
     "classificationCatalog": {
-      "not": {},
-      "description": "Removed in 0.155.0. Store the complete catalog in a ConfigMap and use workflowConfiguration.configMaps with replace: true at catalogs/classifications.json."
+      "type": ["array", "null"],
+      "minItems": 1,
+      "description": "Optional inline classification catalog in the Hub shared choice catalog format; replaces the bundled defaults in the chart's classification-catalog ConfigMap. Omit (or null) for the bundled defaults. Keys must be unique (checked when rendering).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "label"],
+        "properties": {
+          "key": {"type": "string", "minLength": 1},
+          "label": {"type": "string", "minLength": 1},
+          "icon": {"type": "string", "minLength": 1}
+        }
+      }
     },
     "deviceTags": {
       "type": "object",

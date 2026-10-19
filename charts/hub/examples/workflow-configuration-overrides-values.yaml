@@ -1,7 +1,6 @@
 # Create these ConfigMaps in the release namespace before deploying the chart.
 # Keys contain complete contracts/catalogs; they are not merged with chart data.
-# Remove the retired classificationCatalog key from every values overlay.
-# Do not also set classificationCatalogExistingConfigMap.
+# Do not also set classificationCatalog or classificationCatalogExistingConfigMap.
 classificationCatalogEnabled: true
 workflowConfiguration:
   enabled: true
