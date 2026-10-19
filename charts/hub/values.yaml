@@ -702,6 +702,7 @@ kerberoshub:
       publicKey: ""
     googlemaps: # Google maps is used inside the application to visualise cameras and sites.
       apikey: "xxxx"
+      placesApi: "legacy" # Places API for address autocomplete: "legacy" (default) or "new" for keys with Places API (New) enabled. Uses the same apikey.
     zendesk: # We can use different support tools, for now we use Zendesk but others can be integrated
       url: "yourdomain.zendesk.com"
     posthog: # Posthog is used for auditing and user interaction logging

@@ -192,6 +192,8 @@ spec:
         # Google maps for using and displaying cameras, sites on a map
         - name: GOOGLEMAPS_KEY
           value: "{{ .Values.kerberoshub.frontend.googlemaps.apikey }}"
+        - name: GOOGLEMAPS_PLACES_API
+          value: "{{ .Values.kerberoshub.frontend.googlemaps.placesApi }}"
 
         # features > chart
         - name: CHART_COLORS
