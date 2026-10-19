@@ -377,6 +377,7 @@ kerberospipeline:
 | `kerberoshub.frontend.sentry.url` | No longer used. | `"https://xxx@sentry.io/xxx"` |
 | `kerberoshub.frontend.stripe.publicKey` | Public key for `kerberoshub.frontend.stripe`. | `""` |
 | `kerberoshub.frontend.googlemaps.apikey` | Within Kerberos Hub frontend a couple of maps are being used, the google maps is leveraged for that. | `"xxxx"` |
+| `kerberoshub.frontend.googlemaps.placesApi` | Google Places API used for address autocomplete with the same `apikey`: `"legacy"` (Places API) or `"new"` (Places API (New), required for keys that cannot enable the legacy Places API). | `"legacy"` |
 | `kerberoshub.frontend.zendesk.url` | No longer used. | `"yourdomain.zendesk.com"` |
 | `kerberoshub.frontend.posthog.key` | The API key retrieved from the Posthog instance. | `"xxx"` |
 | `kerberoshub.frontend.posthog.url` | Posthog's endpoint (http/https). | `"https://posthog.domain.com"` |
