@@ -592,6 +592,7 @@ kerberospipeline:
 | `kerberospipeline.analysis.tag` | The Docker image tag/version. | `"v1.7.8"` |
 | `kerberospipeline.analysis.replicas` | Number of replicas for `kerberospipeline.analysis`. | `1` |
 | `kerberospipeline.analysis.logLevel` | Log verbosity level for `kerberospipeline.analysis`. | `"info"` |
+| `kerberospipeline.analysis.thumbnailRegeneration.enabled` | Regenerate thumbnails from the first frame of a classified moving object (`THUMBNAIL_REGENERATION_ENABLED`). Adds one thumbnail job per classified recording. Requires an analysis image that reads the flag. | `false` |
 | `kerberospipeline.analysis.dbCache.enabled` | Cache hot-path MongoDB lookups (site vault per device) in memory. Site changes apply after at most one TTL. | `false` |
 | `kerberospipeline.analysis.dbCache.ttl` | Lifetime of a cached lookup, as a Go duration (e.g. `"30s"`, `"5m"`). | `"5m"` |
 | `kerberospipeline.analysis.resources.requests.memory` | Memory request for `kerberospipeline.analysis`. | `"10Mi"` |
