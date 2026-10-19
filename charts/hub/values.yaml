@@ -1277,6 +1277,12 @@ kerberospipeline:
     #  - name: extra
     #    mountPath: /data
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    # Opt-in: after classification, re-enqueue the recording on the thumbnail
+    # queue to regenerate its thumbnail from the first frame of a tracked moving
+    # object (THUMBNAIL_REGENERATION_ENABLED). Adds one thumbnail job per
+    # classified recording; size pipe-thumbnail accordingly before enabling.
+    thumbnailRegeneration:
+      enabled: false
     # In-memory cache for hot-path MongoDB lookups (site vault per device).
     # Site changes apply after at most one TTL; each replica caches separately.
     dbCache:

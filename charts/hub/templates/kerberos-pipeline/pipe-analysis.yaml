@@ -126,6 +126,10 @@ spec:
         - name: DOMINANTCOLOR_ENABLED
           value: "{{ .Values.kerberospipeline.dominantColor.enabled }}"
 
+        # Thumbnail regeneration from classified frames (opt-in)
+        - name: THUMBNAIL_REGENERATION_ENABLED
+          value: {{ .Values.kerberospipeline.analysis.thumbnailRegeneration.enabled | default false | quote }}
+
         # In-memory cache for hot-path MongoDB lookups
         - name: DB_CACHE_ENABLED
           value: {{ .Values.kerberospipeline.analysis.dbCache.enabled | default false | quote }}
