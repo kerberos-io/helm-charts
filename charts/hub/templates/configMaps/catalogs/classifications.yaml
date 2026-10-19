@@ -11,6 +11,28 @@
   {"key": "cell phone", "label": "Cell phone", "icon": "cell phone"}
 ]
 {{- end -}}
+{{/*
+The effective chart-rendered catalog: the inline classificationCatalog values
+list when set, otherwise the bundled defaults above. values.schema.json
+validates each entry ({key, label, icon?}); keys must also be unique.
+*/}}
+{{- define "hub.classificationCatalog.json" -}}
+{{- if kindIs "invalid" .Values.classificationCatalog -}}
+{{- include "hub.classificationCatalog.defaults" . | mustFromJson | toJson -}}
+{{- else if and (kindIs "slice" .Values.classificationCatalog) .Values.classificationCatalog -}}
+{{- $seen := dict -}}
+{{- range $entry := .Values.classificationCatalog -}}
+{{- $key := toString $entry.key -}}
+{{- if hasKey $seen $key -}}
+{{- fail (printf "classificationCatalog: duplicate key %q" $key) -}}
+{{- end -}}
+{{- $_ := set $seen $key true -}}
+{{- end -}}
+{{- .Values.classificationCatalog | toJson -}}
+{{- else -}}
+{{- fail "classificationCatalog must be omitted (bundled defaults) or a nonempty list; to use the API fallback set classificationCatalogEnabled: false" -}}
+{{- end -}}
+{{- end -}}
 {{- $config := include "hub.workflowConfiguration.settings" . | fromYaml -}}
 {{- if and .Values.classificationCatalogEnabled (not .Values.classificationCatalogExistingConfigMap) (not (hasKey $config.replacements "catalogs/classifications.json")) }}
 apiVersion: v1
@@ -20,5 +42,5 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   classifications.json: |-
-    {{- include "hub.classificationCatalog.defaults" . | mustFromJson | toPrettyJson | nindent 4 }}
+    {{- include "hub.classificationCatalog.json" . | mustFromJson | toPrettyJson | nindent 4 }}
 {{- end -}}

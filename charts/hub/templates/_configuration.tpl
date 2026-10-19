@@ -22,9 +22,6 @@
 
 {{/* Normalize both interfaces without changing the caller's values. */}}
 {{- define "hub.workflowConfiguration.settings" -}}
-{{- if hasKey .Values "classificationCatalog" -}}
-{{- fail "classificationCatalog is no longer supported; remove the values key and place the complete catalog in a ConfigMap, then use workflowConfiguration.configMaps with path: catalogs/classifications.json and replace: true" -}}
-{{- end -}}
 {{- $config := .Values.workflowConfiguration | default dict -}}
 {{- $unified := or (hasKey $config "includeDefaults") (hasKey $config "configMaps") -}}
 {{- $legacy := or (hasKey $config "existingConfigMap") (hasKey $config "items") (hasKey $config "extraConfigMaps") -}}
@@ -76,6 +73,17 @@
 {{- if hasKey $replacements "catalogs/classifications.json" -}}
 {{- if .Values.classificationCatalogExistingConfigMap -}}
 {{- fail "a classifications.json replacement cannot be combined with classificationCatalogExistingConfigMap; choose one override mechanism" -}}
+{{- end -}}
+{{- end -}}
+{{- if not (kindIs "invalid" .Values.classificationCatalog) -}}
+{{- if not .Values.classificationCatalogEnabled -}}
+{{- fail "classificationCatalog requires classificationCatalogEnabled; remove the inline list to use the API fallback" -}}
+{{- end -}}
+{{- if .Values.classificationCatalogExistingConfigMap -}}
+{{- fail "classificationCatalog cannot be combined with classificationCatalogExistingConfigMap; choose one override mechanism" -}}
+{{- end -}}
+{{- if hasKey $replacements "catalogs/classifications.json" -}}
+{{- fail "classificationCatalog cannot be combined with a classifications.json replacement; choose one override mechanism" -}}
 {{- end -}}
 {{- end -}}
 {{- dict "enabled" $enabled "includeDefaults" $includeDefaults "configMaps" $normalizedSources "replacements" $replacements | toYaml -}}

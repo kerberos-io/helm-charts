@@ -719,19 +719,37 @@ Within the Kerberos Hub front-end you'll see the option to filter through classi
 The default shared classification list lives in
 [`templates/configMaps/catalogs/classifications.yaml`](templates/configMaps/catalogs/classifications.yaml),
 independently of workflow contracts. The chart uses this bundled definition
-unless a deployer provides a ConfigMap override. Each entry contains the stable classifier output
+unless a deployer defines the catalog inline or provides a ConfigMap override. Each entry contains the stable classifier output
 `key`, the user-facing `label`, and an `icon` key. Hub API exposes this catalog
 to alerts and filters. When the mounted catalog is unavailable, compatible Hub
 API versions fall back to the legacy `settings` document and then the built-in
 classification list. Set `classificationCatalogEnabled: false` to omit the
 ConfigMap and make Hub API use that fallback directly.
 
-Starting with chart **0.155.0**, the inline `classificationCatalog` values key is
-removed. Supplying it fails validation, including `null` and `[]`; it is never
-silently ignored or replaced with bundled defaults.
+The simplest way to customize the catalog is to define the complete list inline
+in your values (restored in chart **0.162.0** after its removal in 0.155.0):
 
-To customize the catalog, create a ConfigMap in the release namespace containing
-the complete JSON array, then use the per-file replacement interface:
+```yaml
+classificationCatalog:
+  - key: car
+    label: Car
+    icon: car
+  - key: forklift
+    label: Forklift
+```
+
+The list replaces the bundled defaults entirely (entries are not merged) and is
+rendered into the chart's `classification-catalog` ConfigMap, so Hub API and the
+bundled `catalogs/classifications.json` of workflow packaging use the same list
+and a change rolls the API pod. Each entry needs a `key` and `label`, `icon` is
+optional, and keys must be unique. Omitting the key (or `null`) keeps the bundled
+defaults; `[]` is rejected, so use `classificationCatalogEnabled: false` for the
+API fallback. An inline list cannot be combined with
+`classificationCatalogEnabled: false`, `classificationCatalogExistingConfigMap` or
+a per-file catalog replacement.
+
+Alternatively, create a ConfigMap in the release namespace containing the complete
+JSON array, then use the per-file replacement interface:
 
 ```yaml
 classificationCatalogEnabled: true
@@ -746,13 +764,8 @@ workflowConfiguration:
           replace: true
 ```
 
-To migrate, copy the existing list exactly (preserving keys, labels and icons)
-into the ConfigMap's JSON data, remove `classificationCatalog` from every values
-overlay and command-line override, and deploy the ConfigMap before the chart
-upgrade. A `null` value is not a migration: remove the key. The bundled list
-remains the default when no override is configured. If an old `[]` intentionally
-selected the API's runtime fallback, use `classificationCatalogEnabled: false`
-and configure workflow packaging without bundled defaults instead.
+Deploy that ConfigMap before the chart upgrade. The bundled list remains the
+default when no override is configured.
 
 The existing `classificationCatalogExistingConfigMap: hub-classification-catalog`
 option remains supported, including for deployments without workflow packaging.
@@ -1097,12 +1110,12 @@ not owned by workflows. A library may ship a catalog without implementing an API
 **effective** classification list under `/etc/kerberos/configuration`, using
 the directory layout above. The projected volume reuses the existing
 classification ConfigMap, including `classificationCatalogExistingConfigMap`
-overrides or explicit per-file replacements, rather
+overrides, an inline `classificationCatalog` or explicit per-file replacements, rather
 than storing another copy in the workflow ConfigMap.
 
 The default classification ConfigMap name, mount path, `CLASSIFICATION_CATALOG_FILE`
-and API endpoint remain unchanged. Inline `classificationCatalog` values,
-including `[]` and `null`, are rejected from chart 0.155.0 onward. The current API
+and API endpoint remain unchanged. An inline `classificationCatalog` list is
+rendered into that ConfigMap; `[]` is rejected. The current API
 still falls back to settings/built-in values for an empty/invalid mounted catalog. The preparatory
 bundle does not reproduce that runtime fallback and must not be treated as a
 resolved API catalog. The Start-specific loader shares the existing classification
@@ -1189,10 +1202,9 @@ A replacement for `catalogs/classifications.json` also supplies the standalone
 classification API. Both mounts use that ConfigMap and key, even when its key
 is not named `classifications.json`. The chart does not generate or checksum the
 replaced ConfigMap. To avoid two competing sources, do not combine this
-replacement with a nonempty `classificationCatalogExistingConfigMap`. That
-existing ConfigMap option remains supported when no per-file catalog replacement
-is configured. The retired inline `classificationCatalog` key is rejected
-regardless of the selected configuration.
+replacement with a nonempty `classificationCatalogExistingConfigMap` or an inline
+`classificationCatalog`. Those options remain supported when no per-file catalog
+replacement is configured.
 `classificationCatalogEnabled` must remain true when including defaults.
 
 This is whole-file replacement, not field-level YAML merging or catalog-entry
