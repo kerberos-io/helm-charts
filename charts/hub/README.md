@@ -682,6 +682,87 @@ kerberospipeline:
 | `kerberoshub.frontend.ssoDomain` | The domain that's being used to activate SSO from the login page. | `""` |
 | `kerberoshub.frontend.stripe.apikey` | If using the public version, `stripe` can be used for automated billing and subscriptions. | `""` |
 
+### Email templates and variables
+
+Every email Hub sends is a template: an HTML file, plus a plain-text `.txt` version, containing `{{variable}}` placeholders that are filled in just before sending. This section lists which value each placeholder gets.
+
+#### Which template is used
+
+- `email.templates.<name>` sets the template name for each email (for example `email.templates.detection: "detection"`).
+- With `email.provider: smtp`, Hub reads `/mail/templates/<name>.html` and `/mail/templates/<name>.txt` from the container. If the files are not there, it uses its built-in template with that name. To use your own, mount a volume at `/mail` (see the commented `custom-email-templates` volume in `values.yaml`). The [`custom-layout/templates`](custom-layout/templates) folder holds a complete set to start from.
+- With `email.provider: mailgun`, `<name>` is a template stored in your Mailgun account. Mailgun receives `user`, `text`, `link`, `numberOfMedia`, `dataUsage` and the email-specific values below as template variables. The computed values (dates, camera, sites, groups, thumbnail) are only filled in with `smtp`.
+- Alert emails (`detection`) are only sent when `email.provider` is `smtp`.
+- A placeholder that has no value for that email stays in the email as literal text, so only use the placeholders listed for it. The bundled templates contain `{{tab1_href}}`, `{{tab1_title}}`, `{{tab2_href}}` and `{{tab2_title}}`; these are not filled in.
+
+#### Links
+
+- The **base URL** is `kerberoshub.frontend.schema` + `://` + `kerberoshub.frontend.url` (the `PUBLIC_URL` environment variable), for example `https://app.example.com`.
+- A **tenant URL** is the base URL with the first part of the host replaced by the recipient account's domain. With base URL `https://app.example.com` and account domain `acme`, the tenant URL is `https://acme.example.com`. Accounts without a domain use the base URL. Only the last two parts of the host are kept, so a base URL on `app.example.co.uk` becomes `acme.co.uk`.
+
+#### Alerts: `detection`
+
+Sent by the notification pipeline (`kerberospipeline.notify`) when a custom alert or the generic detection alert fires. The subject is `email.templates.alertTitle`; for a custom alert it is prefixed with the alert's name in brackets, for example `[Front door] Hub detected an event.`
+
+| Placeholder | Value |
+|---|---|
+| `{{user}}` | Name of the account that receives the alert: first and last name, or the username when both are empty. This is the account the camera belongs to, not the user who created the alert. |
+| `{{title}}` | The email subject. |
+| `{{text}}` | The alert message: what was detected, on which camera and when. |
+| `{{link}}` | **Custom alerts**: a signed link to the recording file. It stops working when the storage link expires. **Generic detection alert**: the recording's page in Hub, `<tenant URL>/media/<id>`. |
+| `{{medialink}}` | `https://app.kerberos.io/media/<id>`. Always this host; it does not follow `kerberoshub.frontend.url`. |
+| `{{thumbnail}}` | An `<img>` of the recording: embedded in the email for custom alerts, a signed thumbnail URL for the generic detection alert. |
+| `{{date}}`, `{{time}}`, `{{datetime}}` | Start of the recording, in the account's timezone. |
+| `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the alert was sent, in the account's timezone. |
+| `{{timezone}}` | The account's timezone. |
+| `{{devicename}}`, `{{deviceid}}` | Camera name and camera key. |
+| `{{sites}}`, `{{groups}}` | Comma-separated names of the sites and groups the camera belongs to. |
+| `{{classifications}}` | Comma-separated objects detected in the recording. |
+
+#### Camera status: `device`
+
+Sent by `hub-monitor-device` when a camera goes online, offline or idle. The subject is `email.templates.deviceTitle`.
+
+| Placeholder | Value |
+|---|---|
+| `{{user}}` | Username of the account the camera belongs to. |
+| `{{title}}` | The email subject. |
+| `{{text}}` | The status change, for example "`<camera>` is online, but the camera stream is not connected." |
+| `{{status}}` | `online`, `offline` or `idle`. |
+| `{{devicename}}`, `{{deviceid}}` | Camera name and camera key. |
+| `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the status changed, in the server's timezone (normally UTC), not the account's. |
+| `{{link}}` | Not set; replaced with an empty value. |
+
+#### Account and sharing emails
+
+Sent by the API (`kerberoshub.api`). The subject of each email is the matching `email.templates.<name>Title` value.
+
+| Email (`email.templates.*`) | Placeholder | Value |
+|---|---|---|
+| Registration (`welcome`) | `{{user}}` | New user's first and last name, or username. |
+| | `{{link}}` | Activation link: `<base URL>/login/activate/<token>`. |
+| | `{{token}}` | The activation token. |
+| Account activated (`activate`) | `{{user}}` | User's first and last name, or username. |
+| | `{{link}}` | `<base URL>/login`. |
+| Password reset (`forgot`) | `{{user}}` | User's first and last name, or username. |
+| | `{{password}}` | The newly generated password. |
+| | `{{ipaddress}}` | IP address the reset was requested from. |
+| Recording shared (`share`) | `{{user}}` | Sender's first and last name, or username. |
+| | `{{url}}` | Signed link to the recording file. |
+| | `{{title}}` | The email subject (`email.templates.shareTitle`). The share's own title is only used when that value is empty. |
+| | `{{body}}` | The notes the sender added to the share. |
+| Case shared (`share_case`) | `{{user}}` | Sender's first and last name, or email address. |
+| | `{{firstname}}`, `{{lastname}}` | Sender's first and last name. |
+| | `{{url}}` | `<base URL>/share/<token>`. |
+| | `{{expiry}}` | How long the share stays valid, for example "2 days" or "1 week". |
+| Case share code (`share_case_otp`) | `{{code}}` | One-time code to open the shared case. |
+| | `{{expiry}}` | How long the code stays valid. |
+| Task assigned (`assign_task`) | `{{assignee}}` | Assigned user's first and last name, or username. |
+| | `{{user}}` | Name of the user who assigned the task. |
+| | `{{task_name}}` | The task title. |
+| | `{{link}}` | `<tenant URL>/tasks/`, using the assigned user's domain. |
+
+The `newip`, `disable` and `highupload` templates are included, but no service currently sends them.
+
 ### Post installation
 
 After the installation you'll need to initialise the Mongodb with some objects. Have a look at the `mongodb/` folder, you'll find three files available:
