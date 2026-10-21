@@ -597,6 +597,6 @@ spec:
               value: "{{ .Values.opentelemetry.routingEnabled }}"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "{{ .Values.opentelemetry.collector.endpoint }}"
-            {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 12 }}
+            {{- include "hub.opentelemetry.apiSamplerEnv" $ | trim | nindent 12 }}
             {{- end }}
 {{- end }}

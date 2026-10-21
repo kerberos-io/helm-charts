@@ -86,14 +86,27 @@ Usage: {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-api") | nin
 {{/*
 OpenTelemetry sampler env entries, rendered only when configured. The OTel SDKs
 read these natively; unset keeps the SDK default (parentbased_always_on).
+"hub.opentelemetry.samplerEnv" renders opentelemetry.sampler, the sampler of the
+services downstream of the Vault (pipeline, workflows engine and stages), which
+continue the Vault's trace; "hub.opentelemetry.apiSamplerEnv" renders
+opentelemetry.apiSampler for hub-api, which starts its own traces for user
+requests.
 Usage: {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
 */}}
 {{- define "hub.opentelemetry.samplerEnv" -}}
-{{- with .Values.opentelemetry.sampler.type }}
+{{- include "hub.opentelemetry.samplerEnvFrom" .Values.opentelemetry.sampler -}}
+{{- end -}}
+
+{{- define "hub.opentelemetry.apiSamplerEnv" -}}
+{{- include "hub.opentelemetry.samplerEnvFrom" (.Values.opentelemetry.apiSampler | default dict) -}}
+{{- end -}}
+
+{{- define "hub.opentelemetry.samplerEnvFrom" -}}
+{{- with .type }}
 - name: OTEL_TRACES_SAMPLER
   value: {{ . | quote }}
 {{- end }}
-{{- with .Values.opentelemetry.sampler.arg }}
+{{- with .arg }}
 - name: OTEL_TRACES_SAMPLER_ARG
   value: {{ . | quote }}
 {{- end }}

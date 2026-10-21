@@ -117,6 +117,14 @@ spec:
         - name: KERBEROS_STORAGE_PROVIDER
           value: {{ . | quote }}
         {{- end }}
+        {{- if $root.Values.opentelemetry.enabled }}
+
+        # OpenTelemetry tracing: the stage continues the engine's dispatch span
+        # (the run's traceparent) and follows its sampling decision.
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "{{ $root.Values.opentelemetry.collector.endpoint }}"
+        {{- include "hub.opentelemetry.samplerEnv" $root | trim | nindent 8 }}
+        {{- end }}
 
         # Per-stage tuning knobs. Any key/value under services.<name>.env is
         # rendered verbatim as container env, so a worker can be tuned from
