@@ -211,13 +211,24 @@ opentelemetry:
     endpoint: "http://otel-collector:4318"
   # Trace sampling, passed to the services as OTEL_TRACES_SAMPLER and
   # OTEL_TRACES_SAMPLER_ARG. Leave empty to keep the SDK default, which records
-  # every trace. Example: keep ~10% of traces, and follow the parent's decision
-  # for spans that continue an upstream trace:
-  #   type: "parentbased_traceidratio"
-  #   arg: "0.1"
+  # every trace.
   # Supported types: always_on, always_off, traceidratio, parentbased_always_on,
   # parentbased_always_off, parentbased_traceidratio.
+  #
+  # sampler applies to the services downstream of the Vault: hub-workflows, the
+  # pipe-* services and the workflow stages. They continue the trace the Vault
+  # starts for an upload, so head sampling belongs at the Vault
+  # (parentbased_traceidratio on the Vault deployment) and these follow its
+  # decision without starting traces of their own:
+  #   type: "parentbased_always_off"
   sampler:
+    type: ""
+    arg: ""
+  # apiSampler applies to hub-api, which starts its own traces for user
+  # requests. Example: keep ~10% of them:
+  #   type: "parentbased_traceidratio"
+  #   arg: "0.1"
+  apiSampler:
     type: ""
     arg: ""
 ############################################
