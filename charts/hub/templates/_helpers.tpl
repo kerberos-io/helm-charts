@@ -88,9 +88,9 @@ OpenTelemetry sampler env entries, rendered only when configured. The OTel SDKs
 read these natively; unset keeps the SDK default (parentbased_always_on).
 "hub.opentelemetry.samplerEnv" renders opentelemetry.sampler, the sampler of the
 services downstream of the Vault (pipeline, workflows engine and stages), which
-continue the Vault's trace; "hub.opentelemetry.apiSamplerEnv" renders
-opentelemetry.apiSampler for hub-api, which starts its own traces for user
-requests.
+continue the Vault's trace; "hub.opentelemetry.apiSamplerEnv" renders, for
+hub-api, which starts its own traces, opentelemetry.apiSampler and the
+per-class opentelemetry.apiSamplingRatios (TRACE_SAMPLER_RATIO_<CLASS>).
 Usage: {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
 */}}
 {{- define "hub.opentelemetry.samplerEnv" -}}
@@ -99,6 +99,12 @@ Usage: {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
 
 {{- define "hub.opentelemetry.apiSamplerEnv" -}}
 {{- include "hub.opentelemetry.samplerEnvFrom" (.Values.opentelemetry.apiSampler | default dict) -}}
+{{- range $class, $ratio := (.Values.opentelemetry.apiSamplingRatios | default dict) }}
+{{- if ne (toString $ratio) "" }}
+- name: TRACE_SAMPLER_RATIO_{{ upper $class }}
+  value: {{ toString $ratio | quote }}
+{{- end }}
+{{- end }}
 {{- end -}}
 
 {{- define "hub.opentelemetry.samplerEnvFrom" -}}

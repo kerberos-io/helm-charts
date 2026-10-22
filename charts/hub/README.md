@@ -272,6 +272,8 @@ kerberospipeline:
 | `opentelemetry.sampler.arg` | Sampler argument for those services, exported as `OTEL_TRACES_SAMPLER_ARG`. | `""` |
 | `opentelemetry.apiSampler.type` | Trace sampler for hub-api, which starts its own traces for user requests (e.g. `parentbased_traceidratio`). Empty keeps the SDK default. | `""` |
 | `opentelemetry.apiSampler.arg` | Sampler argument for hub-api (e.g. `"0.1"` for ~10% of requests). | `""` |
+| `opentelemetry.apiSamplingRatios.operator` | hub-api: share of user and API-client requests traced (0–1), rendered as `TRACE_SAMPLER_RATIO_OPERATOR`. Takes precedence over `apiSampler` (hub-api on trace v1.2.5+). | `""` |
+| `opentelemetry.apiSamplingRatios.default` | hub-api: share of everything else traced (device heartbeats, agent uploads and live segments, background work), rendered as `TRACE_SAMPLER_RATIO_DEFAULT`; `0` turns it off. | `""` |
 | `openai.enabled` | Enable or disable OpenAI-backed semantic features. | `false` |
 | `openai.apikey` | OpenAI API key used when OpenAI integration is enabled. | `"xxx"` |
 | `kerberosvault.uri` | The default Kerberos Vault uri (you can add multiple within the app), by default `'https://api.storage.yourdomain.com'` | `"https://api.vault.yourdomain.com"` |

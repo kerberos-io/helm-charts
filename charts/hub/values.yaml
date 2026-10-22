@@ -231,6 +231,20 @@ opentelemetry:
   apiSampler:
     type: ""
     arg: ""
+  # apiSamplingRatios gives hub-api a sampling ratio (0 to 1) per kind of work,
+  # rendered as TRACE_SAMPLER_RATIO_<CLASS> (hub-api on trace library v1.2.5+).
+  # When any is set it takes precedence over apiSampler; empty values are not
+  # rendered.
+  #   operator: requests from users and API clients (UI, API tokens).
+  #   default:  everything else hub-api starts: device heartbeats, agent uploads
+  #             and live segments, background work, queries outside a request.
+  #             Unset with operator set: records everything.
+  # Example: ~10% of user requests, 1% of everything else:
+  #   operator: "0.1"
+  #   default: "0.01"
+  apiSamplingRatios:
+    operator: ""
+    default: ""
 ############################################
 # OpenAI configuration (semantic search)
 #
