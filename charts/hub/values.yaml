@@ -209,32 +209,17 @@ opentelemetry:
     # the collector terminates TLS. A scheme-less value defaults to TLS and
     # fails against a plaintext collector ("server gave HTTP response to HTTPS client").
     endpoint: "http://otel-collector:4318"
-  # Trace sampling, passed to the services as OTEL_TRACES_SAMPLER and
-  # OTEL_TRACES_SAMPLER_ARG. Leave empty to keep the SDK default, which records
-  # every trace.
-  # Supported types: always_on, always_off, traceidratio, parentbased_always_on,
-  # parentbased_always_off, parentbased_traceidratio.
+  # Trace sampling is decided where a trace starts:
+  # - Uploads start at the Vault, whose deployment sets their rate
+  #   (TRACE_SAMPLER_RATIO_UPLOAD / TRACE_SAMPLER_RATIO_DEFAULT).
+  # - hub-api starts its own traces; apiSamplingRatios below sets its rates.
+  # hub-workflows, the pipe-* services and the workflow stages only continue
+  # traces started elsewhere: they follow that decision and never start traces
+  # of their own (OTEL_TRACES_SAMPLER=parentbased_always_off, not configurable).
   #
-  # sampler applies to the services downstream of the Vault: hub-workflows, the
-  # pipe-* services and the workflow stages. They continue the trace the Vault
-  # starts for an upload, so head sampling belongs at the Vault
-  # (parentbased_traceidratio on the Vault deployment) and these follow its
-  # decision without starting traces of their own:
-  #   type: "parentbased_always_off"
-  sampler:
-    type: ""
-    arg: ""
-  # apiSampler applies to hub-api, which starts its own traces for user
-  # requests. Example: keep ~10% of them:
-  #   type: "parentbased_traceidratio"
-  #   arg: "0.1"
-  apiSampler:
-    type: ""
-    arg: ""
-  # apiSamplingRatios gives hub-api a sampling ratio (0 to 1) per kind of work,
+  # apiSamplingRatios: hub-api's sampling ratio (0 to 1) per kind of work,
   # rendered as TRACE_SAMPLER_RATIO_<CLASS> (hub-api on trace library v1.2.5+).
-  # When any is set it takes precedence over apiSampler; empty values are not
-  # rendered.
+  # Empty values are not rendered; with none set, hub-api records every trace.
   #   operator: requests from users and API clients (UI, API tokens).
   #   default:  everything else hub-api starts: device heartbeats, agent uploads
   #             and live segments, background work, queries outside a request.
