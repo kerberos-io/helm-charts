@@ -756,7 +756,7 @@ Sent by `hub-monitor-device` instead of `device` when an account has **Group not
 
 **Sections.** Sections are ordered by status (offline, camera stream lost, back online), then sites, groups and "Other cameras". Each camera is listed once: under the site or group that holds the most cameras of the email with the same status (a site wins a tie), or under "Other cameras" when it is in no site or group. A section title reads `Site Gate · Offline · all 3 cameras`, `Group Perimeter · Back online · 2 cameras` or `Other cameras · Camera stream lost · 1 camera`; "all" is added when every camera of the site or group is in the section. Each camera line has its name and a detail: `no response for 12 min`, `agent online, camera stream not connected` or `online`.
 
-`{{sections}}` is generated HTML with inline styles (email clients ignore stylesheets): per section a `<p>` with the title, followed by a `<table role="presentation" width="100%">` with one row per camera (name left, detail right). Place it where the camera list should appear; its look can't be changed from the template. For full control over the layout, use `{{sectionsText}}` or the webhook data below. Camera, site and group names are HTML-escaped.
+`{{sections}}` is generated HTML with inline styles (email clients ignore stylesheets): per section a `<p>` with the title, followed by a `<table role="presentation" width="100%">` with one row per camera (name left, detail right). Place it where the camera list should appear; its look can't be changed from the template. For full control over the layout, use `{{sectionsText}}`. Camera, site and group names are HTML-escaped.
 
 `{{sectionsText}}` example:
 
@@ -772,30 +772,7 @@ Other cameras · Camera stream lost · 1 camera
 
 **Custom templates** for this email are read by `hub-monitor-device`, so mount the `custom-email-templates` volume on `kerberoshub.monitordevice` as well (see the commented example in `values.yaml`).
 
-**Webhooks** receive the same notification as JSON, with the cameras in `device_statuses` and the sections in `device_sections`.
-
-Each camera in `device_statuses`:
-
-| Field | Value |
-|---|---|
-| `device_id`, `device_name` | Camera key and name. |
-| `previous_status`, `status` | Status before and after the change: `active`, `inactive` or `idle`. |
-| `minutes_since_heartbeat` | Minutes since the camera last reported. |
-| `section_type`, `section_name` | The section the camera is listed in: `site`, `group` or `account` ("Other cameras", no name). |
-
-`device_sections` is the grouping the email uses, one entry per section in the order of the email:
-
-| Field | Value |
-|---|---|
-| `type`, `name` | `site`, `group`, or `account` for "Other cameras" (no name), and the site or group name. |
-| `status` | The new status of every camera in the section: `active`, `inactive` or `idle`. |
-| `title` | The section title as shown in the email, for example `Site Gate · Offline · all 3 cameras`. |
-| `count` | Number of cameras in the section. |
-| `total` | Number of cameras in the site or group. Left out for `account`. |
-| `all` | `true` when the section holds every camera of the site or group. |
-| `device_ids` | Camera keys in the section, matching `device_id` in `device_statuses`. |
-
-`body` holds the summary, and `data` holds the email placeholders: `user`, `count`, `status`, `link`, `sections` (HTML) and `sectionsText`.
+**Webhooks** receive the same notification as JSON: `body` holds the summary, and `data` holds the email placeholders: `user`, `count`, `status`, `link`, `sections` (HTML) and `sectionsText`.
 
 #### Account and sharing emails
 
