@@ -284,10 +284,8 @@ kerberospipeline:
 | `opentelemetry.enabled` | Enable or disable OpenTelemetry instrumentation. | `false` |
 | `opentelemetry.routingEnabled` | Enable or disable OpenTelemetry routing/export behavior. | `false` |
 | `opentelemetry.collector.endpoint` | OpenTelemetry collector endpoint used for trace export. | `"http://otel-collector:4317"` |
-| `opentelemetry.sampler.type` | Trace sampler for the services downstream of the Vault (hub-workflows, `pipe-*`, workflow stages), exported as `OTEL_TRACES_SAMPLER`. They continue the Vault's trace, so use `parentbased_always_off` and sample at the Vault. Empty keeps the SDK default (sample everything). | `""` |
-| `opentelemetry.sampler.arg` | Sampler argument for those services, exported as `OTEL_TRACES_SAMPLER_ARG`. | `""` |
-| `opentelemetry.apiSampler.type` | Trace sampler for hub-api, which starts its own traces for user requests (e.g. `parentbased_traceidratio`). Empty keeps the SDK default. | `""` |
-| `opentelemetry.apiSampler.arg` | Sampler argument for hub-api (e.g. `"0.1"` for ~10% of requests). | `""` |
+| `opentelemetry.apiSamplingRatios.operator` | hub-api: share of user and API-client requests traced (0–1), rendered as `TRACE_SAMPLER_RATIO_OPERATOR` (hub-api on trace v1.2.6+). With no ratio set, hub-api records every trace. hub-workflows, the `pipe-*` services and the workflow stages always follow the trace they continue (`parentbased_always_off`); uploads are sampled at the Vault. | `""` |
+| `opentelemetry.apiSamplingRatios.other` | hub-api: share of everything else traced (device heartbeats, agent uploads and live segments, background work), rendered as `TRACE_SAMPLER_RATIO_OTHER`; `0` turns it off. | `""` |
 | `openai.enabled` | Enable or disable OpenAI-backed semantic features. | `false` |
 | `openai.apikey` | OpenAI API key used when OpenAI integration is enabled. | `"xxx"` |
 | `kerberosvault.uri` | The default Kerberos Vault uri (you can add multiple within the app), by default `'https://api.storage.yourdomain.com'` | `"https://api.vault.yourdomain.com"` |

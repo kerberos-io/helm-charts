@@ -84,30 +84,25 @@ Usage: {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-api") | nin
 {{- end -}}
 
 {{/*
-OpenTelemetry sampler env entries, rendered only when configured. The OTel SDKs
-read these natively; unset keeps the SDK default (parentbased_always_on).
-"hub.opentelemetry.samplerEnv" renders opentelemetry.sampler, the sampler of the
-services downstream of the Vault (pipeline, workflows engine and stages), which
-continue the Vault's trace; "hub.opentelemetry.apiSamplerEnv" renders
-opentelemetry.apiSampler for hub-api, which starts its own traces for user
-requests.
+OpenTelemetry sampling env.
+"hub.opentelemetry.samplerEnv" is for the services that only continue traces
+started elsewhere (hub-workflows, pipe-*, workflow stages): they follow the
+parent's sampling decision and never start traces of their own.
+"hub.opentelemetry.apiSamplerEnv" renders hub-api's per-class sampling ratios
+(opentelemetry.apiSamplingRatios) as TRACE_SAMPLER_RATIO_<CLASS>; empty values
+are not rendered.
 Usage: {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
 */}}
 {{- define "hub.opentelemetry.samplerEnv" -}}
-{{- include "hub.opentelemetry.samplerEnvFrom" .Values.opentelemetry.sampler -}}
+- name: OTEL_TRACES_SAMPLER
+  value: "parentbased_always_off"
 {{- end -}}
 
 {{- define "hub.opentelemetry.apiSamplerEnv" -}}
-{{- include "hub.opentelemetry.samplerEnvFrom" (.Values.opentelemetry.apiSampler | default dict) -}}
-{{- end -}}
-
-{{- define "hub.opentelemetry.samplerEnvFrom" -}}
-{{- with .type }}
-- name: OTEL_TRACES_SAMPLER
-  value: {{ . | quote }}
+{{- range $class, $ratio := (.Values.opentelemetry.apiSamplingRatios | default dict) }}
+{{- if ne (toString $ratio) "" }}
+- name: TRACE_SAMPLER_RATIO_{{ upper $class }}
+  value: {{ toString $ratio | quote }}
 {{- end }}
-{{- with .arg }}
-- name: OTEL_TRACES_SAMPLER_ARG
-  value: {{ . | quote }}
 {{- end }}
 {{- end -}}
