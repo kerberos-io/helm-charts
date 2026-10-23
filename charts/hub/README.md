@@ -31,6 +31,22 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Sequence logging
+
+Set `kerberospipeline.sequence.logLevel` to control the Sequence service's
+`LOG_LEVEL` environment variable. The default is `info`; supported values are
+`debug`, `info`, `warn`, and `error` (lowercase).
+
+```yaml
+kerberospipeline:
+    sequence:
+        logLevel: "debug"
+```
+
+Apply the values with a Helm upgrade or GitOps sync. Changing the value updates
+the pod template and triggers a rollout. Debug logging includes Sequence
+processing checkpoints when supported by the deployed service image.
+
 ### Sprite Resolution
 
 `kerberospipeline.sprite.width` and `height` set the pixel dimensions of each
