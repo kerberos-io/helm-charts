@@ -211,25 +211,25 @@ opentelemetry:
     endpoint: "http://otel-collector:4318"
   # Trace sampling is decided where a trace starts:
   # - Uploads start at the Vault, whose deployment sets their rate
-  #   (TRACE_SAMPLER_RATIO_UPLOAD / TRACE_SAMPLER_RATIO_DEFAULT).
+  #   (TRACE_SAMPLER_RATIO_UPLOAD / TRACE_SAMPLER_RATIO_OTHER).
   # - hub-api starts its own traces; apiSamplingRatios below sets its rates.
   # hub-workflows, the pipe-* services and the workflow stages only continue
   # traces started elsewhere: they follow that decision and never start traces
   # of their own (OTEL_TRACES_SAMPLER=parentbased_always_off, not configurable).
   #
   # apiSamplingRatios: hub-api's sampling ratio (0 to 1) per kind of work,
-  # rendered as TRACE_SAMPLER_RATIO_<CLASS> (hub-api on trace library v1.2.5+).
+  # rendered as TRACE_SAMPLER_RATIO_<CLASS> (hub-api on trace library v1.2.6+).
   # Empty values are not rendered; with none set, hub-api records every trace.
   #   operator: requests from users and API clients (UI, API tokens).
-  #   default:  everything else hub-api starts: device heartbeats, agent uploads
+  #   other:    everything else hub-api starts: device heartbeats, agent uploads
   #             and live segments, background work, queries outside a request.
   #             Unset with operator set: records everything.
   # Example: ~10% of user requests, 1% of everything else:
   #   operator: "0.1"
-  #   default: "0.01"
+  #   other: "0.01"
   apiSamplingRatios:
     operator: ""
-    default: ""
+    other: ""
 ############################################
 # OpenAI configuration (semantic search)
 #
