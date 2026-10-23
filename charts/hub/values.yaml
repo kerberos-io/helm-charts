@@ -1473,5 +1473,9 @@ email:
     disabled: "disable"
     highupload: "highupload"
     device: "device"
+    # Sent instead of "device" when several cameras of an account change status
+    # in the same scan and the account groups device notifications.
+    deviceGroup: "device_group"
     alertTitle: "[Alert] Kerberos Hub detected something an event"
     deviceTitle: "[Device] A Kerberos Agent's status has been changed"
+    deviceGroupTitle: "[Device] Several cameras changed status"

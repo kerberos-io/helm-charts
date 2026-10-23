@@ -84,6 +84,13 @@ spec:
               value: "{{ .Values.email.templates.device }}"
             - name: DEVICE_TITLE
               value: "{{ .Values.email.templates.deviceTitle }}"
+            - name: DEVICE_GROUP_TEMPLATE
+              value: "{{ .Values.email.templates.deviceGroup | default "device_group" }}"
+            - name: DEVICE_GROUP_TITLE
+              value: "{{ .Values.email.templates.deviceGroupTitle | default "[Device] Several cameras changed status" }}"
+            # Base URL for the link in grouped device notifications.
+            - name: PUBLIC_URL
+              value: "{{ .Values.kerberoshub.frontend.schema }}://{{ .Values.kerberoshub.frontend.url }}"
 
             # - Plain SMTP
             - name: SMTP_SERVER
