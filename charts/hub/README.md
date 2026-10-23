@@ -754,7 +754,7 @@ Sent by `hub-monitor-device` instead of `device` when an account has **Group by 
 | `{{link}}` | The cameras page, `<tenant URL>/devices`, built from `kerberoshub.frontend.schema` and `kerberoshub.frontend.url` (see *Links* above). |
 | `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the email was sent, in the server's timezone (normally UTC). |
 
-**Sections.** Sections are ordered by status (offline, camera stream lost, back online), then sites, groups and "Other cameras". Each camera is listed once: under the site or group that holds the most cameras of the email with the same status (a site wins a tie), or under "Other cameras" when it is in no site or group. A section title reads `Site Gate · Offline · all 3 cameras`, `Group Perimeter · Back online · 2 cameras` or `Other cameras · Camera stream lost · 1 camera`; "all" is added when every camera of a site is in the section. Each camera line has its name and a detail: `no response for 12 min`, `agent online, camera stream not connected` or `online`.
+**Sections.** Sections are ordered by status (offline, camera stream lost, back online), then sites, groups and "Other cameras". Each camera is listed once: under the site or group that holds the most cameras of the email with the same status (a site wins a tie), or under "Other cameras" when it is in no site or group. A section title reads `Site Gate · Offline · all 3 cameras`, `Group Perimeter · Back online · 2 cameras` or `Other cameras · Camera stream lost · 1 camera`; "all" is added when every camera of the site or group is in the section. Each camera line has its name and a detail: `no response for 12 min`, `agent online, camera stream not connected` or `online`.
 
 `{{sections}}` is generated HTML with inline styles (email clients ignore stylesheets): per section a `<p>` with the title, followed by a `<table role="presentation" width="100%">` with one row per camera (name left, detail right). Place it where the camera list should appear; its look can't be changed from the template. For full control over the layout, use `{{sectionsText}}` or the webhook data below. Camera, site and group names are HTML-escaped.
 
@@ -781,7 +781,7 @@ Other cameras · Camera stream lost · 1 camera
 | `minutes_since_heartbeat` | Minutes since the camera last reported. |
 | `section_type`, `section_name` | The section the camera is listed in: `site`, `group` or `account` ("Other cameras", no name). |
 
-`body` holds the summary, and `data` holds `count`, `status` and `link`.
+`body` holds the summary, and `data` holds the email placeholders: `user`, `count`, `status`, `link`, `sections` (HTML) and `sectionsText`.
 
 #### Account and sharing emails
 
