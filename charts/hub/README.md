@@ -115,6 +115,51 @@ workflow engine. These deployment-global, ops-managed workflows are read-only
 through the API; manage them in Helm values. There are no per-project on/off
 overrides.
 
+To run a global workflow on specific devices across organisations, select them
+by system tag. Enable `deviceTags.system` and define the tags in its catalog;
+owners assign them to devices in Hub (only catalog tags can be assigned):
+
+```yaml
+deviceTags:
+  system:
+    enabled: true
+    catalog:
+      - key: anpr-pilot
+        label: ANPR pilot
+        description: Runs licence plate recognition on this camera
+
+kerberoshub:
+  workflows:
+    definitions:
+      anpr-pilot:
+        id: "6720f3a1c2d4e5f60718293a"
+        enabled: true
+        triggers:
+          - type: automatic
+            systemTags: ["anpr-pilot"]
+        stages:
+          - operation: anpr
+```
+
+Every tag a trigger selects must be in the catalog; otherwise rendering fails,
+so a typo cannot silently match no device. Because owners set system tags, any
+owner could enroll devices into such a workflow, so `deviceTags.system.enabled`
+is `false` by default. When it is on, the catalog is rendered into the
+`device-system-tags` ConfigMap and mounted into Hub API
+(`DEVICE_SYSTEM_TAGS_FILE`), like the classification catalog. While it is off,
+Hub API gets no catalog (system tags cannot be set) and rendering fails on any workflow that mentions system
+tags anywhere (trigger `systemTags`, or a `device.systemTags` condition at any
+depth, in any key casing). Enable it only on deployments whose owners are
+trusted administrators (self-hosted), never on multi-tenant SaaS.
+
+The engine reads keys case-insensitively and ignores unknown ones, so a typo
+could silently widen a workflow to every device. Workflow definitions may
+therefore only use the keys `id`, `enabled`, `triggers` and `stages`, and
+triggers only the trigger fields the engine knows, spelled exactly; anything
+else fails rendering. System-tag workflows also need a hub-workflows image
+that understands `systemTags` (uug-ai/hub-workflows#87 or later): an older
+engine drops the field and would run the workflow on every device.
+
 Supply an explicit, stable `id` for new definitions:
 
 ```yaml
@@ -239,8 +284,10 @@ kerberospipeline:
 | `opentelemetry.enabled` | Enable or disable OpenTelemetry instrumentation. | `false` |
 | `opentelemetry.routingEnabled` | Enable or disable OpenTelemetry routing/export behavior. | `false` |
 | `opentelemetry.collector.endpoint` | OpenTelemetry collector endpoint used for trace export. | `"http://otel-collector:4317"` |
-| `opentelemetry.sampler.type` | Trace sampler, exported as `OTEL_TRACES_SAMPLER` (e.g. `parentbased_traceidratio`). Empty keeps the SDK default (sample everything). | `""` |
-| `opentelemetry.sampler.arg` | Sampler argument, exported as `OTEL_TRACES_SAMPLER_ARG` (e.g. `"0.1"` for ~10% of traces). | `""` |
+| `opentelemetry.sampler.type` | Trace sampler for the services downstream of the Vault (hub-workflows, `pipe-*`, workflow stages), exported as `OTEL_TRACES_SAMPLER`. They continue the Vault's trace, so use `parentbased_always_off` and sample at the Vault. Empty keeps the SDK default (sample everything). | `""` |
+| `opentelemetry.sampler.arg` | Sampler argument for those services, exported as `OTEL_TRACES_SAMPLER_ARG`. | `""` |
+| `opentelemetry.apiSampler.type` | Trace sampler for hub-api, which starts its own traces for user requests (e.g. `parentbased_traceidratio`). Empty keeps the SDK default. | `""` |
+| `opentelemetry.apiSampler.arg` | Sampler argument for hub-api (e.g. `"0.1"` for ~10% of requests). | `""` |
 | `openai.enabled` | Enable or disable OpenAI-backed semantic features. | `false` |
 | `openai.apikey` | OpenAI API key used when OpenAI integration is enabled. | `"xxx"` |
 | `kerberosvault.uri` | The default Kerberos Vault uri (you can add multiple within the app), by default `'https://api.storage.yourdomain.com'` | `"https://api.vault.yourdomain.com"` |
@@ -348,6 +395,7 @@ kerberospipeline:
 | `kerberoshub.frontend.sentry.url` | No longer used. | `"https://xxx@sentry.io/xxx"` |
 | `kerberoshub.frontend.stripe.publicKey` | Public key for `kerberoshub.frontend.stripe`. | `""` |
 | `kerberoshub.frontend.googlemaps.apikey` | Within Kerberos Hub frontend a couple of maps are being used, the google maps is leveraged for that. | `"xxxx"` |
+| `kerberoshub.frontend.googlemaps.placesApi` | Google Places API used for address autocomplete with the same `apikey`: `"legacy"` (Places API) or `"new"` (Places API (New), required for keys that cannot enable the legacy Places API). | `"legacy"` |
 | `kerberoshub.frontend.zendesk.url` | No longer used. | `"yourdomain.zendesk.com"` |
 | `kerberoshub.frontend.posthog.key` | The API key retrieved from the Posthog instance. | `"xxx"` |
 | `kerberoshub.frontend.posthog.url` | Posthog's endpoint (http/https). | `"https://posthog.domain.com"` |
@@ -562,6 +610,7 @@ kerberospipeline:
 | `kerberospipeline.analysis.tag` | The Docker image tag/version. | `"v1.7.8"` |
 | `kerberospipeline.analysis.replicas` | Number of replicas for `kerberospipeline.analysis`. | `1` |
 | `kerberospipeline.analysis.logLevel` | Log verbosity level for `kerberospipeline.analysis`. | `"info"` |
+| `kerberospipeline.analysis.thumbnailRegeneration.enabled` | Regenerate thumbnails from the first frame of a classified moving object (`THUMBNAIL_REGENERATION_ENABLED`). Adds one thumbnail job per classified recording. Requires an analysis image that reads the flag. | `false` |
 | `kerberospipeline.analysis.dbCache.enabled` | Cache hot-path MongoDB lookups (site vault per device) in memory. Site changes apply after at most one TTL. | `false` |
 | `kerberospipeline.analysis.dbCache.ttl` | Lifetime of a cached lookup, as a Go duration (e.g. `"30s"`, `"5m"`). | `"5m"` |
 | `kerberospipeline.analysis.resources.requests.memory` | Memory request for `kerberospipeline.analysis`. | `"10Mi"` |
@@ -651,6 +700,87 @@ kerberospipeline:
 | `kerberoshub.frontend.ssoDomain` | The domain that's being used to activate SSO from the login page. | `""` |
 | `kerberoshub.frontend.stripe.apikey` | If using the public version, `stripe` can be used for automated billing and subscriptions. | `""` |
 
+### Email templates and variables
+
+Every email Hub sends is a template: an HTML file, plus a plain-text `.txt` version, containing `{{variable}}` placeholders that are filled in just before sending. This section lists which value each placeholder gets.
+
+#### Which template is used
+
+- `email.templates.<name>` sets the template name for each email (for example `email.templates.detection: "detection"`).
+- With `email.provider: smtp`, Hub reads `/mail/templates/<name>.html` and `/mail/templates/<name>.txt` from the container. If the files are not there, it uses its built-in template with that name. To use your own, mount a volume at `/mail` (see the commented `custom-email-templates` volume in `values.yaml`). The [`custom-layout/templates`](custom-layout/templates) folder holds a complete set to start from.
+- With `email.provider: mailgun`, `<name>` is a template stored in your Mailgun account. Mailgun receives `user`, `text`, `link`, `numberOfMedia`, `dataUsage` and the email-specific values below as template variables. The computed values (dates, camera, sites, groups, thumbnail) are only filled in with `smtp`.
+- Alert emails (`detection`) are only sent when `email.provider` is `smtp`.
+- A placeholder that has no value for that email stays in the email as literal text, so only use the placeholders listed for it. The bundled templates contain `{{tab1_href}}`, `{{tab1_title}}`, `{{tab2_href}}` and `{{tab2_title}}`; these are not filled in.
+
+#### Links
+
+- The **base URL** is `kerberoshub.frontend.schema` + `://` + `kerberoshub.frontend.url` (the `PUBLIC_URL` environment variable), for example `https://app.example.com`.
+- A **tenant URL** is the base URL with the first part of the host replaced by the recipient account's domain. With base URL `https://app.example.com` and account domain `acme`, the tenant URL is `https://acme.example.com`. Accounts without a domain use the base URL. Only the last two parts of the host are kept, so a base URL on `app.example.co.uk` becomes `acme.co.uk`.
+
+#### Alerts: `detection`
+
+Sent by the notification pipeline (`kerberospipeline.notify`) when a custom alert or the generic detection alert fires. The subject is `email.templates.alertTitle`; for a custom alert it is prefixed with the alert's name in brackets, for example `[Front door] Hub detected an event.`
+
+| Placeholder | Value |
+|---|---|
+| `{{user}}` | Name of the account that receives the alert: first and last name, or the username when both are empty. This is the account the camera belongs to, not the user who created the alert. |
+| `{{title}}` | The email subject. |
+| `{{text}}` | The alert message: what was detected, on which camera and when. |
+| `{{link}}` | **Custom alerts**: a signed link to the recording file. It stops working when the storage link expires. **Generic detection alert**: the recording's page in Hub, `<tenant URL>/media/<id>`. |
+| `{{medialink}}` | `https://app.kerberos.io/media/<id>`. Always this host; it does not follow `kerberoshub.frontend.url`. |
+| `{{thumbnail}}` | An `<img>` of the recording: embedded in the email for custom alerts, a signed thumbnail URL for the generic detection alert. |
+| `{{date}}`, `{{time}}`, `{{datetime}}` | Start of the recording, in the account's timezone. |
+| `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the alert was sent, in the account's timezone. |
+| `{{timezone}}` | The account's timezone. |
+| `{{devicename}}`, `{{deviceid}}` | Camera name and camera key. |
+| `{{sites}}`, `{{groups}}` | Comma-separated names of the sites and groups the camera belongs to. |
+| `{{classifications}}` | Comma-separated objects detected in the recording. |
+
+#### Camera status: `device`
+
+Sent by `hub-monitor-device` when a camera goes online, offline or idle. The subject is `email.templates.deviceTitle`.
+
+| Placeholder | Value |
+|---|---|
+| `{{user}}` | Username of the account the camera belongs to. |
+| `{{title}}` | The email subject. |
+| `{{text}}` | The status change, for example "`<camera>` is online, but the camera stream is not connected." |
+| `{{status}}` | `online`, `offline` or `idle`. |
+| `{{devicename}}`, `{{deviceid}}` | Camera name and camera key. |
+| `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the status changed, in the server's timezone (normally UTC), not the account's. |
+| `{{link}}` | Not set; replaced with an empty value. |
+
+#### Account and sharing emails
+
+Sent by the API (`kerberoshub.api`). The subject of each email is the matching `email.templates.<name>Title` value.
+
+| Email (`email.templates.*`) | Placeholder | Value |
+|---|---|---|
+| Registration (`welcome`) | `{{user}}` | New user's first and last name, or username. |
+| | `{{link}}` | Activation link: `<base URL>/login/activate/<token>`. |
+| | `{{token}}` | The activation token. |
+| Account activated (`activate`) | `{{user}}` | User's first and last name, or username. |
+| | `{{link}}` | `<base URL>/login`. |
+| Password reset (`forgot`) | `{{user}}` | User's first and last name, or username. |
+| | `{{password}}` | The newly generated password. |
+| | `{{ipaddress}}` | IP address the reset was requested from. |
+| Recording shared (`share`) | `{{user}}` | Sender's first and last name, or username. |
+| | `{{url}}` | Signed link to the recording file. |
+| | `{{title}}` | The email subject (`email.templates.shareTitle`). The share's own title is only used when that value is empty. |
+| | `{{body}}` | The notes the sender added to the share. |
+| Case shared (`share_case`) | `{{user}}` | Sender's first and last name, or email address. |
+| | `{{firstname}}`, `{{lastname}}` | Sender's first and last name. |
+| | `{{url}}` | `<base URL>/share/<token>`. |
+| | `{{expiry}}` | How long the share stays valid, for example "2 days" or "1 week". |
+| Case share code (`share_case_otp`) | `{{code}}` | One-time code to open the shared case. |
+| | `{{expiry}}` | How long the code stays valid. |
+| Task assigned (`assign_task`) | `{{assignee}}` | Assigned user's first and last name, or username. |
+| | `{{user}}` | Name of the user who assigned the task. |
+| | `{{task_name}}` | The task title. |
+| | `{{link}}` | `<tenant URL>/tasks/`, using the assigned user's domain. |
+
+The `newip`, `disable` and `highupload` templates are included, but no service currently sends them.
+
 ### Post installation
 
 After the installation you'll need to initialise the Mongodb with some objects. Have a look at the `mongodb/` folder, you'll find three files available:
@@ -689,19 +819,37 @@ Within the Kerberos Hub front-end you'll see the option to filter through classi
 The default shared classification list lives in
 [`templates/configMaps/catalogs/classifications.yaml`](templates/configMaps/catalogs/classifications.yaml),
 independently of workflow contracts. The chart uses this bundled definition
-unless a deployer provides a ConfigMap override. Each entry contains the stable classifier output
+unless a deployer defines the catalog inline or provides a ConfigMap override. Each entry contains the stable classifier output
 `key`, the user-facing `label`, and an `icon` key. Hub API exposes this catalog
 to alerts and filters. When the mounted catalog is unavailable, compatible Hub
 API versions fall back to the legacy `settings` document and then the built-in
 classification list. Set `classificationCatalogEnabled: false` to omit the
 ConfigMap and make Hub API use that fallback directly.
 
-Starting with chart **0.155.0**, the inline `classificationCatalog` values key is
-removed. Supplying it fails validation, including `null` and `[]`; it is never
-silently ignored or replaced with bundled defaults.
+The simplest way to customize the catalog is to define the complete list inline
+in your values (restored in chart **0.162.0** after its removal in 0.155.0):
 
-To customize the catalog, create a ConfigMap in the release namespace containing
-the complete JSON array, then use the per-file replacement interface:
+```yaml
+classificationCatalog:
+  - key: car
+    label: Car
+    icon: car
+  - key: forklift
+    label: Forklift
+```
+
+The list replaces the bundled defaults entirely (entries are not merged) and is
+rendered into the chart's `classification-catalog` ConfigMap, so Hub API and the
+bundled `catalogs/classifications.json` of workflow packaging use the same list
+and a change rolls the API pod. Each entry needs a `key` and `label`, `icon` is
+optional, and keys must be unique. Omitting the key (or `null`) keeps the bundled
+defaults; `[]` is rejected, so use `classificationCatalogEnabled: false` for the
+API fallback. An inline list cannot be combined with
+`classificationCatalogEnabled: false`, `classificationCatalogExistingConfigMap` or
+a per-file catalog replacement.
+
+Alternatively, create a ConfigMap in the release namespace containing the complete
+JSON array, then use the per-file replacement interface:
 
 ```yaml
 classificationCatalogEnabled: true
@@ -716,13 +864,8 @@ workflowConfiguration:
           replace: true
 ```
 
-To migrate, copy the existing list exactly (preserving keys, labels and icons)
-into the ConfigMap's JSON data, remove `classificationCatalog` from every values
-overlay and command-line override, and deploy the ConfigMap before the chart
-upgrade. A `null` value is not a migration: remove the key. The bundled list
-remains the default when no override is configured. If an old `[]` intentionally
-selected the API's runtime fallback, use `classificationCatalogEnabled: false`
-and configure workflow packaging without bundled defaults instead.
+Deploy that ConfigMap before the chart upgrade. The bundled list remains the
+default when no override is configured.
 
 The existing `classificationCatalogExistingConfigMap: hub-classification-catalog`
 option remains supported, including for deployments without workflow packaging.
@@ -1067,12 +1210,12 @@ not owned by workflows. A library may ship a catalog without implementing an API
 **effective** classification list under `/etc/kerberos/configuration`, using
 the directory layout above. The projected volume reuses the existing
 classification ConfigMap, including `classificationCatalogExistingConfigMap`
-overrides or explicit per-file replacements, rather
+overrides, an inline `classificationCatalog` or explicit per-file replacements, rather
 than storing another copy in the workflow ConfigMap.
 
 The default classification ConfigMap name, mount path, `CLASSIFICATION_CATALOG_FILE`
-and API endpoint remain unchanged. Inline `classificationCatalog` values,
-including `[]` and `null`, are rejected from chart 0.155.0 onward. The current API
+and API endpoint remain unchanged. An inline `classificationCatalog` list is
+rendered into that ConfigMap; `[]` is rejected. The current API
 still falls back to settings/built-in values for an empty/invalid mounted catalog. The preparatory
 bundle does not reproduce that runtime fallback and must not be treated as a
 resolved API catalog. The Start-specific loader shares the existing classification
@@ -1159,10 +1302,9 @@ A replacement for `catalogs/classifications.json` also supplies the standalone
 classification API. Both mounts use that ConfigMap and key, even when its key
 is not named `classifications.json`. The chart does not generate or checksum the
 replaced ConfigMap. To avoid two competing sources, do not combine this
-replacement with a nonempty `classificationCatalogExistingConfigMap`. That
-existing ConfigMap option remains supported when no per-file catalog replacement
-is configured. The retired inline `classificationCatalog` key is rejected
-regardless of the selected configuration.
+replacement with a nonempty `classificationCatalogExistingConfigMap` or an inline
+`classificationCatalog`. Those options remain supported when no per-file catalog
+replacement is configured.
 `classificationCatalogEnabled` must remain true when including defaults.
 
 This is whole-file replacement, not field-level YAML merging or catalog-entry
