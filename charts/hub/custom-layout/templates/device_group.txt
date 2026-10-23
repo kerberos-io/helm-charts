@@ -1,0 +1,22 @@
+Kerberos.io
+------------
+
+Hey, {{user}}
+
+Several of your cameras changed status
+{{text}}
+
+{{sectionsText}}
+
+Go to Kerberos Hub ->
+{{link}}
+
+Get in touch
+------------
+support@kerberos.io
+9000 Ghent, BE
+https://kerberos.io
+
+About Kerberos
+------------
+Welcome to the revolutionary video analytics and video management platform. Open, modular, and extensible for everyone, anywhere.

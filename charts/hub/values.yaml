@@ -1071,6 +1071,10 @@ kerberoshub:
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    # Seconds between device status scans. Sets how quickly a camera going
+    # offline/online is detected and, with "Group notifications" on, how long
+    # notifications are held to collect other cameras that change at the same time.
+    scanIntervalSeconds: 60
     resources:
       requests:
         memory: 10Mi
@@ -1470,5 +1474,9 @@ email:
     disabled: "disable"
     highupload: "highupload"
     device: "device"
+    # Sent instead of "device" when several cameras of an account change status
+    # in the same scan and the account groups device notifications.
+    deviceGroup: "device_group"
     alertTitle: "[Alert] Kerberos Hub detected something an event"
     deviceTitle: "[Device] A Kerberos Agent's status has been changed"
+    deviceGroupTitle: "[Device] Several cameras changed status"
