@@ -677,7 +677,7 @@ kerberospipeline:
 | `email.templates.device` | The template which is send when a camera goes online or offline, by default `'device'`. | `"device"` |
 | `email.templates.alertTitle` | Email subject title for the `alert` template. | `"[Alert] Kerberos Hub detected something an event"` |
 | `email.templates.deviceTitle` | Email subject title for the `device` template. | `"[Device] A Kerberos Agent's status has been changed"` |
-| `email.templates.deviceGroup` | The template sent instead of `device` when several cameras of an account change status in the same scan and the account groups device notifications ("Group notifications"). | `"device_group"` |
+| `email.templates.deviceGroup` | The template sent instead of `device` when several cameras of an account change status in the same scan and the account groups device notifications ("Group notifications"). SMTP only; see *Grouped camera status* below. | `"device_group"` |
 | `email.templates.deviceGroupTitle` | Email subject title for the `device_group` template. | `"[Device] Several cameras changed status"` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
@@ -772,7 +772,9 @@ Other cameras · Camera stream lost · 1 camera
 
 **Custom templates** for this email are read by `hub-monitor-device`, so mount the `custom-email-templates` volume on `kerberoshub.monitordevice` as well (see the commented example in `values.yaml`).
 
-**Webhooks** receive the same notification as JSON: `body` holds the summary, and `data` holds the email placeholders: `user`, `count`, `status`, `link`, `sections` (HTML) and `sectionsText`.
+**Which channels are grouped.** Grouping applies to the channels people read: email, Slack, Telegram, Pushover, Pushbullet, SMS and Alexa. Webhooks, IFTTT and the real-time feed are never grouped: they keep receiving one notification per camera, with the same fields and at the same moment as without grouping, so existing integrations keep working.
+
+**When email stays per camera.** The grouped email is only sent with the SMTP mail provider. With SendGrid or Mailgun the template name is a template id in that account, so those keep one `device` email per camera. With SMTP, a deployment that mounts its own `device` template but no `device_group` template also keeps one email per camera, so a white-labelled device email never falls back to the default layout. Add a `device_group` template next to your `device` template to get grouped emails.
 
 #### Account and sharing emails
 
