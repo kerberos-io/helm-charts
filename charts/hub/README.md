@@ -529,7 +529,7 @@ kerberospipeline:
 | `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
 | `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
 | `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `"info"` |
-| `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected and, for accounts with "group by sites and groups" on, how long notifications are held to collect the other cameras of a site or group. | `60` |
+| `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected and, for accounts with "Group notifications" on, how long notifications are held to collect other cameras that change status at the same time. | `60` |
 | `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
 | `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
 | `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
@@ -677,7 +677,7 @@ kerberospipeline:
 | `email.templates.device` | The template which is send when a camera goes online or offline, by default `'device'`. | `"device"` |
 | `email.templates.alertTitle` | Email subject title for the `alert` template. | `"[Alert] Kerberos Hub detected something an event"` |
 | `email.templates.deviceTitle` | Email subject title for the `device` template. | `"[Device] A Kerberos Agent's status has been changed"` |
-| `email.templates.deviceGroup` | The template sent instead of `device` when several cameras of an account change status in the same scan and the account groups device notifications ("Group by sites and groups"). | `"device_group"` |
+| `email.templates.deviceGroup` | The template sent instead of `device` when several cameras of an account change status in the same scan and the account groups device notifications ("Group notifications"). | `"device_group"` |
 | `email.templates.deviceGroupTitle` | Email subject title for the `device_group` template. | `"[Device] Several cameras changed status"` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
@@ -740,7 +740,7 @@ Sent by `hub-monitor-device` when a camera goes online, offline or idle. The sub
 
 #### Grouped camera status: `device_group`
 
-Sent by `hub-monitor-device` instead of `device` when an account has **Group by sites and groups** switched on (Alerts → Devices) and **several** of its cameras change status in the same scan. A change is held for one scan (`kerberoshub.monitordevice.scanIntervalSeconds`, default 60 seconds) so that cameras of the same outage arrive in one email. When only one camera changed, the usual `device` email is sent. The subject is `email.templates.deviceGroupTitle`; the template name is `email.templates.deviceGroup` (default `device_group`, so custom files are `device_group.html` and `device_group.txt`).
+Sent by `hub-monitor-device` instead of `device` when an account has **Group notifications** switched on (Alerts → Devices, stored as `notificationSettings.devices.groupNotifications`) and **several** of its cameras change status in the same scan. A change is held for one scan (`kerberoshub.monitordevice.scanIntervalSeconds`, default 60 seconds) so that cameras of the same outage arrive in one email. When only one camera changed, the usual `device` email is sent. The subject is `email.templates.deviceGroupTitle`; the template name is `email.templates.deviceGroup` (default `device_group`, so custom files are `device_group.html` and `device_group.txt`).
 
 | Placeholder | Value |
 |---|---|

@@ -1073,8 +1073,8 @@ kerberoshub:
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
     # Seconds between device status scans. Sets how quickly a camera going
-    # offline/online is detected and, with "group by sites and groups" on, how
-    # long notifications are held to collect the other cameras of a site/group.
+    # offline/online is detected and, with "Group notifications" on, how long
+    # notifications are held to collect other cameras that change at the same time.
     scanIntervalSeconds: 60
     resources:
       requests:
