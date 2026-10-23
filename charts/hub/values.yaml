@@ -1158,6 +1158,7 @@ kerberospipeline:
     #volumeMounts:
     #  - name: extra
     #    mountPath: /data
+    logLevel: "info" # possible values: debug, info, warn, error
     resources:
       requests:
         memory: 10Mi
@@ -1301,6 +1302,7 @@ kerberospipeline:
     quality: "1" # 1 (best) - 31 (worst)
     width: "600"
     height: "-1"
+    skipNonKeyframes: true # Decode keyframes only for faster extraction; disable when exact-frame output is required.
     kerberosvault:
       enabled: true # If you want to use Kerberos Vault to store the thumbnails
     resources:

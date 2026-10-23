@@ -99,6 +99,8 @@ spec:
           value: "{{ .Values.kerberospipeline.thumbnail.width }}"
         - name: THUMBNAIL_HEIGHT
           value: "{{ .Values.kerberospipeline.thumbnail.height }}"
+        - name: THUMBNAIL_SKIP_NON_KEYFRAMES
+          value: "{{ .Values.kerberospipeline.thumbnail.skipNonKeyframes }}"
 
         # There is an option to store the thumbnails in a storage provider in Kerberos Vault.
         # This will lower storage in mongodb.
