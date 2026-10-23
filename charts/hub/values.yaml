@@ -1072,6 +1072,10 @@ kerberoshub:
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    # Seconds between device status scans. Sets how quickly a camera going
+    # offline/online is detected and, with "group by sites and groups" on, how
+    # long notifications are held to collect the other cameras of a site/group.
+    scanIntervalSeconds: 60
     resources:
       requests:
         memory: 10Mi

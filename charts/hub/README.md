@@ -529,6 +529,7 @@ kerberospipeline:
 | `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
 | `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
 | `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `"info"` |
+| `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected and, for accounts with "group by sites and groups" on, how long notifications are held to collect the other cameras of a site or group. | `60` |
 | `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
 | `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
 | `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
