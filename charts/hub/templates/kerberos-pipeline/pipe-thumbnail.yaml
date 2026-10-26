@@ -24,6 +24,10 @@ spec:
       labels:
         app: pipe-thumbnail
     spec:
+      {{- with .Values.kerberospipeline.thumbnail.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -43,6 +47,10 @@ spec:
       - name: pipe-thumbnail
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.thumbnail.repository }}:{{ .Values.kerberospipeline.thumbnail.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.thumbnail.pullPolicy }}
+        {{- with .Values.kerberospipeline.thumbnail.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.kerberospipeline.thumbnail.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
