@@ -37,6 +37,8 @@ New shell-free frontend images run as `65532:65532` and listen on port `8080`.
 Before selecting such an image tag, set the following values together. Defaults
 remain compatible with legacy images on port `80`; this chart does not upgrade
 the frontend image automatically. The Service and ingress remain on port `80`.
+Use chart `0.167.2` or newer when the demo frontend is enabled; `0.167.1`
+supports these settings only on the primary frontend.
 
 ```yaml
 kerberoshub:
@@ -66,8 +68,10 @@ Merge the temporary volume into any existing branding/translation mounts rather
 than replacing them. Custom files must be readable by UID `65532`; mount them
 read-only. Only `/tmp` needs writes for generated public runtime configuration
 and nginx's PID/temp files. The web root stays read-only. Health checks can use
-`GET /healthz` on the named `http` container port. This setting applies to the
-primary frontend, not the separately configured legacy demo deployment.
+`GET /healthz` on the named `http` container port. These settings apply to both
+the primary and demo frontends, which share the frontend image tag. Update the
+live Argo CD Application's chart pin as well as its values: an image-only
+upgrade leaves older charts forwarding to port `80` and causes gateway errors.
 
 ### Passkeys
 
