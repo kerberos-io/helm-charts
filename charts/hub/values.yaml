@@ -474,6 +474,9 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.13.9"
     replicas: 2
+    # Hardened frontend images listen on 8080; retain 80 for existing images.
+    containerPort: 80
+    securityContext: {}
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
     # external/shared Service is managed elsewhere).

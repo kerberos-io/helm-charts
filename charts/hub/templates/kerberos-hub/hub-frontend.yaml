@@ -11,7 +11,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: http
     name: http
   selector:
     app: hub-frontend
@@ -182,12 +182,16 @@ spec:
       - name: hub-frontend
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.frontend.repository }}:{{ .Values.kerberoshub.frontend.tag }}"
         imagePullPolicy: {{ .Values.kerberoshub.frontend.pullPolicy }}
+        {{- with .Values.kerberoshub.frontend.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.kerberoshub.frontend.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.kerberoshub.frontend.containerPort | default 80 }}
           name: http
         {{- with .Values.kerberoshub.frontend.volumeMounts}}
         volumeMounts:
