@@ -31,6 +31,61 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Passkeys
+
+Users and sub-users can create and manage their own passkeys in **Profile >
+Passkeys**, then use **Sign in with a passkey** for passwordless authentication
+with device PIN/biometric verification. Existing password/MFA sign-in remains
+available. Enrollment and removal require the current password and an
+authenticator-app code when MFA is enabled.
+
+Deploy Hub API and frontend images that support passkeys before enabling this
+configuration; the chart version alone does not update the service image tags.
+Passkeys are disabled by default. Configure their trust explicitly:
+
+```yaml
+kerberoshub:
+    api:
+        passkeys:
+            enabled: true
+            rpId: "hub.example.com"
+            origins:
+                - "https://hub.example.com"
+            rpName: "Kerberos Hub"
+```
+
+| Value | Default | Purpose |
+| --- | --- | --- |
+| `kerberoshub.api.passkeys.enabled` | `false` | Inject passkey configuration into Hub API pods only |
+| `kerberoshub.api.passkeys.rpId` | `""` | Required when enabled; sets `PASSKEY_RP_ID` |
+| `kerberoshub.api.passkeys.origins` | `[]` | Required when enabled; exact trusted frontend origins, joined with commas into `PASSKEY_ORIGINS` |
+| `kerberoshub.api.passkeys.rpName` | `"Kerberos Hub"` | Display name; sets `PASSKEY_RP_NAME` |
+
+Use the **frontend's public hostname and origins**, not the API URL. Origins
+must have no path or trailing slash. Each origin hostname must equal the RP ID
+or be its subdomain. Include only trusted origins, especially when sharing an
+RP ID across tenant subdomains. Keep the RP ID stable: changing it makes
+existing passkeys unusable. The API validates the RP/origin relationship at
+runtime; missing/invalid configuration makes passkeys unavailable without
+affecting password/MFA sign-in.
+
+HTTPS and a compatible browser are required. Local development may use
+`rpId: "localhost"` with `origins: ["http://localhost:4200"]`.
+The frontend displays translated cancellation, verification and unavailable
+messages when a ceremony cannot complete.
+
+Apply values with a Helm upgrade or GitOps sync; changes trigger an API rollout.
+If these variables were previously configured through `kerberoshub.extraEnv`,
+remove those entries when enabling the dedicated settings to avoid duplicate
+environment variables. Setting `enabled: false` omits the chart-managed
+variables; any passkey variables supplied through `extraEnv` still take effect.
+
+The API's MongoDB identity needs reads on `users`, CRUD on `passkeys`, and
+insert/find-and-delete on `passkey_challenges`. It attempts to create the
+`passkey_challenge_expiry_ttl` index on `expiresAt` with
+`expireAfterSeconds: 0`; expiration and single-use enforcement work without the
+index, but the index is needed for automatic expired-challenge cleanup.
+
 ### Sequence logging
 
 Set `kerberospipeline.sequence.logLevel` to control the Sequence service's

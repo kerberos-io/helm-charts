@@ -392,6 +392,13 @@ kerberoshub:
 
     # MFA issuer name
     mfaIssuer: "yourdomain.com"
+    # WebAuthn passkeys for users and sub-users; requires compatible API/frontend images.
+    # Use the public frontend hostname/origins, not the API URL. Keep rpId stable.
+    passkeys:
+      enabled: false
+      rpId: "" # e.g. "hub.example.com", without scheme, port or path.
+      origins: [] # e.g. ["https://hub.example.com"]; exact origins, no trailing slash.
+      rpName: "Kerberos Hub"
     # Admin API's are made available for automation of Kerberos Hub.
     # To access those API's (e.g. creation of owner users), an API key needs to be provided.
     apiKey: "a-random-admin-api-key"
