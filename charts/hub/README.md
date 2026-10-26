@@ -31,6 +31,44 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Hardened frontend images
+
+New shell-free frontend images run as `65532:65532` and listen on port `8080`.
+Before selecting such an image tag, set the following values together. Defaults
+remain compatible with legacy images on port `80`; this chart does not upgrade
+the frontend image automatically. The Service and ingress remain on port `80`.
+
+```yaml
+kerberoshub:
+    frontend:
+        containerPort: 8080
+        securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+                drop: ["ALL"]
+            seccompProfile:
+                type: RuntimeDefault
+        volumes:
+            - name: frontend-tmp
+              emptyDir:
+                  medium: Memory
+                  sizeLimit: 16Mi
+        volumeMounts:
+            - name: frontend-tmp
+              mountPath: /tmp
+```
+
+Merge the temporary volume into any existing branding/translation mounts rather
+than replacing them. Custom files must be readable by UID `65532`; mount them
+read-only. Only `/tmp` needs writes for generated public runtime configuration
+and nginx's PID/temp files. The web root stays read-only. Health checks can use
+`GET /healthz` on the named `http` container port. This setting applies to the
+primary frontend, not the separately configured legacy demo deployment.
+
 ### Passkeys
 
 Users and sub-users can create and manage their own passkeys in **Profile >
