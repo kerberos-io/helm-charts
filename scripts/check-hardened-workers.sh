@@ -4,6 +4,7 @@ set -euo pipefail
 CHART_DIR="${1:-charts/hub}"
 components=(
   kerberospipeline.counting kerberospipeline.throttler
+  kerberospipeline.notify
   kerberospipeline.thumbnail kerberospipeline.dominantColor
   kerberoshub.cleanup kerberoshub.monitordevice
   kerberoshub.services.workflows kerberoshub.services.loitering
@@ -71,7 +72,7 @@ for mode in all pipeline ui; do
   helm lint "$CHART_DIR" --quiet --set "mode=$mode" "${fixtures[@]}" "${security[@]}"
   names=()
   if [[ "$mode" != ui ]]; then
-    names+=(pipe-counting pipe-throttler pipe-thumbnail pipe-dominantcolor hub-workflows hub-loitering)
+    names+=(pipe-counting pipe-throttler pipe-notify pipe-thumbnail pipe-dominantcolor hub-workflows hub-loitering)
   fi
   if [[ "$mode" != pipeline ]]; then
     names+=(hub-cleanup hub-monitor-device)
@@ -93,10 +94,15 @@ for mode in all pipeline ui; do
     assert_line "$block" '^[ ]+runAsUser: 65532$'
     assert_line "$block" '^[ ]+runAsGroup: 65532$'
     assert_line "$block" '^[ ]{8,10}securityContext:$'
-    if [[ "$name" == hub-cleanup || "$name" == hub-monitor-device || "$name" == hub-workflows ]]; then
+    if [[ "$name" == hub-cleanup || "$name" == hub-monitor-device || "$name" == hub-workflows || "$name" == pipe-notify ]]; then
       assert_line "$block" '^[ ]+secretName: mongodb-ca$'
       assert_line "$block" '^[ ]+mountPath: /etc/mongodb/tls$'
       assert_line "$block" '^[ ]+readOnly: true$'
+    fi
+    if [[ "$name" == pipe-notify ]]; then
+      # Provider, queue, FFmpeg and all other worker settings are unchanged.
+      old_block="$(resource Deployment pipe-notify <<< "$legacy")"
+      [[ "$(sed -n '/^        env:/,$p' <<< "$old_block")" == "$(sed -n '/^        env:/,$p' <<< "$block")" ]]
     fi
     if [[ "$name" != hub-monitor-device ]]; then
       service="$(resource Service "$name" <<< "$hardened")"
@@ -121,3 +127,59 @@ isolated="$(helm template hub "$CHART_DIR" --set mode=pipeline \
 [[ "$(grep -c 'runAsUser: 65532' <<< "$isolated")" == 1 ]]
 assert_line "$(resource Deployment pipe-counting <<< "$isolated")" '^[ ]+runAsUser: 65532$'
 echo "All hardened worker checks passed."
+
+admin_flags=(
+  --set admin.containerPort=8080
+  --set admin.securityContext.runAsNonRoot=true
+  --set admin.securityContext.runAsUser=65532
+  --set admin.securityContext.runAsGroup=65532
+  --set admin.securityContext.readOnlyRootFilesystem=true
+  --set admin.securityContext.allowPrivilegeEscalation=false
+  --set admin.securityContext.capabilities.drop[0]=ALL
+  --set admin.securityContext.seccompProfile.type=RuntimeDefault
+  --set admin.volumes[0].name=admin-tmp
+  --set admin.volumes[0].emptyDir.medium=Memory
+  --set admin.volumes[0].emptyDir.sizeLimit=16Mi
+  --set admin.volumeMounts[0].name=admin-tmp
+  --set admin.volumeMounts[0].mountPath=/tmp
+  --set admin.oauth2Proxy.enabled=true
+)
+for mode in all ui pipeline; do
+  legacy="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true)"
+  configured="$(helm template hub "$CHART_DIR" --set "mode=$mode" "${admin_flags[@]}")"
+  helm lint "$CHART_DIR" --quiet --set "mode=$mode" "${admin_flags[@]}"
+  if [[ "$mode" == pipeline ]]; then
+    [[ -z "$(resource Deployment admin <<< "$configured")" ]]
+    [[ -z "$(resource Service admin-svc <<< "$configured")" ]]
+    [[ "$legacy" == "$configured" ]]
+    echo "OK (pipeline): Admin settings render no Admin resources or unrelated changes"
+    continue
+  fi
+  old="$(resource Deployment admin <<< "$legacy")"
+  block="$(resource Deployment admin <<< "$configured")"
+  assert_line "$old" '^[ ]+containerPort: 80$'
+  [[ "$old" != *securityContext:* && "$old" != *admin-tmp* ]]
+  for pattern in \
+    '^[ ]+containerPort: 8080$' '^[ ]{10}securityContext:$' \
+    '^[ ]+runAsUser: 65532$' '^[ ]+runAsGroup: 65532$' \
+    '^[ ]+runAsNonRoot: true$' '^[ ]+readOnlyRootFilesystem: true$' \
+    '^[ ]+allowPrivilegeEscalation: false$' '^[ ]+capabilities:$' \
+    '^[ ]+drop:$' '^[ ]+- ALL$' '^[ ]+seccompProfile:$' \
+    '^[ ]+type: RuntimeDefault$' '^[ ]+medium: Memory$' \
+    '^[ ]+sizeLimit: 16Mi$' '^[ ]+(- )?mountPath: /tmp$'; do
+    assert_line "$block" "$pattern"
+  done
+  old_service="$(resource Service admin-svc <<< "$legacy")"
+  service="$(resource Service admin-svc <<< "$configured")"
+  assert_line "$old_service" '^[ ]+targetPort: 80$'
+  assert_line "$service" '^[ ]+port: 80$'
+  assert_line "$service" '^[ ]+targetPort: 8080$'
+  [[ "$(resource Ingress admin-ingress <<< "$legacy")" == "$(resource Ingress admin-ingress <<< "$configured")" ]]
+  [[ "$(resource Deployment oauth2-proxy-admin <<< "$legacy")" == "$(resource Deployment oauth2-proxy-admin <<< "$configured")" ]]
+  [[ "$(resource Service oauth2-proxy-admin <<< "$legacy")" == "$(resource Service oauth2-proxy-admin <<< "$configured")" ]]
+  [[ "$(grep 'image:' <<< "$legacy")" == "$(grep 'image:' <<< "$configured")" ]]
+  # No other workload inherits Admin's container port or security settings.
+  [[ "$(grep -c 'runAsUser: 65532' <<< "$configured")" == 1 ]]
+  echo "OK ($mode): Admin opt-in port/security/tmpfs; legacy image, Service port, ingress and OAuth2-proxy preserved"
+done
+echo "All hardened Admin checks passed."

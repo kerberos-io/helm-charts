@@ -26,6 +26,10 @@ spec:
       labels:
         app: pipe-notify
     spec:
+      {{- with .Values.kerberospipeline.notify.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -51,6 +55,10 @@ spec:
       - name: pipe-notify
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.notify.repository }}:{{ .Values.kerberospipeline.notify.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.notify.pullPolicy }}
+        {{- with .Values.kerberospipeline.notify.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.kerberospipeline.notify.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
