@@ -26,6 +26,10 @@ spec:
       labels:
         app: pipe-throttler
     spec:
+      {{- with .Values.kerberospipeline.throttler.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -51,6 +55,10 @@ spec:
       - name: pipe-throttler
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.throttler.repository }}:{{ .Values.kerberospipeline.throttler.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.throttler.pullPolicy }}
+        {{- with .Values.kerberospipeline.throttler.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.kerberospipeline.throttler.resources }}
         resources:
           {{- toYaml . | nindent 12 }}

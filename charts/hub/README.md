@@ -73,6 +73,151 @@ the primary and demo frontends, which share the frontend image tag. Update the
 live Argo CD Application's chart pin as well as its values: an image-only
 upgrade leaves older charts forwarding to port `80` and causes gateway errors.
 
+### Hardened Admin image (opt-in, unreleased chart support)
+
+`charts/hub` deploys Admin in `all` and `ui` modes. The shell-free image proposed
+by `uug-ai/admin#59` runs as `65532:65532` and listens on `8080`, unlike the legacy
+image on `80`. When selecting a verified compatible image, set these values
+together; the chart does not select or upgrade that image automatically:
+
+```yaml
+admin:
+    containerPort: 8080
+    securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+            drop: ["ALL"]
+        seccompProfile:
+            type: RuntimeDefault
+    volumes:
+        - name: admin-tmp
+          emptyDir:
+              medium: Memory
+              sizeLimit: 16Mi # Example; size for your runtime configuration.
+    volumeMounts:
+        - name: admin-tmp
+          mountPath: /tmp
+```
+
+Merge the scratch volume with any existing mounts. Only `/tmp` is writable;
+application files remain read-only. Memory-backed scratch counts against the
+pod memory limit. The `admin-svc` Service and Admin ingress still use port `80`;
+only the Service target and container port change. OAuth2-proxy is unchanged.
+Defaults remain port `80` with no security context or added volumes. Coordinate
+the image, values and a chart revision containing these settings: published
+`0.167.2` does not contain Admin runtime support.
+
+### Hardened Hub workers (opt-in, unreleased chart support)
+
+The worker templates accept **per-component** `securityContext` (container) and
+`podSecurityContext` (pod) maps. Both default to `{}` and are omitted from the
+rendered Deployment. Image tags, ports, existing mounts and legacy permissions
+are unchanged. Support covers:
+
+| Values path | Deployment |
+| --- | --- |
+| `kerberospipeline.counting` | `pipe-counting` |
+| `kerberospipeline.throttler` | `pipe-throttler` |
+| `kerberospipeline.notify` | `pipe-notify` |
+| `kerberospipeline.thumbnail` | `pipe-thumbnail` |
+| `kerberospipeline.dominantColor` | `pipe-dominantcolor` |
+| `kerberoshub.cleanup` | `hub-cleanup` |
+| `kerberoshub.monitordevice` | `hub-monitor-device` |
+| `kerberoshub.services.workflows` | `hub-workflows` |
+| `kerberoshub.services.<stage>` | Enabled generic workflow workers, e.g. loitering, ANPR or forwarder |
+
+These application hardening changes are proposed in draft PRs, not release
+clearance. First select and validate a compatible hardened image for each
+component, then deploy a chart revision containing this support and its matching
+values together. Published chart `0.167.2` does not contain these worker settings.
+Do not enable these settings for an unverified legacy, Python/GPU or custom image.
+There is no global switch that hardens every worker.
+
+For a verified `65532:65532` Go worker, explicitly configure its own values path:
+
+```yaml
+kerberospipeline:
+    counting:
+        securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+                drop: ["ALL"]
+            seccompProfile:
+                type: RuntimeDefault
+```
+
+Apply that same container map independently to other verified workers; it is not
+inherited by them. The confirmed loitering image processes trajectories entirely
+in memory and needs no writable mount. Worker metrics Services remain on `8080`;
+`GET /metrics` is process liveness, not RabbitMQ/dependency readiness.
+
+The notification image proposed by `uug-ai/hub-pipeline-notification#149` retains
+its existing worker/provider/FFmpeg behavior. Configure its own
+`kerberospipeline.notify` security maps only after selecting that compatible
+image; retain provider settings and merge existing mounts/resources. Mount
+workload-sized writable scratch at `/tmp` (the default temporary directory);
+the worker creates `/tmp/hub-pipeline-thumbnail` for generated media. Keep
+`/mail/templates` override mounts read-only and custom CA mounts readable by UID
+`65532`. The application working directory need not be writable. MongoDB TLS
+secret mounts remain read-only. Final native image proof is still required.
+
+Thumbnail and dominant-colour workers need writable **`/tmp`**, including legacy
+debug image output. Merge a disk-backed `emptyDir` and its mount into each
+component's existing `volumes`/`volumeMounts`. For example, after sizing for the
+workload:
+
+```yaml
+kerberospipeline:
+    thumbnail:
+        # Also configure the container securityContext above for this worker.
+        podSecurityContext:
+            fsGroup: 65532
+        volumes:
+            - name: media-scratch
+              emptyDir:
+                  sizeLimit: 4Gi # Illustrative only, NOT a safe universal limit.
+        volumeMounts:
+            - name: media-scratch
+              mountPath: /tmp
+        resources:
+            requests:
+                ephemeral-storage: 4Gi
+            limits:
+                ephemeral-storage: 6Gi
+```
+
+Size scratch for the sum of concurrently downloaded full recordings, extracted
+JPEG/PNG frames, debug files and headroom. Align ephemeral-storage requests/limits
+with scratch and other pod usage; retain suitable CPU/memory resources.
+Memory-backed scratch counts against the pod memory limit and can double-count
+media already buffered in Go. Small CI fixture volumes are not production sizing.
+Only opt in to `fsGroup` after reviewing **all** mounts on that pod: persistent
+volumes can be affected by Kubernetes/CSI ownership handling. Do not add a
+recursive chmod/chown init container or mount over the root-owned application.
+
+The proposed ANPR image uses a workload-sized writable directory such as `/work`
+with `kerberoshub.services.anpr.env.TMPDIR: /work`; configure matching
+`volumes`/`volumeMounts` and container security settings on that stage only.
+Optional dataset mode also requires its own writable `ANPR_DATASET_DIR` mount.
+Models and application directories stay read-only.
+
+This repository has **no Vault server or design-system chart**. The files named
+`vault-proxy` and `vault-forwarder` deploy different legacy applications; their
+ports are not the Vault server's port. Do not change them for `uug-ai/vault#119`.
+That proposed Vault image requires port `8080` (legacy `80`), UID/GID `65532`,
+read-only `/home/vault`, workload-sized writable `/run/vault`, and compatible
+ownership on existing optional `LOCAL_CACHE_DIRECTORY` mounts. Its liveness
+endpoint is `GET /api/health`. Wire those settings in the actual Vault deployment
+only when a compatible image release is selected; no migration is required.
+
 ### Passkeys
 
 Users and sub-users can create and manage their own passkeys in **Profile >

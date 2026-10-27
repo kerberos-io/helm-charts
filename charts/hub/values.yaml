@@ -268,6 +268,9 @@ kerberosvault:
 ###########################################################################
 admin:
   repository: uugai/admin
+  # Opt in to 8080 and a securityContext only with a compatible hardened image.
+  containerPort: 80
+  securityContext: {}
   pullPolicy: IfNotPresent
   tag: "v1.3.0"
   replicas: 2
@@ -754,6 +757,9 @@ kerberoshub:
       organization: "github-organization"
       team: "github-team"
   cleanup:
+    # Explicit opt-in for a selected hardened image; legacy defaults are unchanged.
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-cleanup
     pullPolicy: IfNotPresent
     tag: "v1.4.19"
@@ -967,6 +973,8 @@ kerberoshub:
     # `enabled` here.
     workflows:
       repository: ghcr.io/uug-ai/hub-workflows
+      securityContext: {}
+      podSecurityContext: {}
       pullPolicy: IfNotPresent
       tag: "v1.0.0"
       replicas: 1 # Number of pods for the service.
@@ -1075,6 +1083,8 @@ kerberoshub:
           #      memory: 128Mi
           #      cpu: 100m
   monitordevice:
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent
     tag: "v1.4.2"
@@ -1222,6 +1232,8 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   throttler:
+    securityContext: {}
+    podSecurityContext: {}
     repository: uugai/hub-pipeline-throttler
     deploymentAnnotations: {}
     # deploymentAnnotations:
@@ -1243,6 +1255,8 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   notify:
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-pipeline-notification
     deploymentAnnotations: {}
     # deploymentAnnotations:
@@ -1318,6 +1332,8 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   dominantColor:
+    securityContext: {}
+    podSecurityContext: {}
     # Opt-in: deploys pipe-dominantcolor and tells the analysis stage to schedule
     # it (DOMINANTCOLOR_ENABLED). Requires an analysis image that reads the flag;
     # older images always publish to the dominantcolor queue.
@@ -1346,6 +1362,8 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   thumbnail:
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-pipeline-thumbnail
     deploymentAnnotations: {}
     # deploymentAnnotations:
@@ -1377,6 +1395,8 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   counting:
+    securityContext: {}
+    podSecurityContext: {}
     repository: uugai/hub-pipeline-counting
     deploymentAnnotations: {}
     # deploymentAnnotations:

@@ -23,6 +23,10 @@ spec:
       labels:
         app: hub-workflows
     spec:
+      {{- with .Values.kerberoshub.services.workflows.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -48,6 +52,10 @@ spec:
       - name: hub-workflows
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.services.workflows.repository }}:{{ .Values.kerberoshub.services.workflows.tag }}"
         imagePullPolicy: {{ .Values.kerberoshub.services.workflows.pullPolicy }}
+        {{- with .Values.kerberoshub.services.workflows.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.kerberoshub.services.workflows.resources }}
         resources:
           {{- toYaml . | nindent 12 }}

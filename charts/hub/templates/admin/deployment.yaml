@@ -26,6 +26,10 @@ spec:
         - name: admin
           image: "{{ .Values.global.imageRegistry }}{{ .Values.admin.repository }}:{{ .Values.admin.tag }}"
           imagePullPolicy: {{ .Values.admin.pullPolicy }}
+          {{- with .Values.admin.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.admin.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -36,7 +40,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.admin.containerPort }}
               protocol: TCP
           env:
             - name: LOG_LEVEL

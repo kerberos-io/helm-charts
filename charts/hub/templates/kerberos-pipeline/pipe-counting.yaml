@@ -24,6 +24,10 @@ spec:
       labels:
         app: pipe-counting
     spec:
+      {{- with .Values.kerberospipeline.counting.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -43,6 +47,10 @@ spec:
       - name: pipe-counting
         image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberospipeline.counting.repository }}:{{ .Values.kerberospipeline.counting.tag }}"
         imagePullPolicy: {{ .Values.kerberospipeline.counting.pullPolicy }}
+        {{- with .Values.kerberospipeline.counting.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.kerberospipeline.counting.resources }}
         resources:
           {{- toYaml . | nindent 12 }}

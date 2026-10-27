@@ -50,6 +50,10 @@ spec:
       labels:
         app: hub-{{ $name }}
     spec:
+      {{- with $svc.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if $root.Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" $root.Release.Name $root.Chart.Name | trunc 63 | trimSuffix "-") $root.Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -69,6 +73,10 @@ spec:
       - name: hub-{{ $name }}
         image: "{{ $root.Values.global.imageRegistry }}{{ $svc.repository }}:{{ $svc.tag }}"
         imagePullPolicy: {{ $svc.pullPolicy | default "IfNotPresent" }}
+        {{- with $svc.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with $svc.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
