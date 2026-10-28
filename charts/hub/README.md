@@ -73,15 +73,16 @@ the primary and demo frontends, which share the frontend image tag. Update the
 live Argo CD Application's chart pin as well as its values: an image-only
 upgrade leaves older charts forwarding to port `80` and causes gateway errors.
 
-### Hardened Admin image (opt-in, unreleased chart support)
+### Hardened Admin image (opt-in, chart 0.167.3)
 
-`charts/hub` deploys Admin in `all` and `ui` modes. The shell-free image proposed
-by `uug-ai/admin#59` runs as `65532:65532` and listens on `8080`, unlike the legacy
-image on `80`. When selecting a verified compatible image, set these values
-together; the chart does not select or upgrade that image automatically:
+`charts/hub` deploys Admin in `all` and `ui` modes. Shell-free Admin `v1.4.3`
+runs as `65532:65532` and listens on `8080`, unlike the legacy image on `80`.
+Set these values together; the chart does not upgrade the image automatically:
 
 ```yaml
 admin:
+    repository: ghcr.io/uug-ai/admin
+    tag: v1.4.3
     containerPort: 8080
     securityContext:
         runAsNonRoot: true
@@ -101,17 +102,33 @@ admin:
     volumeMounts:
         - name: admin-tmp
           mountPath: /tmp
+    readinessProbe:
+        httpGet:
+            path: /healthz
+            port: http
+        periodSeconds: 10
+    livenessProbe:
+        httpGet:
+            path: /healthz
+            port: http
+        initialDelaySeconds: 10
+        periodSeconds: 10
 ```
 
 Merge the scratch volume with any existing mounts. Only `/tmp` is writable;
 application files remain read-only. Memory-backed scratch counts against the
 pod memory limit. The `admin-svc` Service and Admin ingress still use port `80`;
-only the Service target and container port change. OAuth2-proxy is unchanged.
-Defaults remain port `80` with no security context or added volumes. Coordinate
+the Service targets the named `http` container port. OAuth2-proxy is unchanged.
+Defaults remain port `80` with no security context, added volumes, or probes. Coordinate
 the image, values and a chart revision containing these settings: published
 `0.167.2` does not contain Admin runtime support.
 
-### Hardened Hub workers (opt-in, unreleased chart support)
+Rollbacks to legacy images must restore port `80`, remove the hardened
+security context, and disable `/healthz` probes together. Run
+`bash scripts/check-admin-runtime.sh` from the repository root to verify
+legacy defaults, hardened runtime/probes, and unchanged OAuth2 routing.
+
+### Hardened Hub workers (opt-in, chart 0.167.3)
 
 The worker templates accept **per-component** `securityContext` (container) and
 `podSecurityContext` (pod) maps. Both default to `{}` and are omitted from the
