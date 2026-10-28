@@ -268,6 +268,11 @@ kerberosvault:
 ###########################################################################
 admin:
   repository: uugai/admin
+  # Opt in to 8080 and a securityContext only with a compatible hardened image.
+  containerPort: 80
+  securityContext: {}
+  readinessProbe: {}
+  livenessProbe: {}
   pullPolicy: IfNotPresent
   tag: "v1.3.0"
   replicas: 2
@@ -392,6 +397,13 @@ kerberoshub:
 
     # MFA issuer name
     mfaIssuer: "yourdomain.com"
+    # WebAuthn passkeys for users and sub-users; requires compatible API/frontend images.
+    # Use the public frontend hostname/origins, not the API URL. Keep rpId stable.
+    passkeys:
+      enabled: false
+      rpId: "" # e.g. "hub.example.com", without scheme, port or path.
+      origins: [] # e.g. ["https://hub.example.com"]; exact origins, no trailing slash.
+      rpName: "Kerberos Hub"
     # Admin API's are made available for automation of Kerberos Hub.
     # To access those API's (e.g. creation of owner users), an API key needs to be provided.
     apiKey: "a-random-admin-api-key"
@@ -467,6 +479,9 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.13.9"
     replicas: 2
+    # Hardened frontend images listen on 8080; retain 80 for existing images.
+    containerPort: 80
+    securityContext: {}
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
     # external/shared Service is managed elsewhere).
@@ -747,6 +762,9 @@ kerberoshub:
       organization: "github-organization"
       team: "github-team"
   cleanup:
+    # Explicit opt-in for a selected hardened image; legacy defaults are unchanged.
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-cleanup
     pullPolicy: IfNotPresent
     tag: "v1.4.19"
@@ -960,6 +978,8 @@ kerberoshub:
     # `enabled` here.
     workflows:
       repository: ghcr.io/uug-ai/hub-workflows
+      securityContext: {}
+      podSecurityContext: {}
       pullPolicy: IfNotPresent
       tag: "v1.0.0"
       replicas: 1 # Number of pods for the service.
@@ -1068,6 +1088,8 @@ kerberoshub:
           #      memory: 128Mi
           #      cpu: 100m
   monitordevice:
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-monitor-device
     pullPolicy: IfNotPresent
     tag: "v1.4.2"
@@ -1215,6 +1237,8 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   throttler:
+    securityContext: {}
+    podSecurityContext: {}
     repository: uugai/hub-pipeline-throttler
     deploymentAnnotations: {}
     # deploymentAnnotations:
@@ -1236,6 +1260,8 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   notify:
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-pipeline-notification
     deploymentAnnotations: {}
     # deploymentAnnotations:
@@ -1311,6 +1337,8 @@ kerberospipeline:
         memory: 10Mi
         cpu: 10m
   dominantColor:
+    securityContext: {}
+    podSecurityContext: {}
     # Opt-in: deploys pipe-dominantcolor and tells the analysis stage to schedule
     # it (DOMINANTCOLOR_ENABLED). Requires an analysis image that reads the flag;
     # older images always publish to the dominantcolor queue.
@@ -1339,6 +1367,8 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   thumbnail:
+    securityContext: {}
+    podSecurityContext: {}
     repository: ghcr.io/uug-ai/hub-pipeline-thumbnail
     deploymentAnnotations: {}
     # deploymentAnnotations:
@@ -1370,6 +1400,8 @@ kerberospipeline:
         memory: 2Gi
         cpu: 1000m
   counting:
+    securityContext: {}
+    podSecurityContext: {}
     repository: uugai/hub-pipeline-counting
     deploymentAnnotations: {}
     # deploymentAnnotations:

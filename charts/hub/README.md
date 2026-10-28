@@ -31,6 +31,265 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Hardened frontend images
+
+New shell-free frontend images run as `65532:65532` and listen on port `8080`.
+Before selecting such an image tag, set the following values together. Defaults
+remain compatible with legacy images on port `80`; this chart does not upgrade
+the frontend image automatically. The Service and ingress remain on port `80`.
+Use chart `0.167.2` or newer when the demo frontend is enabled; `0.167.1`
+supports these settings only on the primary frontend.
+
+```yaml
+kerberoshub:
+    frontend:
+        containerPort: 8080
+        securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+                drop: ["ALL"]
+            seccompProfile:
+                type: RuntimeDefault
+        volumes:
+            - name: frontend-tmp
+              emptyDir:
+                  medium: Memory
+                  sizeLimit: 16Mi
+        volumeMounts:
+            - name: frontend-tmp
+              mountPath: /tmp
+```
+
+Merge the temporary volume into any existing branding/translation mounts rather
+than replacing them. Custom files must be readable by UID `65532`; mount them
+read-only. Only `/tmp` needs writes for generated public runtime configuration
+and nginx's PID/temp files. The web root stays read-only. Health checks can use
+`GET /healthz` on the named `http` container port. These settings apply to both
+the primary and demo frontends, which share the frontend image tag. Update the
+live Argo CD Application's chart pin as well as its values: an image-only
+upgrade leaves older charts forwarding to port `80` and causes gateway errors.
+
+### Hardened Admin image (opt-in, chart 0.167.3)
+
+`charts/hub` deploys Admin in `all` and `ui` modes. Shell-free Admin `v1.4.3`
+runs as `65532:65532` and listens on `8080`, unlike the legacy image on `80`.
+Set these values together; the chart does not upgrade the image automatically:
+
+```yaml
+admin:
+    repository: ghcr.io/uug-ai/admin
+    tag: v1.4.3
+    containerPort: 8080
+    securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+            drop: ["ALL"]
+        seccompProfile:
+            type: RuntimeDefault
+    volumes:
+        - name: admin-tmp
+          emptyDir:
+              medium: Memory
+              sizeLimit: 16Mi # Example; size for your runtime configuration.
+    volumeMounts:
+        - name: admin-tmp
+          mountPath: /tmp
+    readinessProbe:
+        httpGet:
+            path: /healthz
+            port: http
+        periodSeconds: 10
+    livenessProbe:
+        httpGet:
+            path: /healthz
+            port: http
+        initialDelaySeconds: 10
+        periodSeconds: 10
+```
+
+Merge the scratch volume with any existing mounts. Only `/tmp` is writable;
+application files remain read-only. Memory-backed scratch counts against the
+pod memory limit. The `admin-svc` Service and Admin ingress still use port `80`;
+the Service targets the named `http` container port. OAuth2-proxy is unchanged.
+Defaults remain port `80` with no security context, added volumes, or probes. Coordinate
+the image, values and a chart revision containing these settings: published
+`0.167.2` does not contain Admin runtime support.
+
+Rollbacks to legacy images must restore port `80`, remove the hardened
+security context, and disable `/healthz` probes together. Run
+`bash scripts/check-admin-runtime.sh` from the repository root to verify
+legacy defaults, hardened runtime/probes, and unchanged OAuth2 routing.
+
+### Hardened Hub workers (opt-in, chart 0.167.3)
+
+The worker templates accept **per-component** `securityContext` (container) and
+`podSecurityContext` (pod) maps. Both default to `{}` and are omitted from the
+rendered Deployment. Image tags, ports, existing mounts and legacy permissions
+are unchanged. Support covers:
+
+| Values path | Deployment |
+| --- | --- |
+| `kerberospipeline.counting` | `pipe-counting` |
+| `kerberospipeline.throttler` | `pipe-throttler` |
+| `kerberospipeline.notify` | `pipe-notify` |
+| `kerberospipeline.thumbnail` | `pipe-thumbnail` |
+| `kerberospipeline.dominantColor` | `pipe-dominantcolor` |
+| `kerberoshub.cleanup` | `hub-cleanup` |
+| `kerberoshub.monitordevice` | `hub-monitor-device` |
+| `kerberoshub.services.workflows` | `hub-workflows` |
+| `kerberoshub.services.<stage>` | Enabled generic workflow workers, e.g. loitering, ANPR or forwarder |
+
+These application hardening changes are proposed in draft PRs, not release
+clearance. First select and validate a compatible hardened image for each
+component, then deploy a chart revision containing this support and its matching
+values together. Published chart `0.167.2` does not contain these worker settings.
+Do not enable these settings for an unverified legacy, Python/GPU or custom image.
+There is no global switch that hardens every worker.
+
+For a verified `65532:65532` Go worker, explicitly configure its own values path:
+
+```yaml
+kerberospipeline:
+    counting:
+        securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+                drop: ["ALL"]
+            seccompProfile:
+                type: RuntimeDefault
+```
+
+Apply that same container map independently to other verified workers; it is not
+inherited by them. The confirmed loitering image processes trajectories entirely
+in memory and needs no writable mount. Worker metrics Services remain on `8080`;
+`GET /metrics` is process liveness, not RabbitMQ/dependency readiness.
+
+The notification image proposed by `uug-ai/hub-pipeline-notification#149` retains
+its existing worker/provider/FFmpeg behavior. Configure its own
+`kerberospipeline.notify` security maps only after selecting that compatible
+image; retain provider settings and merge existing mounts/resources. Mount
+workload-sized writable scratch at `/tmp` (the default temporary directory);
+the worker creates `/tmp/hub-pipeline-thumbnail` for generated media. Keep
+`/mail/templates` override mounts read-only and custom CA mounts readable by UID
+`65532`. The application working directory need not be writable. MongoDB TLS
+secret mounts remain read-only. Final native image proof is still required.
+
+Thumbnail and dominant-colour workers need writable **`/tmp`**, including legacy
+debug image output. Merge a disk-backed `emptyDir` and its mount into each
+component's existing `volumes`/`volumeMounts`. For example, after sizing for the
+workload:
+
+```yaml
+kerberospipeline:
+    thumbnail:
+        # Also configure the container securityContext above for this worker.
+        podSecurityContext:
+            fsGroup: 65532
+        volumes:
+            - name: media-scratch
+              emptyDir:
+                  sizeLimit: 4Gi # Illustrative only, NOT a safe universal limit.
+        volumeMounts:
+            - name: media-scratch
+              mountPath: /tmp
+        resources:
+            requests:
+                ephemeral-storage: 4Gi
+            limits:
+                ephemeral-storage: 6Gi
+```
+
+Size scratch for the sum of concurrently downloaded full recordings, extracted
+JPEG/PNG frames, debug files and headroom. Align ephemeral-storage requests/limits
+with scratch and other pod usage; retain suitable CPU/memory resources.
+Memory-backed scratch counts against the pod memory limit and can double-count
+media already buffered in Go. Small CI fixture volumes are not production sizing.
+Only opt in to `fsGroup` after reviewing **all** mounts on that pod: persistent
+volumes can be affected by Kubernetes/CSI ownership handling. Do not add a
+recursive chmod/chown init container or mount over the root-owned application.
+
+The proposed ANPR image uses a workload-sized writable directory such as `/work`
+with `kerberoshub.services.anpr.env.TMPDIR: /work`; configure matching
+`volumes`/`volumeMounts` and container security settings on that stage only.
+Optional dataset mode also requires its own writable `ANPR_DATASET_DIR` mount.
+Models and application directories stay read-only.
+
+This repository has **no Vault server or design-system chart**. The files named
+`vault-proxy` and `vault-forwarder` deploy different legacy applications; their
+ports are not the Vault server's port. Do not change them for `uug-ai/vault#119`.
+That proposed Vault image requires port `8080` (legacy `80`), UID/GID `65532`,
+read-only `/home/vault`, workload-sized writable `/run/vault`, and compatible
+ownership on existing optional `LOCAL_CACHE_DIRECTORY` mounts. Its liveness
+endpoint is `GET /api/health`. Wire those settings in the actual Vault deployment
+only when a compatible image release is selected; no migration is required.
+
+### Passkeys
+
+Users and sub-users can create and manage their own passkeys in **Profile >
+Passkeys**, then use **Sign in with a passkey** for passwordless authentication
+with device PIN/biometric verification. Existing password/MFA sign-in remains
+available. Enrollment and removal require the current password and an
+authenticator-app code when MFA is enabled.
+
+Deploy Hub API and frontend images that support passkeys before enabling this
+configuration; the chart version alone does not update the service image tags.
+Passkeys are disabled by default. Configure their trust explicitly:
+
+```yaml
+kerberoshub:
+    api:
+        passkeys:
+            enabled: true
+            rpId: "hub.example.com"
+            origins:
+                - "https://hub.example.com"
+            rpName: "Kerberos Hub"
+```
+
+| Value | Default | Purpose |
+| --- | --- | --- |
+| `kerberoshub.api.passkeys.enabled` | `false` | Inject passkey configuration into Hub API pods only |
+| `kerberoshub.api.passkeys.rpId` | `""` | Required when enabled; sets `PASSKEY_RP_ID` |
+| `kerberoshub.api.passkeys.origins` | `[]` | Required when enabled; exact trusted frontend origins, joined with commas into `PASSKEY_ORIGINS` |
+| `kerberoshub.api.passkeys.rpName` | `"Kerberos Hub"` | Display name; sets `PASSKEY_RP_NAME` |
+
+Use the **frontend's public hostname and origins**, not the API URL. Origins
+must have no path or trailing slash. Each origin hostname must equal the RP ID
+or be its subdomain. Include only trusted origins, especially when sharing an
+RP ID across tenant subdomains. Keep the RP ID stable: changing it makes
+existing passkeys unusable. The API validates the RP/origin relationship at
+runtime; missing/invalid configuration makes passkeys unavailable without
+affecting password/MFA sign-in.
+
+HTTPS and a compatible browser are required. Local development may use
+`rpId: "localhost"` with `origins: ["http://localhost:4200"]`.
+The frontend displays translated cancellation, verification and unavailable
+messages when a ceremony cannot complete.
+
+Apply values with a Helm upgrade or GitOps sync; changes trigger an API rollout.
+If these variables were previously configured through `kerberoshub.extraEnv`,
+remove those entries when enabling the dedicated settings to avoid duplicate
+environment variables. Setting `enabled: false` omits the chart-managed
+variables; any passkey variables supplied through `extraEnv` still take effect.
+
+The API's MongoDB identity needs reads on `users`, CRUD on `passkeys`, and
+insert/find-and-delete on `passkey_challenges`. It attempts to create the
+`passkey_challenge_expiry_ttl` index on `expiresAt` with
+`expireAfterSeconds: 0`; expiration and single-use enforcement work without the
+index, but the index is needed for automatic expired-challenge cleanup.
+
 ### Sequence logging
 
 Set `kerberospipeline.sequence.logLevel` to control the Sequence service's

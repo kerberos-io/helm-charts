@@ -436,6 +436,15 @@ spec:
             - name: MFA_ISSUER
               value: "{{ .Values.kerberoshub.api.mfaIssuer }}"
 
+            {{- if .Values.kerberoshub.api.passkeys.enabled }}
+            - name: PASSKEY_RP_ID
+              value: {{ required "kerberoshub.api.passkeys.rpId is required when passkeys are enabled" .Values.kerberoshub.api.passkeys.rpId | quote }}
+            - name: PASSKEY_ORIGINS
+              value: {{ required "kerberoshub.api.passkeys.origins is required when passkeys are enabled" .Values.kerberoshub.api.passkeys.origins | join "," | quote }}
+            - name: PASSKEY_RP_NAME
+              value: {{ .Values.kerberoshub.api.passkeys.rpName | quote }}
+            {{- end }}
+
             # AWS (Legacy, use Kerberos Vault instead)
             - name: AWS_REGION
               value: "{{ .Values.kerberoshub.api.aws.region }}"

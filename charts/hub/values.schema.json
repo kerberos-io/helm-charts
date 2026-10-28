@@ -62,6 +62,38 @@
         "api": {
           "type": "object",
           "properties": {
+            "passkeys": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "rpId": {
+                  "type": "string",
+                  "description": "Stable WebAuthn relying-party hostname, without scheme, port or path. Must match each frontend origin's hostname or be its parent domain."
+                },
+                "origins": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^https://[^/?#]+$|^http://localhost(:[0-9]+)?$"
+                  },
+                  "description": "Exact trusted frontend origins, with no path or trailing slash. HTTPS is required except for HTTP localhost development."
+                },
+                "rpName": {"type": "string"}
+              },
+              "if": {
+                "required": ["enabled"],
+                "properties": {"enabled": {"const": true}}
+              },
+              "then": {
+                "required": ["rpId", "origins"],
+                "properties": {
+                  "rpId": {"minLength": 1},
+                  "origins": {"minItems": 1}
+                }
+              }
+            },
             "corsAllowedOrigins": {
               "type": "array",
               "items": {
