@@ -271,6 +271,8 @@ admin:
   # Opt in to 8080 and a securityContext only with a compatible hardened image.
   containerPort: 80
   securityContext: {}
+  readinessProbe: {}
+  livenessProbe: {}
   pullPolicy: IfNotPresent
   tag: "v1.3.0"
   replicas: 2

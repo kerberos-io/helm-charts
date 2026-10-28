@@ -171,9 +171,9 @@ for mode in all ui pipeline; do
   done
   old_service="$(resource Service admin-svc <<< "$legacy")"
   service="$(resource Service admin-svc <<< "$configured")"
-  assert_line "$old_service" '^[ ]+targetPort: 80$'
+  assert_line "$old_service" '^[ ]+targetPort: http$'
   assert_line "$service" '^[ ]+port: 80$'
-  assert_line "$service" '^[ ]+targetPort: 8080$'
+  assert_line "$service" '^[ ]+targetPort: http$'
   [[ "$(resource Ingress admin-ingress <<< "$legacy")" == "$(resource Ingress admin-ingress <<< "$configured")" ]]
   [[ "$(resource Deployment oauth2-proxy-admin <<< "$legacy")" == "$(resource Deployment oauth2-proxy-admin <<< "$configured")" ]]
   [[ "$(resource Service oauth2-proxy-admin <<< "$legacy")" == "$(resource Service oauth2-proxy-admin <<< "$configured")" ]]
