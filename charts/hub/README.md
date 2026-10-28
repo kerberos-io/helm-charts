@@ -716,6 +716,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.devices.analyticsEnabled` | Enable or disable the Analytics tab on device detail pages. | `"true"` |
 | `kerberoshub.frontend.features.devices.developerToolsEnabled` | Enable or disable owner-only live Agent logs and terminal access on device detail pages. | `"true"` |
 | `kerberoshub.frontend.features.dashboard.sitesFullscreenEnabled` | Enable or disable the fullscreen Sites map on the Dashboard. | `"true"` |
+| `kerberoshub.frontend.features.media.forward.enabled` | Enable or disable the bulk Forward media action in the Recordings Actions menu. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.date.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.date`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.sites.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.sites`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.groups.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.groups`. | `"true"` |

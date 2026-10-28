@@ -655,6 +655,9 @@ kerberoshub:
         sitesFullscreenEnabled: "true" # Enable or disable the fullscreen Sites map 'true' or 'false'
       # Media page
       media:
+        # Bulk "Forward media" action in the Recordings Actions menu (on-demand forwarding of metadata-only recordings).
+        forward:
+          enabled: "true" # Enable or disable the Forward media action in media 'true' or 'false'
         filter:
           date:
             enabled: "true" # Enable or disable date filter in media 'true' or 'false'
