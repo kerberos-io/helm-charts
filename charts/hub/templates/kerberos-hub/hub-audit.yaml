@@ -26,7 +26,12 @@ spec:
         app: hub-audit
     spec:
       terminationGracePeriodSeconds: {{ .Values.kerberoshub.audit.terminationGracePeriodSeconds }}
-      {{- if .Values.kerberoshub.serviceAccount.create }}
+      {{- $auditServiceAccount := default dict .Values.kerberoshub.audit.serviceAccount }}
+      {{- if $auditServiceAccount.create }}
+      serviceAccountName: {{ default "hub-audit" $auditServiceAccount.name }}
+      {{- else if $auditServiceAccount.name }}
+      serviceAccountName: {{ $auditServiceAccount.name }}
+      {{- else if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
       {{- with .Values.imagePullSecrets }}
@@ -41,10 +46,22 @@ spec:
           {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
       {{- $bearer := default dict $destination.bearerTokenSecret }}
       {{- $secretHeaders := default dict $destination.secretHeaders }}
-      {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) }}
+      {{- $credentials := default dict $destination.credentialsSecret }}
+      {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) (gt (len $credentials) 0) }}
         - name: audit-dest-{{ sha256sum $destination.id | trunc 12 }}
           projected:
             sources:
+            {{- if gt (len $credentials) 0 }}
+            {{- $accessKeyIdKey := default "access-key-id" $credentials.accessKeyIdKey }}
+            {{- $secretAccessKeyKey := default "secret-access-key" $credentials.secretAccessKeyKey }}
+              - secret:
+                  name: {{ required (printf "credentialsSecret.name is required for destination %s" $destination.id) $credentials.name | quote }}
+                  items:
+                    - key: {{ $accessKeyIdKey | quote }}
+                      path: access-key-id-{{ sha256sum (printf "%s:%s" $credentials.name $accessKeyIdKey) | trunc 12 }}
+                    - key: {{ $secretAccessKeyKey | quote }}
+                      path: secret-access-key-{{ sha256sum (printf "%s:%s" $credentials.name $secretAccessKeyKey) | trunc 12 }}
+            {{- end }}
             {{- if gt (len $bearer) 0 }}
               - secret:
                   name: {{ required (printf "bearerTokenSecret.name is required for destination %s" $destination.id) $bearer.name | quote }}
@@ -98,7 +115,8 @@ spec:
           {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
           {{- $bearer := default dict $destination.bearerTokenSecret }}
           {{- $secretHeaders := default dict $destination.secretHeaders }}
-          {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) }}
+          {{- $credentials := default dict $destination.credentialsSecret }}
+          {{- if or (gt (len $bearer) 0) (gt (len $secretHeaders) 0) (gt (len $credentials) 0) }}
             - name: audit-dest-{{ sha256sum $destination.id | trunc 12 }}
               mountPath: /var/run/secrets/audit-destinations/{{ $destination.id }}
               readOnly: true

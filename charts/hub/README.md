@@ -800,7 +800,11 @@ kerberospipeline:
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
 | `kerberoshub.audit.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
-| `kerberoshub.audit.destinations` | Webhook destinations. Each entry supports `id`, `enabled`, `url`, delivery limits, filters, public `headers`, `bearerTokenSecret`, and arbitrary `secretHeaders`. Destination IDs retain independent checkpoints. | `[]` |
+| `kerberoshub.audit.destinations` | Audit destinations. Every entry supports `id`, `type` (`webhook` by default, or `s3`), `enabled`, delivery limits and filters. Webhooks add `url`, public `headers`, `bearerTokenSecret` and arbitrary `secretHeaders`. S3 destinations add `s3.bucket`, `s3.region`, optional `s3.prefix`, `s3.endpoint` and `s3.forcePathStyle` for S3-compatible stores, and an optional `credentialsSecret` (`name`, `accessKeyIdKey`, `secretAccessKeyKey`); without it the pod's AWS identity is used. The bucket must have Object Lock with a `COMPLIANCE` default retention. Destination IDs retain independent checkpoints. | `[]` |
+| `kerberoshub.audit.serviceAccount.create` | Create a ServiceAccount used only by hub-audit, for example for S3 access through IRSA. | `false` |
+| `kerberoshub.audit.serviceAccount.name` | Name of the hub-audit ServiceAccount; with `create: false`, an existing ServiceAccount to use. Defaults to `hub-audit` when created; when empty and not created, `kerberoshub.serviceAccount` applies. | `""` |
+| `kerberoshub.audit.serviceAccount.annotations` | Annotations for the hub-audit ServiceAccount, such as `eks.amazonaws.com/role-arn`. | `{}` |
+| `kerberoshub.audit.serviceAccount.labels` | Labels for the hub-audit ServiceAccount. | `{}` |
 | `kerberoshub.audit.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for audit service metrics. | `true` |
 | `kerberoshub.audit.serviceMonitor.interval` | Audit service metrics scrape interval. | `"15s"` |
 | `kerberoshub.audit.volumes` | Additional pod volumes, for example a private webhook CA bundle. | `[]` |
