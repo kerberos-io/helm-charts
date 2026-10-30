@@ -50,7 +50,7 @@
     {{- $settings := dict
         "bucket" (required (printf "s3.bucket is required for audit destination %s" $id) $s3.bucket)
         "region" (required (printf "s3.region is required for audit destination %s" $id) $s3.region) -}}
-    {{- range $key := list "prefix" "endpoint" "forcePathStyle" -}}
+    {{- range $key := list "prefix" "endpoint" "forcePathStyle" "allowUnlockedBucket" -}}
       {{- if hasKey $s3 $key -}}
         {{- $_ := set $settings $key (get $s3 $key) -}}
       {{- end -}}

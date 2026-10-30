@@ -887,6 +887,9 @@ kerberoshub:
     #     prefix: hub
     #     endpoint: https://minio.example.com # S3-compatible stores only
     #     forcePathStyle: true # usually needed for MinIO
+    #     # Only for stores without Object Lock (e.g. Garage): skips the lock
+    #     # check, so archived batches are deletable. Needs hub-audit with #16.
+    #     allowUnlockedBucket: false
     #   # Omit credentialsSecret to use the pod's AWS identity (IRSA via
     #   # kerberoshub.audit.serviceAccount, or an instance profile).
     #   credentialsSecret:
