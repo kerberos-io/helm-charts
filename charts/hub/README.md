@@ -815,7 +815,7 @@ kerberospipeline:
 | `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
 | `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
 | `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `"info"` |
-| `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected and, for accounts with "Group notifications" on, how long notifications are held to collect other cameras that change status at the same time. | `60` |
+| `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected. For accounts with "Group notifications" on, `hub-monitor-device` v1.4.10 and later then hold a change 20 seconds (`DEVICE_GROUPING_HOLD_SECONDS`) to collect other cameras that change status at the same time; older releases hold it one scan. | `60` |
 | `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
 | `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
 | `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
@@ -1017,22 +1017,32 @@ Sent by `hub-monitor-device` when a camera goes online, offline or idle. The sub
 |---|---|
 | `{{user}}` | Username of the account the camera belongs to. |
 | `{{title}}` | The email subject. |
-| `{{text}}` | The status change, for example "`<camera>` is online, but the camera stream is not connected." |
+| `{{text}}` | The change, worded from the previous status (see below). |
 | `{{status}}` | `active` (online), `inactive` (offline) or `idle` (online, camera stream not connected). |
 | `{{devicename}}`, `{{deviceid}}` | Camera name and camera key. |
 | `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the status changed, in the server's timezone (normally UTC), not the account's. |
 | `{{link}}` | Not set; replaced with an empty value. |
 
+`{{text}}` per change (webhooks and IFTTT get the same text):
+
+| Change | `{{text}}` |
+|---|---|
+| Goes offline | "`<camera>` is offline, it hasn't responded for 5 minutes." |
+| Loses its camera stream while online | "`<camera>` is online, but the camera stream is not connected." |
+| Comes back from offline without its camera stream | "`<camera>` is back online, but the camera stream is not connected." |
+| Gets its camera stream back | "`<camera>`'s camera stream is connected again." |
+| Comes back from offline | "`<camera>` is back online." |
+
 
 #### Grouped camera status: `device_group`
 
-Sent by `hub-monitor-device` instead of `device` when an account has **Group notifications** switched on (Alerts → Devices, stored as `notificationSettings.devices.groupNotifications`) and **several** of its cameras change status in the same scan. A change is held for one scan (`kerberoshub.monitordevice.scanIntervalSeconds`, default 60 seconds) so that cameras of the same outage arrive in one email. When only one camera changed, the usual `device` email is sent. The subject is `email.templates.deviceGroupTitle`; the template name is `email.templates.deviceGroup` (default `device_group`, so custom files are `device_group.html` and `device_group.txt`).
+Sent by `hub-monitor-device` instead of `device` when an account has **Group notifications** switched on (Alerts → Devices, stored as `notificationSettings.devices.groupNotifications`) and **several** of its cameras change status at the same time. Changes are detected on every scan (`kerberoshub.monitordevice.scanIntervalSeconds`, default 60 seconds); a change is then held 20 seconds and the account checked again, so that cameras of the same outage arrive in one email. The hold is the monitor's `DEVICE_GROUPING_HOLD_SECONDS` (default `20`; `0`, or at least the scan interval, holds until the next scan, which is also what releases before v1.4.10 do). When only one camera changed, the usual `device` email is sent. The subject is `email.templates.deviceGroupTitle`; the template name is `email.templates.deviceGroup` (default `device_group`, so custom files are `device_group.html` and `device_group.txt`).
 
 | Placeholder | Value |
 |---|---|
 | `{{user}}` | Name of the account the cameras belong to: first and last name, or the username when both are empty. |
 | `{{title}}` | The email subject. |
-| `{{text}}` | One-line summary, for example "6 cameras changed status: 4 offline, 1 lost their camera stream, 1 back online." |
+| `{{text}}` | One-line summary, for example "6 cameras changed status: 4 offline, 1 lost their camera stream, 1 back online." The other changes read "back online without camera stream" and "camera stream reconnected". |
 | `{{count}}` | Number of cameras in the email. |
 | `{{status}}` | `active`, `inactive` or `idle` when all cameras have the same new status, otherwise `mixed`. |
 | `{{sections}}` | The cameras as HTML, one section per status and site, group or "Other cameras" (see below). |
@@ -1040,7 +1050,7 @@ Sent by `hub-monitor-device` instead of `device` when an account has **Group not
 | `{{link}}` | The cameras page, `<tenant URL>/devices`, built from `kerberoshub.frontend.schema` and `kerberoshub.frontend.url` (see *Links* above). |
 | `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the email was sent, in the server's timezone (normally UTC). |
 
-**Sections.** Sections are ordered by status (offline, camera stream lost, back online), then sites, groups and "Other cameras". Each camera is listed once: under the site or group that holds the most cameras of the email with the same status (a site wins a tie), or under "Other cameras" when it is in no site or group. A section title reads `Site Gate · Offline · all 3 cameras`, `Group Perimeter · Back online · 2 cameras` or `Other cameras · Camera stream lost · 1 camera`; "all" is added when every camera of the site or group is in the section. Each camera line has its name and a detail: `no response for 12 min`, `agent online, camera stream not connected` or `online`.
+**Sections.** There is one section per change and per site, group or "Other cameras". Sections are ordered by change (offline, camera stream lost, back online without camera stream, camera stream back, back online), then sites, groups and "Other cameras". Each camera is listed once: under the site or group that holds the most cameras of the email with the same change (a site wins a tie), or under "Other cameras" when it is in no site or group. A section title reads `Site Gate · Offline · all 3 cameras`, `Group Perimeter · Back online without camera stream · 2 cameras` or `Other cameras · Camera stream back · 1 camera`; the change labels are `Offline`, `Camera stream lost`, `Back online without camera stream`, `Camera stream back` and `Back online`, and "all" is added when a section of two or more cameras holds every camera of the site or group. Each camera line has its name and a detail: `no response for 12 min`, `agent online, camera stream not connected`, `agent back online, camera stream not connected`, `camera stream connected` or `online`. A camera that changes again during the hold keeps the status from before its first change: one that went offline and came back reads `back online after a brief interruption`, the other reversals `offline again after briefly coming back, no response for 4 min` and `camera stream lost again after briefly reconnecting`.
 
 `{{sections}}` is generated HTML with inline styles (email clients ignore stylesheets): per section a `<p>` with the title, followed by a `<table role="presentation" width="100%">` with one row per camera (name left, detail right). Place it where the camera list should appear; its look can't be changed from the template. For full control over the layout, use `{{sectionsText}}`. Camera, site and group names are HTML-escaped.
 
