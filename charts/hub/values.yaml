@@ -825,7 +825,7 @@ kerberoshub:
   audit:
     repository: ghcr.io/uug-ai/hub-audit
     pullPolicy: IfNotPresent
-    tag: "v1.0.1"
+    tag: "v1.0.10"
     replicas: 1
     dispatchInterval: "5s"
     leaseDuration: "2m"
@@ -871,27 +871,31 @@ kerberoshub:
     #     actions: []
     #     categories: []
     #     outcomes: [] # success | failure
-    # S3 Object Lock destination (requires a hub-audit release with S3 support).
-    # The bucket needs versioning, Object Lock and a COMPLIANCE default
-    # retention; hub-audit refuses to deliver otherwise. Each batch is written
-    # as <prefix>/<id>/yyyy/mm/dd/<firstId>-<lastId>.ndjson.gz.
+    # S3 Object Lock destination (hub-audit v1.0.9 or later). The bucket needs
+    # versioning, Object Lock and a COMPLIANCE default retention; hub-audit
+    # refuses to deliver otherwise. Each batch is written as
+    # <prefix>/<id>/yyyy/mm/dd/<firstId>-<lastId>.ndjson.gz. Per-provider
+    # region/endpoint values (AWS, Wasabi, B2, Ceph RGW, MinIO, Garage):
+    # https://learn.uug.ai/docs/hub/audit-events/#s3-providers
     # - id: immutable-archive
     #   type: s3
     #   enabled: true
     #   timeoutSeconds: 30
     #   batchSize: 500
+    #   maxAttempts: 100 # keep high: exhausted batches are dead-lettered, not archived
     #   startAt: beginning
     #   s3:
     #     bucket: hub-audit-archive
     #     region: eu-west-1
     #     prefix: hub
-    #     endpoint: https://minio.example.com # S3-compatible stores only
-    #     forcePathStyle: true # usually needed for MinIO
+    #     endpoint: https://s3.example.com # S3-compatible stores only; omit for AWS S3
+    #     forcePathStyle: true # usually needed for Ceph RGW, MinIO and Garage
     #     # Only for stores without Object Lock (e.g. Garage): skips the lock
-    #     # check, so archived batches are deletable. Needs hub-audit with #16.
+    #     # check, so archived batches are deletable. Needs hub-audit v1.0.10.
     #     allowUnlockedBucket: false
     #   # Omit credentialsSecret to use the pod's AWS identity (IRSA via
-    #   # kerberoshub.audit.serviceAccount, or an instance profile).
+    #   # kerberoshub.audit.serviceAccount, or an instance profile). That only
+    #   # works for AWS S3; every other store needs credentialsSecret.
     #   credentialsSecret:
     #     name: audit-immutable-archive
     #     accessKeyIdKey: access-key-id
