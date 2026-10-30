@@ -815,7 +815,8 @@ kerberoshub:
       requests:
         memory: 10Mi
         cpu: 10m
-  # Dispatches canonical audit_events to one or more external webhook sinks.
+  # Dispatches canonical audit_events to one or more destinations: webhook
+  # sinks, or S3 Object Lock buckets for immutable storage.
   # Credentials are always read from existing Secrets and never stored here.
   audit:
     repository: ghcr.io/uug-ai/hub-audit
@@ -829,6 +830,16 @@ kerberoshub:
     volumes: []
     volumeMounts: []
     extraEnv: []
+    # Optional ServiceAccount for hub-audit alone, for example to grant S3 access
+    # through IRSA without giving it to every Hub workload. When create is false
+    # and name is set, that existing ServiceAccount is used; otherwise the pod
+    # falls back to kerberoshub.serviceAccount.
+    serviceAccount:
+      create: false
+      name: ""
+      annotations: {}
+      # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/hub-audit-archive
+      labels: {}
     serviceMonitor:
       enabled: true
       interval: 15s
@@ -856,6 +867,28 @@ kerberoshub:
     #     actions: []
     #     categories: []
     #     outcomes: [] # success | failure
+    # S3 Object Lock destination (requires a hub-audit release with S3 support).
+    # The bucket needs versioning, Object Lock and a COMPLIANCE default
+    # retention; hub-audit refuses to deliver otherwise. Each batch is written
+    # as <prefix>/<id>/yyyy/mm/dd/<firstId>-<lastId>.ndjson.gz.
+    # - id: immutable-archive
+    #   type: s3
+    #   enabled: true
+    #   timeoutSeconds: 30
+    #   batchSize: 500
+    #   startAt: beginning
+    #   s3:
+    #     bucket: hub-audit-archive
+    #     region: eu-west-1
+    #     prefix: hub
+    #     endpoint: https://minio.example.com # S3-compatible stores only
+    #     forcePathStyle: true # usually needed for MinIO
+    #   # Omit credentialsSecret to use the pod's AWS identity (IRSA via
+    #   # kerberoshub.audit.serviceAccount, or an instance profile).
+    #   credentialsSecret:
+    #     name: audit-immutable-archive
+    #     accessKeyIdKey: access-key-id
+    #     secretAccessKeyKey: secret-access-key
     # resources:
     #   requests:
     #     memory: 32Mi

@@ -10,33 +10,60 @@
     {{- fail (printf "duplicate audit destination id %q" $id) -}}
   {{- end -}}
   {{- $_ := set $destinationIDs $id true -}}
-  {{- $url := required (printf "url is required for audit destination %s" $id) $destination.url -}}
+  {{- $type := default "webhook" $destination.type -}}
   {{- $entry := dict
       "id" $id
-      "type" (default "webhook" $destination.type)
+      "type" $type
       "enabled" $destination.enabled
-      "url" $url
       "timeoutSeconds" (default 10 $destination.timeoutSeconds)
       "batchSize" (default 100 $destination.batchSize)
       "maxAttempts" (default 10 $destination.maxAttempts)
       "startAt" (default "latest" $destination.startAt)
-      "headers" (default dict $destination.headers)
       "filters" (default dict $destination.filters) -}}
   {{- $secretRoot := printf "/var/run/secrets/audit-destinations/%s" $id -}}
-  {{- $bearer := default dict $destination.bearerTokenSecret -}}
-  {{- if gt (len $bearer) 0 -}}
-    {{- $secretName := required (printf "bearerTokenSecret.name is required for destination %s" $id) $bearer.name -}}
-    {{- $secretKey := default "token" $bearer.key -}}
-    {{- $_ := set $entry "bearerTokenFile" (printf "%s/bearer-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName $secretKey) | trunc 12)) -}}
-  {{- end -}}
-  {{- $headerFiles := dict -}}
-  {{- range $headerName, $secret := (default dict $destination.secretHeaders) -}}
-    {{- $secretName := required (printf "secretName is required for destination %s header %s" $id $headerName) $secret.secretName -}}
-    {{- $secretKey := required (printf "secretKey is required for destination %s header %s" $id $headerName) $secret.secretKey -}}
-    {{- $_ := set $headerFiles $headerName (printf "%s/header-%s" $secretRoot (sha256sum (printf "%s:%s:%s" $headerName $secretName $secretKey) | trunc 12)) -}}
-  {{- end -}}
-  {{- if gt (len $headerFiles) 0 -}}
-    {{- $_ := set $entry "headerFiles" $headerFiles -}}
+  {{- if eq $type "webhook" -}}
+    {{- if or $destination.s3 $destination.credentialsSecret -}}
+      {{- fail (printf "audit destination %s is a webhook and cannot set s3 or credentialsSecret" $id) -}}
+    {{- end -}}
+    {{- $_ := set $entry "url" (required (printf "url is required for audit destination %s" $id) $destination.url) -}}
+    {{- $_ := set $entry "headers" (default dict $destination.headers) -}}
+    {{- $bearer := default dict $destination.bearerTokenSecret -}}
+    {{- if gt (len $bearer) 0 -}}
+      {{- $secretName := required (printf "bearerTokenSecret.name is required for destination %s" $id) $bearer.name -}}
+      {{- $secretKey := default "token" $bearer.key -}}
+      {{- $_ := set $entry "bearerTokenFile" (printf "%s/bearer-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName $secretKey) | trunc 12)) -}}
+    {{- end -}}
+    {{- $headerFiles := dict -}}
+    {{- range $headerName, $secret := (default dict $destination.secretHeaders) -}}
+      {{- $secretName := required (printf "secretName is required for destination %s header %s" $id $headerName) $secret.secretName -}}
+      {{- $secretKey := required (printf "secretKey is required for destination %s header %s" $id $headerName) $secret.secretKey -}}
+      {{- $_ := set $headerFiles $headerName (printf "%s/header-%s" $secretRoot (sha256sum (printf "%s:%s:%s" $headerName $secretName $secretKey) | trunc 12)) -}}
+    {{- end -}}
+    {{- if gt (len $headerFiles) 0 -}}
+      {{- $_ := set $entry "headerFiles" $headerFiles -}}
+    {{- end -}}
+  {{- else if eq $type "s3" -}}
+    {{- if or $destination.url $destination.headers $destination.bearerTokenSecret $destination.secretHeaders -}}
+      {{- fail (printf "audit destination %s is s3 and cannot set url, headers, bearerTokenSecret or secretHeaders" $id) -}}
+    {{- end -}}
+    {{- $s3 := required (printf "s3 is required for audit destination %s" $id) $destination.s3 -}}
+    {{- $settings := dict
+        "bucket" (required (printf "s3.bucket is required for audit destination %s" $id) $s3.bucket)
+        "region" (required (printf "s3.region is required for audit destination %s" $id) $s3.region) -}}
+    {{- range $key := list "prefix" "endpoint" "forcePathStyle" -}}
+      {{- if hasKey $s3 $key -}}
+        {{- $_ := set $settings $key (get $s3 $key) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $credentials := default dict $destination.credentialsSecret -}}
+    {{- if gt (len $credentials) 0 -}}
+      {{- $secretName := required (printf "credentialsSecret.name is required for destination %s" $id) $credentials.name -}}
+      {{- $_ := set $settings "accessKeyIdFile" (printf "%s/access-key-id-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName (default "access-key-id" $credentials.accessKeyIdKey)) | trunc 12)) -}}
+      {{- $_ := set $settings "secretAccessKeyFile" (printf "%s/secret-access-key-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName (default "secret-access-key" $credentials.secretAccessKeyKey)) | trunc 12)) -}}
+    {{- end -}}
+    {{- $_ := set $entry "s3" $settings -}}
+  {{- else -}}
+    {{- fail (printf "audit destination %s has unsupported type %q (webhook or s3)" $id $type) -}}
   {{- end -}}
   {{- $destinations = append $destinations $entry -}}
 {{- end -}}
