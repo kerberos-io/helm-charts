@@ -367,6 +367,8 @@ spec:
         # features > media
         - name: FEATURE_MEDIA_FORWARD_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.forward.enabled }}"
+        - name: FEATURE_MEDIA_DETAIL_ANALYSIS_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.media.detail.analysis.enabled }}"
         - name: FEATURE_MEDIA_FILTER_DATE_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.date.enabled }}"
         - name: FEATURE_MEDIA_FILTER_SITES_ENABLED

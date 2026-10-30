@@ -658,6 +658,10 @@ kerberoshub:
         # Bulk "Forward media" action in the Recordings Actions menu (on-demand forwarding of metadata-only recordings).
         forward:
           enabled: "true" # Enable or disable the Forward media action in media 'true' or 'false'
+        # Analysis block (dominant colors, thumbnail, sprite, motion) on the media detail page.
+        detail:
+          analysis:
+            enabled: "true" # Enable or disable the Analysis block on the media detail page 'true' or 'false'
         filter:
           date:
             enabled: "true" # Enable or disable date filter in media 'true' or 'false'
