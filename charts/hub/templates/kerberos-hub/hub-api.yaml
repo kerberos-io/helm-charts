@@ -437,6 +437,8 @@ spec:
               value: "{{ .Values.kerberoshub.api.mfaIssuer }}"
 
             {{- if .Values.kerberoshub.api.passkeys.enabled }}
+            - name: FEATURE_PASSKEYS_ENABLED
+              value: "true"
             - name: PASSKEY_RP_ID
               value: {{ required "kerberoshub.api.passkeys.rpId is required when passkeys are enabled" .Values.kerberoshub.api.passkeys.rpId | quote }}
             - name: PASSKEY_ORIGINS

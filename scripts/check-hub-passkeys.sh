@@ -33,6 +33,30 @@ assert_passkeys() {
   fi
 }
 
+extract_feature() {
+  awk '
+    /^---/ { deployment=0; name=""; flag=0 }
+    /^kind: Deployment$/ { deployment=1 }
+    deployment && /^  name:/ { name=$2 }
+    deployment && /- name: FEATURE_PASSKEYS_ENABLED$/ { flag=1; next }
+    flag && /value:/ {
+      value=$0
+      sub(/^[[:space:]]*value: /, "", value)
+      print name, value
+      flag=0
+    }
+  ' | sort
+}
+
+assert_feature() {
+  local rendered="$1" expected="$2" actual
+  actual="$(printf '%s\n' "$rendered" | extract_feature)"
+  if [[ "$actual" != "$expected" ]]; then
+    printf 'Unexpected FEATURE_PASSKEYS_ENABLED:\n%s\nExpected:\n%s\n' "$actual" "$expected" >&2
+    return 1
+  fi
+}
+
 CONFIGURED_FLAGS=(
   --set-json kerberoshub.api.passkeys.enabled=true
   --set-json 'kerberoshub.api.passkeys.rpId="example.com"'
@@ -50,14 +74,22 @@ for mode in all ui pipeline; do
   configured_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" "${CONFIGURED_FLAGS[@]}")"
   if [[ "$mode" == pipeline ]]; then
     assert_passkeys "$configured_render" ""
+    assert_feature "$default_render" ""
+    assert_feature "$configured_render" ""
   else
     assert_passkeys "$configured_render" "$expected"
+    assert_feature "$default_render" 'hub-frontend "false"'
+    assert_feature "$configured_render" "$(printf '%s\n' 'hub-api "true"' 'hub-frontend "true"')"
   fi
-  echo "OK ($mode): defaults opt out; enabled settings affect Hub API only"
+  echo "OK ($mode): defaults opt out; enabled settings configure Hub API and flag the frontend"
 done
 
 disabled_render="$(helm template hub "$CHART_DIR" "${CONFIGURED_FLAGS[@]}" --set kerberoshub.api.passkeys.enabled=false)"
 assert_passkeys "$disabled_render" ""
+assert_feature "$disabled_render" 'hub-frontend "false"'
+
+demo_render="$(helm template hub "$CHART_DIR" "${CONFIGURED_FLAGS[@]}" --set kerberoshub.frontend.demoEnabled=true)"
+assert_feature "$demo_render" "$(printf '%s\n' 'hub-api "true"' 'hub-frontend "true"' 'hub-frontend-demo "true"')"
 
 localhost_render="$(helm template hub "$CHART_DIR" --set mode=ui \
   --set kerberoshub.api.passkeys.enabled=true \

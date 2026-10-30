@@ -241,6 +241,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.workflows.enabled }}"
         - name: FEATURE_AUDIT_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.audit.enabled }}"
+        - name: FEATURE_PASSKEYS_ENABLED
+          value: "{{ .Values.kerberoshub.api.passkeys.enabled }}"
         - name: FEATURE_DAY_OVERVIEW_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.dayOverview.enabled }}"
         - name: FEATURE_DEVICE_ANALYTICS_ENABLED

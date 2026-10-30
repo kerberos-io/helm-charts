@@ -260,7 +260,7 @@ kerberoshub:
 
 | Value | Default | Purpose |
 | --- | --- | --- |
-| `kerberoshub.api.passkeys.enabled` | `false` | Inject passkey configuration into Hub API pods only |
+| `kerberoshub.api.passkeys.enabled` | `false` | Turns passkeys on: sets `FEATURE_PASSKEYS_ENABLED` on Hub API and the frontend, and injects the passkey configuration into Hub API pods |
 | `kerberoshub.api.passkeys.rpId` | `""` | Required when enabled; sets `PASSKEY_RP_ID` |
 | `kerberoshub.api.passkeys.origins` | `[]` | Required when enabled; exact trusted frontend origins, joined with commas into `PASSKEY_ORIGINS` |
 | `kerberoshub.api.passkeys.rpName` | `"Kerberos Hub"` | Display name; sets `PASSKEY_RP_NAME` |
@@ -278,7 +278,14 @@ HTTPS and a compatible browser are required. Local development may use
 The frontend displays translated cancellation, verification and unavailable
 messages when a ceremony cannot complete.
 
-Apply values with a Helm upgrade or GitOps sync; changes trigger an API rollout.
+Since chart `0.168.0`, Hub API and frontend images that include the passkey
+feature flag also require `FEATURE_PASSKEYS_ENABLED=true`. `enabled` sets it on
+both, so the API answers `501 FEATURE_NOT_SUPPORTED` and the frontend hides
+passkeys when it is `false`. If you configure passkeys through
+`kerberoshub.extraEnv` instead, add `FEATURE_PASSKEYS_ENABLED=true` there and in
+the frontend environment too.
+
+Apply values with a Helm upgrade or GitOps sync; changes trigger an API and frontend rollout.
 If these variables were previously configured through `kerberoshub.extraEnv`,
 remove those entries when enabling the dedicated settings to avoid duplicate
 environment variables. Setting `enabled: false` omits the chart-managed
