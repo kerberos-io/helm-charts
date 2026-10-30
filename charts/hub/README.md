@@ -278,7 +278,7 @@ HTTPS and a compatible browser are required. Local development may use
 The frontend displays translated cancellation, verification and unavailable
 messages when a ceremony cannot complete.
 
-Since chart `0.168.0`, Hub API and frontend images that include the passkey
+Since chart `0.168.1`, Hub API and frontend images that include the passkey
 feature flag also require `FEATURE_PASSKEYS_ENABLED=true`. `enabled` sets it on
 both, so the API answers `501 FEATURE_NOT_SUPPORTED` and the frontend hides
 passkeys when it is `false`. If you configure passkeys through
