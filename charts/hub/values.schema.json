@@ -101,12 +101,12 @@
                 "pattern": "^https?://[^/?#]+$"
               }
             },
-            "auditExportMaxEvents": {
+            "auditExportMaxEventsPerFile": {
               "type": ["integer", "string"],
               "minimum": 1,
               "maximum": 1000000,
               "pattern": "^([1-9][0-9]{0,5}|1000000)?$",
-              "description": "Most audit events one export file holds (AUDIT_EXPORT_MAX_EVENTS). Empty uses the API default of 100000."
+              "description": "Most audit events one export file holds (AUDIT_EXPORT_MAX_EVENTS_PER_FILE). Empty uses the API default of 100000."
             }
           }
         }
