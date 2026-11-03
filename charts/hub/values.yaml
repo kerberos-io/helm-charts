@@ -419,6 +419,10 @@ kerberoshub:
     # beyond this cap, the value is clamped down to `now + casesMaxRetentionDays`.
     # Set to "0" (or a negative value) to disable the cap (no maximum).
     casesMaxRetentionDays: "0"
+    # Most audit events one export file holds (AUDIT_EXPORT_MAX_EVENTS). Larger
+    # exports from the Audit page download in parts of this size. An integer
+    # from 1 to 1000000; leave empty to use the API default of 100000.
+    auditExportMaxEvents: ""
     ## Certificates
     tls:
       - hosts:

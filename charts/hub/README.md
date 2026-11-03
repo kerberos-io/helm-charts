@@ -614,6 +614,7 @@ kerberospipeline:
 | `kerberoshub.api.mfaIssuer` | When enabling the MFA access, this is the name that will be shown in the MFA app. | `"yourdomain.com"` |
 | `kerberoshub.api.apiKey` | API key for `kerberoshub.api`. | `"a-random-admin-api-key"` |
 | `kerberoshub.api.defaultTaskRetentionDays` | Default retention (in days) applied to tasks without an explicit `retention_days`. New tasks are stamped with this value. Set to `"0"` or a negative value to keep tasks indefinitely. Must match `kerberoshub.cleanup.defaultTaskRetentionDays`. | `"0"` |
+| `kerberoshub.api.auditExportMaxEvents` | Most audit events one export file holds (`AUDIT_EXPORT_MAX_EVENTS`). Larger exports from the Audit page download in parts of this size. An integer from 1 to 1000000; empty uses the API default of 100000. | `""` |
 | `kerberoshub.api.tls` | Bring your own TLS certificates for Kerberos Hub API ingress. | `<list>` |
 | `kerberoshub.api.tls.secretName` | Kubernetes Secret name used by `kerberoshub.api.tls`. | `""` |
 | `kerberoshub.api.language` | The language of Kerberos Hub API responses, error messages will be communicated in the specified language. | `"english"` |

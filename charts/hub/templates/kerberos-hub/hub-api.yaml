@@ -553,6 +553,10 @@ spec:
               value: "{{ .Values.kerberoshub.api.defaultTaskRetentionDays }}"
             - name: CASES_MAX_RETENTION_DAYS
               value: "{{ .Values.kerberoshub.api.casesMaxRetentionDays }}"
+            {{- with .Values.kerberoshub.api.auditExportMaxEvents }}
+            - name: AUDIT_EXPORT_MAX_EVENTS
+              value: {{ . | int64 | toString | quote }}
+            {{- end }}
 
             # SMTP
             - name: SMTP_SERVER
