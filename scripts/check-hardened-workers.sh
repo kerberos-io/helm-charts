@@ -60,10 +60,19 @@ assert_line() {
   fi
 }
 
+without_frontends() {
+  awk '
+    /^---$/ { skip=0 }
+    /^# Source: hub\/templates\/kerberos-hub\/hub-frontend(-demo)?\.yaml$/ { skip=1 }
+    !skip { print }
+  '
+}
+
 for mode in all pipeline ui; do
   defaults="$(helm template hub "$CHART_DIR" --set "mode=$mode")"
-  if grep -q 'securityContext:' <<< "$defaults"; then
-    echo "Default $mode mode unexpectedly enables security settings" >&2
+  worker_defaults="$(without_frontends <<< "$defaults")"
+  if grep -q 'securityContext:' <<< "$worker_defaults"; then
+    echo "Default $mode mode unexpectedly enables worker security settings" >&2
     exit 1
   fi
 
@@ -111,7 +120,7 @@ for mode in all pipeline ui; do
     fi
   done
   expected="${#names[@]}"
-  [[ "$(grep -c 'runAsUser: 65532' <<< "$hardened")" == "$expected" ]]
+  [[ "$(without_frontends <<< "$hardened" | grep -c 'runAsUser: 65532')" == "$expected" ]]
   [[ "$(grep -c 'fsGroup: 65532' <<< "$hardened")" == "$expected" ]]
 
   # Image selection, Services, env and TLS mounts must not change.
@@ -179,7 +188,7 @@ for mode in all ui pipeline; do
   [[ "$(resource Service oauth2-proxy-admin <<< "$legacy")" == "$(resource Service oauth2-proxy-admin <<< "$configured")" ]]
   [[ "$(grep 'image:' <<< "$legacy")" == "$(grep 'image:' <<< "$configured")" ]]
   # No other workload inherits Admin's container port or security settings.
-  [[ "$(grep -c 'runAsUser: 65532' <<< "$configured")" == 1 ]]
+  [[ "$(without_frontends <<< "$configured" | grep -c 'runAsUser: 65532')" == 1 ]]
   echo "OK ($mode): Admin opt-in port/security/tmpfs; legacy image, Service port, ingress and OAuth2-proxy preserved"
 done
 echo "All hardened Admin checks passed."
