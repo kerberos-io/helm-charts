@@ -130,6 +130,10 @@ legacy defaults, hardened runtime/probes, and unchanged OAuth2 routing.
 
 ### Recovering a duplicate HTTP port during upgrades
 
+Chart `0.169.1` publishes this recovery guidance. The helper is available in the
+repository's `scripts/` directory, not in the chart archive. This release does
+not automatically migrate live container ports or change runtime defaults.
+
 An upgrade changing a container's HTTP port from `80` to `8080` can fail with
 `spec.template.spec.containers[0].ports[1].name: Duplicate value: "http"`.
 Kubernetes strategic merges identify container ports by number, not name:
