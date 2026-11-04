@@ -1,0 +1,22 @@
+name: HTTP port migration
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  migration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4.3.1
+      - uses: helm/kind-action@v1
+      - name: Validate migration against Kubernetes
+        env:
+          SERVER_VALIDATION: "true"
+        run: bash scripts/check-http-port-migration.sh
+      - name: Validate chart runtime compatibility
+        run: |
+          helm lint charts/hub
+          bash scripts/check-admin-runtime.sh
+          bash scripts/check-hardened-workers.sh

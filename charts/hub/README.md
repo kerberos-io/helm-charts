@@ -128,6 +128,53 @@ security context, and disable `/healthz` probes together. Run
 `bash scripts/check-admin-runtime.sh` from the repository root to verify
 legacy defaults, hardened runtime/probes, and unchanged OAuth2 routing.
 
+### Recovering a duplicate HTTP port during upgrades
+
+An upgrade changing a container's HTTP port from `80` to `8080` can fail with
+`spec.template.spec.containers[0].ports[1].name: Duplicate value: "http"`.
+Kubernetes strategic merges identify container ports by number, not name:
+depending on the live state and apply mechanism, the old `80` entry can survive
+beside the new `8080` entry. Fresh chart renders contain only one HTTP port.
+This is not a reason to rename `http`: Services and probes reference that name.
+
+Inspect the failing Deployment and confirm the image's listening port first:
+
+```sh
+kubectl -n kerberos-hub get deployment hub-frontend -o yaml
+```
+
+In a checkout of this repository, use the targeted migration helper to replace
+the named HTTP entry (not strategically merge it). It supports `admin`,
+`hub-frontend` and `hub-frontend-demo`, preserves unrelated ports and containers,
+and rejects unfamiliar HTTP configurations. It requires `kubectl` and `jq` and
+uses the current kubeconfig context. The default is a **server dry run**:
+
+```sh
+bash scripts/migrate-http-port.sh kerberos-hub hub-frontend 8080
+# Apply only after inspecting the dry run and confirming the target/context.
+bash scripts/migrate-http-port.sh kerberos-hub hub-frontend 8080 --apply
+```
+
+Run this only for affected Deployments, using the port selected in your upgrade
+values. Then retry the Helm upgrade or GitOps sync with the coordinated image,
+port, security context and scratch-volume settings above. Pause GitOps auto-sync
+during manual recovery so it cannot race or undo the patch, and resume it after
+the desired state has synced. The helper uses resource-version/name tests to
+reject concurrent changes; re-inspect and retry if those tests fail.
+
+Changing the pod template triggers a rollout, and setting `8080` while the old
+image still listens on `80` can temporarily interrupt Service traffic. Schedule
+the recovery in a maintenance window and complete the matching image upgrade
+immediately. The helper does not change images, mount scratch volumes, or repair
+unrelated readiness failures. For a legacy-image rollback use port `80` instead,
+restore the matching runtime settings, and retry the rollback. Do not use blanket
+`helm upgrade --force` or resource replacement for unrelated workloads.
+
+Run `bash scripts/check-http-port-migration.sh` to reproduce the strategic-merge
+failure and test targeted replacement, idempotency, and reverse migration for all
+three Deployments. CI also checks API rejection of duplicate names and acceptance
+of the repaired spec against a disposable Kind cluster.
+
 ### Hardened Hub workers (opt-in, chart 0.167.3)
 
 The worker templates accept **per-component** `securityContext` (container) and
