@@ -338,6 +338,25 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.11.31"
     replicas: 2
+    podSecurityContext:
+      fsGroup: 65532
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    # Keep writable scratch space for attachment uploads and multipart parsing.
+    volumes:
+      - name: hub-api-tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: hub-api-tmp
+        mountPath: /tmp
     audit:
       enabled: true
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
@@ -372,6 +391,7 @@ kerberoshub:
         memory: 100Mi
         cpu: 250m
     # E-mail templates
+    # Append custom mounts/volumes to the lists above; retain hub-api-tmp.
     #volumeMounts:
     #  - name: custom-email-templates
     #    mountPath: /mail

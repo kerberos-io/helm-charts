@@ -31,6 +31,30 @@ Uninstall the Kerberos Hub chart
 
     helm uninstall hub -n kerberos-hub
 
+### Hardened Hub API
+
+Starting with chart **`0.170.1`**, `kerberoshub.api.securityContext` is rendered
+on the Hub API container and `kerberoshub.api.podSecurityContext` on its pod.
+The current image runs as `65532:65532` with a read-only root filesystem,
+privilege escalation disabled, all capabilities dropped and `RuntimeDefault`
+seccomp. A disk-backed `hub-api-tmp` emptyDir mounted at `/tmp`, with pod
+`fsGroup: 65532`, keeps attachment uploads and multipart parsing writable.
+API Service, ingress and port settings are unchanged.
+
+Append custom mounts and volumes to the default lists rather than replacing
+`hub-api-tmp`. Helm replaces lists in overrides. Existing MongoDB TLS, API TLS,
+catalog and workflow-configuration mounts remain supported.
+
+For a legacy image that requires its original identity or writable root
+filesystem, explicitly set both `kerberoshub.api.securityContext: null` and
+`kerberoshub.api.podSecurityContext: null`. Custom security settings are
+per-API; other workloads do not inherit them. When upgrading, check retained
+values (`--reuse-values` or GitOps overrides) so the security context and
+writable scratch mount stay aligned.
+
+Run `bash scripts/check-hub-api-runtime.sh` to validate defaults, overrides,
+legacy opt-out, TLS/configuration mounts and deployment modes.
+
 ### Hardened frontend images
 
 Starting with chart **`0.170.0`**, both frontends default to shell-free
