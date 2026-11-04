@@ -63,7 +63,7 @@ assert_line() {
 without_frontends() {
   awk '
     /^---$/ { skip=0 }
-    /^# Source: hub\/templates\/kerberos-hub\/hub-frontend(-demo)?\.yaml$/ { skip=1 }
+    /^# Source: hub\/templates\/kerberos-hub\/(hub-frontend(-demo)?|hub-api)\.yaml$/ { skip=1 }
     !skip { print }
   '
 }
@@ -121,7 +121,7 @@ for mode in all pipeline ui; do
   done
   expected="${#names[@]}"
   [[ "$(without_frontends <<< "$hardened" | grep -c 'runAsUser: 65532')" == "$expected" ]]
-  [[ "$(grep -c 'fsGroup: 65532' <<< "$hardened")" == "$expected" ]]
+  [[ "$(without_frontends <<< "$hardened" | grep -c 'fsGroup: 65532')" == "$expected" ]]
 
   # Image selection, Services, env and TLS mounts must not change.
   for pattern in '^[ ]+image:' '^[ ]+(port|targetPort|containerPort):' 'mongodb-tls'; do

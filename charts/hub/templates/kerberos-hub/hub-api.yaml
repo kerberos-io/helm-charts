@@ -140,6 +140,10 @@ spec:
       labels:
         app: hub-api
     spec:
+      {{- with .Values.kerberoshub.api.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- if .Values.kerberoshub.serviceAccount.create }}
       serviceAccountName: {{ default (printf "%s-%s-sa" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-") .Values.kerberoshub.serviceAccount.name }}
       {{- end }}
@@ -229,6 +233,10 @@ spec:
         - name: hub-api
           image: "{{ .Values.global.imageRegistry }}{{ .Values.kerberoshub.api.repository }}:{{ .Values.kerberoshub.api.tag }}"
           imagePullPolicy: {{ .Values.kerberoshub.api.pullPolicy }}
+          {{- with .Values.kerberoshub.api.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.kerberoshub.api.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

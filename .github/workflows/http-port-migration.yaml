@@ -21,6 +21,7 @@ jobs:
           bash scripts/check-admin-runtime.sh
           bash scripts/check-hardened-workers.sh
           bash scripts/check-frontend-runtime.sh
+          bash scripts/check-hub-api-runtime.sh
       - name: Smoke test hardened frontend images and Service routing
         env:
           CLUSTER_SMOKE: "true"
