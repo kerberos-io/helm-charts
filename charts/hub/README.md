@@ -33,10 +33,15 @@ Uninstall the Kerberos Hub chart
 
 ### Hardened frontend images
 
-New shell-free frontend images run as `65532:65532` and listen on port `8080`.
-Before selecting such an image tag, set the following values together. Defaults
-remain compatible with legacy images on port `80`; this chart does not upgrade
-the frontend image automatically. The Service and ingress remain on port `80`.
+Starting with chart **`0.170.0`**, both frontends default to shell-free
+`ghcr.io/uug-ai/hub-frontend:v1.19.28`, running as `65532:65532` on port `8080`
+with a read-only root filesystem and writable `/tmp`. The Service and ingress
+remain on port `80`. Admin retains its legacy image and port `80`; its hardened
+runtime remains opt-in.
+
+The following frontend runtime settings are now the defaults. When upgrading,
+remove stale port `80` overrides and coordinate image/runtime values; Helm
+`--reuse-values` and GitOps overrides may retain the old settings.
 Use chart `0.167.2` or newer when the demo frontend is enabled; `0.167.1`
 supports these settings only on the primary frontend.
 
@@ -72,6 +77,26 @@ and nginx's PID/temp files. The web root stays read-only. Health checks can use
 the primary and demo frontends, which share the frontend image tag. Update the
 live Argo CD Application's chart pin as well as its values: an image-only
 upgrade leaves older charts forwarding to port `80` and causes gateway errors.
+
+For legacy frontend images or a rollback, explicitly restore **all** runtime
+settings together (including removing inherited security defaults):
+
+```yaml
+kerberoshub:
+    frontend:
+        tag: v1.13.9
+        containerPort: 80
+        securityContext: null
+        volumes: []
+        volumeMounts: []
+```
+
+Keep any application-specific branding mounts when adjusting these lists.
+Chart upgrades do not rewrite separately managed NodePort Services: ensure they
+target the named `http` port, not numeric `80`. Follow the duplicate-port recovery
+instructions below if the existing Deployment cannot be patched to `8080`.
+Run `bash scripts/check-frontend-runtime.sh` for default, demo, legacy override,
+and deployment-values regression coverage.
 
 ### Hardened Admin image (opt-in, chart 0.167.3)
 

@@ -482,11 +482,28 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.13.9"
+    tag: "v1.19.28"
     replicas: 2
-    # Hardened frontend images listen on 8080; retain 80 for existing images.
-    containerPort: 80
-    securityContext: {}
+    containerPort: 8080
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    # Keep these entries when adding custom branding/translation mounts.
+    volumes:
+      - name: frontend-tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 16Mi
+    volumeMounts:
+      - name: frontend-tmp
+        mountPath: /tmp
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
     # external/shared Service is managed elsewhere).
