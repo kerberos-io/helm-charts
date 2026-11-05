@@ -792,6 +792,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.organisations.switcherEnabled` | Enable or disable the organisation dropdown and switching. The current organisation remains visible when disabled. | `"false"` |
 | `kerberoshub.frontend.features.organisations.creationEnabled` | Enable or disable organisation creation. Requires organisation switching to be enabled. | `"false"` |
 | `kerberoshub.frontend.features.organisations.settingsEnabled` | Enable or disable the organisation identity link to organisation settings. | `"false"` |
+| `kerberoshub.frontend.features.organisations.membersAccessPreviewEnabled` | Show the "Users (preview)" tab in organisation settings to organisation owners: a mockup of project, role and resource assignments with mocked users and data, nothing saved. Sets `FEATURE_MEMBERS_ACCESS_PREVIEW_ENABLED`. | `"false"` |
 | `kerberoshub.frontend.features.projects.enabled` | Fallback project group switch used when the organisations umbrella is unset. | `""` |
 | `kerberoshub.frontend.features.projects.switcherEnabled` | Enable or disable the read-only project dropdown. | `"false"` |
 | `kerberoshub.frontend.features.projects.creationEnabled` | Reserved for the project creation UI. | `"false"` |
