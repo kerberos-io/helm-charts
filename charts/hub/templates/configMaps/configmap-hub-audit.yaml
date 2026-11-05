@@ -1,7 +1,7 @@
 {{- if .Values.audit.enabled -}}
 {{- $destinations := list -}}
 {{- $destinationIDs := dict -}}
-{{- range $index, $destination := .Values.kerberoshub.audit.destinations -}}
+{{- range $index, $destination := fromJsonArray (include "hub.audit.destinations" .) -}}
   {{- $id := required (printf "id is required for audit destination %d" $index) $destination.id -}}
   {{- if not (regexMatch "^[a-z][a-z0-9-]{0,62}$" $id) -}}
     {{- fail (printf "audit destination id %q must match ^[a-z][a-z0-9-]{0,62}$" $id) -}}
@@ -44,7 +44,7 @@
     {{- end -}}
   {{- else if eq $type "s3" -}}
     {{- if or $destination.url $destination.headers $destination.bearerTokenSecret $destination.secretHeaders -}}
-      {{- fail (printf "audit destination %s is s3 and cannot set url, headers, bearerTokenSecret or secretHeaders" $id) -}}
+      {{- fail (printf "audit destination %s is s3 and cannot set url, headers, bearerToken, bearerTokenSecret or secretHeaders" $id) -}}
     {{- end -}}
     {{- $s3 := required (printf "s3 is required for audit destination %s" $id) $destination.s3 -}}
     {{- $settings := dict
