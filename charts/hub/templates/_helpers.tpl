@@ -121,10 +121,10 @@ Use: fromJsonArray (include "hub.audit.destinations" .)
 {{- range $index, $original := .Values.kerberoshub.audit.destinations -}}
   {{- $destination := deepCopy $original -}}
   {{- $s3 := default dict $destination.s3 -}}
-  {{- if or $s3.accessKey $s3.secretKey -}}
+  {{- if or (hasKey $s3 "accessKey") (hasKey $s3 "secretKey") -}}
     {{- $id := required (printf "id is required for audit destination %d" $index) $destination.id -}}
     {{- if not (and $s3.accessKey $s3.secretKey) -}}
-      {{- fail (printf "audit destination %s must set both s3.accessKey and s3.secretKey" $id) -}}
+      {{- fail (printf "audit destination %s must set both s3.accessKey and s3.secretKey, and neither may be empty" $id) -}}
     {{- end -}}
     {{- if $destination.credentialsSecret -}}
       {{- fail (printf "audit destination %s sets s3.accessKey/secretKey and credentialsSecret; use one of them" $id) -}}
