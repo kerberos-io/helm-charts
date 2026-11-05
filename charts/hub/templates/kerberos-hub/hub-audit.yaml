@@ -43,7 +43,7 @@ spec:
         - name: destinations
           configMap:
             name: hub-audit
-          {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
+          {{- range $index, $destination := fromJsonArray (include "hub.audit.destinations" $) }}
       {{- $bearer := default dict $destination.bearerTokenSecret }}
       {{- $secretHeaders := default dict $destination.secretHeaders }}
       {{- $credentials := default dict $destination.credentialsSecret }}
@@ -112,7 +112,7 @@ spec:
             - name: destinations
               mountPath: /etc/hub-audit
               readOnly: true
-          {{- range $index, $destination := .Values.kerberoshub.audit.destinations }}
+          {{- range $index, $destination := fromJsonArray (include "hub.audit.destinations" $) }}
           {{- $bearer := default dict $destination.bearerTokenSecret }}
           {{- $secretHeaders := default dict $destination.secretHeaders }}
           {{- $credentials := default dict $destination.credentialsSecret }}

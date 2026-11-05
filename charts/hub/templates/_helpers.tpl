@@ -106,3 +106,67 @@ Usage: {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+hub.audit.destinations resolves the audit destinations into JSON. Inline
+credentials (s3.accessKey / s3.secretKey on S3 destinations, bearerToken and
+secretHeaders.<name>.value on webhooks) are turned into a chart-created Secret named
+hub-audit-<id>-credentials, so every template below reads one shape:
+credentialsSecret / bearerTokenSecret / secretHeaders with create: true and the
+values to store.
+Use: fromJsonArray (include "hub.audit.destinations" .)
+*/}}
+{{- define "hub.audit.destinations" -}}
+{{- $resolved := list -}}
+{{- range $index, $original := .Values.kerberoshub.audit.destinations -}}
+  {{- $destination := deepCopy $original -}}
+  {{- $s3 := default dict $destination.s3 -}}
+  {{- if or $s3.accessKey $s3.secretKey -}}
+    {{- $id := required (printf "id is required for audit destination %d" $index) $destination.id -}}
+    {{- if not (and $s3.accessKey $s3.secretKey) -}}
+      {{- fail (printf "audit destination %s must set both s3.accessKey and s3.secretKey" $id) -}}
+    {{- end -}}
+    {{- if $destination.credentialsSecret -}}
+      {{- fail (printf "audit destination %s sets s3.accessKey/secretKey and credentialsSecret; use one of them" $id) -}}
+    {{- end -}}
+    {{- $_ := set $destination "credentialsSecret" (dict
+        "name" (printf "hub-audit-%s-credentials" $id)
+        "create" true
+        "accessKeyId" $s3.accessKey
+        "secretAccessKey" $s3.secretKey) -}}
+    {{- $_ := unset $s3 "accessKey" -}}
+    {{- $_ := unset $s3 "secretKey" -}}
+  {{- end -}}
+  {{- if hasKey $destination "bearerToken" -}}
+    {{- $id := required (printf "id is required for audit destination %d" $index) $destination.id -}}
+    {{- if not $destination.bearerToken -}}
+      {{- fail (printf "audit destination %s sets an empty bearerToken" $id) -}}
+    {{- end -}}
+    {{- if $destination.bearerTokenSecret -}}
+      {{- fail (printf "audit destination %s sets bearerToken and bearerTokenSecret; use one of them" $id) -}}
+    {{- end -}}
+    {{- $_ := set $destination "bearerTokenSecret" (dict
+        "name" (printf "hub-audit-%s-credentials" $id)
+        "key" "bearer-token"
+        "create" true
+        "value" $destination.bearerToken) -}}
+    {{- $_ := unset $destination "bearerToken" -}}
+  {{- end -}}
+  {{- range $header, $secret := (default dict $destination.secretHeaders) -}}
+    {{- if and (kindIs "map" $secret) (hasKey $secret "value") -}}
+      {{- $id := required (printf "id is required for audit destination %d" $index) $destination.id -}}
+      {{- if not $secret.value -}}
+        {{- fail (printf "audit destination %s header %s sets an empty value" $id $header) -}}
+      {{- end -}}
+      {{- if or $secret.secretName $secret.secretKey -}}
+        {{- fail (printf "audit destination %s header %s sets value and secretName/secretKey; use one of them" $id $header) -}}
+      {{- end -}}
+      {{- $_ := set $secret "secretName" (printf "hub-audit-%s-credentials" $id) -}}
+      {{- $_ := set $secret "secretKey" (printf "header-%s" (sha256sum $header | trunc 12)) -}}
+      {{- $_ := set $secret "create" true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $resolved = append $resolved $destination -}}
+{{- end -}}
+{{- toJson $resolved -}}
+{{- end -}}

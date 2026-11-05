@@ -897,13 +897,20 @@ kerberoshub:
     #   startAt: latest # latest | beginning, applied only on first creation
     #   headers:
     #     X-Source: kerberos-hub
-    #   bearerTokenSecret:
-    #     name: audit-primary-siem
-    #     key: token
+    #   # Credentials inline, like the other services' credentials. The chart
+    #   # stores them in Secret hub-audit-<id>-credentials and mounts them.
+    #   bearerToken: "xxx"
     #   secretHeaders:
     #     X-Api-Key:
-    #       secretName: audit-primary-siem
-    #       secretKey: api-key
+    #       value: "xxx"
+    #   # Or reference an existing Secret instead of the inline values:
+    #   # bearerTokenSecret:
+    #   #   name: audit-primary-siem
+    #   #   key: token
+    #   # secretHeaders:
+    #   #   X-Api-Key:
+    #   #     secretName: audit-primary-siem
+    #   #     secretKey: api-key
     #   filters:
     #     organisationIds: []
     #     projectIds: []
@@ -932,21 +939,18 @@ kerberoshub:
     #     # Only for stores without Object Lock (e.g. Garage): skips the lock
     #     # check, so archived batches are deletable. Needs hub-audit v1.0.10.
     #     allowUnlockedBucket: false
-    #   # Omit credentialsSecret to use the pod's AWS identity (IRSA via
-    #   # kerberoshub.audit.serviceAccount, or an instance profile). That only
-    #   # works for AWS S3; every other store needs credentialsSecret.
-    #   credentialsSecret:
-    #     name: audit-immutable-archive # Kubernetes Secret holding the S3 keys
-    #     # create: false (default) reads an existing Secret you create yourself:
-    #     #   kubectl create secret generic audit-immutable-archive \
-    #     #     --from-literal=access-key-id=<key> --from-literal=secret-access-key=<secret>
-    #     # create: true lets the chart create that Secret from the two values below.
-    #     create: false
-    #     accessKeyId: "" # only with create: true
-    #     secretAccessKey: "" # only with create: true
-    #     # Names of the keys inside the Secret, not the credentials themselves.
-    #     accessKeyIdKey: access-key-id
-    #     secretAccessKeyKey: secret-access-key
+    #     # Credentials inline, like the other services' credentials. The chart
+    #     # stores them in Secret hub-audit-<id>-credentials and mounts them.
+    #     accessKey: "xxx"
+    #     secretKey: "xxx"
+    #   # Or reference an existing Secret instead of s3.accessKey/secretKey.
+    #   # accessKeyIdKey/secretAccessKeyKey name keys inside that Secret.
+    #   # credentialsSecret:
+    #   #   name: audit-immutable-archive
+    #   #   accessKeyIdKey: access-key-id
+    #   #   secretAccessKeyKey: secret-access-key
+    #   # Without either, hub-audit uses the pod's AWS identity (IRSA via
+    #   # kerberoshub.audit.serviceAccount, or an instance profile): AWS S3 only.
     # resources:
     #   requests:
     #     memory: 32Mi
