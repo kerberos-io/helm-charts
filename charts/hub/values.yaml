@@ -655,6 +655,7 @@ kerberoshub:
         switcherEnabled: "false" # Enable or disable organisation switching 'true' or 'false'
         creationEnabled: "false" # Enable or disable organisation creation; requires switcherEnabled 'true' or 'false'
         settingsEnabled: "false" # Enable or disable the organisation settings link 'true' or 'false'
+        membersAccessPreviewEnabled: "false" # Show the mocked "Users (preview)" tab in organisation settings to owners 'true' or 'false'
       projects:
         enabled: "" # Fallback project group switch used only when organisations.enabled is empty
         switcherEnabled: "false" # Enable or disable the read-only project dropdown 'true' or 'false'

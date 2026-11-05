@@ -338,6 +338,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.organisations.creationEnabled }}"
         - name: FEATURE_ORGANISATION_SETTINGS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.organisations.settingsEnabled }}"
+        - name: FEATURE_MEMBERS_ACCESS_PREVIEW_ENABLED
+          value: "{{ .Values.kerberoshub.frontend.features.organisations.membersAccessPreviewEnabled }}"
         - name: FEATURE_PROJECTS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.projects.enabled }}"
         - name: FEATURE_PROJECT_SWITCHER_ENABLED
