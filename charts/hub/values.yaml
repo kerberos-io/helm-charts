@@ -867,6 +867,11 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.0.10"
     replicas: 1
+    resources: {}
+    # resources:
+    #   requests:
+    #     memory: 32Mi
+    #     cpu: 10m
     dispatchInterval: "5s"
     leaseDuration: "2m"
     terminationGracePeriodSeconds: 150 # Keep above leaseDuration so an in-flight cycle can finish.
@@ -887,75 +892,71 @@ kerberoshub:
     serviceMonitor:
       enabled: true
       interval: 15s
+    # Each destination is optional; see the README for every field. Webhook:
     destinations: []
-    # - id: primary-siem
-    #   type: webhook
-    #   enabled: true
-    #   url: https://siem.example.com/api/audit
-    #   timeoutSeconds: 10
-    #   batchSize: 100
-    #   maxAttempts: 10
-    #   startAt: latest # latest | beginning, applied only on first creation
-    #   headers:
+    # - id: primary-siem # required; ^[a-z][a-z0-9-]{0,62}$, keeps the checkpoint
+    #   type: webhook # optional: webhook (default) | s3
+    #   enabled: true # optional, default true; false pauses delivery
+    #   url: https://siem.example.com/api/audit # required, http or https
+    #   timeoutSeconds: 10 # optional, default 10, at most 60
+    #   batchSize: 100 # optional, default 100, at most 1000
+    #   maxAttempts: 10 # optional, default 10; then the batch is dead-lettered
+    #   startAt: latest # optional: latest (default) | beginning, for a new id only
+    #   headers: # optional; not Authorization or Idempotency-Key
     #     X-Source: kerberos-hub
-    #   # Inline credentials. The chart stores them in Secret
+    #   # Optional inline credentials. The chart stores them in Secret
     #   # hub-audit-<id>-credentials and mounts them.
-    #   bearerToken: "xxx"
+    #   bearerToken: "xxx" # sent as Authorization: Bearer <token>
     #   secretHeaders:
     #     X-Api-Key:
     #       value: "xxx"
     #   # Or reference an existing Secret instead of the inline values:
     #   # bearerTokenSecret:
-    #   #   name: audit-primary-siem
-    #   #   key: token
+    #   #   name: audit-primary-siem # required
+    #   #   key: token # optional, default token
     #   # secretHeaders:
     #   #   X-Api-Key:
-    #   #     secretName: audit-primary-siem
-    #   #     secretKey: api-key
-    #   filters:
+    #   #     secretName: audit-primary-siem # required
+    #   #     secretKey: api-key # required
+    #   filters: # optional, default all events; an event must match every list set
     #     organisationIds: []
     #     projectIds: []
     #     actions: []
     #     categories: []
     #     outcomes: [] # success | failure
-    # S3 Object Lock destination (hub-audit v1.0.9 or later). The bucket needs
-    # versioning, Object Lock and a COMPLIANCE default retention; hub-audit
-    # refuses to deliver otherwise. Each batch is written as
-    # <prefix>/<id>/yyyy/mm/dd/<firstId>-<lastId>.ndjson.gz. Per-provider
-    # region/endpoint values (AWS, Wasabi, B2, Ceph RGW, MinIO, Garage):
+    # S3 Object Lock destination. The bucket needs versioning, Object Lock and a
+    # COMPLIANCE default retention; hub-audit refuses to deliver otherwise. Each
+    # batch is written as <prefix>/<id>/yyyy/mm/dd/<firstId>-<lastId>.ndjson.gz.
+    # Per-provider region/endpoint values (AWS, Wasabi, B2, Ceph RGW, MinIO, Garage):
     # https://learn.uug.ai/docs/hub/audit-events/#s3-providers
-    # - id: immutable-archive
-    #   type: s3
-    #   enabled: true
+    # - id: immutable-archive # required
+    #   type: s3 # required for S3
+    #   enabled: true # optional, default true
     #   timeoutSeconds: 30
     #   batchSize: 500
     #   maxAttempts: 100 # keep high: exhausted batches are dead-lettered, not archived
     #   startAt: beginning
     #   s3:
-    #     bucket: hub-audit-archive
-    #     region: eu-west-1
-    #     prefix: hub
-    #     endpoint: https://s3.example.com # S3-compatible stores only; omit for AWS S3
-    #     forcePathStyle: true # usually needed for Ceph RGW, MinIO and Garage
-    #     # Only for stores without Object Lock (e.g. Garage): skips the lock
-    #     # check, so archived batches are deletable. Needs hub-audit v1.0.10.
+    #     bucket: hub-audit-archive # required
+    #     region: eu-west-1 # required, also for S3-compatible stores
+    #     prefix: hub # optional, default none
+    #     endpoint: https://s3.example.com # optional; S3-compatible stores only, omit for AWS S3
+    #     forcePathStyle: true # optional, default false; usually true for Ceph RGW, MinIO and Garage
+    #     # Optional, default false. Only for stores without Object Lock (e.g. Garage):
+    #     # skips the lock check, so archived batches are deletable.
     #     allowUnlockedBucket: false
-    #     # Inline credentials. The chart stores them in Secret
-    #     # hub-audit-<id>-credentials and mounts them.
+    #     # Optional inline credentials, both or neither. The chart stores them
+    #     # in Secret hub-audit-<id>-credentials and mounts them.
     #     accessKey: "xxx"
     #     secretKey: "xxx"
     #   # Or reference an existing Secret instead of s3.accessKey/secretKey.
     #   # accessKeyIdKey/secretAccessKeyKey name keys inside that Secret.
     #   # credentialsSecret:
-    #   #   name: audit-immutable-archive
-    #   #   accessKeyIdKey: access-key-id
-    #   #   secretAccessKeyKey: secret-access-key
+    #   #   name: audit-immutable-archive # required
+    #   #   accessKeyIdKey: access-key-id # optional, default access-key-id
+    #   #   secretAccessKeyKey: secret-access-key # optional, default secret-access-key
     #   # Without either, hub-audit uses the pod's AWS identity (IRSA via
     #   # kerberoshub.audit.serviceAccount, or an instance profile): AWS S3 only.
-    # resources:
-    #   requests:
-    #     memory: 32Mi
-    #     cpu: 10m
   # hub-workflows is the standalone, queue-driven workflow engine. It consumes
   # pipeline events and dispatches the stages declared in its workflow
   # definitions, tracking each run in its own `workflow_runs` collection. It shares events

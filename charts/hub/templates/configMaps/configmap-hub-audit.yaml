@@ -14,7 +14,7 @@
   {{- $entry := dict
       "id" $id
       "type" $type
-      "enabled" $destination.enabled
+      "enabled" (ternary $destination.enabled true (hasKey $destination "enabled"))
       "timeoutSeconds" (default 10 $destination.timeoutSeconds)
       "batchSize" (default 100 $destination.batchSize)
       "maxAttempts" (default 10 $destination.maxAttempts)

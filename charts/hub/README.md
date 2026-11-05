@@ -902,7 +902,28 @@ kerberospipeline:
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
 | `kerberoshub.audit.terminationGracePeriodSeconds` | Pod termination grace period. Keep this longer than `leaseDuration` so an in-flight cycle can finish. | `150` |
-| `kerberoshub.audit.destinations` | Audit destinations. Every entry supports `id`, `type` (`webhook` by default, or `s3`), `enabled`, delivery limits and filters. Webhooks add `url`, public `headers`, and credentials: `bearerToken` and `secretHeaders.<name>.value`. S3 destinations add `s3.bucket`, `s3.region`, optional `s3.prefix`, `s3.endpoint` and `s3.forcePathStyle` for S3-compatible stores, and credentials `s3.accessKey` / `s3.secretKey`; without credentials the pod's AWS identity is used (AWS S3 only). Credentials are set inline: the chart stores them in a Secret named `hub-audit-<id>-credentials` and mounts it into hub-audit, and changed values are picked up within a minute without a restart. To keep credentials out of the values, reference an existing Secret instead: `bearerTokenSecret` (`name`, `key`), `secretHeaders.<name>` (`secretName`, `secretKey`) or `credentialsSecret` (`name`, `accessKeyIdKey`, `secretAccessKeyKey`; the key fields name keys inside the Secret, not credentials). `credentialsSecret.create: true` with `accessKeyId` / `secretAccessKey` (chart 0.171.0) still works and is equivalent to `s3.accessKey` / `s3.secretKey`. Helm does not adopt resources it did not create, so delete a hand-made Secret before letting the chart create one with the same name. The bucket must have Object Lock with a `COMPLIANCE` default retention unless `s3.allowUnlockedBucket` is `true` (stores without Object Lock such as Garage; the archive is then deletable). Every field, the delivery semantics and per-provider S3 settings are documented at https://learn.uug.ai/docs/hub/audit-events/#export-audit-events. Destination IDs retain independent checkpoints. | `[]` |
+| `kerberoshub.audit.destinations` | Audit destinations: webhooks that receive batches as JSON, or S3 buckets that archive them. Every entry is validated when the chart renders. Inline credentials go into Secret `hub-audit-<id>-credentials`; changes to it take effect within a few minutes without a restart. Delete a Secret with that name that the chart did not create before setting inline credentials. Delivery semantics and per-provider S3 settings: https://learn.uug.ai/docs/hub/audit-events/#export-audit-events. | `[]` |
+| `kerberoshub.audit.destinations[].id` | Required. Unique name, `^[a-z][a-z0-9-]{0,62}$`. The delivery checkpoint is stored under it, so renaming starts a new destination. | |
+| `kerberoshub.audit.destinations[].type` | Optional. `webhook` or `s3`. | `webhook` |
+| `kerberoshub.audit.destinations[].enabled` | Optional. `false` pauses delivery and keeps the checkpoint. | `true` |
+| `kerberoshub.audit.destinations[].timeoutSeconds` | Optional. Timeout for one delivery, at most 60. | `10` |
+| `kerberoshub.audit.destinations[].batchSize` | Optional. Events per batch, at most 1000. | `100` |
+| `kerberoshub.audit.destinations[].maxAttempts` | Optional. Attempts before a batch is dead-lettered. Keep it high for S3 archives. | `10` |
+| `kerberoshub.audit.destinations[].startAt` | Optional. `latest` or `beginning`; only applies to a new `id`. | `latest` |
+| `kerberoshub.audit.destinations[].filters` | Optional. Lists `organisationIds`, `projectIds` (ObjectIds), `actions`, `categories` and `outcomes` (`success`, `failure`). An event must match every list that is set. | all events |
+| `kerberoshub.audit.destinations[].url` | Required for webhooks. `http` or `https` endpoint that receives each batch. | |
+| `kerberoshub.audit.destinations[].headers` | Optional, webhooks. Public request headers. `Authorization` and `Idempotency-Key` are reserved. | `{}` |
+| `kerberoshub.audit.destinations[].bearerToken` | Optional, webhooks. Sent as `Authorization: Bearer <token>`. Stored in Secret `hub-audit-<id>-credentials`. Use this or `bearerTokenSecret`. | |
+| `kerberoshub.audit.destinations[].bearerTokenSecret` | Optional, webhooks. Existing Secret with the bearer token: `name` (required) and `key` (default `token`). | |
+| `kerberoshub.audit.destinations[].secretHeaders.<name>` | Optional, webhooks. Header with a secret value: `value` (stored in Secret `hub-audit-<id>-credentials`), or `secretName` and `secretKey` of an existing Secret. | |
+| `kerberoshub.audit.destinations[].s3.bucket` | Required for S3. Bucket with versioning, Object Lock and a `COMPLIANCE` default retention. | |
+| `kerberoshub.audit.destinations[].s3.region` | Required for S3, also for S3-compatible stores. | |
+| `kerberoshub.audit.destinations[].s3.prefix` | Optional. Key prefix; objects are written as `<prefix>/<id>/yyyy/mm/dd/<firstId>-<lastId>.ndjson.gz`. | |
+| `kerberoshub.audit.destinations[].s3.endpoint` | Optional. Base URL of an S3-compatible store, without the bucket. Omit for AWS S3. | |
+| `kerberoshub.audit.destinations[].s3.forcePathStyle` | Optional. Path-style URLs, usually needed for Ceph RGW, MinIO and Garage. | `false` |
+| `kerberoshub.audit.destinations[].s3.allowUnlockedBucket` | Optional. Skips the Object Lock check for stores without Object Lock, such as Garage; archived batches are then deletable. | `false` |
+| `kerberoshub.audit.destinations[].s3.accessKey` / `kerberoshub.audit.destinations[].s3.secretKey` | Optional, both or neither, not empty. Stored in Secret `hub-audit-<id>-credentials`. Without credentials the pod's AWS identity is used (AWS S3 only). Use these or `credentialsSecret`. | |
+| `kerberoshub.audit.destinations[].credentialsSecret` | Optional, S3. Existing Secret with the S3 keys: `name` (required), `accessKeyIdKey` (default `access-key-id`) and `secretAccessKeyKey` (default `secret-access-key`). The key fields name keys inside the Secret. | |
 | `kerberoshub.audit.serviceAccount.create` | Create a ServiceAccount used only by hub-audit, for example for S3 access through IRSA. | `false` |
 | `kerberoshub.audit.serviceAccount.name` | Name of the hub-audit ServiceAccount; with `create: false`, an existing ServiceAccount to use. Defaults to `hub-audit` when created; when empty and not created, `kerberoshub.serviceAccount` applies. | `""` |
 | `kerberoshub.audit.serviceAccount.annotations` | Annotations for the hub-audit ServiceAccount, such as `eks.amazonaws.com/role-arn`. | `{}` |
@@ -912,6 +933,8 @@ kerberospipeline:
 | `kerberoshub.audit.volumes` | Additional pod volumes, for example a private webhook CA bundle. | `[]` |
 | `kerberoshub.audit.volumeMounts` | Additional audit service container volume mounts. | `[]` |
 | `kerberoshub.audit.extraEnv` | Additional audit service environment variables. | `[]` |
+| `kerberoshub.audit.resources` | Resource requests and limits for the audit service container. | `{}` |
+| `kerberoshub.audit.topologySpreadConstraints` | Topology spread constraints for audit service pods. | `[]` |
 | `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
 | `kerberoshub.monitordevice.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
