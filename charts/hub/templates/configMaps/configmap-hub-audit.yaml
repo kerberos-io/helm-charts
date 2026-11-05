@@ -58,9 +58,6 @@
     {{- $credentials := default dict $destination.credentialsSecret -}}
     {{- if gt (len $credentials) 0 -}}
       {{- $secretName := required (printf "credentialsSecret.name is required for destination %s" $id) $credentials.name -}}
-      {{- if and (not $credentials.create) (or $credentials.accessKeyId $credentials.secretAccessKey) -}}
-        {{- fail (printf "audit destination %s sets credentialsSecret.accessKeyId/secretAccessKey without create: true; set create: true to let the chart create Secret %s from them, or remove them and create the Secret yourself" $id $secretName) -}}
-      {{- end -}}
       {{- $_ := set $settings "accessKeyIdFile" (printf "%s/access-key-id-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName (default "access-key-id" $credentials.accessKeyIdKey)) | trunc 12)) -}}
       {{- $_ := set $settings "secretAccessKeyFile" (printf "%s/secret-access-key-%s" $secretRoot (sha256sum (printf "%s:%s" $secretName (default "secret-access-key" $credentials.secretAccessKeyKey)) | trunc 12)) -}}
     {{- end -}}
