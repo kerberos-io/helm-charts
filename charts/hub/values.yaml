@@ -898,8 +898,8 @@ kerberoshub:
     #   startAt: latest # latest | beginning, applied only on first creation
     #   headers:
     #     X-Source: kerberos-hub
-    #   # Credentials inline, like the other services' credentials. The chart
-    #   # stores them in Secret hub-audit-<id>-credentials and mounts them.
+    #   # Inline credentials. The chart stores them in Secret
+    #   # hub-audit-<id>-credentials and mounts them.
     #   bearerToken: "xxx"
     #   secretHeaders:
     #     X-Api-Key:
@@ -940,8 +940,8 @@ kerberoshub:
     #     # Only for stores without Object Lock (e.g. Garage): skips the lock
     #     # check, so archived batches are deletable. Needs hub-audit v1.0.10.
     #     allowUnlockedBucket: false
-    #     # Credentials inline, like the other services' credentials. The chart
-    #     # stores them in Secret hub-audit-<id>-credentials and mounts them.
+    #     # Inline credentials. The chart stores them in Secret
+    #     # hub-audit-<id>-credentials and mounts them.
     #     accessKey: "xxx"
     #     secretKey: "xxx"
     #   # Or reference an existing Secret instead of s3.accessKey/secretKey.
