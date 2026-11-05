@@ -936,7 +936,15 @@ kerberoshub:
     #   # kerberoshub.audit.serviceAccount, or an instance profile). That only
     #   # works for AWS S3; every other store needs credentialsSecret.
     #   credentialsSecret:
-    #     name: audit-immutable-archive
+    #     name: audit-immutable-archive # Kubernetes Secret holding the S3 keys
+    #     # create: false (default) reads an existing Secret you create yourself:
+    #     #   kubectl create secret generic audit-immutable-archive \
+    #     #     --from-literal=access-key-id=<key> --from-literal=secret-access-key=<secret>
+    #     # create: true lets the chart create that Secret from the two values below.
+    #     create: false
+    #     accessKeyId: "" # only with create: true
+    #     secretAccessKey: "" # only with create: true
+    #     # Names of the keys inside the Secret, not the credentials themselves.
     #     accessKeyIdKey: access-key-id
     #     secretAccessKeyKey: secret-access-key
     # resources:
