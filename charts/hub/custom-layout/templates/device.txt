@@ -2,14 +2,14 @@ Kerberos.io
 ------------
 
 Hey, {{user}}
-Welcome to Kerberos Hub
-Activate your account ->
+
+One of your Kerberos Agents changed
+{{text}}
+
+Agents go offline due to a variety of reasons. The machine, node, micro controller on which your Agent runs, gets corrupted or disconnected from the internet. The camera itself is broken, damaged or in the worst case tampered. Have a look into your Kerberos Hub account for the latest recordings and/or verify the connection and status of your Kerberos Agent.
+
+Go to Kerberos Hub ->
 {{link}}
-
-Kerberos Hub in a nutshell
-With Kerberos Hub you can access your surveillance media remotely. By subscribing to a plan, you get access to a set of features, from advanced filtering, notifications to machine learning.
-
-However before you get started this amazing applications, please activate your account.
 
 Get in touch
 ------------
