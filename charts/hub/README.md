@@ -1088,6 +1088,8 @@ kerberospipeline:
 | `email.templates.deviceTitle` | Email subject title for the `device` template. | `"[Device] A Kerberos Agent's status has been changed"` |
 | `email.templates.deviceGroup` | The template sent instead of `device` when several cameras of an account change status in the same scan and the account groups device notifications ("Group notifications"). SMTP only; see *Grouped camera status* below. | `"device_group"` |
 | `email.templates.deviceGroupTitle` | Email subject title for the `device_group` template. | `"[Device] Several cameras changed status"` |
+| `email.templates.recording` | The template for recording check alerts (a continuously recording camera that is online but uploads no recordings, and again when it records). Empty uses `recording` with SMTP; for SendGrid or Mailgun set the template id, otherwise they use `device`. See *Camera recordings* below. | `""` |
+| `email.templates.recordingTitle` | Email subject for recording check alerts. Empty uses "[Device] A camera stopped recording", "[Device] A camera is recording again" and their forms for several cameras. | `""` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
 | `kerberoshub.forwarder.pullPolicy` | The Docker registry pull policy. | `""` |
@@ -1194,6 +1196,36 @@ Other cameras · Camera stream lost · 1 camera
 **Which channels are grouped.** Grouping applies to the channels people read: email, Slack, Telegram, Pushover, Pushbullet, SMS and Alexa. Webhooks, IFTTT and the real-time feed are never grouped: they keep receiving one notification per camera, with the same fields and at the same moment as without grouping, so existing integrations keep working.
 
 **When email stays per camera.** The grouped email is only sent with the SMTP mail provider. With SendGrid or Mailgun the template name is a template id in that account, so those keep one `device` email per camera. With SMTP, a deployment that mounts its own `device` template but no `device_group` template also keeps one email per camera, so a white-labelled device email never falls back to the default layout. Add a `device_group` template next to your `device` template to get grouped emails.
+
+#### Camera recordings: `recording`
+
+Sent by `hub-monitor-device` for the **recording check** (Alerts → Devices → Recording check, stored as `notificationSettings.devices.recordingCheck` and `recordingCheckHours`). It alerts when a selected camera that records continuously is online but has not uploaded a recording for the account's period (1 to 72 hours, default 2), and again once it records. Cameras that record on motion only, cameras whose Agent does not report its recording mode, and offline cameras are not checked. The check uses the device alert channels, cameras and **Group notifications**: with grouping on, cameras that stop recording at the same time arrive in one email. The same template is used for one camera and for several.
+
+The template name is `email.templates.recording` (default `recording`, so custom files are `recording.html` and `recording.txt`); the subject is `email.templates.recordingTitle`.
+
+| Placeholder | Value |
+|---|---|
+| `{{user}}` | Name of the account the cameras belong to: first and last name, or the username when both are empty. |
+| `{{title}}` | The email subject. |
+| `{{text}}` | For one camera, "`<camera>` is online, but hasn't uploaded a recording for 2 hours." (with "The account reached its upload limit, so new recordings are not stored." when it has) or "`<camera>` is recording again."; for several, "3 cameras stopped recording.", "2 cameras are recording again." or "3 cameras: 2 stopped recording, 1 recording again." |
+| `{{count}}` | Number of cameras in the email. |
+| `{{status}}` | `no_recordings` or `recording` when all cameras have the same change, otherwise `mixed`. |
+| `{{sections}}` | The cameras as HTML, as for `device_group`. The change labels are `No recordings` and `Recording again`, and the details `online, no recording for 3 hours` (plus `, upload limit reached`) and `recording again`. |
+| `{{sectionsText}}` | The same sections as plain text, for `recording.txt`. |
+| `{{link}}` | The cameras page, `<tenant URL>/devices` (see *Links* above). |
+| `{{eventdate}}`, `{{eventtime}}`, `{{eventdatetime}}` | When the email was sent, in the server's timezone (normally UTC). |
+
+`{{sectionsText}}` example:
+
+```text
+Site Gate · No recordings · all 2 cameras
+- Gate camera 1 (online, no recording for 2 hours)
+- Gate camera 2 (online, no recording for 2 hours)
+```
+
+**Custom templates** for this email are read by `hub-monitor-device`; mount the `custom-email-templates` volume on `kerberoshub.monitordevice`. With SMTP, a deployment that mounts its own `device` template but no `recording` template keeps getting its `device` template (one email per camera), so a white-labelled email never falls back to the default layout. Add a `recording` template next to your `device` template to get the recording email. [`custom-layout/templates`](custom-layout/templates) has one to start from.
+
+**Integrations.** Webhooks, IFTTT and the real-time feed get one message per camera with `data.status` set to `no_recordings` or `recording`, also with grouping on.
 
 #### Account and sharing emails
 

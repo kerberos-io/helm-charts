@@ -96,6 +96,14 @@ spec:
               value: "{{ .Values.email.templates.deviceGroup | default "device_group" }}"
             - name: DEVICE_GROUP_TITLE
               value: "{{ .Values.email.templates.deviceGroupTitle | default "[Device] Several cameras changed status" }}"
+            {{- with .Values.email.templates.recording }}
+            - name: RECORDING_TEMPLATE
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.email.templates.recordingTitle }}
+            - name: RECORDING_TITLE
+              value: {{ . | quote }}
+            {{- end }}
             # Base URL for the link in grouped device notifications.
             - name: PUBLIC_URL
               value: "{{ .Values.kerberoshub.frontend.schema }}://{{ .Values.kerberoshub.frontend.url }}"

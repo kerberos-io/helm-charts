@@ -1599,3 +1599,10 @@ email:
     alertTitle: "[Alert] Kerberos Hub detected something an event"
     deviceTitle: "[Device] A Kerberos Agent's status has been changed"
     deviceGroupTitle: "[Device] Several cameras changed status"
+    # Recording check alerts (Alerts → Devices → Recording check). Empty uses
+    # the "recording" template with SMTP. For SendGrid or Mailgun, set the
+    # template id; empty uses the device template there.
+    recording: ""
+    # Empty uses "[Device] A camera stopped recording", "[Device] A camera is
+    # recording again" and their forms for several cameras.
+    recordingTitle: ""

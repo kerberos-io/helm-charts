@@ -1,0 +1,24 @@
+Kerberos.io
+------------
+
+Hey, {{user}}
+
+Camera recordings
+{{text}}
+
+{{sectionsText}}
+
+These cameras record continuously, so a new recording normally arrives every few minutes. When a camera is online but its recordings stop arriving, check that the account has not reached its upload limit, that the storage the recordings are sent to is reachable and not full, and that the Agent's cloud settings and credentials are still valid. Cameras that are recording again need no action.
+
+Go to Kerberos Hub ->
+{{link}}
+
+Get in touch
+------------
+support@kerberos.io
+9000 Ghent, BE
+https://kerberos.io
+
+About Kerberos
+------------
+Welcome to the revolutionary video analytics and video management platform. Open, modular, and extensible for everyone, anywhere.
