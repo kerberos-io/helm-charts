@@ -62,6 +62,22 @@
         "api": {
           "type": "object",
           "properties": {
+            "mcp": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {"type": "boolean"},
+                "allowedOrigins": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^https?://[^/?#*@,\\s]+$"
+                  },
+                  "description": "Exact HTTP(S) origins for browser MCP clients, without wildcards, credentials, paths or trailing slashes. Independent of REST CORS."
+                }
+              }
+            },
             "passkeys": {
               "type": "object",
               "additionalProperties": false,

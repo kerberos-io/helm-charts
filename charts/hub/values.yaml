@@ -370,6 +370,12 @@ kerberoshub:
     # Additional complete HTTP(S) origins allowed to call the Hub API.
     # The configured frontend origins remain allowed automatically.
     corsAllowedOrigins: []
+    # Read-only Streamable HTTP MCP endpoint at /mcp; requires a compatible API image.
+    mcp:
+      enabled: false
+      # Exact HTTP(S) origins for browser MCP clients; no wildcards or trailing slash.
+      # Clients without an Origin header (such as VS Code) need no entries.
+      allowedOrigins: []
     # Temporarily stop serving the polled GET /devices list: hub-api answers 204
     # without querying MongoDB. The frontend still loads devices once through
     # /session/bootstrap, but device online/offline status stops refreshing.

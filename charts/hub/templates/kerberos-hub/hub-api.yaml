@@ -323,6 +323,11 @@ spec:
             {{- end }}
             - name: CORS_ALLOWED_ORIGINS
               value: {{ join "," $corsOrigins | quote }}
+            {{- $mcp := .Values.kerberoshub.api.mcp | default dict }}
+            - name: MCP_ENABLED
+              value: {{ $mcp.enabled | default false | quote }}
+            - name: MCP_ALLOWED_ORIGINS
+              value: {{ join "," ($mcp.allowedOrigins | default list) | quote }}
             {{ if .Values.isPrivate }}
             - name: KERBEROS_PRIVATE_CLOUD
               value: "true"
