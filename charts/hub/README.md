@@ -335,6 +335,34 @@ ownership on existing optional `LOCAL_CACHE_DIRECTORY` mounts. Its liveness
 endpoint is `GET /api/health`. Wire those settings in the actual Vault deployment
 only when a compatible image release is selected; no migration is required.
 
+### MCP
+
+Deploy a Hub API image supporting MCP, then enable the read-only Streamable HTTP
+endpoint at `/mcp`:
+
+```yaml
+kerberoshub:
+    api:
+        mcp:
+            enabled: true
+            allowedOrigins: []
+```
+
+After upgrading the Helm release, an unauthenticated request to `/mcp` should
+return `401` instead of `404`. Connect using HTTPS and an existing Hub access
+token in `Authorization: Bearer <token>`; browser-session JWTs and cookies cannot
+authenticate MCP. Recording tools require `media.read`, device tools require
+`devices.read`, and both require effective resource grants.
+
+VS Code and other clients without an `Origin` header need no `allowedOrigins`.
+For browser MCP clients, list exact origins such as `https://agent.example.com`.
+Wildcards and trailing slashes are not supported. These origins are independent
+of REST CORS; frontend and REST origins are not automatically copied into MCP.
+MCP stays disabled by default, and these settings apply only to Hub API pods
+in `all` and `ui` modes. The chart does not change the API image tag.
+
+Validate rendering with `bash scripts/check-hub-mcp.sh` from the repository root.
+
 ### Passkeys
 
 Users and sub-users can create and manage their own passkeys in **Profile >
@@ -697,6 +725,8 @@ kerberospipeline:
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
 | `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
+| `kerberoshub.api.mcp.enabled` | Expose the read-only `/mcp` endpoint; sets `MCP_ENABLED`. Requires a compatible Hub API image. | `false` |
+| `kerberoshub.api.mcp.allowedOrigins` | Exact HTTP(S) origins for browser MCP clients, joined into `MCP_ALLOWED_ORIGINS`. Independent of REST CORS; no wildcards or trailing slash. | `[]` |
 | `kerberoshub.api.disableAgentHeartbeat` | Temporarily stop serving the polled `GET /devices` list (hub-api returns `204` without database reads). Devices still load once through `/session/bootstrap`; online/offline status stops refreshing. | `false` |
 | `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
 | `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |
