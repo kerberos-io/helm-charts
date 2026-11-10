@@ -26,6 +26,39 @@ readOnly: false # Set to 'true' to halt all write operations to the database (e.
 # - ui: Hub services only
 mode: "all"
 ###########################################################################
+# Image signature verification (Kyverno)
+###########################################################################
+# Creates a Kyverno ClusterPolicy, scoped to the release namespace, that checks
+# the keyless cosign signatures of UUG.AI images: signed by GitHub Actions, by
+# the UUG.AI release workflow, for the image's own uug-ai GitHub repository.
+# Rendered only when Kyverno is installed (the cluster serves kyverno.io/v1);
+# without Kyverno nothing is created.
+imageVerification:
+  enabled: true
+  # Audit reports unsigned images (PolicyReports) without blocking them;
+  # Enforce rejects pods with an unsigned or wrongly signed image.
+  validationFailureAction: Audit
+  # Ignore lets pods start when Kyverno is unavailable; use Fail with Enforce
+  # once Kyverno runs highly available.
+  failurePolicy: Ignore
+  webhookTimeoutSeconds: 30
+  # Rewrite verified image tags to their digest (and require digests). Leave
+  # false while auditing; enable together with Enforce.
+  mutateDigest: false
+  # Registry the verified images are pulled from. A mirror keeps the original
+  # signatures only when it copies the cosign .sig artifacts too.
+  registry: ghcr.io/uug-ai
+  githubOrganization: uug-ai
+  issuer: https://token.actions.githubusercontent.com
+  # Signer: the shared UUG.AI release workflow, at a branch/tag ref or a commit.
+  subjectRegExp: '^https://github\.com/uug-ai/workflows/\.github/workflows/release-create\.yml@(refs/.+|[0-9a-f]{40})$'
+  rekorUrl: https://rekor.sigstore.dev
+  # Images to verify, by repository name under `registry`. githubRepository
+  # defaults to the name. Only images whose releases are signed belong here;
+  # more are added as their release pipelines start signing.
+  images:
+    - name: hub-api
+###########################################################################
 # Global configuration
 ###########################################################################
 global:

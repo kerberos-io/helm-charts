@@ -335,6 +335,54 @@ ownership on existing optional `LOCAL_CACHE_DIRECTORY` mounts. Its liveness
 endpoint is `GET /api/health`. Wire those settings in the actual Vault deployment
 only when a compatible image release is selected; no migration is required.
 
+### Image signature verification (Kyverno)
+
+Starting with chart **`0.179.0`**, the chart verifies that UUG.AI images are
+signed by UUG.AI. When [Kyverno](https://kyverno.io) is installed in the cluster,
+it creates one `ClusterPolicy` per release, named
+`<namespace>-<release>-signed-images` and scoped to the release namespace.
+Without Kyverno (no `kyverno.io/v1` API), nothing is created and the chart
+behaves as before. Set `imageVerification.enabled: false` to opt out.
+
+Every image is released with a keyless [cosign](https://docs.sigstore.dev)
+signature recorded in the public Rekor transparency log. The policy accepts an
+image only when its signature was:
+
+- issued by GitHub Actions (`https://token.actions.githubusercontent.com`),
+- made by the UUG.AI release workflow
+  (`uug-ai/workflows/.github/workflows/release-create.yml`), and
+- made **for the image's own repository** (for `hub-api`: `uug-ai/hub-api`).
+  The release workflow is shared by all UUG.AI repositories, so this repository
+  claim is what stops an image of one repository passing as another.
+
+Today only `hub-api` is listed in `imageVerification.images`; other images are
+added as their releases start signing. `hub-api` releases are signed from
+`v1.11.39` onwards (and `v1.11.37`); in `Enforce` mode an unsigned version such
+as `v1.11.38` is rejected.
+
+The default is **`Audit`**: unsigned images are reported in Kyverno
+PolicyReports (for example in Policy Reporter) but still run, and
+`failurePolicy: Ignore` keeps pods starting if Kyverno is unavailable. To block
+unsigned images once the reports are clean:
+
+```yaml
+imageVerification:
+  validationFailureAction: Enforce
+  failurePolicy: Fail      # only with a highly available Kyverno
+  mutateDigest: true       # pin verified tags to their digest
+```
+
+If you mirror the images to another registry, set `imageVerification.registry`
+and make sure the mirror copies the cosign `.sig` artifacts. To check an image
+yourself:
+
+```bash
+cosign verify ghcr.io/uug-ai/hub-api:v1.11.40 \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp '^https://github\.com/uug-ai/workflows/\.github/workflows/release-create\.yml@' \
+  --certificate-github-workflow-repository uug-ai/hub-api
+```
+
 ### MCP
 
 Deploy a Hub API image supporting MCP, then enable the read-only Streamable HTTP

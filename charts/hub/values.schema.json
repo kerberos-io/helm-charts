@@ -22,6 +22,85 @@
         }
       }
     },
+    "imageVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Kyverno ClusterPolicy that verifies the keyless cosign signatures of UUG.AI images. Rendered only when the cluster serves kyverno.io/v1.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Create the policy when Kyverno is installed."
+        },
+        "validationFailureAction": {
+          "type": "string",
+          "enum": [
+            "Audit",
+            "Enforce"
+          ],
+          "description": "Audit reports violations; Enforce rejects pods with unsigned images."
+        },
+        "failurePolicy": {
+          "type": "string",
+          "enum": [
+            "Ignore",
+            "Fail"
+          ],
+          "description": "Webhook behaviour when Kyverno is unavailable."
+        },
+        "webhookTimeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "mutateDigest": {
+          "type": "boolean",
+          "description": "Rewrite verified tags to digests and require digests."
+        },
+        "registry": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Registry prefix of the verified images, e.g. ghcr.io/uug-ai."
+        },
+        "githubOrganization": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issuer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjectRegExp": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Signer certificate identity (the release workflow)."
+        },
+        "rekorUrl": {
+          "type": "string",
+          "minLength": 1
+        },
+        "images": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]*$"
+              },
+              "githubRepository": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._-]+$"
+              }
+            }
+          }
+        }
+      }
+    },
     "deviceTags": {
       "type": "object",
       "additionalProperties": false,

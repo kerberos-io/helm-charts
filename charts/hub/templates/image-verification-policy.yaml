@@ -1,0 +1,72 @@
+{{- /*
+Kyverno policy that verifies the keyless cosign signatures of UUG.AI images.
+Rendered only when imageVerification.enabled is true and the cluster serves the
+kyverno.io/v1 API (Kyverno installed), so clusters without Kyverno are unaffected.
+Each release gets its own ClusterPolicy, scoped to the release namespace.
+*/ -}}
+{{- $iv := .Values.imageVerification | default dict -}}
+{{- if and $iv.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
+{{- if not $iv.images }}
+{{- fail "imageVerification.images must list at least one image when imageVerification.enabled is true" }}
+{{- end }}
+{{- if not (has $iv.validationFailureAction (list "Audit" "Enforce")) }}
+{{- fail "imageVerification.validationFailureAction must be Audit or Enforce" }}
+{{- end }}
+{{- if not (has $iv.failurePolicy (list "Ignore" "Fail")) }}
+{{- fail "imageVerification.failurePolicy must be Ignore or Fail" }}
+{{- end }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: {{ printf "%s-%s-signed-images" .Release.Namespace .Release.Name | trunc 63 | trimSuffix "-" }}
+  labels:
+    app.kubernetes.io/name: hub
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: image-verification
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version }}
+  annotations:
+    policies.kyverno.io/title: Kerberos Hub images must be signed by UUG.AI
+    policies.kyverno.io/category: Supply chain
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      Verifies that UUG.AI images in namespace {{ .Release.Namespace }} carry a
+      keyless cosign signature made by the UUG.AI release workflow for their own
+      GitHub repository.
+spec:
+  validationFailureAction: {{ $iv.validationFailureAction }}
+  background: true
+  failurePolicy: {{ $iv.failurePolicy }}
+  webhookTimeoutSeconds: {{ $iv.webhookTimeoutSeconds | default 30 }}
+  rules:
+  {{- range $iv.images }}
+  {{- $repository := .githubRepository | default .name }}
+    - name: {{ printf "verify-%s" .name | trunc 63 | trimSuffix "-" }}
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - {{ $.Release.Namespace | quote }}
+      verifyImages:
+        - imageReferences:
+            - {{ printf "%s/%s:*" $iv.registry .name | quote }}
+            - {{ printf "%s/%s@*" $iv.registry .name | quote }}
+          required: true
+          mutateDigest: {{ $iv.mutateDigest }}
+          verifyDigest: {{ $iv.mutateDigest }}
+          attestors:
+            - entries:
+                - keyless:
+                    issuer: {{ $iv.issuer | quote }}
+                    subjectRegExp: {{ $iv.subjectRegExp | squote }}
+                    additionalExtensions:
+                      # The signer identity is shared by every UUG.AI repository;
+                      # the repository claim binds the signature to this image's repo.
+                      githubWorkflowRepository: {{ printf "%s/%s" $iv.githubOrganization $repository | quote }}
+                    rekor:
+                      url: {{ $iv.rekorUrl | quote }}
+  {{- end }}
+{{- end }}
