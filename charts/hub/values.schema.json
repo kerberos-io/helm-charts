@@ -30,6 +30,14 @@
         "enabled": {
           "type": "boolean",
           "description": "Create the policies when Kyverno is installed."
+        },
+        "validationFailureAction": {
+          "type": "string",
+          "enum": [
+            "Audit",
+            "Enforce"
+          ],
+          "description": "Audit reports unsigned images but lets them run; Enforce rejects them."
         }
       }
     },
