@@ -28,13 +28,14 @@ mode: "all"
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################
-# Kyverno policies in templates/kyverno/ (one file per image) requiring UUG.AI
-# images to be signed by UUG.AI. Opt-in: when enabled, they are created only
-# if Kyverno is installed.
+# Kyverno policies in templates/kyverno/ (one file per ghcr.io/uug-ai image)
+# requiring UUG.AI images to be signed by UUG.AI. Opt-in: when enabled, they are
+# created only if Kyverno is installed.
 imageVerification:
   enabled: false
   # Audit: report unsigned images (PolicyReports) but let them run.
   # Enforce: reject pods whose image is unsigned or signed for another repository.
+  # Images whose releases are not signed yet always stay in Audit (see README).
   validationFailureAction: Audit
 ###########################################################################
 # Global configuration
