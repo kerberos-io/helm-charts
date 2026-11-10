@@ -351,11 +351,44 @@ creates Kyverno policies in the release namespace. Without Kyverno (no
 `kyverno.io/v1` API), nothing is created even when enabled.
 
 Each policy is a plain, namespaced Kyverno `Policy` in its own file in
-`templates/kyverno/`, so it applies only to the release namespace:
+`templates/kyverno/`, so it applies only to the release namespace. There is one
+per `ghcr.io/uug-ai` image the chart can deploy; each requires the image to be
+signed for its own `uug-ai/<image>` repository. "Mode" is the
+`validationFailureAction` the policy uses:
 
-| Template | Checks |
-|---|---|
-| `hub-api-signed-images.yaml` | `ghcr.io/uug-ai/hub-api` signed for `uug-ai/hub-api` |
+| Template | Image | Releases signed | Mode |
+|---|---|---|---|
+| `hub-api-signed-images.yaml` | `ghcr.io/uug-ai/hub-api` | ✅ signed | value |
+| `hub-cleanup-signed-images.yaml` | `ghcr.io/uug-ai/hub-cleanup` | ✅ signed | value |
+| `hub-frontend-signed-images.yaml` | `ghcr.io/uug-ai/hub-frontend` | ✅ signed | value |
+| `hub-loitering-signed-images.yaml` | `ghcr.io/uug-ai/hub-loitering` | ✅ signed | value |
+| `hub-monitor-device-signed-images.yaml` | `ghcr.io/uug-ai/hub-monitor-device` | ✅ signed | value |
+| `hub-workflows-signed-images.yaml` | `ghcr.io/uug-ai/hub-workflows` | ✅ signed | value |
+| `hub-pipeline-analysis-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-analysis` | ✅ signed | value |
+| `hub-pipeline-counting-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-counting` | ✅ signed | value |
+| `hub-pipeline-monitor-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-monitor` | ✅ signed | value |
+| `hub-pipeline-sequence-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sequence` | ✅ signed | value |
+| `hub-pipeline-throttler-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-throttler` | ✅ signed | value |
+| `hub-audit-signed-images.yaml` | `ghcr.io/uug-ai/hub-audit` | ❌ not yet | always `Audit` |
+| `hub-objecttracking-signed-images.yaml` | `ghcr.io/uug-ai/hub-objecttracking` | ❌ not yet | always `Audit` |
+| `hub-vlm-signed-images.yaml` | `ghcr.io/uug-ai/hub-vlm` | ❌ not yet | always `Audit` |
+| `hub-pipeline-dominantcolors-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-dominantcolors` | ❌ not yet | always `Audit` |
+| `hub-pipeline-event-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-event` | ❌ not yet | always `Audit` |
+| `hub-pipeline-export-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-export` | ❌ not yet | always `Audit` |
+| `hub-pipeline-notification-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification` | ❌ not yet | always `Audit` |
+| `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ❌ not yet | always `Audit` |
+| `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ❌ not yet | always `Audit` |
+| `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ❌ not yet | always `Audit` |
+
+Images whose releases are not signed yet stay in `Audit` even when
+`imageVerification.validationFailureAction` is `Enforce`, so enabling
+`Enforce` never blocks them. Their repositories need `sign: true` (and
+`id-token: write`) in their release workflow; once their releases are signed,
+the policy file switches to the configured value in a chart release.
+
+Not covered: `uugai/admin`, `uugai/hub-proxy` and
+`uugai/hub-reactivatesubscriptions` are pulled from Docker Hub rather than the
+signed `ghcr.io/uug-ai` releases, and `oauth2-proxy` is a third-party image.
 
 To change a policy, edit its file. To add an image, copy a policy file and
 change the image and repository.
@@ -371,9 +404,9 @@ image only when its signature was:
   The release workflow is shared by all UUG.AI repositories, so this repository
   claim is what stops an image of one repository passing as another.
 
-Today only `hub-api` has a policy; other images get one as their releases start
-signing. `hub-api` releases are signed from `v1.11.39` onwards (and `v1.11.37`);
-in `Enforce` mode an unsigned version such as `v1.11.38` is rejected.
+Signed means the image's releases are signed now; older tags of the same image
+can still be unsigned (for example `hub-api` `v1.11.38`) and are rejected in
+`Enforce`. Check the tags you run before enforcing.
 
 By default the policies run in **`Audit`** mode: unsigned images are reported in
 Kyverno PolicyReports (for example in Policy Reporter) but still run. Once the
