@@ -25,53 +25,11 @@
     "imageVerification": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Kyverno policies (templates/kyverno/, one file per image) requiring UUG.AI images to be signed by UUG.AI. Rendered only when the cluster serves kyverno.io/v1.",
+      "description": "Kyverno policies (templates/kyverno/) requiring UUG.AI images to be signed by UUG.AI. Created only when the cluster serves kyverno.io/v1.",
       "properties": {
         "enabled": {
           "type": "boolean",
           "description": "Create the policies when Kyverno is installed."
-        },
-        "policies": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "hubApi": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "enabled",
-                "validationFailureAction",
-                "failurePolicy",
-                "mutateDigest"
-              ],
-              "properties": {
-                "enabled": {
-                  "type": "boolean",
-                  "description": "Render this policy (templates/kyverno/<file>)."
-                },
-                "validationFailureAction": {
-                  "type": "string",
-                  "enum": [
-                    "Audit",
-                    "Enforce"
-                  ],
-                  "description": "Audit reports violations; Enforce rejects pods with unsigned images."
-                },
-                "failurePolicy": {
-                  "type": "string",
-                  "enum": [
-                    "Ignore",
-                    "Fail"
-                  ],
-                  "description": "Webhook behaviour when Kyverno is unavailable."
-                },
-                "mutateDigest": {
-                  "type": "boolean",
-                  "description": "Rewrite verified tags to digests and require digests."
-                }
-              }
-            }
-          }
         }
       }
     },

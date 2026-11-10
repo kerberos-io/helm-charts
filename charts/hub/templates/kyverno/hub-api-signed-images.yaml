@@ -2,10 +2,9 @@
 hub-api images must be signed by UUG.AI: a keyless cosign signature issued by
 GitHub Actions, made by the UUG.AI release workflow, for uug-ai/hub-api.
 A namespaced Policy, so it applies only to the release namespace.
-Rendered only when Kyverno is installed. Values: imageVerification.policies.hubApi.
+Rendered only when imageVerification.enabled is true and Kyverno is installed.
 */ -}}
-{{- $policy := .Values.imageVerification.policies.hubApi }}
-{{- if and .Values.imageVerification.enabled $policy.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
+{{- if and .Values.imageVerification.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
 apiVersion: kyverno.io/v1
 kind: Policy
 metadata:
@@ -16,8 +15,10 @@ metadata:
     policies.kyverno.io/severity: high
     policies.kyverno.io/subject: Pod
 spec:
-  validationFailureAction: {{ $policy.validationFailureAction }}
-  failurePolicy: {{ $policy.failurePolicy }}
+  # Audit: report unsigned images without blocking them. Enforce: reject them.
+  validationFailureAction: Audit
+  # Ignore: pods still start when Kyverno is unavailable.
+  failurePolicy: Ignore
   background: true
   webhookTimeoutSeconds: 30
   rules:
@@ -32,8 +33,9 @@ spec:
             - "ghcr.io/uug-ai/hub-api:*"
             - "ghcr.io/uug-ai/hub-api@*"
           required: true
-          mutateDigest: {{ $policy.mutateDigest }}
-          verifyDigest: {{ $policy.mutateDigest }}
+          # Pin verified tags to their digest; enable together with Enforce.
+          mutateDigest: false
+          verifyDigest: false
           attestors:
             - entries:
                 - keyless:

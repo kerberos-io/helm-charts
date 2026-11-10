@@ -28,25 +28,11 @@ mode: "all"
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################
-# Kyverno policies in templates/kyverno/, one file per image. Each is a
-# namespaced Policy (it applies only to this release's namespace) that requires
-# the image to be signed by UUG.AI. Rendered only when Kyverno is installed
-# (the cluster serves kyverno.io/v1); without Kyverno nothing is created.
+# Kyverno policies in templates/kyverno/ (one file per image) requiring UUG.AI
+# images to be signed by UUG.AI. Created only when Kyverno is installed; they
+# report unsigned images (Audit) without blocking them.
 imageVerification:
   enabled: true
-  policies:
-    # templates/kyverno/hub-api-signed-images.yaml
-    hubApi:
-      enabled: true
-      # Audit reports unsigned images (PolicyReports) without blocking them;
-      # Enforce rejects pods with an unsigned or wrongly signed image.
-      validationFailureAction: Audit
-      # Ignore lets pods start when Kyverno is unavailable; use Fail with
-      # Enforce once Kyverno runs highly available.
-      failurePolicy: Ignore
-      # Rewrite verified tags to their digest (and require digests); enable
-      # together with Enforce.
-      mutateDigest: false
 ###########################################################################
 # Global configuration
 ###########################################################################

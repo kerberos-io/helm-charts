@@ -341,17 +341,17 @@ Starting with chart **`0.179.0`**, the chart verifies that UUG.AI images are
 signed by UUG.AI. When [Kyverno](https://kyverno.io) is installed in the cluster,
 it creates Kyverno policies in the release namespace. Without Kyverno (no
 `kyverno.io/v1` API), nothing is created and the chart behaves as before. Set
-`imageVerification.enabled: false` to opt out.
+`imageVerification.enabled: false` to opt out; that is the only setting.
 
 Each policy is a plain, namespaced Kyverno `Policy` in its own file in
 `templates/kyverno/`, so it applies only to the release namespace:
 
-| Template | Values | Checks |
-|---|---|---|
-| `hub-api-signed-images.yaml` | `imageVerification.policies.hubApi` | `ghcr.io/uug-ai/hub-api` signed for `uug-ai/hub-api` |
+| Template | Checks |
+|---|---|
+| `hub-api-signed-images.yaml` | `ghcr.io/uug-ai/hub-api` signed for `uug-ai/hub-api` |
 
-To change a policy, edit its file. To add an image, copy a policy file, change
-the image and repository, and add a `policies.<name>` entry in `values.yaml`.
+To change a policy, edit its file. To add an image, copy a policy file and
+change the image and repository.
 
 Every image is released with a keyless [cosign](https://docs.sigstore.dev)
 signature recorded in the public Rekor transparency log. A policy accepts an
@@ -368,20 +368,11 @@ Today only `hub-api` has a policy; other images get one as their releases start
 signing. `hub-api` releases are signed from `v1.11.39` onwards (and `v1.11.37`);
 in `Enforce` mode an unsigned version such as `v1.11.38` is rejected.
 
-The default is **`Audit`**: unsigned images are reported in Kyverno
+The policies run in **`Audit`** mode: unsigned images are reported in Kyverno
 PolicyReports (for example in Policy Reporter) but still run, and
-`failurePolicy: Ignore` keeps pods starting if Kyverno is unavailable. To block
-unsigned images once the reports are clean:
-
-```yaml
-imageVerification:
-  policies:
-    hubApi:
-      enabled: true
-      validationFailureAction: Enforce
-      failurePolicy: Fail      # only with a highly available Kyverno
-      mutateDigest: true       # pin verified tags to their digest
-```
+`failurePolicy: Ignore` keeps pods starting if Kyverno is unavailable. Moving to
+`Enforce` (with `failurePolicy: Fail` and `mutateDigest: true`) is a change in
+the policy files, shipped in a chart release once the reports are clean.
 
 The policies verify the images at `ghcr.io/uug-ai`. If you mirror the images to
 another registry, disable the chart's policies and apply your own copy with
