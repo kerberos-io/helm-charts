@@ -337,11 +337,18 @@ only when a compatible image release is selected; no migration is required.
 
 ### Image signature verification (Kyverno)
 
-Starting with chart **`0.179.0`**, the chart verifies that UUG.AI images are
-signed by UUG.AI. When [Kyverno](https://kyverno.io) is installed in the cluster,
-it creates Kyverno policies in the release namespace. Without Kyverno (no
-`kyverno.io/v1` API), nothing is created and the chart behaves as before. Set
-`imageVerification.enabled: false` to opt out.
+Starting with chart **`0.179.0`**, the chart can verify that UUG.AI images are
+signed by UUG.AI. It is **opt-in** from chart **`0.179.1`** (in `0.179.0` it was
+on by default):
+
+```yaml
+imageVerification:
+  enabled: true
+```
+
+When enabled and [Kyverno](https://kyverno.io) is installed in the cluster, it
+creates Kyverno policies in the release namespace. Without Kyverno (no
+`kyverno.io/v1` API), nothing is created even when enabled.
 
 Each policy is a plain, namespaced Kyverno `Policy` in its own file in
 `templates/kyverno/`, so it applies only to the release namespace:
