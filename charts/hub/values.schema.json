@@ -25,89 +25,50 @@
     "imageVerification": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Kyverno ClusterPolicies (templates/kyverno/) that verify the keyless cosign signatures of UUG.AI images. Rendered only when the cluster serves kyverno.io/v1.",
+      "description": "Kyverno policies (templates/kyverno/, one file per image) requiring UUG.AI images to be signed by UUG.AI. Rendered only when the cluster serves kyverno.io/v1.",
       "properties": {
         "enabled": {
           "type": "boolean",
           "description": "Create the policies when Kyverno is installed."
         },
-        "validationFailureAction": {
-          "type": "string",
-          "enum": [
-            "Audit",
-            "Enforce"
-          ],
-          "description": "Default for every policy: Audit reports violations; Enforce rejects pods with unsigned images."
-        },
-        "failurePolicy": {
-          "type": "string",
-          "enum": [
-            "Ignore",
-            "Fail"
-          ],
-          "description": "Default webhook behaviour when Kyverno is unavailable."
-        },
-        "webhookTimeoutSeconds": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 30
-        },
-        "mutateDigest": {
-          "type": "boolean",
-          "description": "Default: rewrite verified tags to digests and require digests."
-        },
-        "registry": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Registry prefix of the verified images, e.g. ghcr.io/uug-ai."
-        },
-        "githubOrganization": {
-          "type": "string",
-          "minLength": 1
-        },
-        "issuer": {
-          "type": "string",
-          "minLength": 1
-        },
-        "subjectRegExp": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Signer certificate identity (the release workflow)."
-        },
-        "rekorUrl": {
-          "type": "string",
-          "minLength": 1
-        },
         "policies": {
           "type": "object",
-          "description": "One entry per policy template in templates/kyverno/.",
-          "additionalProperties": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "enabled": {
-                "type": "boolean",
-                "description": "Render this policy (templates/kyverno/<file>)."
-              },
-              "validationFailureAction": {
-                "type": "string",
-                "enum": [
-                  "Audit",
-                  "Enforce"
-                ],
-                "description": "Overrides imageVerification.validationFailureAction for this policy."
-              },
-              "failurePolicy": {
-                "type": "string",
-                "enum": [
-                  "Ignore",
-                  "Fail"
-                ],
-                "description": "Overrides imageVerification.failurePolicy for this policy."
-              },
-              "mutateDigest": {
-                "type": "boolean",
-                "description": "Overrides imageVerification.mutateDigest for this policy."
+          "additionalProperties": false,
+          "properties": {
+            "hubApi": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "enabled",
+                "validationFailureAction",
+                "failurePolicy",
+                "mutateDigest"
+              ],
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Render this policy (templates/kyverno/<file>)."
+                },
+                "validationFailureAction": {
+                  "type": "string",
+                  "enum": [
+                    "Audit",
+                    "Enforce"
+                  ],
+                  "description": "Audit reports violations; Enforce rejects pods with unsigned images."
+                },
+                "failurePolicy": {
+                  "type": "string",
+                  "enum": [
+                    "Ignore",
+                    "Fail"
+                  ],
+                  "description": "Webhook behaviour when Kyverno is unavailable."
+                },
+                "mutateDigest": {
+                  "type": "boolean",
+                  "description": "Rewrite verified tags to digests and require digests."
+                }
               }
             }
           }

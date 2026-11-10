@@ -1,30 +1,25 @@
 {{- /*
-hub-api images must be signed by the UUG.AI release workflow for uug-ai/hub-api.
-Values: imageVerification.policies.hubApi (defaults from imageVerification).
-To add another image, copy this file, change the image and repository, and add
-a policies.<name> entry in values.yaml.
+hub-api images must be signed by UUG.AI: a keyless cosign signature issued by
+GitHub Actions, made by the UUG.AI release workflow, for uug-ai/hub-api.
+A namespaced Policy, so it applies only to the release namespace.
+Rendered only when Kyverno is installed. Values: imageVerification.policies.hubApi.
 */ -}}
-{{- if eq (include "hub.kyverno.enabled" (dict "root" . "policy" "hubApi")) "true" }}
-{{- $iv := .Values.imageVerification }}
-{{- $policy := $iv.policies.hubApi }}
-{{- $mutateDigest := ternary $policy.mutateDigest $iv.mutateDigest (hasKey $policy "mutateDigest") }}
+{{- $policy := .Values.imageVerification.policies.hubApi }}
+{{- if and .Values.imageVerification.enabled $policy.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
 apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+kind: Policy
 metadata:
-  name: {{ include "hub.kyverno.name" (dict "root" . "suffix" "hub-api-signed-images") }}
-  labels:
-    {{- include "hub.kyverno.labels" . | nindent 4 }}
+  name: hub-api-signed-images
   annotations:
     policies.kyverno.io/title: hub-api images must be signed by UUG.AI
     policies.kyverno.io/category: Supply chain
     policies.kyverno.io/severity: high
     policies.kyverno.io/subject: Pod
-    policies.kyverno.io/description: >-
-      Verifies that hub-api images in namespace {{ .Release.Namespace }} carry a
-      keyless cosign signature made by the UUG.AI release workflow for the
-      uug-ai/hub-api repository.
 spec:
-  {{- include "hub.kyverno.spec" (dict "root" . "policy" "hubApi") | nindent 2 }}
+  validationFailureAction: {{ $policy.validationFailureAction }}
+  failurePolicy: {{ $policy.failurePolicy }}
+  background: true
+  webhookTimeoutSeconds: 30
   rules:
     - name: verify-hub-api
       match:
@@ -32,15 +27,23 @@ spec:
           - resources:
               kinds:
                 - Pod
-              namespaces:
-                - {{ .Release.Namespace | quote }}
       verifyImages:
         - imageReferences:
-            - {{ printf "%s/hub-api:*" $iv.registry | quote }}
-            - {{ printf "%s/hub-api@*" $iv.registry | quote }}
+            - "ghcr.io/uug-ai/hub-api:*"
+            - "ghcr.io/uug-ai/hub-api@*"
           required: true
-          mutateDigest: {{ $mutateDigest }}
-          verifyDigest: {{ $mutateDigest }}
+          mutateDigest: {{ $policy.mutateDigest }}
+          verifyDigest: {{ $policy.mutateDigest }}
           attestors:
-            {{- include "hub.kyverno.signedBy" (dict "root" . "repository" "hub-api") | nindent 12 }}
+            - entries:
+                - keyless:
+                    issuer: https://token.actions.githubusercontent.com
+                    # The UUG.AI release workflow, at a branch/tag ref or a commit.
+                    subjectRegExp: '^https://github\.com/uug-ai/workflows/\.github/workflows/release-create\.yml@(refs/.+|[0-9a-f]{40})$'
+                    additionalExtensions:
+                      # That workflow signs for every UUG.AI repository; this
+                      # binds the signature to hub-api's own repository.
+                      githubWorkflowRepository: uug-ai/hub-api
+                    rekor:
+                      url: https://rekor.sigstore.dev
 {{- end }}

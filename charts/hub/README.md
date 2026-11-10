@@ -339,25 +339,22 @@ only when a compatible image release is selected; no migration is required.
 
 Starting with chart **`0.179.0`**, the chart verifies that UUG.AI images are
 signed by UUG.AI. When [Kyverno](https://kyverno.io) is installed in the cluster,
-it creates Kyverno `ClusterPolicies` scoped to the release namespace, named
-`<namespace>-<release>-<policy>`. Without Kyverno (no `kyverno.io/v1` API),
-nothing is created and the chart behaves as before. Set
+it creates Kyverno policies in the release namespace. Without Kyverno (no
+`kyverno.io/v1` API), nothing is created and the chart behaves as before. Set
 `imageVerification.enabled: false` to opt out.
 
-Every policy is its own template in `templates/kyverno/`, with its own entry
-under `imageVerification.policies`:
+Each policy is a plain, namespaced Kyverno `Policy` in its own file in
+`templates/kyverno/`, so it applies only to the release namespace:
 
 | Template | Values | Checks |
 |---|---|---|
 | `hub-api-signed-images.yaml` | `imageVerification.policies.hubApi` | `ghcr.io/uug-ai/hub-api` signed for `uug-ai/hub-api` |
 
-`templates/kyverno/_helpers.tpl` holds only the shared parts (the Kyverno
-check, names, labels, policy-wide settings and the UUG.AI signer). To change one
-policy, edit its file; to add an image, copy a policy file, change the image and
-repository, and add a `policies.<name>` entry in `values.yaml`.
+To change a policy, edit its file. To add an image, copy a policy file, change
+the image and repository, and add a `policies.<name>` entry in `values.yaml`.
 
 Every image is released with a keyless [cosign](https://docs.sigstore.dev)
-signature recorded in the public Rekor transparency log. The policy accepts an
+signature recorded in the public Rekor transparency log. A policy accepts an
 image only when its signature was:
 
 - issued by GitHub Actions (`https://token.actions.githubusercontent.com`),
@@ -368,29 +365,28 @@ image only when its signature was:
   claim is what stops an image of one repository passing as another.
 
 Today only `hub-api` has a policy; other images get one as their releases start
-signing. `hub-api` releases are signed from
-`v1.11.39` onwards (and `v1.11.37`); in `Enforce` mode an unsigned version such
-as `v1.11.38` is rejected.
+signing. `hub-api` releases are signed from `v1.11.39` onwards (and `v1.11.37`);
+in `Enforce` mode an unsigned version such as `v1.11.38` is rejected.
 
 The default is **`Audit`**: unsigned images are reported in Kyverno
 PolicyReports (for example in Policy Reporter) but still run, and
 `failurePolicy: Ignore` keeps pods starting if Kyverno is unavailable. To block
-unsigned images once the reports are clean, for every policy or per policy:
+unsigned images once the reports are clean:
 
 ```yaml
 imageVerification:
-  validationFailureAction: Enforce   # default for every policy
-  failurePolicy: Fail                # only with a highly available Kyverno
-  mutateDigest: true                 # pin verified tags to their digest
   policies:
     hubApi:
       enabled: true
-      # validationFailureAction: Audit   # per-policy override
+      validationFailureAction: Enforce
+      failurePolicy: Fail      # only with a highly available Kyverno
+      mutateDigest: true       # pin verified tags to their digest
 ```
 
-If you mirror the images to another registry, set `imageVerification.registry`
-and make sure the mirror copies the cosign `.sig` artifacts. To check an image
-yourself:
+The policies verify the images at `ghcr.io/uug-ai`. If you mirror the images to
+another registry, disable the chart's policies and apply your own copy with
+your registry in `imageReferences` (the mirror must also copy the cosign `.sig`
+artifacts). To check an image yourself:
 
 ```bash
 cosign verify ghcr.io/uug-ai/hub-api:v1.11.40 \
