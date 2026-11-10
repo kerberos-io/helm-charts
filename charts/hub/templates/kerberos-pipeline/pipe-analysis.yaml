@@ -129,6 +129,10 @@ spec:
         # Thumbnail regeneration from classified frames (opt-in)
         - name: THUMBNAIL_REGENERATION_ENABLED
           value: {{ .Values.kerberospipeline.analysis.thumbnailRegeneration.enabled | default false | quote }}
+        # Skip regeneration when the object first appears within this many seconds
+        - name: THUMBNAIL_REGENERATION_MIN_SECONDS
+          {{- $regeneration := .Values.kerberospipeline.analysis.thumbnailRegeneration }}
+          value: {{ ternary $regeneration.minSeconds 3 (hasKey $regeneration "minSeconds") | quote }}
 
         # In-memory cache for hot-path MongoDB lookups
         - name: DB_CACHE_ENABLED
