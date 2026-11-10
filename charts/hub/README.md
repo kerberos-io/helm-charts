@@ -368,11 +368,13 @@ Today only `hub-api` has a policy; other images get one as their releases start
 signing. `hub-api` releases are signed from `v1.11.39` onwards (and `v1.11.37`);
 in `Enforce` mode an unsigned version such as `v1.11.38` is rejected.
 
-The policies run in **`Audit`** mode: unsigned images are reported in Kyverno
-PolicyReports (for example in Policy Reporter) but still run, and
-`failurePolicy: Ignore` keeps pods starting if Kyverno is unavailable. Moving to
-`Enforce` (with `failurePolicy: Fail` and `mutateDigest: true`) is a change in
-the policy files, shipped in a chart release once the reports are clean.
+The policies use Kyverno's default **`Audit`** mode: unsigned images are
+reported in Kyverno PolicyReports (for example in Policy Reporter) but still run.
+They set only what would otherwise change behaviour: `failurePolicy: Ignore`
+keeps pods starting if Kyverno is unavailable, and `mutateDigest`/`verifyDigest:
+false` leave pod images as they are. Moving to `Enforce` (with `failurePolicy:
+Fail` and digest pinning) is a change in the policy files, shipped in a chart
+release once the reports are clean.
 
 The policies verify the images at `ghcr.io/uug-ai`. If you mirror the images to
 another registry, disable the chart's policies and apply your own copy with
