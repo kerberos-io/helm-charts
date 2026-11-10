@@ -22,6 +22,25 @@
         }
       }
     },
+    "imageVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Kyverno policies (templates/kyverno/) requiring UUG.AI images to be signed by UUG.AI. Created only when the cluster serves kyverno.io/v1.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Create the policies when Kyverno is installed."
+        },
+        "validationFailureAction": {
+          "type": "string",
+          "enum": [
+            "Audit",
+            "Enforce"
+          ],
+          "description": "Audit reports unsigned images but lets them run; Enforce rejects them."
+        }
+      }
+    },
     "deviceTags": {
       "type": "object",
       "additionalProperties": false,
