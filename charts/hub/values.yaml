@@ -28,13 +28,16 @@ mode: "all"
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################
-# Creates a Kyverno ClusterPolicy, scoped to the release namespace, that checks
-# the keyless cosign signatures of UUG.AI images: signed by GitHub Actions, by
-# the UUG.AI release workflow, for the image's own uug-ai GitHub repository.
-# Rendered only when Kyverno is installed (the cluster serves kyverno.io/v1);
-# without Kyverno nothing is created.
+# Kyverno ClusterPolicies, scoped to the release namespace, that check the
+# keyless cosign signatures of UUG.AI images: signed by GitHub Actions, by the
+# UUG.AI release workflow, for the image's own uug-ai GitHub repository.
+# Each policy is its own template in templates/kyverno/. They are rendered only
+# when Kyverno is installed (the cluster serves kyverno.io/v1); without Kyverno
+# nothing is created.
 imageVerification:
   enabled: true
+  # Defaults for every policy; a policy under `policies` may override
+  # validationFailureAction, failurePolicy and mutateDigest.
   # Audit reports unsigned images (PolicyReports) without blocking them;
   # Enforce rejects pods with an unsigned or wrongly signed image.
   validationFailureAction: Audit
@@ -53,11 +56,16 @@ imageVerification:
   # Signer: the shared UUG.AI release workflow, at a branch/tag ref or a commit.
   subjectRegExp: '^https://github\.com/uug-ai/workflows/\.github/workflows/release-create\.yml@(refs/.+|[0-9a-f]{40})$'
   rekorUrl: https://rekor.sigstore.dev
-  # Images to verify, by repository name under `registry`. githubRepository
-  # defaults to the name. Only images whose releases are signed belong here;
-  # more are added as their release pipelines start signing.
-  images:
-    - name: hub-api
+  # One entry per policy template in templates/kyverno/. Only images whose
+  # releases are signed have a policy; more are added as their release
+  # pipelines start signing.
+  policies:
+    # templates/kyverno/hub-api-signed-images.yaml
+    hubApi:
+      enabled: true
+      # validationFailureAction: Enforce
+      # failurePolicy: Fail
+      # mutateDigest: true
 ###########################################################################
 # Global configuration
 ###########################################################################

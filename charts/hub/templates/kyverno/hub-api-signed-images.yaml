@@ -1,0 +1,46 @@
+{{- /*
+hub-api images must be signed by the UUG.AI release workflow for uug-ai/hub-api.
+Values: imageVerification.policies.hubApi (defaults from imageVerification).
+To add another image, copy this file, change the image and repository, and add
+a policies.<name> entry in values.yaml.
+*/ -}}
+{{- if eq (include "hub.kyverno.enabled" (dict "root" . "policy" "hubApi")) "true" }}
+{{- $iv := .Values.imageVerification }}
+{{- $policy := $iv.policies.hubApi }}
+{{- $mutateDigest := ternary $policy.mutateDigest $iv.mutateDigest (hasKey $policy "mutateDigest") }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: {{ include "hub.kyverno.name" (dict "root" . "suffix" "hub-api-signed-images") }}
+  labels:
+    {{- include "hub.kyverno.labels" . | nindent 4 }}
+  annotations:
+    policies.kyverno.io/title: hub-api images must be signed by UUG.AI
+    policies.kyverno.io/category: Supply chain
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      Verifies that hub-api images in namespace {{ .Release.Namespace }} carry a
+      keyless cosign signature made by the UUG.AI release workflow for the
+      uug-ai/hub-api repository.
+spec:
+  {{- include "hub.kyverno.spec" (dict "root" . "policy" "hubApi") | nindent 2 }}
+  rules:
+    - name: verify-hub-api
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - {{ .Release.Namespace | quote }}
+      verifyImages:
+        - imageReferences:
+            - {{ printf "%s/hub-api:*" $iv.registry | quote }}
+            - {{ printf "%s/hub-api@*" $iv.registry | quote }}
+          required: true
+          mutateDigest: {{ $mutateDigest }}
+          verifyDigest: {{ $mutateDigest }}
+          attestors:
+            {{- include "hub.kyverno.signedBy" (dict "root" . "repository" "hub-api") | nindent 12 }}
+{{- end }}

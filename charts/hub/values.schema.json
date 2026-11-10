@@ -25,11 +25,11 @@
     "imageVerification": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Kyverno ClusterPolicy that verifies the keyless cosign signatures of UUG.AI images. Rendered only when the cluster serves kyverno.io/v1.",
+      "description": "Kyverno ClusterPolicies (templates/kyverno/) that verify the keyless cosign signatures of UUG.AI images. Rendered only when the cluster serves kyverno.io/v1.",
       "properties": {
         "enabled": {
           "type": "boolean",
-          "description": "Create the policy when Kyverno is installed."
+          "description": "Create the policies when Kyverno is installed."
         },
         "validationFailureAction": {
           "type": "string",
@@ -37,7 +37,7 @@
             "Audit",
             "Enforce"
           ],
-          "description": "Audit reports violations; Enforce rejects pods with unsigned images."
+          "description": "Default for every policy: Audit reports violations; Enforce rejects pods with unsigned images."
         },
         "failurePolicy": {
           "type": "string",
@@ -45,7 +45,7 @@
             "Ignore",
             "Fail"
           ],
-          "description": "Webhook behaviour when Kyverno is unavailable."
+          "description": "Default webhook behaviour when Kyverno is unavailable."
         },
         "webhookTimeoutSeconds": {
           "type": "integer",
@@ -54,7 +54,7 @@
         },
         "mutateDigest": {
           "type": "boolean",
-          "description": "Rewrite verified tags to digests and require digests."
+          "description": "Default: rewrite verified tags to digests and require digests."
         },
         "registry": {
           "type": "string",
@@ -78,23 +78,36 @@
           "type": "string",
           "minLength": 1
         },
-        "images": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
+        "policies": {
+          "type": "object",
+          "description": "One entry per policy template in templates/kyverno/.",
+          "additionalProperties": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "name"
-            ],
             "properties": {
-              "name": {
-                "type": "string",
-                "pattern": "^[a-z0-9][a-z0-9._-]*$"
+              "enabled": {
+                "type": "boolean",
+                "description": "Render this policy (templates/kyverno/<file>)."
               },
-              "githubRepository": {
+              "validationFailureAction": {
                 "type": "string",
-                "pattern": "^[A-Za-z0-9._-]+$"
+                "enum": [
+                  "Audit",
+                  "Enforce"
+                ],
+                "description": "Overrides imageVerification.validationFailureAction for this policy."
+              },
+              "failurePolicy": {
+                "type": "string",
+                "enum": [
+                  "Ignore",
+                  "Fail"
+                ],
+                "description": "Overrides imageVerification.failurePolicy for this policy."
+              },
+              "mutateDigest": {
+                "type": "boolean",
+                "description": "Overrides imageVerification.mutateDigest for this policy."
               }
             }
           }
