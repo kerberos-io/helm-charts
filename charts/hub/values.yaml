@@ -1413,10 +1413,14 @@ kerberospipeline:
     logLevel: "info" # possible values: trace, debug, info, warn, error
     # Opt-in: after classification, re-enqueue the recording on the thumbnail
     # queue to regenerate its thumbnail from the first frame of a tracked moving
-    # object (THUMBNAIL_REGENERATION_ENABLED). Adds one thumbnail job per
+    # object (THUMBNAIL_REGENERATION_ENABLED). Adds up to one thumbnail job per
     # classified recording; size pipe-thumbnail accordingly before enabling.
+    # minSeconds (THUMBNAIL_REGENERATION_MIN_SECONDS): only regenerate when the
+    # object first appears at least this many seconds into the recording; earlier
+    # objects are already in the original thumbnail. 0 regenerates for every object.
     thumbnailRegeneration:
       enabled: false
+      minSeconds: 3
     # In-memory cache for hot-path MongoDB lookups (site vault per device).
     # Site changes apply after at most one TTL; each replica caches separately.
     dbCache:
