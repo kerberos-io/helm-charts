@@ -375,9 +375,8 @@ signed for its own `uug-ai/<image>` repository. "Mode" is the
 | `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ✅ signed (from v1.2.7) | value |
 | `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ✅ signed (from v1.1.28) | value |
 | `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ✅ signed (from v1.3.24) | value |
-| `admin-signed-images.yaml` | `uugai/admin` (Docker Hub) / `ghcr.io/uug-ai/admin` | ❌ Docker Hub image not signed; switch to GHCR | always `Audit` |
-| `hub-reactivatesubscriptions-signed-images.yaml` | `uugai/hub-reactivatesubscriptions` (Docker Hub) / `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ❌ Docker Hub image not signed; switch to GHCR | always `Audit` |
-| `oauth2-proxy-signed-images.yaml` | `quay.io/oauth2-proxy/oauth2-proxy` (third-party) | ❌ visibility only; cannot be signed by UUG.AI | always `Audit` |
+| `admin-signed-images.yaml` | `ghcr.io/uug-ai/admin` | ✅ signed (GHCR releases); the chart default still uses Docker Hub `uugai/admin` | always `Audit` |
+| `hub-reactivatesubscriptions-signed-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ❌ not on GHCR yet; the chart uses Docker Hub `uugai/hub-reactivatesubscriptions` | always `Audit` |
 
 Since chart **`0.182.0`** every `ghcr.io/uug-ai` image's releases are signed, so
 every policy follows `imageVerification.validationFailureAction`, except
@@ -388,15 +387,18 @@ in `Enforce`**, so check the tags you run before enforcing. Since chart
 **`0.183.0`** the default image tags are signed releases, and since **`0.183.1`** hardened
 releases (with the attestation) for every image that has a hardening policy.
 
-Since chart **`0.184.0`** every container image the chart can deploy has a
-signature policy, and every UUG.AI image a hardening policy. Images that are
-not signed or hardened yet stay in `Audit` (the tables mark them), so they show
-up as failures in Policy Reporter without ever being blocked: the Docker Hub
-images `uugai/admin` and `uugai/hub-reactivatesubscriptions` (their repositories
-already release signed `ghcr.io/uug-ai` images; switching the chart to those
-fixes them) and the third-party `oauth2-proxy` (visibility only; it needs its upstream signing
-identity, and should be pinned instead of `:latest`). `oauth2-proxy` has no
-hardening policy, since only UUG.AI releases carry the hardening attestation.
+Since chart **`0.184.0`** only `ghcr.io/uug-ai` images are trusted:
+
+- every UUG.AI image has a signature and a hardening policy, matching its
+  `ghcr.io/uug-ai/<image>` repository only. Images that are not signed or
+  hardened yet stay in `Audit` (the tables mark them), so they show up as
+  failures in Policy Reporter without ever being blocked;
+- `trusted-registry.yaml` (category **`Image registry`**, `Audit`) reports every
+  container image from any other registry or organisation. The chart can still
+  deploy three: `uugai/admin` (Docker Hub; switch `admin.repository` to the signed
+  `ghcr.io/uug-ai/admin`), `uugai/hub-reactivatesubscriptions` (Docker Hub; not
+  released to GHCR yet) and the third-party `quay.io/oauth2-proxy/oauth2-proxy`
+  (pin it to a version or digest rather than `:latest`).
 
 To change a policy, edit its file. To add an image, copy a policy file and
 change the image and repository.
@@ -484,8 +486,8 @@ image whose repository makes hardened releases, in `templates/kyverno/`:
 | `hub-pipeline-notification-test-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` (not hardened yet; always `Audit`) |
 | `hub-pipeline-sprite-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` (not hardened yet; always `Audit`) |
 | `hub-pipeline-thumbnail-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` (not hardened yet; always `Audit`) |
-| `admin-hardened-images.yaml` | `uugai/admin / ghcr.io/uug-ai/admin` (not hardened yet; always `Audit`) |
-| `hub-reactivatesubscriptions-hardened-images.yaml` | `uugai/hub-reactivatesubscriptions / ghcr.io/uug-ai/hub-reactivatesubscriptions` (not hardened yet; always `Audit`) |
+| `admin-hardened-images.yaml` | `ghcr.io/uug-ai/admin` (not hardened yet; always `Audit`) |
+| `hub-reactivatesubscriptions-hardened-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` (not hardened yet; always `Audit`) |
 
 Each requires the attestation to be signed by the UUG.AI release workflow for
 the image's own repository, and its `result` and `repository` to be `passed`

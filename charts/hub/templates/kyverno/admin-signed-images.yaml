@@ -17,9 +17,9 @@ metadata:
 # Kyverno defaults apply: background scans of running pods, signature required.
 # Only settings whose Kyverno default would change behaviour are set below.
 spec:
-  # Not signed by UUG.AI yet. The chart pulls Docker Hub uugai/admin, which the UUG.AI release workflow does
-  # not sign. uug-ai/admin releases ghcr.io/uug-ai/admin through the shared workflow:
-  # switch the chart to that image and sign its releases (sign: true).
+  # Only ghcr.io/uug-ai/admin is trusted. The chart's default image comes from
+  # Docker Hub (not matched here; reported by trusted-registry.yaml); switch it to
+  # the signed ghcr.io/uug-ai/admin release.
   # This policy reports that gap and stays in Audit, even when
   # imageVerification.validationFailureAction is Enforce.
   validationFailureAction: Audit
@@ -36,10 +36,6 @@ spec:
                 - Pod
       verifyImages:
         - imageReferences:
-            - "uugai/admin:*"
-            - "uugai/admin@*"
-            - "docker.io/uugai/admin:*"
-            - "docker.io/uugai/admin@*"
             - "ghcr.io/uug-ai/admin:*"
             - "ghcr.io/uug-ai/admin@*"
           # Kyverno's defaults (true) would rewrite pod images to digests and
