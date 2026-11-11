@@ -1224,6 +1224,24 @@ kerberoshub:
         #  - name: custom-email-templates
         #    persistentVolumeClaim:
         #      claimName: custom-layout-claim
+  reactivate:
+    repository: uugai/hub-reactivatesubscriptions
+    pullPolicy: IfNotPresent
+    tag: "v1.0.2"
+    replicas: 0 # Number of pods for the service. Set to 0 to disable.
+    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    # Optional extra volumes / volumeMounts for this deployment (empty = none).
+    #volumes:
+    #  - name: extra
+    #    emptyDir: {}
+    #volumeMounts:
+    #  - name: extra
+    #    mountPath: /data
+    logLevel: "info" # possible values: trace, debug, info, warn, error
+    resources:
+      requests:
+        memory: 10Mi
+        cpu: 10m
 # The Kerberos Hub pipeline is a series of microservices that process the recordings.
 # Each microservice is responsible for a specific task, like counting objects, generating thumbnails, etc.
 # The pipeline is orchestrated through Kafka topics or RabbitMQ queues.
