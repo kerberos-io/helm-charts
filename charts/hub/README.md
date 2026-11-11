@@ -58,7 +58,7 @@ legacy opt-out, TLS/configuration mounts and deployment modes.
 ### Hardened frontend images
 
 Starting with chart **`0.170.0`**, both frontends default to shell-free
-`ghcr.io/uug-ai/hub-frontend:v1.19.28`, running as `65532:65532` on port `8080`
+`ghcr.io/uug-ai/hub-frontend:v1.19.34`, running as `65532:65532` on port `8080`
 with a read-only root filesystem and writable `/tmp`. The Service and ingress
 remain on port `80`. Admin retains its legacy image and port `80`; its hardened
 runtime remains opt-in.
@@ -389,8 +389,10 @@ every policy follows `imageVerification.validationFailureAction`, except
 `hub-objecttracking`: its GPU image (`<tag>-gpu`) is not signed yet, so that
 policy stays in `Audit` and enabling `Enforce` never blocks it. Images are signed
 from the release noted in the table; **older tags are unsigned and are rejected
-in `Enforce`**, so check the tags you run (including this chart's defaults)
-before enforcing.
+in `Enforce`**, so check the tags you run before enforcing. Since chart
+**`0.183.0`** the default image tags are signed releases, and hardened releases
+(with the attestation) for every image that has a hardening policy except
+`hub-frontend`.
 
 Not covered: `uugai/admin`, `uugai/hub-proxy` and
 `uugai/hub-reactivatesubscriptions` are pulled from Docker Hub rather than the
@@ -865,7 +867,7 @@ kerberospipeline:
 | `kerberoshub.serviceAccount.labels` | Labels applied to `kerberoshub.serviceAccount` resources. | `""` |
 | `kerberoshub.api.repository` | The Docker registry where the Kerberos Hub API container is hosted. | `"ghcr.io/uug-ai/hub-api"` |
 | `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.9.8"` |
+| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.41"` |
 | `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `2` |
 | `kerberoshub.api.audit.enabled` | Enable audit publishing from Hub API when global auditing is enabled. | `true` |
 | `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `"info"` |
@@ -923,7 +925,7 @@ kerberospipeline:
 | `kerberoshub.api.sso.extraHeaders.value` | Header value for each configured SSO extra header entry. | `""` |
 | `kerberoshub.frontend.repository` | The Docker registry where the Kerberos Hub frontend is hosted. | `"ghcr.io/uug-ai/hub-frontend"` |
 | `kerberoshub.frontend.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.9.11"` |
+| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.34"` |
 | `kerberoshub.frontend.replicas` | The number of pods/replicas running for the Kerberos Hub frontend deployment. | `2` |
 | `kerberoshub.frontend.logLevel` | Log verbosity level for `kerberoshub.frontend`. | `"info"` |
 | `kerberoshub.frontend.schema` | The protocol to serve the Kerberos Hub frontend, `'http'` or `'https'`. | `"https"` |
@@ -1047,7 +1049,7 @@ kerberospipeline:
 | `kerberoshub.oauth2Proxy.github.team` | Team value used by `kerberoshub.oauth2Proxy.github`. | `"github-team"` |
 | `kerberoshub.cleanup.repository` | The Docker container that is responsible for cleaning up the Kerberos Hub API content and related MongoDB collections. | `"ghcr.io/uug-ai/hub-cleanup"` |
 | `kerberoshub.cleanup.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.cleanup.tag` | The Docker image tag/version. | `"v1.4.13"` |
+| `kerberoshub.cleanup.tag` | The Docker image tag/version. | `"v1.4.27"` |
 | `kerberoshub.cleanup.replicas` | Number of replicas for `kerberoshub.cleanup`. | `1` |
 | `kerberoshub.cleanup.mode` | Cleanup service mode: `serve`, `dry-run`, or `version`. | `"serve"` |
 | `kerberoshub.cleanup.logLevel` | Log verbosity level for `kerberoshub.cleanup`. | `"info"` |
@@ -1075,7 +1077,7 @@ kerberospipeline:
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
 | `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
 | `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
-| `kerberoshub.audit.tag` | Hub audit service image tag. S3 destinations need v1.0.9 or later, and `s3.allowUnlockedBucket` needs v1.0.10. | `"v1.0.10"` |
+| `kerberoshub.audit.tag` | Hub audit service image tag. S3 destinations need v1.0.9 or later, and `s3.allowUnlockedBucket` needs v1.0.10. | `"v1.0.11"` |
 | `kerberoshub.audit.replicas` | Number of audit service replicas. Per-destination MongoDB leases prevent concurrent delivery. | `1` |
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
@@ -1113,7 +1115,7 @@ kerberospipeline:
 | `kerberoshub.audit.topologySpreadConstraints` | Topology spread constraints for audit service pods. | `[]` |
 | `kerberoshub.monitordevice.repository` | The monitoring microservice, following up the status of your cameras and Kerberos Agents. | `"ghcr.io/uug-ai/hub-monitor-device"` |
 | `kerberoshub.monitordevice.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.0"` |
+| `kerberoshub.monitordevice.tag` | The Docker image tag/version. | `"v1.4.15"` |
 | `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
 | `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `"info"` |
 | `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected. For accounts with "Group notifications" on, `hub-monitor-device` v1.4.10 and later then hold a change 20 seconds (`DEVICE_GROUPING_HOLD_SECONDS`) to collect other cameras that change status at the same time; older releases hold it one scan. | `60` |
@@ -1137,34 +1139,34 @@ kerberospipeline:
 | `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `"10m"` |
 | `kerberospipeline.event.repository` | The [event orchestration](https://doc.kerberos.io/hub/pipeline/#orchestrator) microservice. | `"ghcr.io/uug-ai/hub-pipeline-event"` |
 | `kerberospipeline.event.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.0"` |
+| `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.10"` |
 | `kerberospipeline.event.replicas` | Number of replicas for `kerberospipeline.event`. | `1` |
 | `kerberospipeline.event.logLevel` | Log verbosity level for `kerberospipeline.event`. | `"info"` |
 | `kerberospipeline.event.resources.requests.memory` | Memory request for `kerberospipeline.event`. | `"10Mi"` |
 | `kerberospipeline.event.resources.requests.cpu` | CPU request for `kerberospipeline.event`. | `"10m"` |
 | `kerberospipeline.monitor.repository` | The [monitoring microservice](https://doc.kerberos.io/hub/pipeline/#monitoring), calculating metrics of incoming messages. | `"ghcr.io/uug-ai/hub-pipeline-monitor"` |
 | `kerberospipeline.monitor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.monitor.tag` | The Docker image tag/version. | `"v1.3.9"` |
+| `kerberospipeline.monitor.tag` | The Docker image tag/version. | `"v1.3.30"` |
 | `kerberospipeline.monitor.replicas` | Number of replicas for `kerberospipeline.monitor`. | `1` |
 | `kerberospipeline.monitor.logLevel` | Monitor log level. Set to `debug` for per-event processing checkpoints. | `"info"` |
 | `kerberospipeline.monitor.resources.requests.memory` | Memory request for `kerberospipeline.monitor`. | `"10Mi"` |
 | `kerberospipeline.monitor.resources.requests.cpu` | CPU request for `kerberospipeline.monitor`. | `"10m"` |
 | `kerberospipeline.sequence.repository` | The [sequencer microservice](https://doc.kerberos.io/hub/pipeline/#sequencer), grouping recordings in chunks/groups. | `"ghcr.io/uug-ai/hub-pipeline-sequence"` |
 | `kerberospipeline.sequence.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.sequence.tag` | The Docker image tag/version. | `"v1.6.18"` |
+| `kerberospipeline.sequence.tag` | The Docker image tag/version. | `"v1.7.15"` |
 | `kerberospipeline.sequence.replicas` | Number of replicas for `kerberospipeline.sequence`. | `1` |
 | `kerberospipeline.sequence.resources.requests.memory` | Memory request for `kerberospipeline.sequence`. | `"10Mi"` |
 | `kerberospipeline.sequence.resources.requests.cpu` | CPU request for `kerberospipeline.sequence`. | `"10m"` |
 | `kerberospipeline.throttler.repository` | The [throttler microservice](https://doc.kerberos.io/hub/pipeline/#throttler), throttling events. | `"uugai/hub-pipeline-throttler"` |
 | `kerberospipeline.throttler.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.throttler.tag` | The Docker image tag/version. | `"v1.2.0"` |
+| `kerberospipeline.throttler.tag` | The Docker image tag/version. | `"v1.2.11"` |
 | `kerberospipeline.throttler.replicas` | Number of replicas for `kerberospipeline.throttler`. | `1` |
 | `kerberospipeline.throttler.logLevel` | Log verbosity level for `kerberospipeline.throttler`. | `"info"` |
 | `kerberospipeline.throttler.resources.requests.memory` | Memory request for `kerberospipeline.throttler`. | `"10Mi"` |
 | `kerberospipeline.throttler.resources.requests.cpu` | CPU request for `kerberospipeline.throttler`. | `"10m"` |
 | `kerberospipeline.notify.repository` | The [notification microservice](https://doc.kerberos.io/hub/pipeline/#notification), sending notifications on events. | `"ghcr.io/uug-ai/hub-pipeline-notification"` |
 | `kerberospipeline.notify.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.9"` |
+| `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.48"` |
 | `kerberospipeline.notify.replicas` | Number of replicas for `kerberospipeline.notify`. | `1` |
 | `kerberospipeline.notify.audit.enabled` | Enable audit publishing from the notification worker when global auditing is enabled. | `true` |
 | `kerberospipeline.notify.logLevel` | Log verbosity level for `kerberospipeline.notify`. | `"info"` |
@@ -1173,13 +1175,13 @@ kerberospipeline:
 | `kerberospipeline.notify.resources.requests.cpu` | CPU request for `kerberospipeline.notify`. | `"10m"` |
 | `kerberospipeline.notifyTest.repository` | The notification service for testing, the different channels. | `"uugai/hub-pipeline-notification-test"` |
 | `kerberospipeline.notifyTest.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.notifyTest.tag` | The Docker image tag/version. | `"v1.2.1"` |
+| `kerberospipeline.notifyTest.tag` | The Docker image tag/version. | `"v1.2.7"` |
 | `kerberospipeline.notifyTest.replicas` | Number of replicas for `kerberospipeline.notifyTest`. | `1` |
 | `kerberospipeline.notifyTest.resources.requests.memory` | Memory request for `kerberospipeline.notifyTest`. | `"10Mi"` |
 | `kerberospipeline.notifyTest.resources.requests.cpu` | CPU request for `kerberospipeline.notifyTest`. | `"10m"` |
 | `kerberospipeline.analysis.repository` | The [analysis microservices](https://doc.kerberos.io/hub/pipeline/#analyser) which executed specific analysis in parallel. | `"ghcr.io/uug-ai/hub-pipeline-analysis"` |
 | `kerberospipeline.analysis.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.analysis.tag` | The Docker image tag/version. | `"v1.7.8"` |
+| `kerberospipeline.analysis.tag` | The Docker image tag/version. | `"v1.8.31"` |
 | `kerberospipeline.analysis.replicas` | Number of replicas for `kerberospipeline.analysis`. | `1` |
 | `kerberospipeline.analysis.logLevel` | Log verbosity level for `kerberospipeline.analysis`. | `"info"` |
 | `kerberospipeline.analysis.thumbnailRegeneration.enabled` | Regenerate thumbnails from the first frame of a classified moving object (`THUMBNAIL_REGENERATION_ENABLED`). Adds up to one thumbnail job per classified recording. Requires an analysis image that reads the flag. | `false` |
@@ -1191,7 +1193,7 @@ kerberospipeline:
 | `kerberospipeline.dominantColor.enabled` | Deploy `pipe-dominantcolor` and let the analysis stage schedule it (`DOMINANTCOLOR_ENABLED`). Requires an analysis image that reads the flag. | `false` |
 | `kerberospipeline.dominantColor.repository` | The dominant color microservices is computing a top 3 color histogram. | `"ghcr.io/uug-ai/hub-pipeline-dominantcolors"` |
 | `kerberospipeline.dominantColor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `"v2.0.2"` |
+| `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `"v2.0.10"` |
 | `kerberospipeline.dominantColor.replicas` | Number of replicas for `kerberospipeline.dominantColor`. | `3` |
 | `kerberospipeline.dominantColor.logLevel` | Log verbosity level for `kerberospipeline.dominantColor`. | `"info"` |
 | `kerberospipeline.dominantColor.resources.requests.memory` | Memory request for `kerberospipeline.dominantColor`. | `"512Mi"` |
@@ -1200,7 +1202,7 @@ kerberospipeline:
 | `kerberospipeline.dominantColor.resources.limits.cpu` | CPU limit for `kerberospipeline.dominantColor`. | `"1000m"` |
 | `kerberospipeline.thumbnail.repository` | The thumbnail microservices generated a thumbnail for a recordings. | `"ghcr.io/uug-ai/hub-pipeline-thumbnail"` |
 | `kerberospipeline.thumbnail.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.4"` |
+| `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.24"` |
 | `kerberospipeline.thumbnail.replicas` | Number of replicas for `kerberospipeline.thumbnail`. | `2` |
 | `kerberospipeline.thumbnail.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-thumbnail ≥ v1.3.15. | `0` |
 | `kerberospipeline.sprite.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-sprite ≥ v1.1.21. | `0` |
@@ -1215,7 +1217,7 @@ kerberospipeline:
 | `kerberospipeline.thumbnail.resources.limits.cpu` | CPU limit for `kerberospipeline.thumbnail`. | `"1000m"` |
 | `kerberospipeline.counting.repository` | The counting microservices computes objects passing different line segments. | `"uugai/hub-pipeline-counting"` |
 | `kerberospipeline.counting.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.counting.tag` | The Docker image tag/version. | `"v1.6.3"` |
+| `kerberospipeline.counting.tag` | The Docker image tag/version. | `"v2.0.7"` |
 | `kerberospipeline.counting.replicas` | Number of replicas for `kerberospipeline.counting`. | `1` |
 | `kerberospipeline.counting.logLevel` | Log verbosity level for `kerberospipeline.counting`. | `"info"` |
 | `kerberospipeline.counting.resources.requests.memory` | Memory request for `kerberospipeline.counting`. | `"10Mi"` |
@@ -1223,7 +1225,7 @@ kerberospipeline:
 | `kerberospipeline.sprite.enabled` | Enable or disable `kerberospipeline.sprite`. | `false` |
 | `kerberospipeline.sprite.repository` | Container image repository for `kerberospipeline.sprite`. | `"ghcr.io/uug-ai/hub-pipeline-sprite"` |
 | `kerberospipeline.sprite.pullPolicy` | Image pull policy for `kerberospipeline.sprite`. | `"IfNotPresent"` |
-| `kerberospipeline.sprite.tag` | Container image tag/version for `kerberospipeline.sprite`. | `"v1.1.12"` |
+| `kerberospipeline.sprite.tag` | Container image tag/version for `kerberospipeline.sprite`. | `"v1.1.28"` |
 | `kerberospipeline.sprite.replicas` | Number of replicas for `kerberospipeline.sprite`. | `5` |
 | `kerberospipeline.sprite.logLevel` | Log verbosity level for `kerberospipeline.sprite`. | `"info"` |
 | `kerberospipeline.sprite.interval` | Configuration value for `kerberospipeline.sprite.interval`. | `"1"` |
@@ -1235,7 +1237,7 @@ kerberospipeline:
 | `kerberospipeline.sprite.resources.limits.cpu` | CPU limit for `kerberospipeline.sprite`. | `"1000m"` |
 | `kerberospipeline.export.repository` | Container image repository for `kerberospipeline.export`. | `"ghcr.io/uug-ai/hub-pipeline-export"` |
 | `kerberospipeline.export.pullPolicy` | Image pull policy for `kerberospipeline.export`. | `"IfNotPresent"` |
-| `kerberospipeline.export.tag` | Container image tag/version for `kerberospipeline.export`. | `"v1.2.4"` |
+| `kerberospipeline.export.tag` | Container image tag/version for `kerberospipeline.export`. | `"v1.2.22"` |
 | `kerberospipeline.export.replicas` | Number of replicas for `kerberospipeline.export`. | `2` |
 | `kerberospipeline.export.logLevel` | Log verbosity level for `kerberospipeline.export`. | `"info"` |
 | `kerberospipeline.export.resources.requests.memory` | Memory request for `kerberospipeline.export`. | `"10Mi"` |
