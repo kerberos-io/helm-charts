@@ -29,7 +29,7 @@ for mode in all ui; do
     --set kerberoshub.frontend.demoEnabled=true)"
   for name in hub-frontend hub-frontend-demo; do
     deployment="$(resource Deployment "$name" <<< "$rendered")"
-    assert_contains "$deployment" 'image: "ghcr.io/uug-ai/hub-frontend:v1.19.28"$'
+    assert_contains "$deployment" 'image: "ghcr.io/uug-ai/hub-frontend:v1.19.34"$'
     assert_contains "$deployment" 'containerPort: 8080$'
     [[ "$(grep -c 'containerPort:' <<< "$deployment")" == 1 ]]
     for setting in 'name: http' 'runAsNonRoot: true' 'runAsUser: 65532' \
