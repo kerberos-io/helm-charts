@@ -389,8 +389,10 @@ every policy follows `imageVerification.validationFailureAction`, except
 `hub-objecttracking`: its GPU image (`<tag>-gpu`) is not signed yet, so that
 policy stays in `Audit` and enabling `Enforce` never blocks it. Images are signed
 from the release noted in the table; **older tags are unsigned and are rejected
-in `Enforce`**, so check the tags you run (including this chart's defaults)
-before enforcing.
+in `Enforce`**, so check the tags you run before enforcing. Since chart
+**`0.183.0`** the default image tags are signed releases, and hardened releases
+(with the attestation) for every image that has a hardening policy except
+`hub-frontend`.
 
 Not covered: `uugai/admin`, `uugai/hub-proxy` and
 `uugai/hub-reactivatesubscriptions` are pulled from Docker Hub rather than the
