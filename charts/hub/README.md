@@ -327,14 +327,6 @@ Optional dataset mode also requires its own writable `ANPR_DATASET_DIR` mount.
 Models and application directories stay read-only.
 
 This repository has **no Vault server or design-system chart**. The files named
-`vault-proxy` and `vault-forwarder` deploy different legacy applications; their
-ports are not the Vault server's port. Do not change them for `uug-ai/vault#119`.
-That proposed Vault image requires port `8080` (legacy `80`), UID/GID `65532`,
-read-only `/home/vault`, workload-sized writable `/run/vault`, and compatible
-ownership on existing optional `LOCAL_CACHE_DIRECTORY` mounts. Its liveness
-endpoint is `GET /api/health`. Wire those settings in the actual Vault deployment
-only when a compatible image release is selected; no migration is required.
-
 ### Image signature verification (Kyverno)
 
 Starting with chart **`0.179.0`**, the chart can verify that UUG.AI images are
@@ -384,9 +376,6 @@ signed for its own `uug-ai/<image>` repository. "Mode" is the
 | `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ✅ signed (from v1.1.28) | value |
 | `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ✅ signed (from v1.3.24) | value |
 | `admin-signed-images.yaml` | `uugai/admin` (Docker Hub) / `ghcr.io/uug-ai/admin` | ❌ Docker Hub image not signed; switch to GHCR | always `Audit` |
-| `hub-proxy-signed-images.yaml` | `uugai/hub-proxy` (Docker Hub) / `ghcr.io/uug-ai/hub-proxy` | ❌ Docker Hub image not signed; switch to GHCR | always `Audit` |
-| `hub-reactivatesubscriptions-signed-images.yaml` | `uugai/hub-reactivatesubscriptions` (Docker Hub) / `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ❌ Docker Hub image not signed; switch to GHCR | always `Audit` |
-| `vault-forwarder-signed-images.yaml` | `kerberos/vault-forwarder` (legacy, optional) | ❌ not released by the UUG.AI workflow | always `Audit` |
 | `oauth2-proxy-signed-images.yaml` | `quay.io/oauth2-proxy/oauth2-proxy` (third-party) | ❌ visibility only; cannot be signed by UUG.AI | always `Audit` |
 
 Since chart **`0.182.0`** every `ghcr.io/uug-ai` image's releases are signed, so
@@ -402,9 +391,8 @@ Since chart **`0.184.0`** every container image the chart can deploy has a
 signature policy, and every UUG.AI image a hardening policy. Images that are
 not signed or hardened yet stay in `Audit` (the tables mark them), so they show
 up as failures in Policy Reporter without ever being blocked: the Docker Hub
-images `uugai/admin`, `uugai/hub-proxy` and `uugai/hub-reactivatesubscriptions`
-(their repositories already release signed `ghcr.io/uug-ai` images; switching
-the chart to those fixes them), the legacy `kerberos/vault-forwarder`, and the
+image `uugai/admin` (its repository already releases signed
+`ghcr.io/uug-ai/admin` images; switching the chart to that fixes it) and the
 third-party `oauth2-proxy` (visibility only; it needs its upstream signing
 identity, and should be pinned instead of `:latest`). `oauth2-proxy` has no
 hardening policy, since only UUG.AI releases carry the hardening attestation.
@@ -496,9 +484,6 @@ image whose repository makes hardened releases, in `templates/kyverno/`:
 | `hub-pipeline-sprite-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` (not hardened yet; always `Audit`) |
 | `hub-pipeline-thumbnail-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` (not hardened yet; always `Audit`) |
 | `admin-hardened-images.yaml` | `uugai/admin / ghcr.io/uug-ai/admin` (not hardened yet; always `Audit`) |
-| `hub-proxy-hardened-images.yaml` | `uugai/hub-proxy / ghcr.io/uug-ai/hub-proxy` (not hardened yet; always `Audit`) |
-| `hub-reactivatesubscriptions-hardened-images.yaml` | `uugai/hub-reactivatesubscriptions / ghcr.io/uug-ai/hub-reactivatesubscriptions` (not hardened yet; always `Audit`) |
-| `vault-forwarder-hardened-images.yaml` | `kerberos/vault-forwarder` (not hardened yet; always `Audit`) |
 
 Each requires the attestation to be signed by the UUG.AI release workflow for
 the image's own repository, and its `result` and `repository` to be `passed`
@@ -1146,22 +1131,6 @@ kerberospipeline:
 | `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected. For accounts with "Group notifications" on, `hub-monitor-device` v1.4.10 and later then hold a change 20 seconds (`DEVICE_GROUPING_HOLD_SECONDS`) to collect other cameras that change status at the same time; older releases hold it one scan. | `60` |
 | `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
 | `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
-| `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
-| `kerberoshub.reactivate.pullPolicy` | Image pull policy for `kerberoshub.reactivate`. | `"IfNotPresent"` |
-| `kerberoshub.reactivate.tag` | Container image tag/version for `kerberoshub.reactivate`. | `"v1.0.2"` |
-| `kerberoshub.reactivate.replicas` | Number of replicas for `kerberoshub.reactivate`. Set to `0` to disable. | `0` |
-| `kerberoshub.reactivate.logLevel` | Log verbosity level for `kerberoshub.reactivate`. | `"info"` |
-| `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `"10Mi"` |
-| `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `"10m"` |
-| `kerberoshub.forwarder.enabled` | Enable or disable the Hub forwarder component. | `false` |
-| `kerberoshub.proxy.enabled` | Enable or disable the legacy Hub proxy Deployment and LoadBalancer Service. | `false` |
-| `kerberoshub.proxy.repository` | Container image repository for `kerberoshub.proxy`. | `"uugai/hub-proxy"` |
-| `kerberoshub.proxy.pullPolicy` | Image pull policy for `kerberoshub.proxy`. | `"IfNotPresent"` |
-| `kerberoshub.proxy.tag` | Container image tag/version for `kerberoshub.proxy`. | `"v1.0.0"` |
-| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy` when enabled. | `0` |
-| `kerberoshub.proxy.logLevel` | Log verbosity level for `kerberoshub.proxy`. | `"info"` |
-| `kerberoshub.proxy.resources.requests.memory` | Memory request for `kerberoshub.proxy`. | `"10Mi"` |
-| `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `"10m"` |
 | `kerberospipeline.event.repository` | The [event orchestration](https://doc.kerberos.io/hub/pipeline/#orchestrator) microservice. | `"ghcr.io/uug-ai/hub-pipeline-event"` |
 | `kerberospipeline.event.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.10"` |
@@ -1298,9 +1267,6 @@ kerberospipeline:
 | `email.templates.recordingTitle` | Email subject for recording check alerts. Empty uses "[Device] A camera stopped recording", "[Device] A camera is recording again" and their forms for several cameras. | `""` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
-| `kerberoshub.forwarder.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberoshub.forwarder.repository` | The Docker container which orchestrates forwarding coming from different Kerberos Vaults. | `""` |
-| `kerberoshub.forwarder.tag` | The Docker image tag/version. | `""` |
 | `kerberoshub.frontend.ssoDomain` | The domain that's being used to activate SSO from the login page. | `""` |
 | `kerberoshub.frontend.stripe.apikey` | If using the public version, `stripe` can be used for automated billing and subscriptions. | `""` |
 
