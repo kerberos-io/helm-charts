@@ -58,7 +58,7 @@ legacy opt-out, TLS/configuration mounts and deployment modes.
 ### Hardened frontend images
 
 Starting with chart **`0.170.0`**, both frontends default to shell-free
-`ghcr.io/uug-ai/hub-frontend:v1.19.34`, running as `65532:65532` on port `8080`
+`ghcr.io/uug-ai/hub-frontend:v1.19.35`, running as `65532:65532` on port `8080`
 with a read-only root filesystem and writable `/tmp`. The Service and ingress
 remain on port `80`. Admin retains its legacy image and port `80`; its hardened
 runtime remains opt-in.
@@ -390,9 +390,8 @@ every policy follows `imageVerification.validationFailureAction`, except
 policy stays in `Audit` and enabling `Enforce` never blocks it. Images are signed
 from the release noted in the table; **older tags are unsigned and are rejected
 in `Enforce`**, so check the tags you run before enforcing. Since chart
-**`0.183.0`** the default image tags are signed releases, and hardened releases
-(with the attestation) for every image that has a hardening policy except
-`hub-frontend`.
+**`0.183.0`** the default image tags are signed releases, and since **`0.183.1`** hardened
+releases (with the attestation) for every image that has a hardening policy.
 
 Not covered: `uugai/admin`, `uugai/hub-proxy` and
 `uugai/hub-reactivatesubscriptions` are pulled from Docker Hub rather than the
@@ -925,7 +924,7 @@ kerberospipeline:
 | `kerberoshub.api.sso.extraHeaders.value` | Header value for each configured SSO extra header entry. | `""` |
 | `kerberoshub.frontend.repository` | The Docker registry where the Kerberos Hub frontend is hosted. | `"ghcr.io/uug-ai/hub-frontend"` |
 | `kerberoshub.frontend.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.34"` |
+| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.35"` |
 | `kerberoshub.frontend.replicas` | The number of pods/replicas running for the Kerberos Hub frontend deployment. | `2` |
 | `kerberoshub.frontend.logLevel` | Log verbosity level for `kerberoshub.frontend`. | `"info"` |
 | `kerberoshub.frontend.schema` | The protocol to serve the Kerberos Hub frontend, `'http'` or `'https'`. | `"https"` |
