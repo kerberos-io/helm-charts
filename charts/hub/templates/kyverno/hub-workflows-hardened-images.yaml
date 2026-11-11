@@ -13,7 +13,7 @@ metadata:
   name: hub-workflows-hardened-images
   annotations:
     policies.kyverno.io/title: hub-workflows images must come from a hardened UUG.AI release
-    policies.kyverno.io/category: Supply chain
+    policies.kyverno.io/category: Image hardening
     policies.kyverno.io/severity: medium
     policies.kyverno.io/subject: Pod
 # Kyverno defaults apply: background scans of running pods, attestation required.

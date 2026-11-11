@@ -350,6 +350,10 @@ When enabled and [Kyverno](https://kyverno.io) is installed in the cluster, it
 creates Kyverno policies in the release namespace. Without Kyverno (no
 `kyverno.io/v1` API), nothing is created even when enabled.
 
+Signature policies use the Kyverno category **`Image signing`** and hardening
+policies **`Image hardening`** (chart `0.182.1`), so Policy Reporter and its
+dashboards can filter on each check separately.
+
 Each policy is a plain, namespaced Kyverno `Policy` in its own file in
 `templates/kyverno/`, so it applies only to the release namespace. There is one
 per `ghcr.io/uug-ai` image the chart can deploy; each requires the image to be
