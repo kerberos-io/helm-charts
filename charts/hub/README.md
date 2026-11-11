@@ -434,6 +434,49 @@ cosign verify ghcr.io/uug-ai/hub-api:v1.11.40 \
   --certificate-github-workflow-repository uug-ai/hub-api
 ```
 
+### Image hardening verification (Kyverno)
+
+Starting with chart **`0.181.0`**, the chart can also require images to come
+from a **hardened** UUG.AI release. A hardened release runs extra gates (tests,
+non-root runtime contract, read-only smoke test, vulnerability and secret scans,
+SBOM checks) and, only when all pass, adds a signed in-toto attestation of type
+`https://github.com/uug-ai/workflows/attestations/image-hardening/v1` with
+`result: passed` and the image's repository. This is separate from (and
+stricter than) the signature check above, and opt-in on its own:
+
+```yaml
+imageHardening:
+  enabled: true
+  validationFailureAction: Audit   # Audit (default) or Enforce
+```
+
+When enabled and Kyverno is installed, it creates one namespaced `Policy` per
+image whose repository makes hardened releases, in `templates/kyverno/`:
+
+| Template | Image |
+|---|---|
+| `hub-api-hardened-images.yaml` | `ghcr.io/uug-ai/hub-api` |
+| `hub-cleanup-hardened-images.yaml` | `ghcr.io/uug-ai/hub-cleanup` |
+| `hub-frontend-hardened-images.yaml` | `ghcr.io/uug-ai/hub-frontend` |
+| `hub-loitering-hardened-images.yaml` | `ghcr.io/uug-ai/hub-loitering` |
+| `hub-monitor-device-hardened-images.yaml` | `ghcr.io/uug-ai/hub-monitor-device` |
+| `hub-workflows-hardened-images.yaml` | `ghcr.io/uug-ai/hub-workflows` |
+| `hub-pipeline-analysis-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-analysis` |
+| `hub-pipeline-counting-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-counting` |
+| `hub-pipeline-monitor-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-monitor` |
+| `hub-pipeline-sequence-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sequence` |
+| `hub-pipeline-throttler-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-throttler` |
+
+Each requires the attestation to be signed by the UUG.AI release workflow for
+the image's own repository, and its `result` and `repository` to be `passed`
+and `uug-ai/<image>`. Images whose repositories do not make hardened releases
+have no hardening policy.
+
+Only releases made with hardening enabled after the attestation was introduced
+(November 2026) carry it, so most currently running versions fail this policy
+until their next hardened release. Keep it in `Audit` until the reports are
+clean.
+
 ### MCP
 
 Deploy a Hub API image supporting MCP, then enable the read-only Streamable HTTP
