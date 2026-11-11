@@ -11,7 +11,7 @@ metadata:
   name: hub-pipeline-export-signed-images
   annotations:
     policies.kyverno.io/title: hub-pipeline-export images must be signed by UUG.AI
-    policies.kyverno.io/category: Supply chain
+    policies.kyverno.io/category: Image signing
     policies.kyverno.io/severity: high
     policies.kyverno.io/subject: Pod
 # Kyverno defaults apply: background scans of running pods, signature required.
