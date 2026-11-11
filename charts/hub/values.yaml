@@ -527,7 +527,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.19.34"
+    tag: "v1.19.35"
     replicas: 2
     containerPort: 8080
     securityContext:
