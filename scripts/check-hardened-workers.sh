@@ -60,6 +60,14 @@ assert_line() {
   fi
 }
 
+without_admin() {
+  awk '
+    /^---$/ { skip=0 }
+    /^# Source: hub\/templates\/admin\/deployment\.yaml$/ { skip=1 }
+    !skip { print }
+  '
+}
+
 without_frontends() {
   awk '
     /^---$/ { skip=0 }
@@ -70,7 +78,8 @@ without_frontends() {
 
 for mode in all pipeline ui; do
   defaults="$(helm template hub "$CHART_DIR" --set "mode=$mode")"
-  worker_defaults="$(without_frontends <<< "$defaults")"
+  # Frontends, hub-api and Admin (since 0.184.0) are hardened by default.
+  worker_defaults="$(without_frontends <<< "$defaults" | without_admin)"
   if grep -q 'securityContext:' <<< "$worker_defaults"; then
     echo "Default $mode mode unexpectedly enables worker security settings" >&2
     exit 1
@@ -120,8 +129,8 @@ for mode in all pipeline ui; do
     fi
   done
   expected="${#names[@]}"
-  [[ "$(without_frontends <<< "$hardened" | grep -c 'runAsUser: 65532')" == "$expected" ]]
-  [[ "$(without_frontends <<< "$hardened" | grep -c 'fsGroup: 65532')" == "$expected" ]]
+  [[ "$(without_frontends <<< "$hardened" | without_admin | grep -c 'runAsUser: 65532')" == "$expected" ]]
+  [[ "$(without_frontends <<< "$hardened" | without_admin | grep -c 'fsGroup: 65532')" == "$expected" ]]
 
   # Image selection, Services, env and TLS mounts must not change.
   for pattern in '^[ ]+image:' '^[ ]+(port|targetPort|containerPort):' 'mongodb-tls'; do
@@ -137,26 +146,23 @@ isolated="$(helm template hub "$CHART_DIR" --set mode=pipeline \
 assert_line "$(resource Deployment pipe-counting <<< "$isolated")" '^[ ]+runAsUser: 65532$'
 echo "All hardened worker checks passed."
 
-admin_flags=(
-  --set admin.containerPort=8080
-  --set admin.securityContext.runAsNonRoot=true
-  --set admin.securityContext.runAsUser=65532
-  --set admin.securityContext.runAsGroup=65532
-  --set admin.securityContext.readOnlyRootFilesystem=true
-  --set admin.securityContext.allowPrivilegeEscalation=false
-  --set admin.securityContext.capabilities.drop[0]=ALL
-  --set admin.securityContext.seccompProfile.type=RuntimeDefault
-  --set admin.volumes[0].name=admin-tmp
-  --set admin.volumes[0].emptyDir.medium=Memory
-  --set admin.volumes[0].emptyDir.sizeLimit=16Mi
-  --set admin.volumeMounts[0].name=admin-tmp
-  --set admin.volumeMounts[0].mountPath=/tmp
+# Since chart 0.184.0 the hardened Admin runtime is the default; these flags
+# opt back into a legacy image on port 80.
+legacy_admin_flags=(
+  --set admin.repository=uugai/admin
+  --set admin.tag=v1.3.0
+  --set admin.containerPort=80
+  --set admin.securityContext=null
+  --set admin.readinessProbe=null
+  --set admin.livenessProbe=null
+  --set admin.volumes=null
+  --set admin.volumeMounts=null
   --set admin.oauth2Proxy.enabled=true
 )
 for mode in all ui pipeline; do
-  legacy="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true)"
-  configured="$(helm template hub "$CHART_DIR" --set "mode=$mode" "${admin_flags[@]}")"
-  helm lint "$CHART_DIR" --quiet --set "mode=$mode" "${admin_flags[@]}"
+  legacy="$(helm template hub "$CHART_DIR" --set "mode=$mode" "${legacy_admin_flags[@]}")"
+  configured="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true)"
+  helm lint "$CHART_DIR" --quiet --set "mode=$mode" "${legacy_admin_flags[@]}"
   if [[ "$mode" == pipeline ]]; then
     [[ -z "$(resource Deployment admin <<< "$configured")" ]]
     [[ -z "$(resource Service admin-svc <<< "$configured")" ]]
@@ -186,9 +192,11 @@ for mode in all ui pipeline; do
   [[ "$(resource Ingress admin-ingress <<< "$legacy")" == "$(resource Ingress admin-ingress <<< "$configured")" ]]
   [[ "$(resource Deployment oauth2-proxy-admin <<< "$legacy")" == "$(resource Deployment oauth2-proxy-admin <<< "$configured")" ]]
   [[ "$(resource Service oauth2-proxy-admin <<< "$legacy")" == "$(resource Service oauth2-proxy-admin <<< "$configured")" ]]
-  [[ "$(grep 'image:' <<< "$legacy")" == "$(grep 'image:' <<< "$configured")" ]]
+  [[ "$(without_admin <<< "$legacy" | grep 'image:')" == "$(without_admin <<< "$configured" | grep 'image:')" ]]
+  assert_line "$old" 'image: "uugai/admin:v1.3.0"$'
+  assert_line "$block" 'image: "ghcr.io/uug-ai/admin:v1.4.5"$'
   # No other workload inherits Admin's container port or security settings.
   [[ "$(without_frontends <<< "$configured" | grep -c 'runAsUser: 65532')" == 1 ]]
-  echo "OK ($mode): Admin opt-in port/security/tmpfs; legacy image, Service port, ingress and OAuth2-proxy preserved"
+  echo "OK ($mode): Admin hardened defaults; legacy opt-out; Service port, ingress and OAuth2-proxy preserved"
 done
 echo "All hardened Admin checks passed."

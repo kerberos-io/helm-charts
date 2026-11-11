@@ -122,61 +122,35 @@ instructions below if the existing Deployment cannot be patched to `8080`.
 Run `bash scripts/check-frontend-runtime.sh` for default, demo, legacy override,
 and deployment-values regression coverage.
 
-### Hardened Admin image (opt-in, chart 0.167.3)
+### Hardened Admin image (default since chart 0.184.0)
 
-`charts/hub` deploys Admin in `all` and `ui` modes. Shell-free Admin `v1.4.3`
-runs as `65532:65532` and listens on `8080`, unlike the legacy image on `80`.
-Set these values together; the chart does not upgrade the image automatically:
+`charts/hub` deploys Admin in `all` and `ui` modes. Since chart **`0.184.0`** the
+default is the signed, shell-free `ghcr.io/uug-ai/admin` (`v1.4.5`): it runs as
+`65532:65532` on `8080` with a read-only root filesystem, a memory-backed `/tmp`
+(`admin-tmp`, the only writable path) and `/healthz` probes. These settings are
+the defaults in `values.yaml`; keep them together with the image. Append extra
+volumes and mounts to the `admin.volumes` / `admin.volumeMounts` lists (Helm
+replaces lists in overrides). Memory-backed scratch counts against the pod memory
+limit. The `admin-svc` Service and Admin ingress use port `80`; the Service
+targets the named `http` container port. OAuth2-proxy is unchanged.
+
+Only `ghcr.io/uug-ai` images are trusted (see *Image signature verification*).
+To run a legacy image on port `80` instead, restore all of these together:
 
 ```yaml
 admin:
-    repository: ghcr.io/uug-ai/admin
-    tag: v1.4.3
-    containerPort: 8080
-    securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        capabilities:
-            drop: ["ALL"]
-        seccompProfile:
-            type: RuntimeDefault
-    volumes:
-        - name: admin-tmp
-          emptyDir:
-              medium: Memory
-              sizeLimit: 16Mi # Example; size for your runtime configuration.
-    volumeMounts:
-        - name: admin-tmp
-          mountPath: /tmp
-    readinessProbe:
-        httpGet:
-            path: /healthz
-            port: http
-        periodSeconds: 10
-    livenessProbe:
-        httpGet:
-            path: /healthz
-            port: http
-        initialDelaySeconds: 10
-        periodSeconds: 10
+    repository: uugai/admin
+    tag: v1.3.0
+    containerPort: 80
+    securityContext: null
+    readinessProbe: null
+    livenessProbe: null
+    volumes: null
+    volumeMounts: null
 ```
 
-Merge the scratch volume with any existing mounts. Only `/tmp` is writable;
-application files remain read-only. Memory-backed scratch counts against the
-pod memory limit. The `admin-svc` Service and Admin ingress still use port `80`;
-the Service targets the named `http` container port. OAuth2-proxy is unchanged.
-Defaults remain port `80` with no security context, added volumes, or probes. Coordinate
-the image, values and a chart revision containing these settings: published
-`0.167.2` does not contain Admin runtime support.
-
-Rollbacks to legacy images must restore port `80`, remove the hardened
-security context, and disable `/healthz` probes together. Run
-`bash scripts/check-admin-runtime.sh` from the repository root to verify
-legacy defaults, hardened runtime/probes, and unchanged OAuth2 routing.
-
+Run `bash scripts/check-admin-runtime.sh` from the repository root to verify the
+hardened defaults, the legacy opt-out and unchanged OAuth2 routing.
 ### Recovering a duplicate HTTP port during upgrades
 
 Chart `0.169.1` publishes this recovery guidance. The helper is available in the
@@ -375,7 +349,7 @@ signed for its own `uug-ai/<image>` repository. "Mode" is the
 | `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ✅ signed (from v1.2.7) | value |
 | `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ✅ signed (from v1.1.28) | value |
 | `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ✅ signed (from v1.3.24) | value |
-| `admin-signed-images.yaml` | `ghcr.io/uug-ai/admin` | ✅ signed (GHCR releases); the chart default still uses Docker Hub `uugai/admin` | always `Audit` |
+| `admin-signed-images.yaml` | `ghcr.io/uug-ai/admin` | ✅ signed (from v1.4.5) | always `Audit` |
 | `hub-reactivatesubscriptions-signed-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ❌ not on GHCR yet; the chart uses Docker Hub `uugai/hub-reactivatesubscriptions` | always `Audit` |
 
 Since chart **`0.182.0`** every `ghcr.io/uug-ai` image's releases are signed, so
@@ -395,10 +369,9 @@ Since chart **`0.184.0`** only `ghcr.io/uug-ai` images are trusted:
   failures in Policy Reporter without ever being blocked;
 - `trusted-registry.yaml` (category **`Image registry`**, `Audit`) reports every
   container image from any other registry or organisation. The chart can still
-  deploy three: `uugai/admin` (Docker Hub; switch `admin.repository` to the signed
-  `ghcr.io/uug-ai/admin`), `uugai/hub-reactivatesubscriptions` (Docker Hub; not
-  released to GHCR yet) and the third-party `quay.io/oauth2-proxy/oauth2-proxy`
-  (pin it to a version or digest rather than `:latest`).
+  deploy two: `uugai/hub-reactivatesubscriptions` (Docker Hub; not released to
+  GHCR yet) and the third-party `quay.io/oauth2-proxy/oauth2-proxy` (pin it to
+  a version or digest rather than `:latest`).
 
 To change a policy, edit its file. To add an image, copy a policy file and
 change the image and repository.
@@ -859,9 +832,9 @@ kerberospipeline:
 | `kerberosvault.sprite.provider` | Configuration value for `kerberosvault.sprite.provider`. | `"a-sprite-provider"` |
 | `kerberosvault.sprite.accessKey` | Access key for `kerberosvault.sprite`. | `"xxx"` |
 | `kerberosvault.sprite.secretKey` | Secret key for `kerberosvault.sprite`. | `"xxx"` |
-| `admin.repository` | Container image repository for `admin`. | `"uugai/admin"` |
+| `admin.repository` | Container image repository for `admin`. | `"ghcr.io/uug-ai/admin"` |
 | `admin.pullPolicy` | Image pull policy for `admin`. | `"IfNotPresent"` |
-| `admin.tag` | Container image tag/version for `admin`. | `"v1.3.0"` |
+| `admin.tag` | Container image tag/version for `admin`. | `"v1.4.5"` |
 | `admin.replicas` | Number of replicas for `admin`. | `2` |
 | `admin.logLevel` | Log verbosity level for `admin`. | `"info"` |
 | `admin.resources.requests.memory` | Memory request for `admin`. | `"100Mi"` |
