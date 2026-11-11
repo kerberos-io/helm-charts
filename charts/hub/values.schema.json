@@ -41,6 +41,25 @@
         }
       }
     },
+    "imageHardening": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Kyverno policies (templates/kyverno/*-hardened-images.yaml) requiring images to come from a hardened UUG.AI release (signed image-hardening attestation). Created only when the cluster serves kyverno.io/v1.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Create the hardening policies when Kyverno is installed."
+        },
+        "validationFailureAction": {
+          "type": "string",
+          "enum": [
+            "Audit",
+            "Enforce"
+          ],
+          "description": "Audit reports images without a hardened release but lets them run; Enforce rejects them."
+        }
+      }
+    },
     "deviceTags": {
       "type": "object",
       "additionalProperties": false,

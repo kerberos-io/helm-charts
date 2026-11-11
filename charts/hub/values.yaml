@@ -37,6 +37,16 @@ imageVerification:
   # Enforce: reject pods whose image is unsigned or signed for another repository.
   # Images whose releases are not signed yet always stay in Audit (see README).
   validationFailureAction: Audit
+# Kyverno policies in templates/kyverno/ (*-hardened-images.yaml, one per image
+# whose repository makes hardened releases) requiring the image to come from a
+# hardened UUG.AI release: a signed image-hardening attestation with result
+# "passed" for the image's own repository. Opt-in and separate from
+# imageVerification, since only releases made with hardening enabled carry it.
+imageHardening:
+  enabled: false
+  # Audit: report images without a hardened release but let them run.
+  # Enforce: reject pods whose image is not from a hardened release.
+  validationFailureAction: Audit
 ###########################################################################
 # Global configuration
 ###########################################################################
