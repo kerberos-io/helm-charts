@@ -1,0 +1,57 @@
+{{- /*
+admin images must be signed by UUG.AI: a keyless cosign signature issued by
+GitHub Actions, made by the UUG.AI release workflow, for uug-ai/admin.
+A namespaced Policy, so it applies only to the release namespace.
+Rendered only when imageVerification.enabled is true and Kyverno is installed.
+*/ -}}
+{{- if and .Values.imageVerification.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
+apiVersion: kyverno.io/v1
+kind: Policy
+metadata:
+  name: admin-signed-images
+  annotations:
+    policies.kyverno.io/title: admin images must be signed by UUG.AI
+    policies.kyverno.io/category: Image signing
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod
+# Kyverno defaults apply: background scans of running pods, signature required.
+# Only settings whose Kyverno default would change behaviour are set below.
+spec:
+  # Only ghcr.io/uug-ai/admin is trusted. The chart's default image comes from
+  # Docker Hub (not matched here; reported by trusted-registry.yaml); switch it to
+  # the signed ghcr.io/uug-ai/admin release.
+  # This policy reports that gap and stays in Audit, even when
+  # imageVerification.validationFailureAction is Enforce.
+  validationFailureAction: Audit
+  # Kyverno's default (Fail) would stop admin pods starting while Kyverno is down.
+  failurePolicy: Ignore
+  # Verifying against GHCR and Rekor can exceed the 10s default.
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: verify-admin
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      verifyImages:
+        - imageReferences:
+            - "ghcr.io/uug-ai/admin:*"
+            - "ghcr.io/uug-ai/admin@*"
+          # Kyverno's defaults (true) would rewrite pod images to digests and
+          # report every tag-based image; enable together with Enforce.
+          mutateDigest: false
+          verifyDigest: false
+          attestors:
+            - entries:
+                - keyless:
+                    issuer: https://token.actions.githubusercontent.com
+                    # The UUG.AI release workflow, at a branch/tag ref or a commit.
+                    subjectRegExp: '^https://github\.com/uug-ai/workflows/\.github/workflows/release-create\.yml@(refs/.+|[0-9a-f]{40})$'
+                    additionalExtensions:
+                      # That workflow signs for every UUG.AI repository; this
+                      # binds the signature to uug-ai/admin.
+                      githubWorkflowRepository: uug-ai/admin
+                    rekor:
+                      url: https://rekor.sigstore.dev
+{{- end }}

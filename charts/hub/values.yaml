@@ -286,14 +286,34 @@ kerberosvault:
 # For now it's used to create, edit users for Hub.
 ###########################################################################
 admin:
-  repository: uugai/admin
-  # Opt in to 8080 and a securityContext only with a compatible hardened image.
-  containerPort: 80
-  securityContext: {}
-  readinessProbe: {}
-  livenessProbe: {}
+  # Signed release from the UUG.AI release workflow (only ghcr.io/uug-ai is trusted).
+  # It runs shell-free as 65532:65532 on 8080 with a read-only root filesystem:
+  # keep the runtime settings below together with the image (see README).
+  repository: ghcr.io/uug-ai/admin
+  containerPort: 8080
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    periodSeconds: 10
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
   pullPolicy: IfNotPresent
-  tag: "v1.3.0"
+  tag: "v1.4.5"
   replicas: 2
   # Optional pod topology spread constraints for this deployment. Empty by
   # default. Example:
@@ -305,13 +325,16 @@ admin:
   #         matchLabels:
   #           app: admin
   topologySpreadConstraints: []
-  # Optional extra volumes / volumeMounts for this deployment (empty = none).
-  #volumes:
-  #  - name: extra
-  #    emptyDir: {}
-  #volumeMounts:
-  #  - name: extra
-  #    mountPath: /data
+  # The only writable path: memory-backed /tmp (counts against the pod memory
+  # limit). Append extra volumes / volumeMounts to these lists.
+  volumes:
+    - name: admin-tmp
+      emptyDir:
+        medium: Memory
+        sizeLimit: 16Mi
+  volumeMounts:
+    - name: admin-tmp
+      mountPath: /tmp
   logLevel: "info" # possible values: trace, debug, info, warn, error
   resources:
     requests:
@@ -1229,43 +1252,6 @@ kerberoshub:
     pullPolicy: IfNotPresent
     tag: "v1.0.2"
     replicas: 0 # Number of pods for the service. Set to 0 to disable.
-    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-    # Optional extra volumes / volumeMounts for this deployment (empty = none).
-    #volumes:
-    #  - name: extra
-    #    emptyDir: {}
-    #volumeMounts:
-    #  - name: extra
-    #    mountPath: /data
-    logLevel: "info" # possible values: trace, debug, info, warn, error
-    resources:
-      requests:
-        memory: 10Mi
-        cpu: 10m
-  forwarder:
-    enabled: false
-    topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
-    # Optional extra volumes / volumeMounts for this deployment (empty = none).
-    #volumes:
-    #  - name: extra
-    #    emptyDir: {}
-    #volumeMounts:
-    #  - name: extra
-    #    mountPath: /data
-    #repository: kerberos/vault-forwarder
-    #pullPolicy: IfNotPresent
-    #tag: "1.0.2732389692"
-    #resources:
-    #  requests:
-    #    memory: 10Mi
-    #    cpu: 10m
-  # This proxy is legacy for the old agent, will be migrated in the new Hub API.
-  proxy:
-    enabled: false
-    repository: uugai/hub-proxy
-    pullPolicy: IfNotPresent
-    tag: "v1.0.0"
-    replicas: 0 # Number of pods for the service when enabled.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:

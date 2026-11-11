@@ -28,28 +28,26 @@ assert_absent() {
   fi
 }
 
-HARDENED_FLAGS=(
-  --set admin.containerPort=8080
-  --set-json 'admin.securityContext={"runAsNonRoot":true,"runAsUser":65532,"runAsGroup":65532,"readOnlyRootFilesystem":true,"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"seccompProfile":{"type":"RuntimeDefault"}}'
-  --set-json 'admin.volumes=[{"name":"admin-tmp","emptyDir":{"medium":"Memory","sizeLimit":"16Mi"}}]'
-  --set-json 'admin.volumeMounts=[{"name":"admin-tmp","mountPath":"/tmp"}]'
-  --set-json 'admin.readinessProbe={"httpGet":{"path":"/healthz","port":"http"},"periodSeconds":10}'
-  --set-json 'admin.livenessProbe={"httpGet":{"path":"/healthz","port":"http"},"initialDelaySeconds":10,"periodSeconds":10}'
+# Since chart 0.184.0 the hardened ghcr.io/uug-ai/admin runtime is the default;
+# LEGACY_FLAGS opts back into a legacy image on port 80.
+LEGACY_FLAGS=(
+  --set admin.repository=uugai/admin
+  --set admin.tag=v1.3.0
+  --set admin.containerPort=80
+  --set admin.securityContext=null
+  --set admin.readinessProbe=null
+  --set admin.livenessProbe=null
+  --set admin.volumes=null
+  --set admin.volumeMounts=null
 )
 
 for mode in all ui; do
-  default_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true)"
-  default_deployment="$(resource deployment <<< "$default_render")"
-  default_service="$(resource service <<< "$default_render")"
-  default_ingress="$(resource ingress <<< "$default_render")"
-  default_oauth="$(resource oauth2-proxy <<< "$default_render")"
-  assert_contains "$default_deployment" 'containerPort: 80$'
-  assert_absent "$default_deployment" 'securityContext:|readinessProbe:|livenessProbe:'
-  assert_contains "$default_service" 'port: 80$'
-  assert_contains "$default_service" 'targetPort: http$'
-
-  hardened_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true "${HARDENED_FLAGS[@]}")"
+  hardened_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true)"
   hardened_deployment="$(resource deployment <<< "$hardened_render")"
+  hardened_service="$(resource service <<< "$hardened_render")"
+  hardened_ingress="$(resource ingress <<< "$hardened_render")"
+  hardened_oauth="$(resource oauth2-proxy <<< "$hardened_render")"
+  assert_contains "$hardened_deployment" 'image: "ghcr.io/uug-ai/admin:'
   assert_contains "$hardened_deployment" 'containerPort: 8080$'
   assert_absent "$hardened_deployment" 'containerPort: 80$'
   for setting in 'runAsNonRoot: true' 'runAsUser: 65532' 'runAsGroup: 65532' \
@@ -66,17 +64,24 @@ for mode in all ui; do
     assert_contains "$probe_render" 'path: /healthz$'
     assert_contains "$probe_render" 'port: http$'
   done
+  assert_contains "$hardened_service" 'port: 80$'
+  assert_contains "$hardened_service" 'targetPort: http$'
 
-  [[ "$(resource service <<< "$hardened_render")" == "$default_service" ]]
-  [[ "$(resource ingress <<< "$hardened_render")" == "$default_ingress" ]]
-  [[ "$(resource oauth2-proxy <<< "$hardened_render")" == "$default_oauth" ]]
-  assert_contains "$default_ingress" 'nginx.ingress.kubernetes.io/auth-url:'
-  assert_contains "$default_ingress" 'number: 80$'
+  legacy_render="$(helm template hub "$CHART_DIR" --set "mode=$mode" --set admin.oauth2Proxy.enabled=true "${LEGACY_FLAGS[@]}")"
+  legacy_deployment="$(resource deployment <<< "$legacy_render")"
+  assert_contains "$legacy_deployment" 'containerPort: 80$'
+  assert_absent "$legacy_deployment" 'securityContext:|readinessProbe:|livenessProbe:|admin-tmp'
 
-  echo "OK ($mode): legacy defaults; hardened runtime/probes; stable Service, ingress and OAuth2"
+  [[ "$(resource service <<< "$legacy_render")" == "$hardened_service" ]]
+  [[ "$(resource ingress <<< "$legacy_render")" == "$hardened_ingress" ]]
+  [[ "$(resource oauth2-proxy <<< "$legacy_render")" == "$hardened_oauth" ]]
+  assert_contains "$hardened_ingress" 'nginx.ingress.kubernetes.io/auth-url:'
+  assert_contains "$hardened_ingress" 'number: 80$'
+
+  echo "OK ($mode): hardened ghcr.io defaults; legacy opt-out; stable Service, ingress and OAuth2"
 done
 
-pipeline_render="$(helm template hub "$CHART_DIR" --set mode=pipeline "${HARDENED_FLAGS[@]}")"
+pipeline_render="$(helm template hub "$CHART_DIR" --set mode=pipeline)"
 assert_absent "$pipeline_render" '^# Source: hub/templates/admin/'
 
 echo "All Admin runtime checks passed."

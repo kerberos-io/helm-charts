@@ -1,0 +1,45 @@
+{{- /*
+Only images from ghcr.io/uug-ai are trusted: report every container, init
+container and ephemeral container image from any other registry or
+organisation (Docker Hub, quay.io, ...). Signature and hardening are checked per
+image by the *-signed-images / *-hardened-images policies, which match
+ghcr.io/uug-ai images only.
+A namespaced Policy, so it applies only to the release namespace.
+Rendered only when imageVerification.enabled is true and Kyverno is installed.
+*/ -}}
+{{- if and .Values.imageVerification.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
+apiVersion: kyverno.io/v1
+kind: Policy
+metadata:
+  name: trusted-registry
+  annotations:
+    policies.kyverno.io/title: Images must come from ghcr.io/uug-ai
+    policies.kyverno.io/category: Image registry
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod
+spec:
+  # Reports images from other registries without blocking them, even when
+  # imageVerification.validationFailureAction is Enforce: some images the chart
+  # can deploy are not on ghcr.io/uug-ai yet (see README). Switch to the
+  # configured value once every image is.
+  validationFailureAction: Audit
+  # Kyverno's default (Fail) would stop pods starting while Kyverno is down.
+  failurePolicy: Ignore
+  rules:
+    - name: images-from-ghcr-uug-ai
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Every container image must come from the trusted registry ghcr.io/uug-ai/."
+        foreach:
+          - list: "request.object.spec.[containers, initContainers, ephemeralContainers][]"
+            deny:
+              conditions:
+                all:
+                  - key: "{{`{{ element.image }}`}}"
+                    operator: NotEquals
+                    value: "ghcr.io/uug-ai/*"
+{{- end }}

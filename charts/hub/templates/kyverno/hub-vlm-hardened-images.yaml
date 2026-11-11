@@ -1,0 +1,69 @@
+{{- /*
+hub-vlm images must come from a hardened release: they carry the signed
+image-hardening attestation (result "passed") that the UUG.AI release workflow
+adds after all hardening gates pass, for uug-ai/hub-vlm.
+The signature itself is checked by hub-vlm-signed-images.yaml.
+A namespaced Policy, so it applies only to the release namespace.
+Rendered only when imageHardening.enabled is true and Kyverno is installed.
+*/ -}}
+{{- if and .Values.imageHardening.enabled (.Capabilities.APIVersions.Has "kyverno.io/v1") }}
+apiVersion: kyverno.io/v1
+kind: Policy
+metadata:
+  name: hub-vlm-hardened-images
+  annotations:
+    policies.kyverno.io/title: hub-vlm images must come from a hardened UUG.AI release
+    policies.kyverno.io/category: Image hardening
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+# Kyverno defaults apply: background scans of running pods, attestation required.
+# Only settings whose Kyverno default would change behaviour are set below.
+spec:
+  # Not hardened yet: uug-ai/hub-vlm has no hardened release with the
+  # image-hardening attestation (the image does not meet the hardened contract
+  # yet). This policy reports that gap and stays in Audit, even when
+  # imageHardening.validationFailureAction is Enforce. Once its releases are
+  # hardened, use the same line as hub-api-hardened-images.yaml.
+  validationFailureAction: Audit
+  # Kyverno's default (Fail) would stop hub-vlm pods starting while Kyverno is down.
+  failurePolicy: Ignore
+  # Verifying against GHCR and Rekor can exceed the 10s default.
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: verify-hub-vlm-hardened
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      verifyImages:
+        - imageReferences:
+            - "ghcr.io/uug-ai/hub-vlm:*"
+            - "ghcr.io/uug-ai/hub-vlm@*"
+          # Kyverno's defaults (true) would rewrite pod images to digests and
+          # report every tag-based image; enable together with Enforce.
+          mutateDigest: false
+          verifyDigest: false
+          attestations:
+            - type: https://github.com/uug-ai/workflows/attestations/image-hardening/v1
+              attestors:
+                - entries:
+                    - keyless:
+                        issuer: https://token.actions.githubusercontent.com
+                        # The UUG.AI release workflow, at a branch/tag ref or a commit.
+                        subjectRegExp: '^https://github\.com/uug-ai/workflows/\.github/workflows/release-create\.yml@(refs/.+|[0-9a-f]{40})$'
+                        additionalExtensions:
+                          githubWorkflowRepository: uug-ai/hub-vlm
+                        rekor:
+                          url: https://rekor.sigstore.dev
+              # Fields of the attestation's predicate. {{`{{ ... }}`}} is Kyverno
+              # syntax, escaped so Helm leaves it alone.
+              conditions:
+                - all:
+                    - key: "{{`{{ result }}`}}"
+                      operator: Equals
+                      value: passed
+                    - key: "{{`{{ repository }}`}}"
+                      operator: Equals
+                      value: uug-ai/hub-vlm
+{{- end }}

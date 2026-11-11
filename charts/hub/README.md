@@ -122,61 +122,35 @@ instructions below if the existing Deployment cannot be patched to `8080`.
 Run `bash scripts/check-frontend-runtime.sh` for default, demo, legacy override,
 and deployment-values regression coverage.
 
-### Hardened Admin image (opt-in, chart 0.167.3)
+### Hardened Admin image (default since chart 0.184.0)
 
-`charts/hub` deploys Admin in `all` and `ui` modes. Shell-free Admin `v1.4.3`
-runs as `65532:65532` and listens on `8080`, unlike the legacy image on `80`.
-Set these values together; the chart does not upgrade the image automatically:
+`charts/hub` deploys Admin in `all` and `ui` modes. Since chart **`0.184.0`** the
+default is the signed, shell-free `ghcr.io/uug-ai/admin` (`v1.4.5`): it runs as
+`65532:65532` on `8080` with a read-only root filesystem, a memory-backed `/tmp`
+(`admin-tmp`, the only writable path) and `/healthz` probes. These settings are
+the defaults in `values.yaml`; keep them together with the image. Append extra
+volumes and mounts to the `admin.volumes` / `admin.volumeMounts` lists (Helm
+replaces lists in overrides). Memory-backed scratch counts against the pod memory
+limit. The `admin-svc` Service and Admin ingress use port `80`; the Service
+targets the named `http` container port. OAuth2-proxy is unchanged.
+
+Only `ghcr.io/uug-ai` images are trusted (see *Image signature verification*).
+To run a legacy image on port `80` instead, restore all of these together:
 
 ```yaml
 admin:
-    repository: ghcr.io/uug-ai/admin
-    tag: v1.4.3
-    containerPort: 8080
-    securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        capabilities:
-            drop: ["ALL"]
-        seccompProfile:
-            type: RuntimeDefault
-    volumes:
-        - name: admin-tmp
-          emptyDir:
-              medium: Memory
-              sizeLimit: 16Mi # Example; size for your runtime configuration.
-    volumeMounts:
-        - name: admin-tmp
-          mountPath: /tmp
-    readinessProbe:
-        httpGet:
-            path: /healthz
-            port: http
-        periodSeconds: 10
-    livenessProbe:
-        httpGet:
-            path: /healthz
-            port: http
-        initialDelaySeconds: 10
-        periodSeconds: 10
+    repository: uugai/admin
+    tag: v1.3.0
+    containerPort: 80
+    securityContext: null
+    readinessProbe: null
+    livenessProbe: null
+    volumes: null
+    volumeMounts: null
 ```
 
-Merge the scratch volume with any existing mounts. Only `/tmp` is writable;
-application files remain read-only. Memory-backed scratch counts against the
-pod memory limit. The `admin-svc` Service and Admin ingress still use port `80`;
-the Service targets the named `http` container port. OAuth2-proxy is unchanged.
-Defaults remain port `80` with no security context, added volumes, or probes. Coordinate
-the image, values and a chart revision containing these settings: published
-`0.167.2` does not contain Admin runtime support.
-
-Rollbacks to legacy images must restore port `80`, remove the hardened
-security context, and disable `/healthz` probes together. Run
-`bash scripts/check-admin-runtime.sh` from the repository root to verify
-legacy defaults, hardened runtime/probes, and unchanged OAuth2 routing.
-
+Run `bash scripts/check-admin-runtime.sh` from the repository root to verify the
+hardened defaults, the legacy opt-out and unchanged OAuth2 routing.
 ### Recovering a duplicate HTTP port during upgrades
 
 Chart `0.169.1` publishes this recovery guidance. The helper is available in the
@@ -327,14 +301,6 @@ Optional dataset mode also requires its own writable `ANPR_DATASET_DIR` mount.
 Models and application directories stay read-only.
 
 This repository has **no Vault server or design-system chart**. The files named
-`vault-proxy` and `vault-forwarder` deploy different legacy applications; their
-ports are not the Vault server's port. Do not change them for `uug-ai/vault#119`.
-That proposed Vault image requires port `8080` (legacy `80`), UID/GID `65532`,
-read-only `/home/vault`, workload-sized writable `/run/vault`, and compatible
-ownership on existing optional `LOCAL_CACHE_DIRECTORY` mounts. Its liveness
-endpoint is `GET /api/health`. Wire those settings in the actual Vault deployment
-only when a compatible image release is selected; no migration is required.
-
 ### Image signature verification (Kyverno)
 
 Starting with chart **`0.179.0`**, the chart can verify that UUG.AI images are
@@ -383,6 +349,8 @@ signed for its own `uug-ai/<image>` repository. "Mode" is the
 | `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ✅ signed (from v1.2.7) | value |
 | `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ✅ signed (from v1.1.28) | value |
 | `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ✅ signed (from v1.3.24) | value |
+| `admin-signed-images.yaml` | `ghcr.io/uug-ai/admin` | ✅ signed (from v1.4.5) | always `Audit` |
+| `hub-reactivatesubscriptions-signed-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ❌ not on GHCR yet; the chart uses Docker Hub `uugai/hub-reactivatesubscriptions` | always `Audit` |
 
 Since chart **`0.182.0`** every `ghcr.io/uug-ai` image's releases are signed, so
 every policy follows `imageVerification.validationFailureAction`, except
@@ -393,9 +361,17 @@ in `Enforce`**, so check the tags you run before enforcing. Since chart
 **`0.183.0`** the default image tags are signed releases, and since **`0.183.1`** hardened
 releases (with the attestation) for every image that has a hardening policy.
 
-Not covered: `uugai/admin`, `uugai/hub-proxy` and
-`uugai/hub-reactivatesubscriptions` are pulled from Docker Hub rather than the
-signed `ghcr.io/uug-ai` releases, and `oauth2-proxy` is a third-party image.
+Since chart **`0.184.0`** only `ghcr.io/uug-ai` images are trusted:
+
+- every UUG.AI image has a signature and a hardening policy, matching its
+  `ghcr.io/uug-ai/<image>` repository only. Images that are not signed or
+  hardened yet stay in `Audit` (the tables mark them), so they show up as
+  failures in Policy Reporter without ever being blocked;
+- `trusted-registry.yaml` (category **`Image registry`**, `Audit`) reports every
+  container image from any other registry or organisation. The chart can still
+  deploy two: `uugai/hub-reactivatesubscriptions` (Docker Hub; not released to
+  GHCR yet) and the third-party `quay.io/oauth2-proxy/oauth2-proxy` (pin it to
+  a version or digest rather than `:latest`).
 
 To change a policy, edit its file. To add an image, copy a policy file and
 change the image and repository.
@@ -473,6 +449,18 @@ image whose repository makes hardened releases, in `templates/kyverno/`:
 | `hub-pipeline-monitor-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-monitor` |
 | `hub-pipeline-sequence-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sequence` |
 | `hub-pipeline-throttler-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-throttler` |
+| `hub-audit-hardened-images.yaml` | `ghcr.io/uug-ai/hub-audit` (not hardened yet; always `Audit`) |
+| `hub-objecttracking-hardened-images.yaml` | `ghcr.io/uug-ai/hub-objecttracking` (not hardened yet; always `Audit`) |
+| `hub-vlm-hardened-images.yaml` | `ghcr.io/uug-ai/hub-vlm` (not hardened yet; always `Audit`) |
+| `hub-pipeline-dominantcolors-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-dominantcolors` (not hardened yet; always `Audit`) |
+| `hub-pipeline-event-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-event` (not hardened yet; always `Audit`) |
+| `hub-pipeline-export-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-export` (not hardened yet; always `Audit`) |
+| `hub-pipeline-notification-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification` (not hardened yet; always `Audit`) |
+| `hub-pipeline-notification-test-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` (not hardened yet; always `Audit`) |
+| `hub-pipeline-sprite-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` (not hardened yet; always `Audit`) |
+| `hub-pipeline-thumbnail-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` (not hardened yet; always `Audit`) |
+| `admin-hardened-images.yaml` | `ghcr.io/uug-ai/admin` (not hardened yet; always `Audit`) |
+| `hub-reactivatesubscriptions-hardened-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` (not hardened yet; always `Audit`) |
 
 Each requires the attestation to be signed by the UUG.AI release workflow for
 the image's own repository, and its `result` and `repository` to be `passed`
@@ -844,9 +832,9 @@ kerberospipeline:
 | `kerberosvault.sprite.provider` | Configuration value for `kerberosvault.sprite.provider`. | `"a-sprite-provider"` |
 | `kerberosvault.sprite.accessKey` | Access key for `kerberosvault.sprite`. | `"xxx"` |
 | `kerberosvault.sprite.secretKey` | Secret key for `kerberosvault.sprite`. | `"xxx"` |
-| `admin.repository` | Container image repository for `admin`. | `"uugai/admin"` |
+| `admin.repository` | Container image repository for `admin`. | `"ghcr.io/uug-ai/admin"` |
 | `admin.pullPolicy` | Image pull policy for `admin`. | `"IfNotPresent"` |
-| `admin.tag` | Container image tag/version for `admin`. | `"v1.3.0"` |
+| `admin.tag` | Container image tag/version for `admin`. | `"v1.4.5"` |
 | `admin.replicas` | Number of replicas for `admin`. | `2` |
 | `admin.logLevel` | Log verbosity level for `admin`. | `"info"` |
 | `admin.resources.requests.memory` | Memory request for `admin`. | `"100Mi"` |
@@ -1127,15 +1115,6 @@ kerberospipeline:
 | `kerberoshub.reactivate.logLevel` | Log verbosity level for `kerberoshub.reactivate`. | `"info"` |
 | `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `"10Mi"` |
 | `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `"10m"` |
-| `kerberoshub.forwarder.enabled` | Enable or disable the Hub forwarder component. | `false` |
-| `kerberoshub.proxy.enabled` | Enable or disable the legacy Hub proxy Deployment and LoadBalancer Service. | `false` |
-| `kerberoshub.proxy.repository` | Container image repository for `kerberoshub.proxy`. | `"uugai/hub-proxy"` |
-| `kerberoshub.proxy.pullPolicy` | Image pull policy for `kerberoshub.proxy`. | `"IfNotPresent"` |
-| `kerberoshub.proxy.tag` | Container image tag/version for `kerberoshub.proxy`. | `"v1.0.0"` |
-| `kerberoshub.proxy.replicas` | Number of replicas for `kerberoshub.proxy` when enabled. | `0` |
-| `kerberoshub.proxy.logLevel` | Log verbosity level for `kerberoshub.proxy`. | `"info"` |
-| `kerberoshub.proxy.resources.requests.memory` | Memory request for `kerberoshub.proxy`. | `"10Mi"` |
-| `kerberoshub.proxy.resources.requests.cpu` | CPU request for `kerberoshub.proxy`. | `"10m"` |
 | `kerberospipeline.event.repository` | The [event orchestration](https://doc.kerberos.io/hub/pipeline/#orchestrator) microservice. | `"ghcr.io/uug-ai/hub-pipeline-event"` |
 | `kerberospipeline.event.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
 | `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.10"` |
@@ -1272,9 +1251,6 @@ kerberospipeline:
 | `email.templates.recordingTitle` | Email subject for recording check alerts. Empty uses "[Device] A camera stopped recording", "[Device] A camera is recording again" and their forms for several cameras. | `""` |
 | `email.mailgun.apiKey` | The Mailgun API key linked to your Mailgun domain. | `""` |
 | `imagePullSecrets.name` | Docker registry secret name, which is also granted with the license. This allows you to download the Docker images. | `""` |
-| `kerberoshub.forwarder.pullPolicy` | The Docker registry pull policy. | `""` |
-| `kerberoshub.forwarder.repository` | The Docker container which orchestrates forwarding coming from different Kerberos Vaults. | `""` |
-| `kerberoshub.forwarder.tag` | The Docker image tag/version. | `""` |
 | `kerberoshub.frontend.ssoDomain` | The domain that's being used to activate SSO from the login page. | `""` |
 | `kerberoshub.frontend.stripe.apikey` | If using the public version, `stripe` can be used for automated billing and subscriptions. | `""` |
 

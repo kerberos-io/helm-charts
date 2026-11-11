@@ -44,7 +44,7 @@ for mode in all ui; do
     echo "OK ($mode): $name hardened image, security, scratch and named routing"
   done
   admin="$(resource Deployment admin <<< "$rendered")"
-  assert_contains "$admin" 'containerPort: 80$'
+  assert_contains "$admin" 'containerPort: 8080$'
 
   legacy="$(helm template hub "$CHART_DIR" "${values[@]}" --set "mode=$mode" \
     --set kerberoshub.frontend.demoEnabled=true \
