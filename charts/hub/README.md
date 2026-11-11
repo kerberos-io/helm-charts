@@ -369,22 +369,24 @@ signed for its own `uug-ai/<image>` repository. "Mode" is the
 | `hub-pipeline-monitor-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-monitor` | ✅ signed | value |
 | `hub-pipeline-sequence-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sequence` | ✅ signed | value |
 | `hub-pipeline-throttler-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-throttler` | ✅ signed | value |
-| `hub-audit-signed-images.yaml` | `ghcr.io/uug-ai/hub-audit` | ❌ not yet | always `Audit` |
-| `hub-objecttracking-signed-images.yaml` | `ghcr.io/uug-ai/hub-objecttracking` | ❌ not yet | always `Audit` |
-| `hub-vlm-signed-images.yaml` | `ghcr.io/uug-ai/hub-vlm` | ❌ not yet | always `Audit` |
-| `hub-pipeline-dominantcolors-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-dominantcolors` | ❌ not yet | always `Audit` |
-| `hub-pipeline-event-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-event` | ❌ not yet | always `Audit` |
-| `hub-pipeline-export-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-export` | ❌ not yet | always `Audit` |
-| `hub-pipeline-notification-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification` | ❌ not yet | always `Audit` |
-| `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ❌ not yet | always `Audit` |
-| `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ❌ not yet | always `Audit` |
-| `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ❌ not yet | always `Audit` |
+| `hub-audit-signed-images.yaml` | `ghcr.io/uug-ai/hub-audit` | ✅ signed (from v1.0.11) | value |
+| `hub-objecttracking-signed-images.yaml` | `ghcr.io/uug-ai/hub-objecttracking` | ✅ signed (from v1.0.10); `-gpu` image not yet | always `Audit` |
+| `hub-vlm-signed-images.yaml` | `ghcr.io/uug-ai/hub-vlm` | ✅ signed (from v1.0.8) | value |
+| `hub-pipeline-dominantcolors-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-dominantcolors` | ✅ signed (from v2.0.10) | value |
+| `hub-pipeline-event-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-event` | ✅ signed (from v1.3.10) | value |
+| `hub-pipeline-export-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-export` | ✅ signed (from v1.2.22) | value |
+| `hub-pipeline-notification-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification` | ✅ signed (from v1.3.48) | value |
+| `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ✅ signed (from v1.2.7) | value |
+| `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ✅ signed (from v1.1.28) | value |
+| `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ✅ signed (from v1.3.24) | value |
 
-Images whose releases are not signed yet stay in `Audit` even when
-`imageVerification.validationFailureAction` is `Enforce`, so enabling
-`Enforce` never blocks them. Their repositories need `sign: true` (and
-`id-token: write`) in their release workflow; once their releases are signed,
-the policy file switches to the configured value in a chart release.
+Since chart **`0.182.0`** every `ghcr.io/uug-ai` image's releases are signed, so
+every policy follows `imageVerification.validationFailureAction`, except
+`hub-objecttracking`: its GPU image (`<tag>-gpu`) is not signed yet, so that
+policy stays in `Audit` and enabling `Enforce` never blocks it. Images are signed
+from the release noted in the table; **older tags are unsigned and are rejected
+in `Enforce`**, so check the tags you run (including this chart's defaults)
+before enforcing.
 
 Not covered: `uugai/admin`, `uugai/hub-proxy` and
 `uugai/hub-reactivatesubscriptions` are pulled from Docker Hub rather than the

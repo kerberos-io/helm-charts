@@ -17,11 +17,8 @@ metadata:
 # Kyverno defaults apply: background scans of running pods, signature required.
 # Only settings whose Kyverno default would change behaviour are set below.
 spec:
-  # Not signed yet: uug-ai/hub-pipeline-event releases need `sign: true` (and
-  # `id-token: write`) in their release workflow. Until then this policy stays
-  # in Audit, even when imageVerification.validationFailureAction is Enforce.
-  # Once signed, use the same line as hub-api-signed-images.yaml.
-  validationFailureAction: Audit
+  # Audit: report unsigned images, don't block. Enforce: reject the pod.
+  validationFailureAction: {{ .Values.imageVerification.validationFailureAction }}
   # Kyverno's default (Fail) would stop hub-pipeline-event pods starting while Kyverno is down.
   failurePolicy: Ignore
   # Verifying against GHCR and Rekor can exceed the 10s default.
