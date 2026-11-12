@@ -367,11 +367,13 @@ Since chart **`0.184.0`** only `ghcr.io/uug-ai` images are trusted:
   `ghcr.io/uug-ai/<image>` repository only. Images that are not signed or
   hardened yet stay in `Audit` (the tables mark them), so they show up as
   failures in Policy Reporter without ever being blocked;
-- `trusted-registry.yaml` (category **`Image registry`**, `Audit`) reports every
-  container image from any other registry or organisation. Since **`0.185.0`**
-  the only one the chart can still deploy is the third-party
-  `quay.io/oauth2-proxy/oauth2-proxy` (pin it to a version or digest rather
-  than `:latest`).
+- `trusted-registry.yaml` (category **`Image registry`**, `Audit`) reports a
+  UUG.AI image (`uugai/...`, or a `uugai/` or `uug-ai/` organisation on any
+  registry) that is not pulled from `ghcr.io/uug-ai`. Since **`0.185.1`** it
+  ignores every other image in the namespace: workloads the chart doesn't
+  deploy (agents, cert-manager solvers, other tools) and the third-party
+  `quay.io/oauth2-proxy/oauth2-proxy` (pin that one to a version or digest
+  rather than `:latest`).
 
 Since chart **`0.185.0`** every UUG.AI image defaults to a signed, hardened
 release with the attestation (Admin `v1.4.6`, hub-reactivatesubscriptions
