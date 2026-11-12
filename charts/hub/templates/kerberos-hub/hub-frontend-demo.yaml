@@ -309,6 +309,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.devices.hideAgent }}"
 
         # features > floorplan
+        - name: FEATURE_ASK_ENABLED
+          value: "{{ (.Values.kerberoshub.frontend.features.ask | default dict).enabled | default "false" }}"
         - name: FEATURE_FLOORPLAN_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.floorplan.enabled }}"      
         # features > map
