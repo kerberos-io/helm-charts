@@ -960,6 +960,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.case.enabled` | Enable or disable the case feature in the frontend. | `"true"` |
 | `kerberoshub.frontend.features.darkModeEnabled` | Enable or disable dark mode in the frontend. | `"true"` |
 | `kerberoshub.frontend.features.splashScreen.enabled` | Enable or disable the pre-bootstrap splash screen and reveal delay. | `"true"` |
+| `kerberoshub.frontend.features.inspection.enabled` | Show the [inspect](https://github.com/uug-ai/inspect) bug-report launcher (and Alt+Shift+I): screenshot or record part of Hub, annotate it and file it as a GitHub issue via `https://inspect.uug.ai`. Needs hub-frontend with inspect support, and the Hub URL on the inspect server's origin allowlist. Sets `ALLOW_INSPECTION`. | `"false"` |
 | `kerberoshub.frontend.features.landingPage` | Frontend landing page configuration. | `"/dashboard"` |
 | `kerberoshub.frontend.features.i18n.enabled` | Enable or disable the runtime language switcher in the front-end. When `"false"`, `defaultLanguage` is forced and users cannot change it. | `"true"` |
 | `kerberoshub.frontend.features.i18n.defaultLanguage` | Default language code used by the front-end (e.g. `en`, `nl`, `pl`, `tr`, `fr`, `sv`, `de`). | `"en"` |
