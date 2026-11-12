@@ -303,6 +303,12 @@ spec:
               value: "{{ .Values.kerberoshub.api.schema }}://{{ .Values.kerberoshub.api.url }}"
             - name: PUBLIC_URL
               value: "{{ .Values.kerberoshub.frontend.schema }}://{{ .Values.kerberoshub.frontend.url }}"
+            - name: ACCESS_TOKEN_TIMEOUT
+              value: {{ .Values.kerberoshub.api.session.accessTokenTimeout | quote }}
+            - name: SESSION_IDLE_TIMEOUT
+              value: {{ .Values.kerberoshub.api.session.idleTimeout | quote }}
+            - name: SESSION_MAX_LIFETIME
+              value: {{ .Values.kerberoshub.api.session.maxLifetime | quote }}
             - name: REFRESH_COOKIE_SECURE
               value: {{ eq .Values.kerberoshub.api.schema "https" | quote }}
             {{- $corsOrigins := list (printf "%s://%s" .Values.kerberoshub.frontend.schema .Values.kerberoshub.frontend.url) }}
