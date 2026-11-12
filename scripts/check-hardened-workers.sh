@@ -194,7 +194,7 @@ for mode in all ui pipeline; do
   [[ "$(resource Service oauth2-proxy-admin <<< "$legacy")" == "$(resource Service oauth2-proxy-admin <<< "$configured")" ]]
   [[ "$(without_admin <<< "$legacy" | grep 'image:')" == "$(without_admin <<< "$configured" | grep 'image:')" ]]
   assert_line "$old" 'image: "uugai/admin:v1.3.0"$'
-  assert_line "$block" 'image: "ghcr.io/uug-ai/admin:v1.4.5"$'
+  assert_line "$block" 'image: "ghcr.io/uug-ai/admin:v1.4.6"$'
   # No other workload inherits Admin's container port or security settings.
   [[ "$(without_frontends <<< "$configured" | grep -c 'runAsUser: 65532')" == 1 ]]
   echo "OK ($mode): Admin hardened defaults; legacy opt-out; Service port, ingress and OAuth2-proxy preserved"

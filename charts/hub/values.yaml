@@ -313,7 +313,7 @@ admin:
     initialDelaySeconds: 10
     periodSeconds: 10
   pullPolicy: IfNotPresent
-  tag: "v1.4.5"
+  tag: "v1.4.6"
   replicas: 2
   # Optional pod topology spread constraints for this deployment. Empty by
   # default. Example:
@@ -916,7 +916,7 @@ kerberoshub:
   audit:
     repository: ghcr.io/uug-ai/hub-audit
     pullPolicy: IfNotPresent
-    tag: "v1.0.11"
+    tag: "v1.0.12"
     replicas: 1
     resources: {}
     # resources:
@@ -1174,7 +1174,7 @@ kerberoshub:
           #  enabled: true
           #  repository: ghcr.io/uug-ai/hub-objecttracking
           #  pullPolicy: IfNotPresent
-          #  tag: "v1.0.10"
+          #  tag: "v1.0.11"
           #  replicas: 1 # Number of pods for the worker.
           #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
           #  logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -1199,7 +1199,7 @@ kerberoshub:
           #  enabled: true
           #  repository: ghcr.io/uug-ai/hub-vlm
           #  pullPolicy: IfNotPresent
-          #  tag: "v1.0.8"
+          #  tag: "v1.0.9"
           #  replicas: 1 # Number of pods for the worker.
           #  topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
           #  logLevel: "info" # possible values: trace, debug, info, warn, error
@@ -1248,9 +1248,9 @@ kerberoshub:
         #    persistentVolumeClaim:
         #      claimName: custom-layout-claim
   reactivate:
-    repository: uugai/hub-reactivatesubscriptions
+    repository: ghcr.io/uug-ai/hub-reactivatesubscriptions
     pullPolicy: IfNotPresent
-    tag: "v1.0.2"
+    tag: "v1.0.3"
     replicas: 0 # Number of pods for the service. Set to 0 to disable.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1277,7 +1277,7 @@ kerberospipeline:
     #   argocd.argoproj.io/sync-wave: "10"
     repository: ghcr.io/uug-ai/hub-pipeline-event
     pullPolicy: IfNotPresent
-    tag: "v1.3.10"
+    tag: "v1.3.11"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1365,7 +1365,7 @@ kerberospipeline:
     # deploymentAnnotations:
     #   argocd.argoproj.io/sync-wave: "20"
     pullPolicy: IfNotPresent
-    tag: "v1.3.48"
+    tag: "v1.3.49"
     replicas: 1 # Number of pods for the service.
     audit:
       enabled: true
@@ -1387,7 +1387,7 @@ kerberospipeline:
   notifyTest:
     repository: ghcr.io/uug-ai/hub-pipeline-notification-test
     pullPolicy: IfNotPresent
-    tag: "v1.2.7"
+    tag: "v1.2.8"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     resources:
@@ -1450,7 +1450,7 @@ kerberospipeline:
     # deploymentAnnotations:
     #   argocd.argoproj.io/sync-wave: "50"
     pullPolicy: IfNotPresent
-    tag: "v2.0.10"
+    tag: "v2.0.11"
     replicas: 3 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
@@ -1476,7 +1476,7 @@ kerberospipeline:
     # deploymentAnnotations:
     #   argocd.argoproj.io/sync-wave: "50"
     pullPolicy: IfNotPresent
-    tag: "v1.3.24"
+    tag: "v1.3.25"
     replicas: 2 # Number of pods for the service.
     prefetchCount: 0 # Max unacknowledged RabbitMQ messages per pod; 0 = service default (5).
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
@@ -1531,7 +1531,7 @@ kerberospipeline:
     #   argocd.argoproj.io/sync-wave: "50"
     repository: ghcr.io/uug-ai/hub-pipeline-sprite
     pullPolicy: IfNotPresent
-    tag: "v1.1.28"
+    tag: "v1.1.29"
     replicas: 5 # Number of pods for the service.
     prefetchCount: 0 # Max unacknowledged RabbitMQ messages per pod; 0 = service default (5).
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
@@ -1558,7 +1558,7 @@ kerberospipeline:
   export:
     repository: ghcr.io/uug-ai/hub-pipeline-export
     pullPolicy: IfNotPresent
-    tag: "v1.2.22"
+    tag: "v1.2.23"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     logLevel: "info" # possible values: trace, debug, info, warn, error
