@@ -125,7 +125,7 @@ and deployment-values regression coverage.
 ### Hardened Admin image (default since chart 0.184.0)
 
 `charts/hub` deploys Admin in `all` and `ui` modes. Since chart **`0.184.0`** the
-default is the signed, shell-free `ghcr.io/uug-ai/admin` (`v1.4.5`): it runs as
+default is the signed, shell-free `ghcr.io/uug-ai/admin` (`v1.4.6` since 0.185.0): it runs as
 `65532:65532` on `8080` with a read-only root filesystem, a memory-backed `/tmp`
 (`admin-tmp`, the only writable path) and `/healthz` probes. These settings are
 the defaults in `values.yaml`; keep them together with the image. Append extra
@@ -349,8 +349,8 @@ signed for its own `uug-ai/<image>` repository. "Mode" is the
 | `hub-pipeline-notification-test-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` | ✅ signed (from v1.2.7) | value |
 | `hub-pipeline-sprite-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` | ✅ signed (from v1.1.28) | value |
 | `hub-pipeline-thumbnail-signed-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` | ✅ signed (from v1.3.24) | value |
-| `admin-signed-images.yaml` | `ghcr.io/uug-ai/admin` | ✅ signed (from v1.4.5) | always `Audit` |
-| `hub-reactivatesubscriptions-signed-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ❌ not on GHCR yet; the chart uses Docker Hub `uugai/hub-reactivatesubscriptions` | always `Audit` |
+| `admin-signed-images.yaml` | `ghcr.io/uug-ai/admin` | ✅ signed (from v1.4.5) | value |
+| `hub-reactivatesubscriptions-signed-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` | ✅ signed (from v1.0.3, the first GHCR release) | value |
 
 Since chart **`0.182.0`** every `ghcr.io/uug-ai` image's releases are signed, so
 every policy follows `imageVerification.validationFailureAction`, except
@@ -368,10 +368,16 @@ Since chart **`0.184.0`** only `ghcr.io/uug-ai` images are trusted:
   hardened yet stay in `Audit` (the tables mark them), so they show up as
   failures in Policy Reporter without ever being blocked;
 - `trusted-registry.yaml` (category **`Image registry`**, `Audit`) reports every
-  container image from any other registry or organisation. The chart can still
-  deploy two: `uugai/hub-reactivatesubscriptions` (Docker Hub; not released to
-  GHCR yet) and the third-party `quay.io/oauth2-proxy/oauth2-proxy` (pin it to
-  a version or digest rather than `:latest`).
+  container image from any other registry or organisation. Since **`0.185.0`**
+  the only one the chart can still deploy is the third-party
+  `quay.io/oauth2-proxy/oauth2-proxy` (pin it to a version or digest rather
+  than `:latest`).
+
+Since chart **`0.185.0`** every UUG.AI image defaults to a signed, hardened
+release with the attestation (Admin `v1.4.6`, hub-reactivatesubscriptions
+`v1.0.3` on `ghcr.io/uug-ai`), and every policy follows its
+`validationFailureAction` value except `hub-objecttracking`'s, whose `-gpu`
+image is not signed or hardened yet.
 
 To change a policy, edit its file. To add an image, copy a policy file and
 change the image and repository.
@@ -449,18 +455,18 @@ image whose repository makes hardened releases, in `templates/kyverno/`:
 | `hub-pipeline-monitor-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-monitor` |
 | `hub-pipeline-sequence-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sequence` |
 | `hub-pipeline-throttler-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-throttler` |
-| `hub-audit-hardened-images.yaml` | `ghcr.io/uug-ai/hub-audit` (not hardened yet; always `Audit`) |
-| `hub-objecttracking-hardened-images.yaml` | `ghcr.io/uug-ai/hub-objecttracking` (not hardened yet; always `Audit`) |
-| `hub-vlm-hardened-images.yaml` | `ghcr.io/uug-ai/hub-vlm` (not hardened yet; always `Audit`) |
-| `hub-pipeline-dominantcolors-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-dominantcolors` (not hardened yet; always `Audit`) |
-| `hub-pipeline-event-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-event` (not hardened yet; always `Audit`) |
-| `hub-pipeline-export-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-export` (not hardened yet; always `Audit`) |
-| `hub-pipeline-notification-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification` (not hardened yet; always `Audit`) |
-| `hub-pipeline-notification-test-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` (not hardened yet; always `Audit`) |
-| `hub-pipeline-sprite-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` (not hardened yet; always `Audit`) |
-| `hub-pipeline-thumbnail-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` (not hardened yet; always `Audit`) |
-| `admin-hardened-images.yaml` | `ghcr.io/uug-ai/admin` (not hardened yet; always `Audit`) |
-| `hub-reactivatesubscriptions-hardened-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` (not hardened yet; always `Audit`) |
+| `hub-audit-hardened-images.yaml` | `ghcr.io/uug-ai/hub-audit` (hardened from v1.0.12) |
+| `hub-objecttracking-hardened-images.yaml` | `ghcr.io/uug-ai/hub-objecttracking` (hardened from v1.0.11; `-gpu` image not yet; always `Audit`) |
+| `hub-vlm-hardened-images.yaml` | `ghcr.io/uug-ai/hub-vlm` (hardened from v1.0.9) |
+| `hub-pipeline-dominantcolors-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-dominantcolors` (hardened from v2.0.11) |
+| `hub-pipeline-event-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-event` (hardened from v1.3.11) |
+| `hub-pipeline-export-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-export` (hardened from v1.2.23) |
+| `hub-pipeline-notification-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification` (hardened from v1.3.49) |
+| `hub-pipeline-notification-test-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-notification-test` (hardened from v1.2.8) |
+| `hub-pipeline-sprite-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-sprite` (hardened from v1.1.29) |
+| `hub-pipeline-thumbnail-hardened-images.yaml` | `ghcr.io/uug-ai/hub-pipeline-thumbnail` (hardened from v1.3.25) |
+| `admin-hardened-images.yaml` | `ghcr.io/uug-ai/admin` (hardened from v1.4.6) |
+| `hub-reactivatesubscriptions-hardened-images.yaml` | `ghcr.io/uug-ai/hub-reactivatesubscriptions` (hardened from v1.0.3) |
 
 Each requires the attestation to be signed by the UUG.AI release workflow for
 the image's own repository, and its `result` and `repository` to be `passed`
@@ -834,7 +840,7 @@ kerberospipeline:
 | `kerberosvault.sprite.secretKey` | Secret key for `kerberosvault.sprite`. | `"xxx"` |
 | `admin.repository` | Container image repository for `admin`. | `"ghcr.io/uug-ai/admin"` |
 | `admin.pullPolicy` | Image pull policy for `admin`. | `"IfNotPresent"` |
-| `admin.tag` | Container image tag/version for `admin`. | `"v1.4.5"` |
+| `admin.tag` | Container image tag/version for `admin`. | `"v1.4.6"` |
 | `admin.replicas` | Number of replicas for `admin`. | `2` |
 | `admin.logLevel` | Log verbosity level for `admin`. | `"info"` |
 | `admin.resources.requests.memory` | Memory request for `admin`. | `"100Mi"` |
@@ -1064,7 +1070,7 @@ kerberospipeline:
 | `kerberoshub.cleanup.resources.requests.cpu` | CPU request for `kerberoshub.cleanup`. | `"10m"` |
 | `kerberoshub.audit.repository` | Hub audit service container image repository. | `"ghcr.io/uug-ai/hub-audit"` |
 | `kerberoshub.audit.pullPolicy` | Hub audit service image pull policy. | `"IfNotPresent"` |
-| `kerberoshub.audit.tag` | Hub audit service image tag. S3 destinations need v1.0.9 or later, and `s3.allowUnlockedBucket` needs v1.0.10. | `"v1.0.11"` |
+| `kerberoshub.audit.tag` | Hub audit service image tag. S3 destinations need v1.0.9 or later, and `s3.allowUnlockedBucket` needs v1.0.10. | `"v1.0.12"` |
 | `kerberoshub.audit.replicas` | Number of audit service replicas. Per-destination MongoDB leases prevent concurrent delivery. | `1` |
 | `kerberoshub.audit.dispatchInterval` | How often the mounted destination configuration is reloaded and eligible destinations are polled. | `"5s"` |
 | `kerberoshub.audit.leaseDuration` | Per-destination lease duration. It must exceed every destination timeout by at least 30 seconds. | `"2m"` |
@@ -1108,16 +1114,16 @@ kerberospipeline:
 | `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected. For accounts with "Group notifications" on, `hub-monitor-device` v1.4.10 and later then hold a change 20 seconds (`DEVICE_GROUPING_HOLD_SECONDS`) to collect other cameras that change status at the same time; older releases hold it one scan. | `60` |
 | `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
 | `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
-| `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"uugai/hub-reactivatesubscriptions"` |
+| `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"ghcr.io/uug-ai/hub-reactivatesubscriptions"` |
 | `kerberoshub.reactivate.pullPolicy` | Image pull policy for `kerberoshub.reactivate`. | `"IfNotPresent"` |
-| `kerberoshub.reactivate.tag` | Container image tag/version for `kerberoshub.reactivate`. | `"v1.0.2"` |
+| `kerberoshub.reactivate.tag` | Container image tag/version for `kerberoshub.reactivate`. | `"v1.0.3"` |
 | `kerberoshub.reactivate.replicas` | Number of replicas for `kerberoshub.reactivate`. Set to `0` to disable. | `0` |
 | `kerberoshub.reactivate.logLevel` | Log verbosity level for `kerberoshub.reactivate`. | `"info"` |
 | `kerberoshub.reactivate.resources.requests.memory` | Memory request for `kerberoshub.reactivate`. | `"10Mi"` |
 | `kerberoshub.reactivate.resources.requests.cpu` | CPU request for `kerberoshub.reactivate`. | `"10m"` |
 | `kerberospipeline.event.repository` | The [event orchestration](https://doc.kerberos.io/hub/pipeline/#orchestrator) microservice. | `"ghcr.io/uug-ai/hub-pipeline-event"` |
 | `kerberospipeline.event.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.10"` |
+| `kerberospipeline.event.tag` | The Docker image tag/version. | `"v1.3.11"` |
 | `kerberospipeline.event.replicas` | Number of replicas for `kerberospipeline.event`. | `1` |
 | `kerberospipeline.event.logLevel` | Log verbosity level for `kerberospipeline.event`. | `"info"` |
 | `kerberospipeline.event.resources.requests.memory` | Memory request for `kerberospipeline.event`. | `"10Mi"` |
@@ -1144,7 +1150,7 @@ kerberospipeline:
 | `kerberospipeline.throttler.resources.requests.cpu` | CPU request for `kerberospipeline.throttler`. | `"10m"` |
 | `kerberospipeline.notify.repository` | The [notification microservice](https://doc.kerberos.io/hub/pipeline/#notification), sending notifications on events. | `"ghcr.io/uug-ai/hub-pipeline-notification"` |
 | `kerberospipeline.notify.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.48"` |
+| `kerberospipeline.notify.tag` | The Docker image tag/version. | `"v1.3.49"` |
 | `kerberospipeline.notify.replicas` | Number of replicas for `kerberospipeline.notify`. | `1` |
 | `kerberospipeline.notify.audit.enabled` | Enable audit publishing from the notification worker when global auditing is enabled. | `true` |
 | `kerberospipeline.notify.logLevel` | Log verbosity level for `kerberospipeline.notify`. | `"info"` |
@@ -1153,7 +1159,7 @@ kerberospipeline:
 | `kerberospipeline.notify.resources.requests.cpu` | CPU request for `kerberospipeline.notify`. | `"10m"` |
 | `kerberospipeline.notifyTest.repository` | The notification service for testing, the different channels. | `"uugai/hub-pipeline-notification-test"` |
 | `kerberospipeline.notifyTest.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.notifyTest.tag` | The Docker image tag/version. | `"v1.2.7"` |
+| `kerberospipeline.notifyTest.tag` | The Docker image tag/version. | `"v1.2.8"` |
 | `kerberospipeline.notifyTest.replicas` | Number of replicas for `kerberospipeline.notifyTest`. | `1` |
 | `kerberospipeline.notifyTest.resources.requests.memory` | Memory request for `kerberospipeline.notifyTest`. | `"10Mi"` |
 | `kerberospipeline.notifyTest.resources.requests.cpu` | CPU request for `kerberospipeline.notifyTest`. | `"10m"` |
@@ -1171,7 +1177,7 @@ kerberospipeline:
 | `kerberospipeline.dominantColor.enabled` | Deploy `pipe-dominantcolor` and let the analysis stage schedule it (`DOMINANTCOLOR_ENABLED`). Requires an analysis image that reads the flag. | `false` |
 | `kerberospipeline.dominantColor.repository` | The dominant color microservices is computing a top 3 color histogram. | `"ghcr.io/uug-ai/hub-pipeline-dominantcolors"` |
 | `kerberospipeline.dominantColor.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `"v2.0.10"` |
+| `kerberospipeline.dominantColor.tag` | The Docker image tag/version. | `"v2.0.11"` |
 | `kerberospipeline.dominantColor.replicas` | Number of replicas for `kerberospipeline.dominantColor`. | `3` |
 | `kerberospipeline.dominantColor.logLevel` | Log verbosity level for `kerberospipeline.dominantColor`. | `"info"` |
 | `kerberospipeline.dominantColor.resources.requests.memory` | Memory request for `kerberospipeline.dominantColor`. | `"512Mi"` |
@@ -1180,7 +1186,7 @@ kerberospipeline:
 | `kerberospipeline.dominantColor.resources.limits.cpu` | CPU limit for `kerberospipeline.dominantColor`. | `"1000m"` |
 | `kerberospipeline.thumbnail.repository` | The thumbnail microservices generated a thumbnail for a recordings. | `"ghcr.io/uug-ai/hub-pipeline-thumbnail"` |
 | `kerberospipeline.thumbnail.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.24"` |
+| `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.25"` |
 | `kerberospipeline.thumbnail.replicas` | Number of replicas for `kerberospipeline.thumbnail`. | `2` |
 | `kerberospipeline.thumbnail.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-thumbnail ≥ v1.3.15. | `0` |
 | `kerberospipeline.sprite.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-sprite ≥ v1.1.21. | `0` |
@@ -1203,7 +1209,7 @@ kerberospipeline:
 | `kerberospipeline.sprite.enabled` | Enable or disable `kerberospipeline.sprite`. | `false` |
 | `kerberospipeline.sprite.repository` | Container image repository for `kerberospipeline.sprite`. | `"ghcr.io/uug-ai/hub-pipeline-sprite"` |
 | `kerberospipeline.sprite.pullPolicy` | Image pull policy for `kerberospipeline.sprite`. | `"IfNotPresent"` |
-| `kerberospipeline.sprite.tag` | Container image tag/version for `kerberospipeline.sprite`. | `"v1.1.28"` |
+| `kerberospipeline.sprite.tag` | Container image tag/version for `kerberospipeline.sprite`. | `"v1.1.29"` |
 | `kerberospipeline.sprite.replicas` | Number of replicas for `kerberospipeline.sprite`. | `5` |
 | `kerberospipeline.sprite.logLevel` | Log verbosity level for `kerberospipeline.sprite`. | `"info"` |
 | `kerberospipeline.sprite.interval` | Configuration value for `kerberospipeline.sprite.interval`. | `"1"` |
@@ -1215,7 +1221,7 @@ kerberospipeline:
 | `kerberospipeline.sprite.resources.limits.cpu` | CPU limit for `kerberospipeline.sprite`. | `"1000m"` |
 | `kerberospipeline.export.repository` | Container image repository for `kerberospipeline.export`. | `"ghcr.io/uug-ai/hub-pipeline-export"` |
 | `kerberospipeline.export.pullPolicy` | Image pull policy for `kerberospipeline.export`. | `"IfNotPresent"` |
-| `kerberospipeline.export.tag` | Container image tag/version for `kerberospipeline.export`. | `"v1.2.22"` |
+| `kerberospipeline.export.tag` | Container image tag/version for `kerberospipeline.export`. | `"v1.2.23"` |
 | `kerberospipeline.export.replicas` | Number of replicas for `kerberospipeline.export`. | `2` |
 | `kerberospipeline.export.logLevel` | Log verbosity level for `kerberospipeline.export`. | `"info"` |
 | `kerberospipeline.export.resources.requests.memory` | Memory request for `kerberospipeline.export`. | `"10Mi"` |
