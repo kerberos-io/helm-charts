@@ -381,7 +381,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.11.41"
+    tag: "v1.11.42"
     replicas: 2
     podSecurityContext:
       fsGroup: 65532
@@ -410,6 +410,11 @@ kerberoshub:
     serviceEnabled: true
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
+    # How long a user stays signed in (Go durations, e.g. "15m", "12h").
+    session:
+      accessTokenTimeout: "15m" # Lifetime of one access token; the frontend renews it silently.
+      idleTimeout: "12h" # A session that is not used for this long ends.
+      maxLifetime: "24h" # Hard limit counted from login; the user must sign in again after it.
     schema: "https"
     url: "api.yourdomain.com"
     # Additional complete HTTP(S) origins allowed to call the Hub API.

@@ -862,11 +862,14 @@ kerberospipeline:
 | `kerberoshub.serviceAccount.labels` | Labels applied to `kerberoshub.serviceAccount` resources. | `""` |
 | `kerberoshub.api.repository` | The Docker registry where the Kerberos Hub API container is hosted. | `"ghcr.io/uug-ai/hub-api"` |
 | `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.41"` |
+| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.42"` |
 | `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `2` |
 | `kerberoshub.api.audit.enabled` | Enable audit publishing from Hub API when global auditing is enabled. | `true` |
 | `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `"info"` |
 | `kerberoshub.api.jwtSecret` | A secret that is for generating JWT tokens. | `"this-is-a-secret-please-change-to-random-string"` |
+| `kerberoshub.api.session.accessTokenTimeout` | Lifetime of one access token (Go duration). The frontend renews it silently while the session is valid. | `"15m"` |
+| `kerberoshub.api.session.idleTimeout` | A session that is not used for this long ends (lifetime of the refresh token). | `"12h"` |
+| `kerberoshub.api.session.maxLifetime` | Hard session limit counted from login; refreshing never extends a session past it. | `"24h"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
 | `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
