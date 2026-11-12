@@ -309,6 +309,8 @@ spec:
               value: {{ .Values.kerberoshub.api.session.idleTimeout | quote }}
             - name: SESSION_MAX_LIFETIME
               value: {{ .Values.kerberoshub.api.session.maxLifetime | quote }}
+            - name: SESSION_INACTIVITY_TIMEOUT
+              value: {{ .Values.kerberoshub.api.session.inactivityTimeout | quote }}
             - name: REFRESH_COOKIE_SECURE
               value: {{ eq .Values.kerberoshub.api.schema "https" | quote }}
             {{- $corsOrigins := list (printf "%s://%s" .Values.kerberoshub.frontend.schema .Values.kerberoshub.frontend.url) }}
