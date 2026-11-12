@@ -686,6 +686,8 @@ kerberoshub:
       darkModeEnabled: "true" # Enable or disable dark mode toggle 'true' or 'false'
       splashScreen:
         enabled: "true" # Enable or disable the pre-bootstrap splash screen 'true' or 'false'
+      inspection:
+        enabled: "false" # In-app bug reports filed as GitHub issues via inspect.uug.ai (https://github.com/uug-ai/inspect) 'true' or 'false'
       landingPage: "/dashboard" # Landing page after login '/dashboard', '/liveview', '/media', '/devices', '/sites', '/groups'
       # Internationalization (i18n): controls the runtime language behaviour
       # of the front-end. When `enabled` is "false" the language switcher is

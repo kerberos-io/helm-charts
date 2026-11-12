@@ -352,6 +352,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.darkModeEnabled }}"
         - name: FEATURE_SPLASH_SCREEN_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.splashScreen.enabled }}"
+        - name: ALLOW_INSPECTION
+          value: "{{ .Values.kerberoshub.frontend.features.inspection.enabled }}"
         - name: FEATURE_LANDING_PAGE
           value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
 
