@@ -415,6 +415,7 @@ kerberoshub:
       accessTokenTimeout: "15m" # Lifetime of one access token; the frontend renews it silently.
       idleTimeout: "12h" # A session that is not used for this long ends.
       maxLifetime: "24h" # Hard limit counted from login; the user must sign in again after it.
+      inactivityTimeout: "15m" # Without user interaction for this long, the frontend asks "Are you still there?" and signs out after 60s. "0" turns it off.
     schema: "https"
     url: "api.yourdomain.com"
     # Additional complete HTTP(S) origins allowed to call the Hub API.

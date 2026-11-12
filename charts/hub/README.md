@@ -870,6 +870,7 @@ kerberospipeline:
 | `kerberoshub.api.session.accessTokenTimeout` | Lifetime of one access token (Go duration). The frontend renews it silently while the session is valid. | `"15m"` |
 | `kerberoshub.api.session.idleTimeout` | A session that is not used for this long ends (lifetime of the refresh token). | `"12h"` |
 | `kerberoshub.api.session.maxLifetime` | Hard session limit counted from login; refreshing never extends a session past it. | `"24h"` |
+| `kerberoshub.api.session.inactivityTimeout` | Without user interaction for this long, the frontend asks "Are you still there?" and signs the user out after 60 seconds. `"0"` turns the prompt off. Needs hub-api with session claims and a matching frontend. | `"15m"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
 | `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
