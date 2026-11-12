@@ -508,6 +508,37 @@ in `all` and `ui` modes. The chart does not change the API image tag.
 
 Validate rendering with `bash scripts/check-hub-mcp.sh` from the repository root.
 
+### Ask
+
+Ask lets signed-in users type a question about their recordings on the
+dashboard. An Azure OpenAI deployment answers it by calling the MCP recording
+and device tools with the user's own grants; `/mcp` itself does not need to be
+enabled. Deploy compatible Hub API and frontend images, then set:
+
+```yaml
+kerberoshub:
+    api:
+        ask:
+            enabled: true
+            azureOpenAI:
+                endpoint: https://my-resource.openai.azure.com
+                apiKey: <key>
+                deployment: <deployment>
+                reasoningEffort: low
+    frontend:
+        features:
+            ask:
+                enabled: "true"
+```
+
+The deployment must support function calling and structured output. Rendering
+fails when Ask is enabled without an endpoint, key or deployment. Each question
+uses up to six model turns; the API limits each user to six questions a minute.
+Both settings default to off; the API setting applies only to Hub API pods in
+`all` and `ui` modes.
+
+Validate rendering with `bash scripts/check-hub-ask.sh` from the repository root.
+
 ### Passkeys
 
 Users and sub-users can create and manage their own passkeys in **Profile >
@@ -875,6 +906,11 @@ kerberospipeline:
 | `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
 | `kerberoshub.api.mcp.enabled` | Expose the read-only `/mcp` endpoint; sets `MCP_ENABLED`. Requires a compatible Hub API image. | `false` |
 | `kerberoshub.api.mcp.allowedOrigins` | Exact HTTP(S) origins for browser MCP clients, joined into `MCP_ALLOWED_ORIGINS`. Independent of REST CORS; no wildcards or trailing slash. | `[]` |
+| `kerberoshub.api.ask.enabled` | Expose `POST /ask` for dashboard questions about recordings; sets `ASK_ENABLED`. Requires a compatible Hub API image. | `false` |
+| `kerberoshub.api.ask.azureOpenAI.endpoint` | Azure OpenAI resource URL; sets `ASK_AZURE_OPENAI_ENDPOINT`. Required when Ask is enabled. | `""` |
+| `kerberoshub.api.ask.azureOpenAI.apiKey` | Azure OpenAI API key; sets `ASK_AZURE_OPENAI_API_KEY`. Required when Ask is enabled. | `""` |
+| `kerberoshub.api.ask.azureOpenAI.deployment` | Deployment name; the model must support function calling and structured output. Sets `ASK_AZURE_OPENAI_DEPLOYMENT`. Required when Ask is enabled. | `""` |
+| `kerberoshub.api.ask.azureOpenAI.reasoningEffort` | Optional `minimal`, `low`, `medium` or `high`; empty for models without reasoning. Sets `ASK_AZURE_OPENAI_REASONING_EFFORT`. | `""` |
 | `kerberoshub.api.disableAgentHeartbeat` | Temporarily stop serving the polled `GET /devices` list (hub-api returns `204` without database reads). Devices still load once through `/session/bootstrap`; online/offline status stops refreshing. | `false` |
 | `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
 | `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |
@@ -1022,6 +1058,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.media.filter.events.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.events`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.tags.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.tags`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.defaultView` | Default view for the media page: `timeline` or `grid`. | `"timeline"` |
+| `kerberoshub.frontend.features.ask.enabled` | Show the dashboard Ask block; sets `FEATURE_ASK_ENABLED`. Needs `kerberoshub.api.ask.enabled`. | `"false"` |
 | `kerberoshub.frontend.features.floorplan.enabled` | Enable or disable `kerberoshub.frontend.features.floorplan`. | `"true"` |
 | `kerberoshub.frontend.features.floorplan.colorDeviceActive` | Color customization for `floorplan` in the frontend. | `"hsla(131, 31%, 52%, 1)"` |
 | `kerberoshub.frontend.features.floorplan.colorDeviceInactive` | Color customization for `floorplan` in the frontend. | `"hsla(0, 3%, 41%, 1)"` |

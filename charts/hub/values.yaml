@@ -426,6 +426,20 @@ kerberoshub:
       # Exact HTTP(S) origins for browser MCP clients; no wildcards or trailing slash.
       # Clients without an Origin header (such as VS Code) need no entries.
       allowedOrigins: []
+    # Ask: signed-in users ask questions about their recordings on the dashboard;
+    # an Azure OpenAI deployment answers them with the MCP tools, limited to the
+    # user's grants. Requires a compatible API image; also set
+    # frontend.features.ask.enabled to show the dashboard block.
+    ask:
+      enabled: false
+      azureOpenAI:
+        # Resource URL, e.g. https://my-resource.openai.azure.com
+        endpoint: ""
+        apiKey: ""
+        # Deployment name; the model must support function calling and structured output.
+        deployment: ""
+        # Optional: minimal, low, medium or high; leave empty for models without reasoning.
+        reasoningEffort: ""
     # Temporarily stop serving the polled GET /devices list: hub-api answers 204
     # without querying MongoDB. The frontend still loads devices once through
     # /session/bootstrap, but device online/offline status stops refreshing.
@@ -803,6 +817,9 @@ kerberoshub:
         colorChartSelectionFill: "rgba(132, 86, 159, 0.07)"
         colorChartSelectionStroke: "rgba(132, 86, 159, 0.4)"
         colorChartGridStroke: "rgba(0, 106, 255, 0.18)"
+      # Ask about recordings on the dashboard; needs api.ask.enabled.
+      ask:
+        enabled: "false" # Enable or disable the dashboard Ask block 'true' or 'false'
       # Floor-plan feature
       floorplan:
         enabled: "true" # Enable or disable floorplan feature 'true' or 'false'
