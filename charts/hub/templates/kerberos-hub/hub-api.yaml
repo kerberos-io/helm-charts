@@ -384,6 +384,10 @@ spec:
             - name: DISABLE_AGENT_HEARTBEAT
               value: {{ .Values.kerberoshub.api.disableAgentHeartbeat | default false | quote }}
 
+            # Organisations in rbac mode: POST /organisations creates one on request.
+            - name: RBAC_ORGANISATIONS_ENABLED
+              value: {{ (.Values.kerberoshub.api.rbacOrganisations | default dict).enabled | default false | quote }}
+
             # Media proxy: hide Vault/storage endpoints behind hub-api URLs.
             {{- $mediaProxy := .Values.kerberoshub.api.mediaProxy | default dict }}
             - name: MEDIA_PROXY_ENABLED
