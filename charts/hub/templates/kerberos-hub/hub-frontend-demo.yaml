@@ -273,6 +273,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.darkMode }}"
         - name: FEATURE_SPLASH_SCREEN_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.splashScreen.enabled }}"
+        - name: ALLOW_INSPECTION
+          value: "{{ .Values.kerberoshub.frontend.features.inspection.enabled }}"
         - name: FEATURE_LANDING_PAGE
           value: "{{ .Values.kerberoshub.frontend.features.landingPage }}"
 
@@ -283,6 +285,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.i18n.defaultLanguage }}"
 
         # features > liveview
+        - name: FEATURE_DEFAULT_STREAM_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.liveview.defaultStreamMode }}"
         - name: FEATURE_LIVE_STREAM_MODE
           value: "{{ .Values.kerberoshub.frontend.features.liveview.liveStreamMode }}"
         - name: FEATURE_HLS_ENABLED
