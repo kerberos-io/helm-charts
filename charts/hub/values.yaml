@@ -451,6 +451,15 @@ kerberoshub:
     # underlying storage endpoint. Increases hub-api egress/bandwidth.
     rbacOrganisations:
       enabled: false # Every new organisation starts in rbac mode: created ones (POST /organisations) and new accounts' home organisations. Existing organisations keep their mode.
+    # Account deactivation and deletion by the owner, on the profile page.
+    # A deletion locks the account at once and erases it after graceDays; the
+    # owner cancels it by signing in before then.
+    accountDeletion:
+      enabled: false # Serves the deactivate and delete routes on hub-api and shows the Account tab in the frontend.
+      graceDays: 14 # Days a requested deletion can still be cancelled, 0 to 30.
+      purge:
+        enabled: false # Starts the hub-api worker that erases due accounts from this deployment's database and storage. Enable it only in the environment that owns the database.
+        dryRun: false # The worker counts what it would erase, writes the counts to the request and deletes nothing.
     mediaProxy:
       enabled: false
       publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.
