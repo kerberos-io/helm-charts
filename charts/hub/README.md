@@ -58,7 +58,7 @@ legacy opt-out, TLS/configuration mounts and deployment modes.
 ### Hardened frontend images
 
 Starting with chart **`0.170.0`**, both frontends default to shell-free
-`ghcr.io/uug-ai/hub-frontend:v1.19.35`, running as `65532:65532` on port `8080`
+`ghcr.io/uug-ai/hub-frontend:v1.19.42`, running as `65532:65532` on port `8080`
 with a read-only root filesystem and writable `/tmp`. The Service and ingress
 remain on port `80`. Admin retains its legacy image and port `80`; its hardened
 runtime remains opt-in.
@@ -893,7 +893,7 @@ kerberospipeline:
 | `kerberoshub.serviceAccount.labels` | Labels applied to `kerberoshub.serviceAccount` resources. | `""` |
 | `kerberoshub.api.repository` | The Docker registry where the Kerberos Hub API container is hosted. | `"ghcr.io/uug-ai/hub-api"` |
 | `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.42"` |
+| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.43"` |
 | `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `2` |
 | `kerberoshub.api.audit.enabled` | Enable audit publishing from Hub API when global auditing is enabled. | `true` |
 | `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `"info"` |
@@ -901,6 +901,7 @@ kerberospipeline:
 | `kerberoshub.api.session.accessTokenTimeout` | Lifetime of one access token (Go duration). The frontend renews it silently while the session is valid. | `"15m"` |
 | `kerberoshub.api.session.idleTimeout` | A session that is not used for this long ends (lifetime of the refresh token). | `"12h"` |
 | `kerberoshub.api.session.maxLifetime` | Hard session limit counted from login; refreshing never extends a session past it. | `"24h"` |
+| `kerberoshub.api.session.inactivityTimeout` | Without user interaction for this long, the frontend asks "Are you still there?" and signs the user out after 60 seconds. `"0"` turns the prompt off. Needs hub-api with session claims and a matching frontend. | `"15m"` |
 | `kerberoshub.api.schema` | The protocol to serve the Kerberos Hub API, `'http'` or `'https'`. | `"https"` |
 | `kerberoshub.api.url` | The Kerberos Hub API ingress to access the API. | `"api.yourdomain.com"` |
 | `kerberoshub.api.corsAllowedOrigins` | Additional complete HTTP(S) origins allowed to call the Hub API. Configured frontend origins remain allowed automatically. | `[]` |
@@ -960,7 +961,7 @@ kerberospipeline:
 | `kerberoshub.api.sso.extraHeaders.value` | Header value for each configured SSO extra header entry. | `""` |
 | `kerberoshub.frontend.repository` | The Docker registry where the Kerberos Hub frontend is hosted. | `"ghcr.io/uug-ai/hub-frontend"` |
 | `kerberoshub.frontend.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.35"` |
+| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.42"` |
 | `kerberoshub.frontend.replicas` | The number of pods/replicas running for the Kerberos Hub frontend deployment. | `2` |
 | `kerberoshub.frontend.logLevel` | Log verbosity level for `kerberoshub.frontend`. | `"info"` |
 | `kerberoshub.frontend.schema` | The protocol to serve the Kerberos Hub frontend, `'http'` or `'https'`. | `"https"` |
