@@ -384,7 +384,7 @@ spec:
             - name: DISABLE_AGENT_HEARTBEAT
               value: {{ .Values.kerberoshub.api.disableAgentHeartbeat | default false | quote }}
 
-            # Organisations in rbac mode: POST /organisations creates one on request.
+            # Organisations in rbac mode: every organisation created with POST /organisations.
             - name: RBAC_ORGANISATIONS_ENABLED
               value: {{ (.Values.kerberoshub.api.rbacOrganisations | default dict).enabled | default false | quote }}
 
