@@ -448,6 +448,8 @@ kerberoshub:
     # Kerberos Vault into an opaque hub-api URL ({schema}://{url}/media/proxy?t=...)
     # and streams the object itself, so clients never see Vault or the
     # underlying storage endpoint. Increases hub-api egress/bandwidth.
+    rbacOrganisations:
+      enabled: false # Every new organisation starts in rbac mode: created ones (POST /organisations) and new accounts' home organisations. Existing organisations keep their mode.
     mediaProxy:
       enabled: false
       publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.
