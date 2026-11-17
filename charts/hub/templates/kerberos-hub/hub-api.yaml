@@ -334,6 +334,20 @@ spec:
               value: {{ $mcp.enabled | default false | quote }}
             - name: MCP_ALLOWED_ORIGINS
               value: {{ join "," ($mcp.allowedOrigins | default list) | quote }}
+            {{- $ask := .Values.kerberoshub.api.ask | default dict }}
+            - name: ASK_ENABLED
+              value: {{ $ask.enabled | default false | quote }}
+            {{- if $ask.enabled }}
+            {{- $askModel := $ask.azureOpenAI | default dict }}
+            - name: ASK_AZURE_OPENAI_ENDPOINT
+              value: {{ required "kerberoshub.api.ask.azureOpenAI.endpoint is required when Ask is enabled" $askModel.endpoint | quote }}
+            - name: ASK_AZURE_OPENAI_API_KEY
+              value: {{ required "kerberoshub.api.ask.azureOpenAI.apiKey is required when Ask is enabled" $askModel.apiKey | quote }}
+            - name: ASK_AZURE_OPENAI_DEPLOYMENT
+              value: {{ required "kerberoshub.api.ask.azureOpenAI.deployment is required when Ask is enabled" $askModel.deployment | quote }}
+            - name: ASK_AZURE_OPENAI_REASONING_EFFORT
+              value: {{ $askModel.reasoningEffort | default "" | quote }}
+            {{- end }}
             {{ if .Values.isPrivate }}
             - name: KERBEROS_PRIVATE_CLOUD
               value: "true"
