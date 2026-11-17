@@ -435,7 +435,7 @@ kerberoshub:
     # and streams the object itself, so clients never see Vault or the
     # underlying storage endpoint. Increases hub-api egress/bandwidth.
     rbacOrganisations:
-      enabled: false # Every organisation created with POST /organisations starts in rbac mode; home organisations created with an account stay legacy.
+      enabled: false # Every new organisation starts in rbac mode: created ones (POST /organisations) and new accounts' home organisations. Existing organisations keep their mode.
     mediaProxy:
       enabled: false
       publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.
