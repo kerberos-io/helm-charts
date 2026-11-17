@@ -322,6 +322,8 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.audit.enabled }}"
         - name: FEATURE_PASSKEYS_ENABLED
           value: "{{ .Values.kerberoshub.api.passkeys.enabled }}"
+        - name: FEATURE_ACCOUNT_DELETION_ENABLED
+          value: "{{ (.Values.kerberoshub.api.accountDeletion | default dict).enabled | default false }}"
         - name: FEATURE_DAY_OVERVIEW_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.dayOverview.enabled }}"
         - name: FEATURE_DEVICE_ANALYTICS_ENABLED
