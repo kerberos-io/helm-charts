@@ -404,7 +404,7 @@ spec:
             - name: RBAC_ORGANISATIONS_ENABLED
               value: {{ (.Values.kerberoshub.api.rbacOrganisations | default dict).enabled | default false | quote }}
 
-            # Account deactivation and deletion by the owner; the purge worker has its own switch.
+            # Account deletion by the owner; the purge worker has its own switch.
             {{- $accountDeletion := .Values.kerberoshub.api.accountDeletion | default dict }}
             {{- $accountPurge := $accountDeletion.purge | default dict }}
             - name: FEATURE_ACCOUNT_DELETION_ENABLED
