@@ -1295,6 +1295,8 @@ kerberospipeline:
 | `email.templates.shareTitle` | Email subject title for the `share` template. | `"[Action] You received a recording from Kerberos Hub"` |
 | `email.templates.assignTask` | Email template name/key for `assign task` notifications. | `"assign_task"` |
 | `email.templates.assignTaskTitle` | Email subject title for the `assign task` template. | `"[Action] You've been assigned to a task"` |
+| `email.templates.invitation` | Email template name/key for organisation invitations. Empty sends no invitation email; the inviter still gets the link to share. With Mailgun, create a template with this name in your Mailgun account. | `"invitation"` |
+| `email.templates.invitationTitle` | Email subject for organisation invitations. | `"You're invited to join an organisation on Kerberos Hub"` |
 | `email.templates.detection` | We use templates to send notifications, this allow you to bring your own `Mailgun` templates, by default `'detection'`. | `"detection"` |
 | `email.templates.disabled` | The template which is send when an account is disabled due to reaching its upload limit, by default `'disabled'`. | `"disabled"` |
 | `email.templates.highupload` | The template which is send when an account is reaching a specific upload threshold, by default `'threshold'`. | `"highupload"` |
@@ -1467,6 +1469,10 @@ Sent by the API (`kerberoshub.api`). The subject of each email is the matching `
 | | `{{user}}` | Name of the user who assigned the task. |
 | | `{{task_name}}` | The task title. |
 | | `{{link}}` | `<tenant URL>/tasks/`, using the assigned user's domain. |
+| Organisation invitation (`invitation`) | `{{user}}` | Inviter's first and last name, or email address. |
+| | `{{organisation}}` | Name of the organisation the person is invited to. |
+| | `{{url}}` | `<base URL>/invitations/<token>`: the invitee signs in or creates an account there and joins. |
+| | `{{expiry}}` | When the invitation ends, for example "25 November 2026 13:00 UTC". |
 
 The `newip`, `disable` and `highupload` templates are included, but no service currently sends them.
 

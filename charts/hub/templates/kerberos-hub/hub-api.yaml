@@ -603,6 +603,10 @@ spec:
               value: "{{ .Values.email.templates.assignTask }}"
             - name: ASSIGN_TASK_TITLE
               value: "{{ .Values.email.templates.assignTaskTitle }}"
+            - name: INVITATION_TEMPLATE
+              value: "{{ .Values.email.templates.invitation }}"
+            - name: INVITATION_TITLE
+              value: "{{ .Values.email.templates.invitationTitle }}"
             - name: DEFAULT_TASK_RETENTION_DAYS
               value: "{{ .Values.kerberoshub.api.defaultTaskRetentionDays }}"
             - name: CASES_MAX_RETENTION_DAYS
