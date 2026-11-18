@@ -1643,6 +1643,10 @@ email:
     caseShareOtpTitle: "Your Kerberos Hub verification code"
     assignTask: "assign_task"
     assignTaskTitle: "[Action] You've been assigned to a task"
+    # Sent by the API when someone is invited to an organisation. Empty
+    # sends no invitation email: the inviter still gets the link to share.
+    invitation: "invitation"
+    invitationTitle: "You're invited to join an organisation on Kerberos Hub"
     detection: "detection"
     disabled: "disable"
     highupload: "highupload"
