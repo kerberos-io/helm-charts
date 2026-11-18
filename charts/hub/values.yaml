@@ -819,6 +819,13 @@ kerberoshub:
           tags:
             enabled: "true" # Enable or disable tags filter in media 'true' or 'false'
           defaultView: "timeline" # Default view for media page 'timeline' or 'grid'
+        # Recordings timeline on page load: collapsed to one combined activity row,
+        # or open with a row per device. Users can expand or collapse it afterwards;
+        # that choice lasts until the page is reloaded.
+        timeline:
+          collapsed:
+            desktop: "false" # Open the timeline collapsed on desktop 'true' or 'false'
+            mobile: "true" # Open the timeline collapsed on viewports up to 900 px wide 'true' or 'false'
       # Chart feature
       chart:
         colors:

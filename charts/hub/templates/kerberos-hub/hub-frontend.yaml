@@ -501,6 +501,10 @@ spec:
           value: {{ .Values.kerberoshub.frontend.features.media.filter.markerCategoryPriority.categories | toJson | replace "\\" "\\\\" | replace "'" "\\u0027" | quote }}
         - name: FEATURE_MEDIA_FILTER_DEFAULT_VIEW
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.defaultView }}"
+        - name: FEATURE_MEDIA_TIMELINE_COLLAPSED_DESKTOP
+          value: "{{ .Values.kerberoshub.frontend.features.media.timeline.collapsed.desktop }}"
+        - name: FEATURE_MEDIA_TIMELINE_COLLAPSED_MOBILE
+          value: "{{ .Values.kerberoshub.frontend.features.media.timeline.collapsed.mobile }}"
         - name: FEATURE_MEDIA_FILTER_EVENTS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.media.filter.events.enabled }}"
         - name: FEATURE_MEDIA_FILTER_TAGS_ENABLED

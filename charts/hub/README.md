@@ -1065,6 +1065,8 @@ kerberospipeline:
 | `kerberoshub.frontend.features.media.filter.events.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.events`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.tags.enabled` | Enable or disable `kerberoshub.frontend.features.media.filter.tags`. | `"true"` |
 | `kerberoshub.frontend.features.media.filter.defaultView` | Default view for the media page: `timeline` or `grid`. | `"timeline"` |
+| `kerberoshub.frontend.features.media.timeline.collapsed.desktop` | Open the Recordings timeline collapsed to one combined activity row on desktop (`FEATURE_MEDIA_TIMELINE_COLLAPSED_DESKTOP`). Users can still expand it. | `"false"` |
+| `kerberoshub.frontend.features.media.timeline.collapsed.mobile` | Open the Recordings timeline collapsed to one combined activity row on viewports up to 900 px wide (`FEATURE_MEDIA_TIMELINE_COLLAPSED_MOBILE`). Users can still expand it. | `"true"` |
 | `kerberoshub.frontend.features.ask.enabled` | Show the dashboard Ask block; sets `FEATURE_ASK_ENABLED`. Needs `kerberoshub.api.ask.enabled`. | `"false"` |
 | `kerberoshub.frontend.features.floorplan.enabled` | Enable or disable `kerberoshub.frontend.features.floorplan`. | `"true"` |
 | `kerberoshub.frontend.features.floorplan.colorDeviceActive` | Color customization for `floorplan` in the frontend. | `"hsla(131, 31%, 52%, 1)"` |
