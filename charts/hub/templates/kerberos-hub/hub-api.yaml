@@ -415,6 +415,9 @@ spec:
               value: {{ $accountPurge.enabled | default false | quote }}
             - name: ACCOUNT_DELETION_PURGE_DRY_RUN
               value: {{ $accountPurge.dryRun | default false | quote }}
+            # Organisation deletion by its primary owner; grace period and worker are the account ones.
+            - name: FEATURE_ORGANISATION_DELETION_ENABLED
+              value: {{ (.Values.kerberoshub.api.organisationDeletion | default dict).enabled | default false | quote }}
 
             # Media proxy: hide Vault/storage endpoints behind hub-api URLs.
             {{- $mediaProxy := .Values.kerberoshub.api.mediaProxy | default dict }}

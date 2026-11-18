@@ -460,6 +460,12 @@ kerberoshub:
       purge:
         enabled: false # Starts the hub-api worker that erases due accounts from this deployment's database and storage. Enable it only in the environment that owns the database.
         dryRun: false # The worker counts what it would erase, writes the counts to the request and deletes nothing.
+    # Deletion of an organisation by its primary owner, in the organisation
+    # settings. It closes the organisation to every member at once and erases
+    # it after accountDeletion.graceDays; the accountDeletion.purge worker
+    # does the erasing.
+    organisationDeletion:
+      enabled: false # Serves the delete route on hub-api and shows "Delete organisation" in the frontend.
     mediaProxy:
       enabled: false
       publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.
