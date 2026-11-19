@@ -1,0 +1,12 @@
+{{- if .Values.subscriptions.plans.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hub-plans
+  namespace: {{ .Release.Namespace }}
+data:
+  # files/plans.yaml, read through PLANS_FILE by hub-api, pipe-monitor,
+  # pipe-analysis and hub-cleanup.
+  plans.yaml: |
+{{ .Files.Get "files/plans.yaml" | indent 4 }}
+{{- end }}
