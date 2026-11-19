@@ -306,6 +306,10 @@ spec:
             # Plans (files/plans.yaml, subscriptions.plans.enabled).
             - name: PLANS_FILE
               value: /etc/kerberos/plans/plans.yaml
+            {{- if .Values.subscriptions.plans.newOrganisations }}
+            - name: PLANS_NEW_ORGANISATIONS
+              value: "true"
+            {{- end }}
             {{- end }}
             - name: ENVIRONMENT
               value: "{{ .Values.environment }}"
