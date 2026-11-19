@@ -105,6 +105,10 @@
             "enabled": {
               "type": "boolean",
               "description": "Mount the plan file (files/plans.yaml, ConfigMap hub-plans) into hub-api, pipe-monitor, pipe-analysis and hub-cleanup, with PLANS_FILE set to its path."
+            },
+            "newOrganisations": {
+              "type": "boolean",
+              "description": "With plans enabled, new organisations start in plans mode (PLANS_NEW_ORGANISATIONS on hub-api). Off: they start in legacy mode and are switched per organisation."
             }
           }
         }

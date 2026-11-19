@@ -810,6 +810,7 @@ kerberospipeline:
 | `readOnly` | This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline. | `false` |
 | `mode` | Deployment mode: `all`, `pipeline`, or `ui`. `all` renders everything, `pipeline` only pipeline services, `ui` only hub services. | `"all"` |
 | `subscriptions.plans.enabled` | Creates the `hub-plans` ConfigMap from `files/plans.yaml` (the `trial`, `community` and `enterprise` plans: gated permissions, limits and Stripe price lookup keys) and mounts it read-only at `/etc/kerberos/plans/plans.yaml` in hub-api, pipe-monitor, pipe-analysis and hub-cleanup, with `PLANS_FILE` set to that path. Plans are changed in the chart, not in values: a change adds a new version of a plan. | `false` |
+| `subscriptions.plans.newOrganisations` | With `subscriptions.plans.enabled`, new organisations start in plans mode (`PLANS_NEW_ORGANISATIONS=true` on hub-api). When off, new organisations start in legacy mode and an owner or application admin switches an organisation to plans mode. | `false` |
 | `global.imageRegistry` | Global container registry override used for all images. | `""` |
 | `ingress` | The ingress being used for `kerberoshub.api.url` and `kerberoshub.frontend.url`. | `"nginx"` |
 | `mongodb.host` | MongoDB hostname (`'mongodb:27017'`) or mongodb replicas (`'mongodb-0:27017,mongodb-1:27017'`). | `"mongodb.mongodb"` |

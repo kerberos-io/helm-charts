@@ -26,9 +26,11 @@ readOnly: false # Set to 'true' to halt all write operations to the database (e.
 # - ui: Hub services only
 mode: "all"
 # Mount the plan file (files/plans.yaml) into hub-api, pipe-monitor, pipe-analysis and hub-cleanup.
+# newOrganisations: new organisations start in plans mode (otherwise owners and admins switch per organisation).
 subscriptions:
   plans:
     enabled: false
+    newOrganisations: false
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################
