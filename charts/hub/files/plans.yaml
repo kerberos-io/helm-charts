@@ -1,0 +1,86 @@
+# Hub plans: what each plan allows (gated permissions) and how much (limits).
+# Hub API, the pipelines and hub-cleanup read this file at startup when
+# subscriptions.plans.enabled is true (mounted from the hub-plans ConfigMap).
+#
+# Subscriptions reference a plan by {key, version}. To change a plan, add a
+# new version of it below; do not edit a version that is already released.
+#
+# Prices are not in this file: they live in Stripe under the
+# stripeLookupKeys (community €50 / month, enterprise €150 / month; trial is
+# free and has none). The lookup keys are the same in Stripe test and live
+# mode, so this file is the same on staging and production.
+#
+# Limits are a number or "unlimited"; 0 means none.
+plans:
+  - key: trial
+    version: 1
+    name: Trial
+    permissions:
+      - live.*
+      - ptz.*
+      - videowalls.*
+      - analytics.*
+      - detections.*
+      - media.playHD
+    limits:
+      devices: 3
+      uploadGBPerDay: 1
+      uploadGBPerMonth: 30
+      retentionDays: 7
+      workflowCredits: 0
+      projects: unlimited
+      members: unlimited
+    stripeLookupKeys: []
+    public: true
+    archived: false
+  - key: community
+    version: 1
+    name: Community
+    permissions:
+      - live.*
+      - ptz.*
+      - videowalls.*
+      - analytics.*
+      - detections.*
+      - media.playHD
+      - workflows.*
+      - workflow-runs.*
+      - cases.*
+    limits:
+      devices: 30
+      uploadGBPerDay: 10
+      uploadGBPerMonth: 300
+      retentionDays: 30
+      workflowCredits: 100
+      projects: unlimited
+      members: unlimited
+    stripeLookupKeys:
+      - community_monthly
+    public: true
+    archived: false
+  - key: enterprise
+    version: 1
+    name: Enterprise
+    permissions:
+      - live.*
+      - ptz.*
+      - videowalls.*
+      - analytics.*
+      - detections.*
+      - media.playHD
+      - workflows.*
+      - workflow-runs.*
+      - cases.*
+      - storage.*
+    limits:
+      devices: unlimited
+      uploadGBPerDay: 100
+      uploadGBPerMonth: 3000
+      retentionDays: 30
+      workflowCredits: 1000
+      projects: unlimited
+      members: unlimited
+    stripeLookupKeys:
+      - enterprise_monthly
+    public: true
+    archived: false

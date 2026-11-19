@@ -23,6 +23,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configMaps/configmap-mongodb.yaml") . | sha256sum }}
+        {{- if .Values.subscriptions.plans.enabled }}
+        checksum/plans: {{ .Files.Get "files/plans.yaml" | sha256sum }}
+        {{- end }}
       labels:
         app: pipe-analysis
     spec:
@@ -34,13 +37,18 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
-      {{- if or .Values.kerberospipeline.analysis.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- if or .Values.subscriptions.plans.enabled .Values.kerberospipeline.analysis.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
       {{- with .Values.kerberospipeline.analysis.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
         {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.subscriptions.plans.enabled }}
+        - name: hub-plans
+          configMap:
+            name: hub-plans
       {{- end }}
       {{- end }}
       {{- with .Values.kerberospipeline.analysis.topologySpreadConstraints }}
@@ -55,7 +63,7 @@ spec:
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-        {{- if or .Values.kerberospipeline.analysis.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+        {{- if or .Values.subscriptions.plans.enabled .Values.kerberospipeline.analysis.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
         volumeMounts:
         {{- with .Values.kerberospipeline.analysis.volumeMounts }}
           {{- toYaml . | nindent 12 }}
@@ -63,12 +71,22 @@ spec:
         {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
           {{- include "hub.mongodb.tlsVolumeMount" . | nindent 12 }}
         {{- end }}
+        {{- if .Values.subscriptions.plans.enabled }}
+            - name: hub-plans
+              mountPath: /etc/kerberos/plans
+              readOnly: true
+        {{- end }}
         {{- end }}
         envFrom:
         - configMapRef:
             name: mongodb-config
         env:
         {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-pipeline-analysis") | nindent 8 }}
+        {{- if .Values.subscriptions.plans.enabled }}
+        # Plans (files/plans.yaml, subscriptions.plans.enabled).
+        - name: PLANS_FILE
+          value: /etc/kerberos/plans/plans.yaml
+        {{- end }}
         - name: LOG_LEVEL
           value: "{{ .Values.kerberospipeline.analysis.logLevel }}"
         - name: CLOUD_PROVIDER

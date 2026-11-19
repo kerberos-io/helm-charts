@@ -19,6 +19,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configMaps/configmap-mongodb.yaml") . | sha256sum }}
+        {{- if .Values.subscriptions.plans.enabled }}
+        checksum/plans: {{ .Files.Get "files/plans.yaml" | sha256sum }}
+        {{- end }}
       labels:
         app: hub-cleanup
     spec:
@@ -34,13 +37,18 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
-      {{- if or .Values.kerberoshub.cleanup.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- if or .Values.subscriptions.plans.enabled .Values.kerberoshub.cleanup.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
       {{- with .Values.kerberoshub.cleanup.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
         {{- include "hub.mongodb.tlsVolume" . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.subscriptions.plans.enabled }}
+        - name: hub-plans
+          configMap:
+            name: hub-plans
       {{- end }}
       {{- end }}
       {{- with .Values.kerberoshub.cleanup.topologySpreadConstraints }}
@@ -59,13 +67,18 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if or .Values.kerberoshub.cleanup.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+          {{- if or .Values.subscriptions.plans.enabled .Values.kerberoshub.cleanup.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
           {{- with .Values.kerberoshub.cleanup.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- if and $mongodbTLS.enabled $mongodbTLS.existingSecret }}
             {{- include "hub.mongodb.tlsVolumeMount" . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.subscriptions.plans.enabled }}
+            - name: hub-plans
+              mountPath: /etc/kerberos/plans
+              readOnly: true
           {{- end }}
           {{- end }}
           envFrom:
@@ -75,6 +88,11 @@ spec:
             - containerPort: 8080
           env:
             {{- include "hub.mongodb.appUriEnv" (dict "root" $ "app" "hub-cleanup") | nindent 12 }}
+            {{- if .Values.subscriptions.plans.enabled }}
+            # Plans (files/plans.yaml, subscriptions.plans.enabled).
+            - name: PLANS_FILE
+              value: /etc/kerberos/plans/plans.yaml
+            {{- end }}
             - name: MODE
               value: "{{ .Values.kerberoshub.cleanup.mode }}"
             - name: LOG_LEVEL

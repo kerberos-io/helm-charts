@@ -137,6 +137,9 @@ spec:
         {{- if and $workflowConfiguration.enabled $workflowConfiguration.includeDefaults (not (hasKey $workflowConfiguration.replacements "workflow-contracts/forwarder.yaml")) }}
         checksum/workflow-contract-forwarder: {{ include (print $.Template.BasePath "/configMaps/workflow-contracts/forwarder.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.subscriptions.plans.enabled }}
+        checksum/plans: {{ .Files.Get "files/plans.yaml" | sha256sum }}
+        {{- end }}
       labels:
         app: hub-api
     spec:
@@ -155,7 +158,7 @@ spec:
       {{- $mongodbTLS := .Values.mongodb.tls }}
       {{- $classificationCatalogEnabled := .Values.classificationCatalogEnabled }}
       {{- $deviceSystemTagsEnabled := include "kerberoshub.deviceTags.system.enabled" . }}
-      {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled $deviceSystemTagsEnabled .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled $deviceSystemTagsEnabled .Values.subscriptions.plans.enabled .Values.kerberoshub.api.volumes (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
       {{- if $workflowConfiguration.enabled }}
         - name: workflow-configuration
@@ -213,6 +216,11 @@ spec:
           configMap:
             name: device-system-tags
       {{- end }}
+      {{- if .Values.subscriptions.plans.enabled }}
+        - name: hub-plans
+          configMap:
+            name: hub-plans
+      {{- end }}
       {{- with .Values.kerberoshub.api.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -244,7 +252,7 @@ spec:
           ports:
             - containerPort: 80
               name: http
-          {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled $deviceSystemTagsEnabled .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+          {{- if or $workflowConfiguration.enabled $classificationCatalogEnabled $deviceSystemTagsEnabled .Values.subscriptions.plans.enabled .Values.kerberoshub.api.volumeMounts (and $serverTLS.enabled $serverTLS.secretName) (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
           {{- if $workflowConfiguration.enabled }}
             - name: workflow-configuration
@@ -259,6 +267,11 @@ spec:
           {{- if $deviceSystemTagsEnabled }}
             - name: device-system-tags
               mountPath: /etc/kerberos/device-tags
+              readOnly: true
+          {{- end }}
+          {{- if .Values.subscriptions.plans.enabled }}
+            - name: hub-plans
+              mountPath: /etc/kerberos/plans
               readOnly: true
           {{- end }}
           {{- with .Values.kerberoshub.api.volumeMounts}}
@@ -288,6 +301,11 @@ spec:
             # tags owners can assign. Unset (disabled) disables system tags.
             - name: DEVICE_SYSTEM_TAGS_FILE
               value: /etc/kerberos/device-tags/system-tags.json
+            {{- end }}
+            {{- if .Values.subscriptions.plans.enabled }}
+            # Plans (files/plans.yaml, subscriptions.plans.enabled).
+            - name: PLANS_FILE
+              value: /etc/kerberos/plans/plans.yaml
             {{- end }}
             - name: ENVIRONMENT
               value: "{{ .Values.environment }}"
@@ -404,7 +422,7 @@ spec:
             - name: RBAC_ORGANISATIONS_ENABLED
               value: {{ (.Values.kerberoshub.api.rbacOrganisations | default dict).enabled | default false | quote }}
 
-            # Account deactivation and deletion by the owner; the purge worker has its own switch.
+            # Account deletion by the owner; the purge worker has its own switch.
             {{- $accountDeletion := .Values.kerberoshub.api.accountDeletion | default dict }}
             {{- $accountPurge := $accountDeletion.purge | default dict }}
             - name: FEATURE_ACCOUNT_DELETION_ENABLED
@@ -415,6 +433,9 @@ spec:
               value: {{ $accountPurge.enabled | default false | quote }}
             - name: ACCOUNT_DELETION_PURGE_DRY_RUN
               value: {{ $accountPurge.dryRun | default false | quote }}
+            # Organisation deletion by its primary owner; grace period and worker are the account ones.
+            - name: FEATURE_ORGANISATION_DELETION_ENABLED
+              value: {{ (.Values.kerberoshub.api.organisationDeletion | default dict).enabled | default false | quote }}
 
             # Media proxy: hide Vault/storage endpoints behind hub-api URLs.
             {{- $mediaProxy := .Values.kerberoshub.api.mediaProxy | default dict }}
@@ -600,6 +621,10 @@ spec:
               value: "{{ .Values.email.templates.assignTask }}"
             - name: ASSIGN_TASK_TITLE
               value: "{{ .Values.email.templates.assignTaskTitle }}"
+            - name: INVITATION_TEMPLATE
+              value: "{{ .Values.email.templates.invitation }}"
+            - name: INVITATION_TITLE
+              value: "{{ .Values.email.templates.invitationTitle }}"
             - name: DEFAULT_TASK_RETENTION_DAYS
               value: "{{ .Values.kerberoshub.api.defaultTaskRetentionDays }}"
             - name: CASES_MAX_RETENTION_DAYS

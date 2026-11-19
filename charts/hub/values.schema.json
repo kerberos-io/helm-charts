@@ -94,6 +94,22 @@
         }
       }
     },
+    "subscriptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "plans": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Mount the plan file (files/plans.yaml, ConfigMap hub-plans) into hub-api, pipe-monitor, pipe-analysis and hub-cleanup, with PLANS_FILE set to its path."
+            }
+          }
+        }
+      }
+    },
     "kerberoshub": {
       "type": "object",
       "properties": {

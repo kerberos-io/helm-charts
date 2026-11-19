@@ -809,6 +809,7 @@ kerberospipeline:
 | `isPrivate` | Global StorageClass for Persistent Volume(s) | `true` |
 | `readOnly` | This will stop any write process to mongodb or any processing done in the Kerberos Hub pipeline. | `false` |
 | `mode` | Deployment mode: `all`, `pipeline`, or `ui`. `all` renders everything, `pipeline` only pipeline services, `ui` only hub services. | `"all"` |
+| `subscriptions.plans.enabled` | Creates the `hub-plans` ConfigMap from `files/plans.yaml` (the `trial`, `community` and `enterprise` plans: gated permissions, limits and Stripe price lookup keys) and mounts it read-only at `/etc/kerberos/plans/plans.yaml` in hub-api, pipe-monitor, pipe-analysis and hub-cleanup, with `PLANS_FILE` set to that path. Plans are changed in the chart, not in values: a change adds a new version of a plan. | `false` |
 | `global.imageRegistry` | Global container registry override used for all images. | `""` |
 | `ingress` | The ingress being used for `kerberoshub.api.url` and `kerberoshub.frontend.url`. | `"nginx"` |
 | `mongodb.host` | MongoDB hostname (`'mongodb:27017'`) or mongodb replicas (`'mongodb-0:27017,mongodb-1:27017'`). | `"mongodb.mongodb"` |
@@ -914,10 +915,11 @@ kerberospipeline:
 | `kerberoshub.api.ask.azureOpenAI.reasoningEffort` | Optional `minimal`, `low`, `medium` or `high`; empty for models without reasoning. Sets `ASK_AZURE_OPENAI_REASONING_EFFORT`. | `""` |
 | `kerberoshub.api.disableAgentHeartbeat` | Temporarily stop serving the polled `GET /devices` list (hub-api returns `204` without database reads). Devices still load once through `/session/bootstrap`; online/offline status stops refreshing. | `false` |
 | `kerberoshub.api.rbacOrganisations.enabled` | Every new organisation starts in rbac mode (sets `RBAC_ORGANISATIONS_ENABLED` on hub-api): organisations created with `POST /organisations` and the home organisation of every new account. It starts with every built-in role and its creator as Owner; its members and roles are managed on the Members & access pages only, and the legacy Accounts page cannot add people there. Existing organisations and accounts keep their mode. | `false` |
-| `kerberoshub.api.accountDeletion.enabled` | An owner can deactivate or delete their own account on the profile page: sets `FEATURE_ACCOUNT_DELETION_ENABLED` on hub-api and the frontend. A deletion locks the account at once and is erased after `graceDays`. An account that is already locked stays locked, and can still be reactivated, when this is switched off again. | `false` |
+| `kerberoshub.api.accountDeletion.enabled` | An owner can delete their own account on the profile page: sets `FEATURE_ACCOUNT_DELETION_ENABLED` on hub-api and the frontend. A deletion locks the account at once and is erased after `graceDays`. An account that is already locked stays locked, and can still be reactivated, when this is switched off again. | `false` |
 | `kerberoshub.api.accountDeletion.graceDays` | Days a requested deletion can still be cancelled by signing in, 0 to 30 (`ACCOUNT_DELETION_GRACE_DAYS`). | `14` |
 | `kerberoshub.api.accountDeletion.purge.enabled` | Starts the hub-api worker that erases accounts whose grace period has passed, with their recordings in storage and their Stripe customer (`ACCOUNT_DELETION_PURGE_ENABLED`). Without it requested deletions stay locked and nothing is erased. Enable it only in the environment that owns the database: a deployment that shares a database with another one erases that database's accounts. | `false` |
 | `kerberoshub.api.accountDeletion.purge.dryRun` | The worker counts what it would erase, writes the counts to the `account_deletions` document of the request and deletes nothing (`ACCOUNT_DELETION_PURGE_DRY_RUN`). | `false` |
+| `kerberoshub.api.organisationDeletion.enabled` | The primary owner of an organisation can delete it in the organisation settings: sets `FEATURE_ORGANISATION_DELETION_ENABLED` on hub-api and the frontend. A deletion closes the organisation to every member at once and is erased after `accountDeletion.graceDays` by the `accountDeletion.purge` worker; members keep their accounts and their other organisations. An organisation that is already closed stays closed, and its primary owner can still reopen it, when this is switched off again. | `false` |
 | `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
 | `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |
 | `kerberoshub.api.mediaProxy.key` | Key used to encrypt proxied media URLs (`openssl rand -hex 32`). Defaults to a key derived from `jwtSecret`. | `""` |
@@ -1296,6 +1298,8 @@ kerberospipeline:
 | `email.templates.shareTitle` | Email subject title for the `share` template. | `"[Action] You received a recording from Kerberos Hub"` |
 | `email.templates.assignTask` | Email template name/key for `assign task` notifications. | `"assign_task"` |
 | `email.templates.assignTaskTitle` | Email subject title for the `assign task` template. | `"[Action] You've been assigned to a task"` |
+| `email.templates.invitation` | Email template name/key for organisation invitations. Empty sends no invitation email; the inviter still gets the link to share. With Mailgun, create a template with this name in your Mailgun account. | `"invitation"` |
+| `email.templates.invitationTitle` | Email subject for organisation invitations. | `"You're invited to join an organisation on Kerberos Hub"` |
 | `email.templates.detection` | We use templates to send notifications, this allow you to bring your own `Mailgun` templates, by default `'detection'`. | `"detection"` |
 | `email.templates.disabled` | The template which is send when an account is disabled due to reaching its upload limit, by default `'disabled'`. | `"disabled"` |
 | `email.templates.highupload` | The template which is send when an account is reaching a specific upload threshold, by default `'threshold'`. | `"highupload"` |
@@ -1468,6 +1472,10 @@ Sent by the API (`kerberoshub.api`). The subject of each email is the matching `
 | | `{{user}}` | Name of the user who assigned the task. |
 | | `{{task_name}}` | The task title. |
 | | `{{link}}` | `<tenant URL>/tasks/`, using the assigned user's domain. |
+| Organisation invitation (`invitation`) | `{{user}}` | Inviter's first and last name, or email address. |
+| | `{{organisation}}` | Name of the organisation the person is invited to. |
+| | `{{url}}` | `<base URL>/invitations/<token>`: the invitee signs in or creates an account there and joins. |
+| | `{{expiry}}` | When the invitation ends, for example "25 November 2026 13:00 UTC". |
 
 The `newip`, `disable` and `highupload` templates are included, but no service currently sends them.
 

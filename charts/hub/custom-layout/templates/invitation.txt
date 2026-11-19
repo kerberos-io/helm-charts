@@ -1,0 +1,17 @@
+Kerberos Hub
+------------
+
+You're invited
+{{user}} invited you to join {{organisation}} on Kerberos Hub.
+
+Open the invitation to sign in, or to create your account if you
+don't have one yet, and join:
+{{url}}
+
+The link works until {{expiry}}.
+If you didn't expect this invitation, you can ignore this email.
+
+Get in touch
+------------
+support@kerberos.io
+https://kerberos.io
