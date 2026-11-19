@@ -25,6 +25,10 @@ readOnly: false # Set to 'true' to halt all write operations to the database (e.
 # - pipeline: pipeline only
 # - ui: Hub services only
 mode: "all"
+# Mount the plan file (files/plans.yaml) into hub-api, pipe-monitor, pipe-analysis and hub-cleanup.
+subscriptions:
+  plans:
+    enabled: false
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################
