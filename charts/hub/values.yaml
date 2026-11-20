@@ -745,6 +745,10 @@ kerberoshub:
       # Day overview page and its navigation menu; role page permissions still apply.
       dayOverview:
         enabled: "true" # Enable or disable the Day overview page and navigation menu 'true' or 'false'
+      # Marker overview page (Analytics > Markers) and its navigation link; the Analytics page permission still applies.
+      # Only shows or hides this page: creating markers and the media marker filter are not affected.
+      markerOverview:
+        enabled: "false" # Enable or disable the Marker overview page and navigation link 'true' or 'false'
       # Organisation controls remain visible as a read-only current organisation when switching is disabled.
       organisations:
         enabled: "" # Enable or disable the organisation feature family, including projects; when empty, child groups apply independently
