@@ -26,9 +26,11 @@ readOnly: false # Set to 'true' to halt all write operations to the database (e.
 # - ui: Hub services only
 mode: "all"
 # Mount the plan file (files/plans.yaml) into hub-api, pipe-monitor, pipe-analysis and hub-cleanup.
+# newOrganisations: new organisations start in plans mode (otherwise owners and admins switch per organisation).
 subscriptions:
   plans:
     enabled: false
+    newOrganisations: false
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################
@@ -457,17 +459,15 @@ kerberoshub:
       enabled: false # Every new organisation starts in rbac mode: created ones (POST /organisations) and new accounts' home organisations. Existing organisations keep their mode.
     # Account deletion by the owner, on the profile page.
     # A deletion locks the account at once and erases it after graceDays; the
-    # owner cancels it by signing in before then.
+    # owner cancels it by signing in before then. hub-cleanup does the
+    # erasing: kerberoshub.cleanup.accountDeletion.purge.
     accountDeletion:
       enabled: false # Serves the delete route on hub-api and shows the Account tab in the frontend.
       graceDays: 14 # Days a requested deletion can still be cancelled, 0 to 30.
-      purge:
-        enabled: false # Starts the hub-api worker that erases due accounts from this deployment's database and storage. Enable it only in the environment that owns the database.
-        dryRun: false # The worker counts what it would erase, writes the counts to the request and deletes nothing.
     # Deletion of an organisation by its primary owner, in the organisation
     # settings. It closes the organisation to every member at once and erases
-    # it after accountDeletion.graceDays; the accountDeletion.purge worker
-    # does the erasing.
+    # it after accountDeletion.graceDays; the
+    # kerberoshub.cleanup.accountDeletion.purge worker does the erasing.
     organisationDeletion:
       enabled: false # Serves the delete route on hub-api and shows "Delete organisation" in the frontend.
     mediaProxy:
@@ -743,6 +743,10 @@ kerberoshub:
       # Day overview page and its navigation menu; role page permissions still apply.
       dayOverview:
         enabled: "true" # Enable or disable the Day overview page and navigation menu 'true' or 'false'
+      # Marker overview page (Analytics > Markers) and its navigation link; the Analytics page permission still applies.
+      # Only shows or hides this page: creating markers and the media marker filter are not affected.
+      markerOverview:
+        enabled: "false" # Enable or disable the Marker overview page and navigation link 'true' or 'false'
       # Organisation controls remain visible as a read-only current organisation when switching is disabled.
       organisations:
         enabled: "" # Enable or disable the organisation feature family, including projects; when empty, child groups apply independently
@@ -940,6 +944,15 @@ kerberoshub:
     deleteTimeoutSeconds: "120" # Delete timeout.
     reportIncludeStats: "false" # Include richer dry-run/user summary stats.
     dryRun: "false" # Force dry-run behavior without using mode=dry-run.
+    # Erasure of the accounts and organisations whose deletion is due
+    # (kerberoshub.api.accountDeletion / organisationDeletion). Every worker
+    # takes any due deletion in its database: enable it in exactly one
+    # deployment per database. It uses kerberosvault.*, kerberoshub.api.stripe
+    # and the audit transport.
+    accountDeletion:
+      purge:
+        enabled: false # Starts the worker in hub-cleanup that erases due accounts and organisations from the database, storage and Stripe.
+        dryRun: false # The worker counts what it would erase, writes the counts to the request and deletes nothing. dryRun / mode dry-run above imply it.
     debug: "false" # Extra per-user/global debug logging.
     globalPassEnabled: "false" # Enable post-user global cleanup pass.
     globalPassIntervalHours: "0" # 0 = every cycle when enabled.

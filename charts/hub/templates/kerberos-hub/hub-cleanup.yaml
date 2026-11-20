@@ -139,6 +139,38 @@ spec:
               value: "{{ .Values.kerberoshub.cleanup.auditEventRetentionDays }}"
             - name: WORKFLOW_RUN_RETENTION_DAYS
               value: "{{ .Values.kerberoshub.cleanup.workflowRunRetentionDays | default "0" }}"
+            # Erasure of due account and organisation deletions.
+            {{- $accountPurge := ((.Values.kerberoshub.cleanup.accountDeletion | default dict).purge | default dict) }}
+            - name: ACCOUNT_DELETION_PURGE_ENABLED
+              value: {{ $accountPurge.enabled | default false | quote }}
+            - name: ACCOUNT_DELETION_PURGE_DRY_RUN
+              value: {{ $accountPurge.dryRun | default false | quote }}
+            {{- if $accountPurge.enabled }}
+            - name: STORAGE_URI
+              value: "{{ .Values.kerberosvault.uri }}"
+            - name: STORAGE_ACCESS_KEY
+              value: "{{ .Values.kerberosvault.accesskey }}"
+            - name: STORAGE_SECRET_KEY
+              value: "{{ .Values.kerberosvault.secretkey }}"
+            - name: STRIPE_KEY
+              value: "{{ .Values.kerberoshub.api.stripe.privateKey }}"
+            - name: AUDIT_ENABLED
+              value: {{ .Values.audit.enabled | default false | quote }}
+            {{- if .Values.audit.enabled }}
+            - name: AUDIT_QUEUE
+              value: {{ .Values.audit.intake.queue | quote }}
+            - name: AUDIT_DEADLETTER_QUEUE
+              value: {{ .Values.audit.intake.deadletterQueue | quote }}
+            - name: RABBITMQ_HOST
+              value: "{{ .Values.rabbitmq.host }}"
+            - name: RABBITMQ_EXCHANGE
+              value: "{{ .Values.rabbitmq.exchange }}"
+            - name: RABBITMQ_USERNAME
+              value: "{{ .Values.rabbitmq.username }}"
+            - name: RABBITMQ_PASSWORD
+              value: "{{ .Values.rabbitmq.password }}"
+            {{- end }}
+            {{- end }}
           {{- if .Values.kerberoshub.extraEnv }}
           {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
           {{- end }}
