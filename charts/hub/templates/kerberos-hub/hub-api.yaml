@@ -426,17 +426,18 @@ spec:
             - name: RBAC_ORGANISATIONS_ENABLED
               value: {{ (.Values.kerberoshub.api.rbacOrganisations | default dict).enabled | default false | quote }}
 
-            # Account deletion by the owner; the purge worker has its own switch.
+            # Account deletion by the owner; hub-cleanup erases due deletions.
             {{- $accountDeletion := .Values.kerberoshub.api.accountDeletion | default dict }}
-            {{- $accountPurge := $accountDeletion.purge | default dict }}
+            {{- if ($accountDeletion.purge | default dict).enabled }}
+            {{- fail "kerberoshub.api.accountDeletion.purge moved to kerberoshub.cleanup.accountDeletion.purge: hub-cleanup erases due deletions now" }}
+            {{- end }}
             - name: FEATURE_ACCOUNT_DELETION_ENABLED
               value: {{ $accountDeletion.enabled | default false | quote }}
             - name: ACCOUNT_DELETION_GRACE_DAYS
               value: {{ if hasKey $accountDeletion "graceDays" }}{{ $accountDeletion.graceDays | int | quote }}{{ else }}"14"{{ end }}
+            # Older hub-api images run their own erasure worker unless this is false.
             - name: ACCOUNT_DELETION_PURGE_ENABLED
-              value: {{ $accountPurge.enabled | default false | quote }}
-            - name: ACCOUNT_DELETION_PURGE_DRY_RUN
-              value: {{ $accountPurge.dryRun | default false | quote }}
+              value: "false"
             # Organisation deletion by its primary owner; grace period and worker are the account ones.
             - name: FEATURE_ORGANISATION_DELETION_ENABLED
               value: {{ (.Values.kerberoshub.api.organisationDeletion | default dict).enabled | default false | quote }}
