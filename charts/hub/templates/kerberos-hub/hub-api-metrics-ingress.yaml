@@ -1,0 +1,50 @@
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) (eq .Values.ingress "nginx") .Values.kerberoshub.api.blockPublicMetrics (.Capabilities.APIVersions.Has "networking.k8s.io/v1") -}}
+# Deny /metrics on hub-api's public hosts. hub-api serves Prometheus metrics
+# (request metrics and mongodb_client_* database, collection and command
+# names) on the same port as the API, and hub-api-ingress routes every path to
+# it. ingress-nginx applies this Ingress's annotations only to its own paths,
+# so /metrics answers 403 while every other path keeps hub-api-ingress's
+# settings. Prometheus scrapes the Service directly and is not affected.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hub-api-metrics-deny
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/denylist-source-range: "0.0.0.0/0,::/0"
+spec:
+  ingressClassName: {{ .Values.ingress }}
+  rules:
+    - host: "{{ .Values.kerberoshub.api.url }}"
+      http:
+        paths:
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: hub-api-svc
+                port:
+                  number: 8081
+    {{- if .Values.kerberoshub.api.legacyUrl }}
+    - host: "{{ .Values.kerberoshub.api.legacyUrl }}"
+      http:
+        paths:
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: hub-api-svc
+                port:
+                  number: 8081
+    {{- end }}
+    - host: "admin.{{ .Values.kerberoshub.api.url }}"
+      http:
+        paths:
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: hub-api-svc
+                port:
+                  number: 80
+{{- end }}

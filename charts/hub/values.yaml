@@ -419,6 +419,10 @@ kerberoshub:
     serviceMonitor:
       enabled: true
       interval: 15s
+    # With ingress: nginx, answer 403 for /metrics on the API hosts, so the
+    # Prometheus metrics (including database and collection names) are not
+    # public. Prometheus scrapes the Service directly and is not affected.
+    blockPublicMetrics: true
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     # How long a user stays signed in (Go durations, e.g. "15m", "12h").
