@@ -929,6 +929,7 @@ kerberospipeline:
 | `kerberoshub.api.resources.limits.cpu` | CPU limit for `kerberoshub.api`. | `"250m"` |
 | `kerberoshub.api.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for hub-api `/metrics` on the backend port (request metrics and `mongodb_client_*` command metrics). Requires `kerberoshub.api.serviceEnabled`. | `true` |
 | `kerberoshub.api.serviceMonitor.interval` | hub-api metrics scrape interval. | `"15s"` |
+| `kerberoshub.api.blockPublicMetrics` | With `ingress: nginx`, add the `hub-api-metrics-deny` Ingress so `/metrics` answers 403 on the API, legacy and admin hosts. Prometheus scrapes the Service directly and is not affected. | `true` |
 | `kerberoshub.api.serverTLS.enabled` | Enable or disable `kerberoshub.api.serverTLS`. | `false` |
 | `kerberoshub.api.serverTLS.secretName` | Kubernetes Secret name used by `kerberoshub.api.serverTLS`. | `""` |
 | `kerberoshub.api.serverTLS.mountPath` | Filesystem path where the Hub API TLS secret is mounted. | `"/etc/hub-api/tls"` |

@@ -138,6 +138,9 @@
         "api": {
           "type": "object",
           "properties": {
+            "blockPublicMetrics": {
+              "type": "boolean"
+            },
             "serviceMonitor": {
               "type": "object",
               "additionalProperties": false,
