@@ -414,6 +414,11 @@ kerberoshub:
     # Set to false to skip rendering the hub-api Service (e.g. when an
     # external/shared Service is managed elsewhere).
     serviceEnabled: true
+    # Prometheus ServiceMonitor for /metrics on the backend port (request
+    # metrics and mongodb_client_* command metrics). Needs serviceEnabled.
+    serviceMonitor:
+      enabled: true
+      interval: 15s
     logLevel: "info" # possible values: trace, debug, info, warn, error
     jwtSecret: "this-is-a-secret-please-change-to-random-string" # change to a random value, this is for generating JWT tokens.
     # How long a user stays signed in (Go durations, e.g. "15m", "12h").
@@ -1301,6 +1306,13 @@ kerberoshub:
     # v1.4.10+ holds a change 20 seconds (DEVICE_GROUPING_HOLD_SECONDS) to collect
     # other cameras that change at the same time; older releases hold one scan.
     scanIntervalSeconds: 60
+    # Service and Prometheus ServiceMonitor for /metrics on port 8080 (scan
+    # counters and mongodb_client_* command metrics). Enable only with a
+    # hub-monitor-device release that serves /metrics; older images leave the
+    # target down.
+    serviceMonitor:
+      enabled: false
+      interval: 15s
     resources:
       requests:
         memory: 10Mi

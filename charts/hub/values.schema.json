@@ -117,9 +117,40 @@
     "kerberoshub": {
       "type": "object",
       "properties": {
+        "monitordevice": {
+          "type": "object",
+          "properties": {
+            "serviceMonitor": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "interval": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(ms|s|m|h)$"
+                }
+              }
+            }
+          }
+        },
         "api": {
           "type": "object",
           "properties": {
+            "serviceMonitor": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "interval": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(ms|s|m|h)$"
+                }
+              }
+            },
             "mcp": {
               "type": "object",
               "additionalProperties": false,

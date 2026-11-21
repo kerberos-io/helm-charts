@@ -1,0 +1,38 @@
+{{- $serviceMonitor := .Values.kerberoshub.monitordevice.serviceMonitor | default dict -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) $serviceMonitor.enabled -}}
+# hub-monitor-device serves /metrics on :8080 from the release that added
+# METRICS_ADDR: scan counters and the database library's mongodb_client_*
+# command and reply-byte metrics. It has no other Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub-monitor-device-svc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    service: hub-monitor-device
+spec:
+  ports:
+    - port: 8080
+      name: hub-metrics
+      targetPort: hub-metrics
+      protocol: TCP
+  selector:
+    app: hub-monitor-device
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hub-monitor-device-servicemonitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    service: hub-monitor-device
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      service: hub-monitor-device
+  endpoints:
+    - port: hub-metrics
+      interval: {{ $serviceMonitor.interval | default "15s" }}
+      path: /metrics
+{{- end }}

@@ -1,0 +1,28 @@
+{{- $serviceMonitor := .Values.kerberoshub.api.serviceMonitor | default dict -}}
+{{- if and (or (eq .Values.mode "all") (eq .Values.mode "ui")) .Values.kerberoshub.api.serviceEnabled $serviceMonitor.enabled -}}
+# Scrapes hub-api's /metrics on the backend port: gin request metrics and the
+# database library's mongodb_client_* command and reply-byte metrics.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hub-api-servicemonitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    service: hub-api
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: hub-api-svc
+  endpoints:
+    - port: backend
+      interval: {{ $serviceMonitor.interval | default "15s" }}
+      path: /metrics
+      {{- if .Values.kerberoshub.api.serverTLS.enabled }}
+      scheme: https
+      tlsConfig:
+        # The serving certificate is issued for the public host, not the
+        # in-cluster Service name Prometheus scrapes.
+        insecureSkipVerify: true
+      {{- end }}
+{{- end }}

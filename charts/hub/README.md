@@ -927,6 +927,8 @@ kerberospipeline:
 | `kerberoshub.api.resources.requests.cpu` | CPU request for `kerberoshub.api`. | `"250m"` |
 | `kerberoshub.api.resources.limits.memory` | Memory limit for `kerberoshub.api`. | `"100Mi"` |
 | `kerberoshub.api.resources.limits.cpu` | CPU limit for `kerberoshub.api`. | `"250m"` |
+| `kerberoshub.api.serviceMonitor.enabled` | Create a Prometheus `ServiceMonitor` for hub-api `/metrics` on the backend port (request metrics and `mongodb_client_*` command metrics). Requires `kerberoshub.api.serviceEnabled`. | `true` |
+| `kerberoshub.api.serviceMonitor.interval` | hub-api metrics scrape interval. | `"15s"` |
 | `kerberoshub.api.serverTLS.enabled` | Enable or disable `kerberoshub.api.serverTLS`. | `false` |
 | `kerberoshub.api.serverTLS.secretName` | Kubernetes Secret name used by `kerberoshub.api.serverTLS`. | `""` |
 | `kerberoshub.api.serverTLS.mountPath` | Filesystem path where the Hub API TLS secret is mounted. | `"/etc/hub-api/tls"` |
@@ -1167,6 +1169,8 @@ kerberospipeline:
 | `kerberoshub.monitordevice.replicas` | Number of replicas for `kerberoshub.monitordevice`. | `1` |
 | `kerberoshub.monitordevice.logLevel` | Log verbosity level for `kerberoshub.monitordevice`. | `"info"` |
 | `kerberoshub.monitordevice.scanIntervalSeconds` | Seconds between device status scans. Sets how quickly a camera going offline or online is detected. For accounts with "Group notifications" on, `hub-monitor-device` v1.4.10 and later then hold a change 20 seconds (`DEVICE_GROUPING_HOLD_SECONDS`) to collect other cameras that change status at the same time; older releases hold it one scan. | `60` |
+| `kerberoshub.monitordevice.serviceMonitor.enabled` | Create a Service and Prometheus `ServiceMonitor` for hub-monitor-device `/metrics` on port 8080 (scan counters and `mongodb_client_*` command metrics). Enable only with a hub-monitor-device release that serves `/metrics`. | `false` |
+| `kerberoshub.monitordevice.serviceMonitor.interval` | hub-monitor-device metrics scrape interval. | `"15s"` |
 | `kerberoshub.monitordevice.resources.requests.memory` | Memory request for `kerberoshub.monitordevice`. | `"10Mi"` |
 | `kerberoshub.monitordevice.resources.requests.cpu` | CPU request for `kerberoshub.monitordevice`. | `"10m"` |
 | `kerberoshub.reactivate.repository` | Container image repository for `kerberoshub.reactivate`. | `"ghcr.io/uug-ai/hub-reactivatesubscriptions"` |
