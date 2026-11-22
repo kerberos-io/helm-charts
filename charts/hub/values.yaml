@@ -40,8 +40,10 @@ subscriptions:
 #   while any organisation feature is switched on: subscriptions.plans,
 #   organisations.onboarding, kerberoshub.api.rbacOrganisations and
 #   organisationDeletion, and the switcher/creation/settings flags of
-#   kerberoshub.frontend.features.organisations and .projects, and
-#   ONBOARDING_ENABLED=true in kerberoshub.extraEnv.
+#   kerberoshub.frontend.features.organisations and .projects, and the
+#   same features set directly in kerberoshub.extraEnv (PLANS_FILE,
+#   PLANS_NEW_ORGANISATIONS, ONBOARDING_ENABLED, RBAC_ORGANISATIONS_ENABLED,
+#   FEATURE_ORGANISATION*/FEATURE_PROJECT*/FEATURE_MEMBERS_ACCESS_PREVIEW_ENABLED).
 # - custom: every organisation feature follows its own setting.
 # Keep custom once an organisation has been switched to plans or rbac mode:
 # those organisations need the plan file and their features to keep working.

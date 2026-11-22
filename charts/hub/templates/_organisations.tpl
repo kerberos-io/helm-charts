@@ -37,9 +37,32 @@ values file never half-enables organisations; custom lets every flag apply.
 {{- $on = append $on (index . 0) -}}
 {{- end -}}
 {{- end -}}
+{{- /*
+The same features set directly in kerberoshub.extraEnv (hub-api and the
+frontend). Booleans count when true as hub-api parses them; PLANS_FILE
+counts when set. A valueFrom cannot be read here, so it counts as on.
+*/ -}}
+{{- $booleanEnv := list
+  "PLANS_NEW_ORGANISATIONS" "ONBOARDING_ENABLED" "RBAC_ORGANISATIONS_ENABLED"
+  "FEATURE_ORGANISATION_DELETION_ENABLED"
+  "FEATURE_ORGANISATIONS_ENABLED" "FEATURE_ORGANISATION_SWITCHER_ENABLED"
+  "FEATURE_ORGANISATION_CREATION_ENABLED" "FEATURE_ORGANISATION_SETTINGS_ENABLED"
+  "FEATURE_MEMBERS_ACCESS_PREVIEW_ENABLED"
+  "FEATURE_PROJECTS_ENABLED" "FEATURE_PROJECT_SWITCHER_ENABLED"
+  "FEATURE_PROJECT_CREATION_ENABLED" "FEATURE_PROJECT_SETTINGS_ENABLED"
+-}}
 {{- range ((.Values.kerberoshub | default dict).extraEnv | default list) -}}
-{{- if and (eq (.name | toString) "ONBOARDING_ENABLED") (eq (.value | toString | lower) "true") -}}
-{{- $on = append $on "kerberoshub.extraEnv ONBOARDING_ENABLED" -}}
+{{- $name := .name | default "" | toString -}}
+{{- $value := .value | default "" | toString | trim | lower -}}
+{{- $label := printf "kerberoshub.extraEnv %s" $name -}}
+{{- if or (eq $name "PLANS_FILE") (has $name $booleanEnv) -}}
+{{- if .valueFrom -}}
+{{- $on = append $on (printf "%s (valueFrom)" $label) -}}
+{{- else if and (eq $name "PLANS_FILE") $value -}}
+{{- $on = append $on $label -}}
+{{- else if and (has $name $booleanEnv) (has $value (list "true" "1" "t")) -}}
+{{- $on = append $on $label -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- if $on -}}
