@@ -442,6 +442,13 @@ spec:
             - name: FEATURE_ORGANISATION_DELETION_ENABLED
               value: {{ (.Values.kerberoshub.api.organisationDeletion | default dict).enabled | default false | quote }}
 
+            # Onboarding: /register creates only the account; the organisation comes at first sign-in.
+            {{- $onboarding := .Values.kerberoshub.api.onboarding | default dict }}
+            - name: ONBOARDING_ENABLED
+              value: {{ $onboarding.enabled | default false | quote }}
+            - name: ONBOARDING_ORGANISATION_CREATE
+              value: {{ if hasKey $onboarding "organisationCreation" }}{{ $onboarding.organisationCreation | quote }}{{ else }}"true"{{ end }}
+
             # Media proxy: hide Vault/storage endpoints behind hub-api URLs.
             {{- $mediaProxy := .Values.kerberoshub.api.mediaProxy | default dict }}
             - name: MEDIA_PROXY_ENABLED

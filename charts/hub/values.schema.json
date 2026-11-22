@@ -141,6 +141,17 @@
             "blockPublicMetrics": {
               "type": "boolean"
             },
+            "onboarding": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "organisationCreation": {
+                  "type": "boolean"
+                }
+              }
+            },
             "serviceMonitor": {
               "type": "object",
               "additionalProperties": false,

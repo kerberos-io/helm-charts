@@ -479,6 +479,14 @@ kerberoshub:
     # kerberoshub.cleanup.accountDeletion.purge worker does the erasing.
     organisationDeletion:
       enabled: false # Serves the delete route on hub-api and shows "Delete organisation" in the frontend.
+    # Onboarding: /register creates only the account; its organisation comes at
+    # first sign-in (accept an invitation, pick an organisation it belongs to, or
+    # create one, which starts in rbac mode). Requires a hub-frontend with the
+    # onboarding page. Off keeps the legacy sign-up: /register creates the
+    # account with its own organisation at once.
+    onboarding:
+      enabled: false # Sets ONBOARDING_ENABLED on hub-api.
+      organisationCreation: true # false: accounts without an organisation can only join through an invitation (ONBOARDING_ORGANISATION_CREATE).
     mediaProxy:
       enabled: false
       publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.
