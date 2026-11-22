@@ -1,0 +1,2 @@
+{{- /* Renders nothing; fails the release on an inconsistent organisations.mode. */ -}}
+{{- include "hub.organisations.validate" . -}}

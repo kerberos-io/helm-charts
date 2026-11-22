@@ -31,6 +31,33 @@ subscriptions:
   plans:
     enabled: false
     newOrganisations: false
+###################################################################
+# Organisations
+###################################################################
+# mode: legacy | custom
+# - legacy (default): owner account > sub accounts > roles, with the
+#   subscription and agent keys on the owner. The chart refuses to render
+#   while any organisation feature is switched on: subscriptions.plans,
+#   organisations.onboarding, kerberoshub.api.rbacOrganisations and
+#   organisationDeletion, and the switcher/creation/settings flags of
+#   kerberoshub.frontend.features.organisations and .projects, and the
+#   same features set directly in kerberoshub.extraEnv (PLANS_FILE,
+#   PLANS_NEW_ORGANISATIONS, ONBOARDING_ENABLED, RBAC_ORGANISATIONS_ENABLED,
+#   FEATURE_ORGANISATION*/FEATURE_PROJECT*/FEATURE_MEMBERS_ACCESS_PREVIEW_ENABLED).
+# - custom: every organisation feature follows its own setting.
+# Keep custom once an organisation has been switched to plans or rbac mode:
+# those organisations need the plan file and their features to keep working.
+organisations:
+  mode: legacy
+  # Onboarding: /register creates only the account; its organisation comes at
+  # first sign-in (accept an invitation, pick an organisation it belongs to, or
+  # create one, which starts in rbac mode). Requires a hub-frontend with the
+  # onboarding page. Off keeps the legacy sign-up: /register creates the
+  # account with its own organisation at once. A variable already set in
+  # kerberoshub.extraEnv takes precedence and is not set twice.
+  onboarding:
+    enabled: false # Sets ONBOARDING_ENABLED on hub-api.
+    organisationCreation: true # false: accounts without an organisation can only join through an invitation (ONBOARDING_ORGANISATION_CREATE).
 ###########################################################################
 # Image signature verification (Kyverno)
 ###########################################################################

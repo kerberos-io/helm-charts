@@ -114,6 +114,31 @@
         }
       }
     },
+    "organisations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["legacy", "custom"],
+          "description": "legacy (default): owner account > sub accounts > roles; the chart fails while any organisation feature is on. custom: every organisation feature follows its own setting."
+        },
+        "onboarding": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "ONBOARDING_ENABLED on hub-api: /register creates only the account; its organisation comes at first sign-in. Requires a hub-frontend with the onboarding page."
+            },
+            "organisationCreation": {
+              "type": "boolean",
+              "description": "ONBOARDING_ORGANISATION_CREATE on hub-api; false makes onboarding invite-only."
+            }
+          }
+        }
+      }
+    },
     "kerberoshub": {
       "type": "object",
       "properties": {
