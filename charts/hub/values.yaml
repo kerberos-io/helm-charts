@@ -1737,3 +1737,14 @@ email:
     # Empty uses "[Device] A camera stopped recording", "[Device] A camera is
     # recording again" and their forms for several cameras.
     recordingTitle: ""
+  # Email templates of this deployment, by file name: <template>.html and
+  # <template>.txt, for example detection.html. They are mounted at
+  # /mail/templates on hub-api, pipe-notify and hub-monitor-device, and each
+  # replaces the built-in template with the same name when sending with SMTP.
+  # Templates not listed keep the built-in version. Start from
+  # custom-layout/templates.
+  customTemplates: {}
+  #  detection.html: |
+  #    <html>...{{text}}...{{link}}...</html>
+  #  detection.txt: |
+  #    {{text}} {{link}}

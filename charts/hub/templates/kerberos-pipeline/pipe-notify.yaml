@@ -38,8 +38,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
-      {{- if or .Values.kerberospipeline.notify.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- if or .Values.kerberospipeline.notify.volumes .Values.email.customTemplates (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
+      {{- if .Values.email.customTemplates }}
+        - name: email-templates
+          configMap:
+            name: hub-email-templates
+      {{- end }}
       {{- with .Values.kerberospipeline.notify.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -63,8 +68,13 @@ spec:
         resources:
           {{- toYaml . | nindent 12 }}
         {{- end }}
-        {{- if or .Values.kerberospipeline.notify.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+        {{- if or .Values.kerberospipeline.notify.volumeMounts .Values.email.customTemplates (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
         volumeMounts:
+        {{- if .Values.email.customTemplates }}
+          - name: email-templates
+            mountPath: /mail/templates
+            readOnly: true
+        {{- end }}
         {{- with .Values.kerberospipeline.notify.volumeMounts}}
           {{- toYaml . | nindent 12 }}
         {{- end }}
