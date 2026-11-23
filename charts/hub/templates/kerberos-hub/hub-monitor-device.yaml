@@ -129,6 +129,16 @@ spec:
               value: "{{ .Values.email.mailgun.domain }}"
             - name: MAILGUN_API_KEY
               value: "{{ .Values.email.mailgun.apikey }}"
+
+            # Pusher (in-app notifications)
+            - name: PUSHER_APP_ID
+              value: {{ .Values.pusher.appId | quote }}
+            - name: PUSHER_KEY
+              value: {{ .Values.pusher.key | quote }}
+            - name: PUSHER_SECRET
+              value: {{ .Values.pusher.secret | quote }}
+            - name: PUSHER_CLUSTER
+              value: {{ .Values.pusher.cluster | quote }}
         {{- if .Values.kerberoshub.extraEnv }}
         {{- toYaml .Values.kerberoshub.extraEnv | nindent 12 }}
         {{- end }}

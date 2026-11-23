@@ -856,6 +856,10 @@ kerberospipeline:
 | `turn.host` | TURN/STUN hostname, by default `'turn:turn.yourdomain.com:8443'` | `"turn:turn.yourdomain.com:8443"` |
 | `turn.username` | TURN/STUN username, by default `'username1'` | `"username1"` |
 | `turn.password` | TURN/STUN password, by default `'password1'` | `"password1"` |
+| `pusher.appId` | Pusher app ID for in-app browser notifications from hub-api and the device monitor, rendered as `PUSHER_APP_ID` (hub-api and hub-monitor-device built on github.com/uug-ai/integrations). | `""` |
+| `pusher.key` | Pusher app key, rendered as `PUSHER_KEY`. | `""` |
+| `pusher.secret` | Pusher app secret, rendered as `PUSHER_SECRET`. | `""` |
+| `pusher.cluster` | Pusher cluster, rendered as `PUSHER_CLUSTER`. | `"eu"` |
 | `opentelemetry.enabled` | Enable or disable OpenTelemetry instrumentation. | `false` |
 | `opentelemetry.routingEnabled` | Enable or disable OpenTelemetry routing/export behavior. | `false` |
 | `opentelemetry.collector.endpoint` | OpenTelemetry collector endpoint used for trace export. | `"http://otel-collector:4317"` |

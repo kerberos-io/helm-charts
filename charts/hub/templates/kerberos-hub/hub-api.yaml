@@ -602,6 +602,16 @@ spec:
             - name: SLACK_USERNAME
               value: "{{ .Values.kerberoshub.api.slack.username }}"
 
+            # Pusher (in-app notifications)
+            - name: PUSHER_APP_ID
+              value: {{ .Values.pusher.appId | quote }}
+            - name: PUSHER_KEY
+              value: {{ .Values.pusher.key | quote }}
+            - name: PUSHER_SECRET
+              value: {{ .Values.pusher.secret | quote }}
+            - name: PUSHER_CLUSTER
+              value: {{ .Values.pusher.cluster | quote }}
+
             # Mail settings
             - name: MAIL_PROVIDER
               value: "{{ .Values.email.provider }}"

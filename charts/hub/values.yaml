@@ -248,6 +248,18 @@ turn:
   username: "username1"
   password: "password1"
 ############################################
+# Pusher (in-app notifications)
+#
+# Usecases:
+# - Browser notifications: hub-api (a new camera was added) and the device
+#   monitor (a camera changed status) trigger an event on the user's channel.
+############################################
+pusher:
+  appId: ""
+  key: ""
+  secret: ""
+  cluster: "eu"
+############################################
 # OpenTelemetry is used for distributed tracing and monitoring.
 # More information can be found at https://opentelemetry.io/docs/
 ############################################
