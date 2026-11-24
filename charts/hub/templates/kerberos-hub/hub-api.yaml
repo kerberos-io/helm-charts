@@ -402,6 +402,13 @@ spec:
               value: "{{ .Values.mqtt.username }}"
             - name: MQTT_PASSWORD
               value: "{{ .Values.mqtt.password }}"
+            # MQTT signals: a content-free message on an opaque topic after a
+            # registration (cha-ching plays a sound); off while either is empty.
+            {{- $signals := (.Values.mqtt | default dict).signals | default dict }}
+            - name: MQTT_URI
+              value: {{ $signals.uri | default "" | quote }}
+            - name: MQTT_REGISTRATION_TOPIC
+              value: {{ $signals.registrationTopic | default "" | quote }}
 
             # TURN credentials (served via /runtime/config to authenticated
             # frontend clients; no longer exposed in the public env.js).

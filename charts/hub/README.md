@@ -836,6 +836,8 @@ kerberospipeline:
 | `mqtt.password` | MQTT (Vernemq) password, by default `'yourpassword'`. | `"yourpassword"` |
 | `mqtt.legacy.host` | Legacy MQTT broker host used for backward-compatible clients. | `""` |
 | `mqtt.legacy.port` | Legacy MQTT broker port used for backward-compatible clients. | `""` |
+| `mqtt.signals.uri` | Broker hub-api publishes signals on (sets `MQTT_URI`), for example `tcp://mqtt.kerberos.io:1883` or `wss://mqtt.kerberos.io:8443/mqtt`. Signals are content-free messages (only `{"at": time}`, not retained) on opaque topics, for listeners such as cha-ching that play a sound; the login is `mqtt.username` / `mqtt.password`. Signals are off while it is empty. Needs hub-api with MQTT signals (uug-ai/hub-api#899). | `""` |
+| `mqtt.signals.registrationTopic` | Topic signalled after a successful `/register` (sets `MQTT_REGISTRATION_TOPIC`). Use an opaque identifier such as `sound/a31dc38882fd5460`: on a public broker the topic is visible to anyone subscribed to it. Off while empty. | `""` |
 | `queueProvider` | The queue we are using for the [pipeline](https://doc.kerberos.io/hub/pipeline/): 'SQS', 'KAFKA' or `RABBITMQ`. | `"RABBITMQ"` |
 | `queueName` | The event queue which is propagating messages in the [Kerberos Hub pipeline](https://doc.kerberos.io/hub/pipeline/). | `"kcloud-event-queue"` |
 | `rabbitmq.host` | RabbitMQ host, by default `'rabbitmq.yourdomain.com:5671'` | `"rabbitmq.rabbitmq:5672"` |
