@@ -201,8 +201,11 @@ mqtt:
   # Signals: hub-api publishes a content-free message (only {"at": time}, not
   # retained) on an opaque topic when something happens, for listeners such as
   # cha-ching that play a sound on a speaker. The broker login is
-  # mqtt.username / mqtt.password. Off unless uri and the event's topic are set.
+  # mqtt.username / mqtt.password. Off unless enabled is true, uri is set and
+  # the event has a topic: enabled switches every event at once, each topic
+  # only says where its event goes.
   signals:
+    enabled: false # Sets MQTT_SIGNALS_ENABLED on hub-api.
     uri: "" # Broker for hub-api, e.g. tcp://mqtt.kerberos.io:1883 or wss://mqtt.kerberos.io:8443/mqtt (MQTT_URI).
     registrationTopic: "" # Signalled after a successful /register: an opaque identifier, e.g. sound/a31dc38882fd5460 (MQTT_REGISTRATION_TOPIC).
 ################################################################
