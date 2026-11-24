@@ -34,8 +34,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- $mongodbTLS := .Values.mongodb.tls }}
-      {{- if or .Values.kerberoshub.monitordevice.volumes (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+      {{- if or .Values.kerberoshub.monitordevice.volumes .Values.email.customTemplates (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
       volumes:
+      {{- if .Values.email.customTemplates }}
+        - name: email-templates
+          configMap:
+            name: hub-email-templates
+      {{- end }}
       {{- with .Values.kerberoshub.monitordevice.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -65,8 +70,13 @@ spec:
               containerPort: 8080
               protocol: TCP
           {{- end }}
-          {{- if or .Values.kerberoshub.monitordevice.volumeMounts (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
+          {{- if or .Values.kerberoshub.monitordevice.volumeMounts .Values.email.customTemplates (and $mongodbTLS.enabled $mongodbTLS.existingSecret) }}
           volumeMounts:
+          {{- if .Values.email.customTemplates }}
+            - name: email-templates
+              mountPath: /mail/templates
+              readOnly: true
+          {{- end }}
           {{- with .Values.kerberoshub.monitordevice.volumeMounts}}
             {{- toYaml . | nindent 12 }}
           {{- end }}

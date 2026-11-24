@@ -1,0 +1,17 @@
+{{- with .Values.email.customTemplates }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hub-email-templates
+  namespace: {{ $.Release.Namespace }}
+data:
+  # email.customTemplates, mounted at /mail/templates on hub-api, pipe-notify
+  # and hub-monitor-device. Each file replaces the built-in template with the
+  # same name when the services send with SMTP.
+  {{- range $file, $content := . }}
+  {{- if not (regexMatch "^[a-z0-9_]+\\.(html|txt)$" $file) }}
+  {{- fail (printf "email.customTemplates: %q must be named <template>.html or <template>.txt" $file) }}
+  {{- end }}
+  {{ $file }}: {{ $content | quote }}
+  {{- end }}
+{{- end }}
