@@ -1093,6 +1093,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `"scroll"` |
 | `kerberoshub.frontend.features.liveview.pageSize` | Liveview behavior setting: `pageSize` (max streams shown per page in `numbered` mode). | `"6"` |
 | `kerberoshub.frontend.features.liveview.maxStreams` | Liveview behavior setting: `maxStreams`. | `"-1"` |
+| `kerberoshub.frontend.features.videowall.defaultViewingMode` | Viewing mode pre-selected when creating a videowall: `live` or `preview`. Each videowall can still change it in its settings, and a wall whose liveview permission does not allow live opens in preview. | `"live"` |
 | `kerberoshub.frontend.features.chart.colors` | Ordered colors shared by chart series and marker detection overlays. | `["#84569f", "#3ba7ff", "#ff5c8a", "#4ad991", "#ffb84d", "#ff7043"]` |
 | `kerberoshub.frontend.features.chart.colorChartSelectionFill` | Fill color for chart selection regions. | `"rgba(132, 86, 159, 0.07)"` |
 | `kerberoshub.frontend.features.chart.colorChartSelectionStroke` | Stroke color for chart selection regions. | `"rgba(132, 86, 159, 0.4)"` |

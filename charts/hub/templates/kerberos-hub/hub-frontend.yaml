@@ -369,6 +369,10 @@ spec:
         - name: DEFAULT_LANGUAGE
           value: "{{ .Values.kerberoshub.frontend.features.i18n.defaultLanguage }}"
 
+        # features > videowall
+        - name: FEATURE_VIDEOWALL_DEFAULT_VIEWING_MODE
+          value: "{{ .Values.kerberoshub.frontend.features.videowall.defaultViewingMode }}"
+
         # features > liveview
         - name: FEATURE_DEFAULT_STREAM_MODE
           value: "{{ .Values.kerberoshub.frontend.features.liveview.defaultStreamMode }}"
