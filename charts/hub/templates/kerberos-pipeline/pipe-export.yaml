@@ -115,6 +115,20 @@ spec:
         - name: STORAGE_ARCHIVE_SECRET_KEY
           value: "{{ .Values.kerberosvault.archive.secretkey }}"
 
+        # Forward requests: an export asks an edge Vault to forward the
+        # recordings of the case that are still metadata-only, over MQTT,
+        # with the broker credentials Hub uses (mqtt.username / password).
+        # Nothing is requested while mqttUri is empty.
+        {{- $forward := .Values.kerberospipeline.export.forwardRequests | default dict }}
+        {{- if $forward.mqttUri }}
+        - name: MQTT_URI
+          value: {{ $forward.mqttUri | quote }}
+        - name: MQTT_USERNAME
+          value: {{ .Values.mqtt.username | quote }}
+        - name: MQTT_PASSWORD
+          value: {{ .Values.mqtt.password | quote }}
+        {{- end }}
+
         # Sprites
         - name: SPRITE_ENABLED
           value: "{{ .Values.kerberospipeline.sprite.enabled }}"
