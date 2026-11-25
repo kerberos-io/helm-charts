@@ -516,6 +516,15 @@ kerberoshub:
     # kerberoshub.cleanup.accountDeletion.purge worker does the erasing.
     organisationDeletion:
       enabled: false # Serves the delete route on hub-api and shows "Delete organisation" in the frontend.
+    # Redaction plans: the redaction editor saves and submits a list of
+    # regions, each with its own style and frame range, and keeps a draft per
+    # video. hub-api stores the plan and sends it to the redaction worker.
+    # Only switch it on once the hub-pipeline-redaction worker that renders
+    # this deployment's jobs is newer than v1.2.15: an older worker finds no
+    # regions in such a job and stores an unchanged copy of the video as a
+    # completed redaction.
+    redactionPlans:
+      enabled: false # Accepts redaction plans on hub-api (REDACTION_PLANS_ENABLED) and switches the frontend's redaction editor to them (FEATURE_REDACTION_PLANS_ENABLED).
     mediaProxy:
       enabled: false
       publicUrl: "" # Optional override of the public hub-api base URL; defaults to {schema}://{url}.

@@ -462,6 +462,11 @@ spec:
             - name: FEATURE_ORGANISATION_DELETION_ENABLED
               value: {{ (.Values.kerberoshub.api.organisationDeletion | default dict).enabled | default false | quote }}
 
+            # Redaction plans: redaction edits of type "regions", their plans and their drafts.
+            # The redaction worker must render plans before this is switched on.
+            - name: REDACTION_PLANS_ENABLED
+              value: {{ (.Values.kerberoshub.api.redactionPlans | default dict).enabled | default false | quote }}
+
             # Onboarding: /register creates only the account; the organisation comes at first sign-in.
             # A variable already set in kerberoshub.extraEnv is left to it.
             {{- $onboarding := (.Values.organisations | default dict).onboarding | default dict }}
