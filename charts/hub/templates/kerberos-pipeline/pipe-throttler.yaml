@@ -116,6 +116,7 @@ spec:
           value: "{{ .Values.opentelemetry.collector.endpoint }}"
         {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
         {{- end }}
+        {{- include "hub.pipeline.extraEnv" (dict "path" "kerberospipeline.throttler" "values" $.Values.kerberospipeline.throttler) }}
 ---
 apiVersion: v1
 kind: Service
