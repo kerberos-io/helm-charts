@@ -215,6 +215,22 @@
             "file": {"type": "string", "pattern": "^\\.\\./catalogs/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.json$"}
           },
           "description": "Options for a select or multiselect setting from a shared catalog file (keys become options, labels become optionLabels). Use instead of options."
+        },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["param", "in"],
+          "properties": {
+            "param": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$", "maxLength": 64, "description": "A select or boolean param declared earlier in this contract."},
+            "in": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 64,
+              "items": {"oneOf": [{"type": "string", "minLength": 1, "maxLength": 160}, {"type": "boolean"}]},
+              "description": "Values of that param (its options, or true/false) for which this setting applies."
+            }
+          },
+          "description": "Show, validate, default and store this setting only while the named earlier select or boolean param has one of these values; otherwise its value is dropped on save. Chains of at most 3. Requires a Hub API that supports conditional params."
         }
       },
       "allOf": [

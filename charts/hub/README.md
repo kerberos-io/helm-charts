@@ -1613,6 +1613,29 @@ Deployers describe what a node exposes; Hub code owns what that means:
 Worker images, queues, resources and credentials stay in `kerberoshub.services`.
 No new loader environment variable is set.
 
+#### Conditional settings (`when`)
+
+A param can apply only while an earlier `select` or `boolean` param has one of
+the listed values, for example a forwarder setting that exists only for one
+provider:
+
+```yaml
+params:
+  - {name: broker, type: select, options: [rabbitmq, mqtt], default: rabbitmq}
+  - {name: topic, type: string, required: true, when: {param: broker, in: [mqtt]}}
+```
+
+While its condition does not hold, a param is hidden in the editor, is not
+required, gets no default, and its stored value is dropped on save. The
+controlling param must be declared earlier; its value (or default when unset)
+is compared with `in`. Conditions can chain at most 3 deep, and there is one
+condition per param (no `and`/`or`). Invalid conditions make the contract
+unavailable, like other contract errors.
+
+**`when` needs a compatible Hub API and frontend** (conditional params,
+uug-ai/hub-api#900 and uug-ai/hub-frontend#1115). An older API rejects a
+contract that uses it, which removes that stage from the editor.
+
 Conditions are not free-form: a new or changed predicate on a connection may
 only test a declared field of Start or of a stage upstream of that connection
 (stage outputs are addressed as `results.<stage>.<path>`), with one of its
@@ -1651,9 +1674,13 @@ schemas/
   catalog required. It declares no `params`, so any settings come from
   `kerberoshub.workflows.editorStages`.
 - [Forwarder contract ConfigMap](templates/configMaps/workflow-contracts/forwarder.yaml):
-  presentation and required per-node delivery and RabbitMQ destination settings
-  for custom workflows. Deployment-global workflows keep their deployment
-  bindings. No output fields are declared.
+  presentation and per-node delivery settings for custom workflows, with a
+  provider choice. `rabbitmq` (default) adds queue, virtual host, queue
+  declaration and dead-letter settings. `mqtt` adds topic, QoS, retain and
+  client ID, and needs a forwarder worker with the MQTT provider. Both share
+  host, port, TLS, credentials, completion mode and retries. The
+  provider-specific settings use `when`. Deployment-global workflows keep
+  their deployment bindings. No output fields are declared.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
   worker, demonstrating presentation, settings (`params`), a file catalog, inline
   choices and a numeric field.
