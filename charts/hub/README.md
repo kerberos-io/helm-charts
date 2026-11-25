@@ -202,6 +202,50 @@ failure and test targeted replacement, idempotency, and reverse migration for al
 three Deployments. CI also checks API rejection of duplicate names and acceptance
 of the repaired spec against a disposable Kind cluster.
 
+### Extra environment for pipeline workers (chart 0.206.0)
+
+Every pipeline worker accepts an `extraEnv` list of Kubernetes `EnvVar` entries
+(`name` + `value`, or `name` + `valueFrom`). They are added after every variable
+the chart sets, so a worker setting the chart has no value for yet can be turned
+on without a chart release. All default to `[]`.
+
+| Values path | Deployment |
+| --- | --- |
+| `kerberospipeline.event` | `pipe-event` |
+| `kerberospipeline.monitor` | `pipe-monitor` |
+| `kerberospipeline.sequence` | `pipe-sequence` |
+| `kerberospipeline.throttler` | `pipe-throttler` |
+| `kerberospipeline.notify` | `pipe-notify` |
+| `kerberospipeline.notifyTest` | `pipe-notify-test` |
+| `kerberospipeline.analysis` | `pipe-analysis` |
+| `kerberospipeline.dominantColor` | `pipe-dominantcolor` |
+| `kerberospipeline.thumbnail` | `pipe-thumbnail` |
+| `kerberospipeline.counting` | `pipe-counting` |
+| `kerberospipeline.sprite` | `pipe-sprite` |
+| `kerberospipeline.export` | `pipe-export` |
+| `kerberoshub.services.workflows` | `hub-workflows` |
+
+Generic workflow stage workers (`kerberoshub.services.<stage>`) keep using their
+`env` and `secretEnv` maps.
+
+```yaml
+kerberospipeline:
+  thumbnail:
+    extraEnv:
+      - name: THUMBNAIL_THREADS
+        value: "1"
+      - name: GOMAXPROCS
+        valueFrom:
+          resourceFieldRef:
+            resource: limits.cpu
+```
+
+Do not repeat a variable the chart already sets (for example `LOG_LEVEL`):
+Kubernetes keeps the last entry, but server-side apply (Argo CD
+`ServerSideApply=true`) can reject the duplicate name. An entry without a `name`,
+or a name repeated within one `extraEnv`, fails the render. Settings that stay
+should get their own documented value, as `kerberospipeline.thumbnail.rangeDownload` did.
+
 ### Hardened Hub workers (opt-in, chart 0.167.3)
 
 The worker templates accept **per-component** `securityContext` (container) and
@@ -1049,6 +1093,7 @@ kerberospipeline:
 | `kerberoshub.frontend.features.liveview.paginationMode` | Liveview behavior setting: `paginationMode` (`scroll`, `numbered` or `maxStreams`). | `"scroll"` |
 | `kerberoshub.frontend.features.liveview.pageSize` | Liveview behavior setting: `pageSize` (max streams shown per page in `numbered` mode). | `"6"` |
 | `kerberoshub.frontend.features.liveview.maxStreams` | Liveview behavior setting: `maxStreams`. | `"-1"` |
+| `kerberoshub.frontend.features.videowall.defaultViewingMode` | Viewing mode pre-selected when creating a videowall: `live` or `preview`. Each videowall can still change it in its settings, and a wall whose liveview permission does not allow live opens in preview. | `"live"` |
 | `kerberoshub.frontend.features.chart.colors` | Ordered colors shared by chart series and marker detection overlays. | `["#84569f", "#3ba7ff", "#ff5c8a", "#4ad991", "#ffb84d", "#ff7043"]` |
 | `kerberoshub.frontend.features.chart.colorChartSelectionFill` | Fill color for chart selection regions. | `"rgba(132, 86, 159, 0.07)"` |
 | `kerberoshub.frontend.features.chart.colorChartSelectionStroke` | Stroke color for chart selection regions. | `"rgba(132, 86, 159, 0.4)"` |
@@ -1255,6 +1300,8 @@ kerberospipeline:
 | `kerberospipeline.thumbnail.tag` | The Docker image tag/version. | `"v1.3.25"` |
 | `kerberospipeline.thumbnail.replicas` | Number of replicas for `kerberospipeline.thumbnail`. | `2` |
 | `kerberospipeline.thumbnail.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-thumbnail ≥ v1.3.15. | `0` |
+| `kerberospipeline.thumbnail.rangeDownload` | Download only the fragments around the requested frame with HTTP range requests instead of the whole recording (`THUMBNAIL_RANGE_DOWNLOAD`); falls back to the whole recording when a recording has no segment index. Older images ignore it. | `false` |
+| `kerberospipeline.<worker>.extraEnv` | Extra container env for that pipeline worker, after the chart's own variables; see [Extra environment for pipeline workers](#extra-environment-for-pipeline-workers-chart-02060). | `[]` |
 | `kerberospipeline.sprite.prefetchCount` | Max unacknowledged RabbitMQ messages per pod (`RABBITMQ_PREFETCH_COUNT`); `0` keeps the service default of 5. Requires hub-pipeline-sprite ≥ v1.1.21. | `0` |
 | `kerberospipeline.thumbnail.logLevel` | Log verbosity level for `kerberospipeline.thumbnail`. | `"info"` |
 | `kerberospipeline.thumbnail.quality` | Configuration value for `kerberospipeline.thumbnail.quality`. | `"1"` |

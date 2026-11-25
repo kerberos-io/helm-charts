@@ -125,6 +125,7 @@ spec:
           value: "{{ .Values.opentelemetry.collector.endpoint }}"
         {{- include "hub.opentelemetry.samplerEnv" $ | trim | nindent 8 }}
         {{- end }}
+        {{- include "hub.pipeline.extraEnv" (dict "path" "kerberoshub.services.workflows" "values" $.Values.kerberoshub.services.workflows) }}
 ---
 apiVersion: v1
 kind: Service
