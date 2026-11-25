@@ -1230,6 +1230,7 @@ kerberoshub:
       tag: "v1.0.49"
       replicas: 1 # Number of pods for the service.
       topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+      extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
       # Optional extra volumes / volumeMounts for this deployment (empty = none).
       #volumes:
       #  - name: extra
@@ -1399,6 +1400,7 @@ kerberospipeline:
     tag: "v1.3.11"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1420,6 +1422,7 @@ kerberospipeline:
     tag: "v1.3.30"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1441,6 +1444,7 @@ kerberospipeline:
     tag: "v1.7.15"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1464,6 +1468,7 @@ kerberospipeline:
     tag: "v1.2.11"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1489,6 +1494,7 @@ kerberospipeline:
     audit:
       enabled: true
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     notificationExpiryMinutes: "15" # Maximum recording age before notification delivery; 0 disables expiry.
     resources:
@@ -1509,6 +1515,7 @@ kerberospipeline:
     tag: "v1.2.8"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     resources:
       requests:
         memory: 10Mi
@@ -1530,6 +1537,7 @@ kerberospipeline:
     tag: "v1.8.31"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1572,6 +1580,7 @@ kerberospipeline:
     tag: "v2.0.11"
     replicas: 3 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1599,6 +1608,7 @@ kerberospipeline:
     replicas: 2 # Number of pods for the service.
     prefetchCount: 0 # Max unacknowledged RabbitMQ messages per pod; 0 = service default (5).
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1611,6 +1621,7 @@ kerberospipeline:
     width: "600"
     height: "-1"
     skipNonKeyframes: true # Decode keyframes only for faster extraction; disable when exact-frame output is required.
+    rangeDownload: false # Download only the fragments around the requested frame (HTTP Range) instead of the whole recording; needs hub-pipeline-thumbnail with THUMBNAIL_RANGE_DOWNLOAD support.
     kerberosvault:
       enabled: true # If you want to use Kerberos Vault to store the thumbnails
     resources:
@@ -1631,6 +1642,7 @@ kerberospipeline:
     tag: "v2.0.7"
     replicas: 1 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1654,6 +1666,7 @@ kerberospipeline:
     replicas: 5 # Number of pods for the service.
     prefetchCount: 0 # Max unacknowledged RabbitMQ messages per pod; 0 = service default (5).
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     # Optional extra volumes / volumeMounts for this deployment (empty = none).
     #volumes:
     #  - name: extra
@@ -1680,6 +1693,7 @@ kerberospipeline:
     tag: "v1.2.23"
     replicas: 2 # Number of pods for the service.
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
+    extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     logLevel: "info" # possible values: trace, debug, info, warn, error
     # playerAssetsPath: "/custom/player-assets/" # Path to custom player.html template (overrides the embedded default)
     # volumeMounts:

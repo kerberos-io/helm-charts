@@ -169,3 +169,33 @@ Use: fromJsonArray (include "hub.audit.destinations" .)
 {{- end -}}
 {{- toJson $resolved -}}
 {{- end -}}
+
+{{/*
+Extra container env for a pipeline service, from <component>.extraEnv: a list
+of Kubernetes EnvVar entries (name + value, or name + valueFrom), rendered after
+every variable the chart sets. Use it for worker settings the chart has no
+value for yet.
+
+Do not repeat a variable the chart already sets: Kubernetes keeps the last
+entry, but server-side apply (Argo CD ServerSideApply) can reject a duplicate
+name. Names repeated within extraEnv itself fail the render.
+
+Usage, as the last line of the container's env list:
+  {{- include "hub.pipeline.extraEnv" (dict "path" "kerberospipeline.thumbnail" "values" $.Values.kerberospipeline.thumbnail) }}
+*/}}
+{{- define "hub.pipeline.extraEnv" -}}
+{{- $env := (.values | default dict).extraEnv | default list -}}
+{{- $seen := dict -}}
+{{- range $i, $var := $env -}}
+  {{- if not (and (kindIs "map" $var) $var.name) -}}
+    {{- fail (printf "%s.extraEnv[%d] needs a name" $.path $i) -}}
+  {{- end -}}
+  {{- if hasKey $seen $var.name -}}
+    {{- fail (printf "%s.extraEnv sets %s more than once" $.path $var.name) -}}
+  {{- end -}}
+  {{- $_ := set $seen $var.name true -}}
+{{- end -}}
+{{- with $env }}
+{{ toYaml . | indent 8 }}
+{{- end -}}
+{{- end -}}
