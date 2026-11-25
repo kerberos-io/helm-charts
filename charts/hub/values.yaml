@@ -424,7 +424,7 @@ kerberoshub:
   api:
     repository: ghcr.io/uug-ai/hub-api
     pullPolicy: IfNotPresent
-    tag: "v1.11.43"
+    tag: "v1.11.93"
     replicas: 2
     podSecurityContext:
       fsGroup: 65532
@@ -637,7 +637,7 @@ kerberoshub:
   frontend:
     repository: ghcr.io/uug-ai/hub-frontend
     pullPolicy: IfNotPresent
-    tag: "v1.19.42"
+    tag: "v1.19.80"
     replicas: 2
     containerPort: 8080
     securityContext:

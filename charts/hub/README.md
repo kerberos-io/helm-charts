@@ -58,7 +58,7 @@ legacy opt-out, TLS/configuration mounts and deployment modes.
 ### Hardened frontend images
 
 Starting with chart **`0.170.0`**, both frontends default to shell-free
-`ghcr.io/uug-ai/hub-frontend:v1.19.42`, running as `65532:65532` on port `8080`
+`ghcr.io/uug-ai/hub-frontend` (default `v1.19.80` since chart `0.209.0`), running as `65532:65532` on port `8080`
 with a read-only root filesystem and writable `/tmp`. The Service and ingress
 remain on port `80`. Admin retains its legacy image and port `80`; its hardened
 runtime remains opt-in.
@@ -945,7 +945,7 @@ kerberospipeline:
 | `kerberoshub.serviceAccount.labels` | Labels applied to `kerberoshub.serviceAccount` resources. | `""` |
 | `kerberoshub.api.repository` | The Docker registry where the Kerberos Hub API container is hosted. | `"ghcr.io/uug-ai/hub-api"` |
 | `kerberoshub.api.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.43"` |
+| `kerberoshub.api.tag` | The Docker image tag/version. | `"v1.11.93"` |
 | `kerberoshub.api.replicas` | The number of pods/replicas running for the Kerberos Hub API deployment. | `2` |
 | `kerberoshub.api.audit.enabled` | Enable audit publishing from Hub API when global auditing is enabled. | `true` |
 | `kerberoshub.api.logLevel` | Log verbosity level for `kerberoshub.api`. | `"info"` |
@@ -1019,7 +1019,7 @@ kerberospipeline:
 | `kerberoshub.api.sso.extraHeaders.value` | Header value for each configured SSO extra header entry. | `""` |
 | `kerberoshub.frontend.repository` | The Docker registry where the Kerberos Hub frontend is hosted. | `"ghcr.io/uug-ai/hub-frontend"` |
 | `kerberoshub.frontend.pullPolicy` | The Docker registry pull policy. | `"IfNotPresent"` |
-| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.42"` |
+| `kerberoshub.frontend.tag` | The Docker image tag/version. | `"v1.19.80"` |
 | `kerberoshub.frontend.replicas` | The number of pods/replicas running for the Kerberos Hub frontend deployment. | `2` |
 | `kerberoshub.frontend.logLevel` | Log verbosity level for `kerberoshub.frontend`. | `"info"` |
 | `kerberoshub.frontend.schema` | The protocol to serve the Kerberos Hub frontend, `'http'` or `'https'`. | `"https"` |
@@ -1660,6 +1660,32 @@ Deployers describe what a node exposes; Hub code owns what that means:
 Worker images, queues, resources and credentials stay in `kerberoshub.services`.
 No new loader environment variable is set.
 
+#### Conditional settings (`when`)
+
+A param can apply only while an earlier `select` or `boolean` param has one of
+the listed values, for example a forwarder setting that exists only for one
+provider:
+
+```yaml
+params:
+  - {name: broker, type: select, options: [rabbitmq, mqtt], default: rabbitmq}
+  - {name: topic, type: string, required: true, when: {param: broker, in: [mqtt]}}
+```
+
+While its condition does not hold, a param is hidden in the editor, is not
+required, gets no default, and its stored value is dropped on save. The
+controlling param must be declared earlier; its value (or default when unset)
+is compared with `in`. Conditions can chain at most 3 deep, and there is one
+condition per param (no `and`/`or`). Invalid conditions make the contract
+unavailable, like other contract errors.
+
+**`when` needs a compatible Hub API and frontend** (conditional params,
+uug-ai/hub-api#900 and uug-ai/hub-frontend#1115): hub-api `v1.11.92` or later
+and hub-frontend `v1.19.78` or later. Since chart `0.209.0` the default tags
+(`v1.11.93`, `v1.19.80`) include both. An older API rejects a contract that
+uses it, which removes that stage from the editor; pin an older API only with
+`workflowConfiguration.includeDefaults: false` or your own forwarder contract.
+
 Conditions are not free-form: a new or changed predicate on a connection may
 only test a declared field of Start or of a stage upstream of that connection
 (stage outputs are addressed as `results.<stage>.<path>`), with one of its
@@ -1698,9 +1724,13 @@ schemas/
   catalog required. It declares no `params`, so any settings come from
   `kerberoshub.workflows.editorStages`.
 - [Forwarder contract ConfigMap](templates/configMaps/workflow-contracts/forwarder.yaml):
-  presentation and required per-node delivery and RabbitMQ destination settings
-  for custom workflows. Deployment-global workflows keep their deployment
-  bindings. No output fields are declared.
+  presentation and per-node delivery settings for custom workflows, with a
+  provider choice. `rabbitmq` (default) adds queue, virtual host, queue
+  declaration and dead-letter settings. `mqtt` adds topic, QoS, retain and
+  client ID, and needs a forwarder worker with the MQTT provider. Both share
+  host, port, TLS, credentials, completion mode and retries. The
+  provider-specific settings use `when`. Deployment-global workflows keep
+  their deployment bindings. No output fields are declared.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
   worker, demonstrating presentation, settings (`params`), a file catalog, inline
   choices and a numeric field.

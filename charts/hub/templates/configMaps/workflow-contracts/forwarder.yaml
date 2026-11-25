@@ -5,20 +5,24 @@ stage: forwarder
 contractVersion: 1
 presentation:
   name: Forward to my system
-  description: Send the run's data to your own RabbitMQ destination.
+  description: Send the run's data to your own RabbitMQ or MQTT destination.
   icon: share
   color: green
 
 # Custom workflows supply their own connection; deployment credentials are never
-# inherited. These non-secret defaults are stored on save, not read from the worker.
+# inherited. Non-secret defaults are stored on save, not read from the worker.
+# Provider-specific settings use `when` (conditional params): they are shown,
+# required, defaulted and stored only for the selected provider. `when` needs a
+# Hub API and frontend that support conditional params (hub-api with uug-ai/hub-api#900,
+# hub-frontend with uug-ai/hub-frontend#1115); older APIs reject this contract.
 params:
   - name: broker
     label: Provider
-    description: Custom workflows use their own RabbitMQ destination. Shared deployment integrations are reserved for global workflows.
+    description: Where the run's data is sent. Custom workflows use their own destination; shared deployment integrations are reserved for global workflows.
     type: select
     required: true
-    options: [rabbitmq]
-    optionLabels: {rabbitmq: RabbitMQ}
+    options: [rabbitmq, mqtt]
+    optionLabels: {rabbitmq: RabbitMQ, mqtt: MQTT}
     default: rabbitmq
     group: Delivery
   - name: mode
@@ -30,53 +34,118 @@ params:
     optionLabels: {delivered: Complete after delivery, callback: Wait for result}
     default: delivered
     group: Delivery
+  - name: maxRetries
+    label: Maximum retries
+    description: Whole number of retries after a failed delivery. Use 0 for no retries.
+    type: number
+    required: false
+    default: 5
+    minimum: 0
+    maximum: 2147483647
+    group: Delivery
   - name: host
     label: Host
-    description: Your RabbitMQ destination host. Required before enabling the workflow.
+    description: Your broker's host name or IP address, without a scheme or port. Required before enabling the workflow.
     type: string
     required: true
-    placeholder: rabbitmq.example.com
-    group: RabbitMQ destination
+    placeholder: broker.example.com
+    group: Connection
   - name: port
     label: Port
-    description: Your RabbitMQ destination port, a whole number (usually 5671 with TLS or 5672 without TLS).
+    description: Your broker's port, a whole number. RabbitMQ usually uses 5671 with TLS or 5672 without; MQTT 8883 with TLS or 1883 without.
     type: number
     required: true
     minimum: 1
     maximum: 65535
-    group: RabbitMQ destination
-  - name: queue
-    label: Queue
-    description: Your destination queue. Its dead-letter queue is this name followed by .forwarder-dead-letter.
-    type: string
-    required: true
-    group: RabbitMQ destination
-  - name: vhost
-    label: Virtual host
-    description: Your RabbitMQ virtual host. Use / for the broker's default virtual host.
-    type: string
-    required: true
-    placeholder: /
-    group: RabbitMQ destination
+    group: Connection
   - name: tls
     label: Use TLS
     description: Encrypt the connection and verify the broker certificate using system trust roots. Deployment TLS overrides are never inherited.
     type: boolean
     required: true
     default: true
-    group: RabbitMQ destination
+    group: Connection
   - name: username
     label: Username
-    description: Your RabbitMQ destination username. Deployment credentials are never used.
+    description: Your broker username. Deployment credentials are never used.
     type: string
     required: true
-    group: RabbitMQ credentials
+    group: Credentials
   - name: password
     label: Password
-    description: Your RabbitMQ destination password. Required before enabling the workflow; masked after saving.
+    description: Your broker password. Required before enabling the workflow; masked after saving. Changing the provider or connection asks for it again.
     type: secret
     required: true
-    group: RabbitMQ credentials
+    group: Credentials
+
+  # RabbitMQ only.
+  - name: queue
+    label: Queue
+    description: Your RabbitMQ destination queue.
+    type: string
+    required: true
+    group: RabbitMQ
+    when: {param: broker, in: [rabbitmq]}
+  - name: vhost
+    label: Virtual host
+    description: Your RabbitMQ virtual host. Omitted or blank values use /, never the deployment virtual host.
+    type: string
+    required: false
+    default: /
+    group: RabbitMQ
+    when: {param: broker, in: [rabbitmq]}
+  - name: declareQueue
+    label: Declare destination queues
+    description: Create durable quorum target and dead-letter queues when missing. When disabled, both must already exist. Dead-letter routing is never configured; configure it separately on the external consumer or broker.
+    type: boolean
+    required: false
+    default: true
+    group: RabbitMQ
+    when: {param: broker, in: [rabbitmq]}
+  - name: deadLetterQueue
+    label: Destination dead-letter queue
+    description: External destination dead-letter queue to create or check; must differ from Queue. Omitted or blank values use Queue followed by .forwarder-dead-letter. Forwarder does not route failed messages here automatically; configure external consumer or broker dead-letter routing separately. Never use the internal failed-dispatch queue, which can contain secrets.
+    type: string
+    required: false
+    placeholder: <queue>.forwarder-dead-letter
+    group: RabbitMQ
+    when: {param: broker, in: [rabbitmq]}
+
+  # MQTT only.
+  - name: topic
+    label: Topic
+    description: One topic to publish to, without + or # wildcards and not starting with $. The message includes a signed link to the recording, so anyone who can read this topic can download it until the link expires.
+    type: string
+    required: true
+    placeholder: plant/line-1/events
+    group: MQTT
+    when: {param: broker, in: [mqtt]}
+  - name: qos
+    label: Quality of service
+    description: 0 sends once without confirmation; 1 waits for the broker to confirm (may duplicate); 2 confirms exactly once per connection. Subscribers should deduplicate by executionId.
+    type: select
+    required: true
+    options: ['0', '1', '2']
+    optionLabels: {'0': At most once (0), '1': At least once (1), '2': Exactly once (2)}
+    default: '1'
+    group: MQTT
+    when: {param: broker, in: [mqtt]}
+  - name: retain
+    label: Retain message
+    description: Ask the broker to keep the latest message on this topic for subscribers that connect later.
+    type: boolean
+    required: false
+    default: false
+    group: MQTT
+    when: {param: broker, in: [mqtt]}
+  - name: clientId
+    label: Client ID
+    description: Fixed MQTT client ID, for brokers that use it in access rules (at most 128 characters). Leave empty to use a new random ID per delivery.
+    type: string
+    required: false
+    placeholder: hub-fwd-<random>
+    group: MQTT
+    when: {param: broker, in: [mqtt]}
 
 # It contributes no output fields: connections after it can still use Start and
 # earlier stages in Extra conditions.
