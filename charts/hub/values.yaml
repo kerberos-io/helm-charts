@@ -1695,6 +1695,13 @@ kerberospipeline:
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     extraEnv: [] # Extra container env (name + value or valueFrom), rendered after the chart's own; do not repeat a variable the chart sets.
     logLevel: "info" # possible values: trace, debug, info, warn, error
+    forwardRequests:
+      # Broker the export worker uses to ask an edge Vault to forward the
+      # recordings of a case that are still metadata-only, e.g.
+      # tcp://mqtt.kerberos.io:1883 (MQTT_URI). Credentials are mqtt.username
+      # and mqtt.password. Empty: nothing is requested; recordings forwarded
+      # meanwhile are still picked up.
+      mqttUri: ""
     # playerAssetsPath: "/custom/player-assets/" # Path to custom player.html template (overrides the embedded default)
     # volumeMounts:
     #   - name: custom-player-assets
