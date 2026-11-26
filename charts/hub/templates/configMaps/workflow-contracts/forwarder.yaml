@@ -65,18 +65,31 @@ params:
     required: true
     default: true
     group: Connection
+  # Off for brokers that allow anonymous clients: username and password are
+  # then hidden, not required and dropped on save. Needs hub-api with
+  # uug-ai/hub-api#912 and hub-workflows-forwarder with
+  # uug-ai/hub-workflows-forwarder#16 (older forwarders reject the setting).
+  - name: authentication
+    label: Sign in to the broker
+    description: Turn off if your broker allows clients without a username and password. For RabbitMQ this needs version 4.0 or later with anonymous login enabled.
+    type: boolean
+    required: true
+    default: true
+    group: Credentials
   - name: username
     label: Username
     description: Your broker username. Deployment credentials are never used.
     type: string
     required: true
     group: Credentials
+    when: {param: authentication, in: [true]}
   - name: password
     label: Password
     description: Your broker password. Required before enabling the workflow; masked after saving. Changing the provider or connection asks for it again.
     type: secret
     required: true
     group: Credentials
+    when: {param: authentication, in: [true]}
 
   # RabbitMQ only.
   - name: queue
