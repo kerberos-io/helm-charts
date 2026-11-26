@@ -379,6 +379,9 @@ spec:
           value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.enabled }}"
         - name: FEATURE_FACE_REDACTION_CLASSIFIER_TRACKS_ENABLED
           value: "{{ .Values.kerberoshub.frontend.features.faceRedaction.classifierTracksEnabled }}"
+        # Follows hub-api: the editor only sends redaction plans where the API accepts them.
+        - name: FEATURE_REDACTION_PLANS_ENABLED
+          value: "{{ (.Values.kerberoshub.api.redactionPlans | default dict).enabled | default false }}"
         
         # features > media
         - name: FEATURE_MEDIA_FORWARD_ENABLED

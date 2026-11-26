@@ -583,6 +583,44 @@ Both settings default to off; the API setting applies only to Hub API pods in
 
 Validate rendering with `bash scripts/check-hub-ask.sh` from the repository root.
 
+### Redaction plans
+
+A redaction plan is the saved state of the redaction editor for one video: a
+list of regions to hide, each with its own style (blur, pixelate or black),
+frame range and positions. With plans the editor is no longer limited to the
+tracks a detector found, and it keeps a draft per video.
+
+```yaml
+kerberoshub:
+  api:
+    redactionPlans:
+      enabled: true
+```
+
+One value switches both sides: `REDACTION_PLANS_ENABLED` on Hub API and
+`FEATURE_REDACTION_PLANS_ENABLED` on the frontend (and the demo frontend). The
+frontend cannot be switched on without the API. It defaults to off.
+
+Switch it on only when all three are in place:
+
+- **Redaction worker:** the `hub-pipeline-redaction` worker that consumes this
+  deployment's redaction queue is newer than v1.2.15. An older worker finds no
+  regions in a plan-only job and stores an unchanged copy of the video as a
+  completed redaction. Check the worker that really renders the jobs: a
+  deployment without its own worker has them rendered by another one on the
+  same queue.
+- **Hub API:** an image with redaction plans. Until then the variable is
+  ignored and `regions` edits are refused.
+- **Frontend:** an image with redaction plans. Until then the variable is
+  ignored and the editor works on detector tracks only.
+
+While it is off, Hub API refuses redaction edits of type `regions` and answers
+404 on the plan and draft routes. Redactions made from detector tracks work
+with the setting on or off.
+
+Validate rendering with `bash scripts/check-hub-redaction-plans.sh` from the
+repository root.
+
 ### Passkeys
 
 Users and sub-users can create and manage their own passkeys in **Profile >
@@ -969,6 +1007,7 @@ kerberospipeline:
 | `kerberoshub.api.accountDeletion.enabled` | An owner can delete their own account on the profile page: sets `FEATURE_ACCOUNT_DELETION_ENABLED` on hub-api and the frontend. A deletion locks the account at once and is erased after `graceDays`. An account that is already locked stays locked, and can still be reactivated, when this is switched off again. | `false` |
 | `kerberoshub.api.accountDeletion.graceDays` | Days a requested deletion can still be cancelled by signing in, 0 to 30 (`ACCOUNT_DELETION_GRACE_DAYS`). | `14` |
 | `kerberoshub.api.organisationDeletion.enabled` | The primary owner of an organisation can delete it in the organisation settings: sets `FEATURE_ORGANISATION_DELETION_ENABLED` on hub-api and the frontend. A deletion closes the organisation to every member at once and is erased after `accountDeletion.graceDays` by the `kerberoshub.cleanup.accountDeletion.purge` worker; members keep their accounts and their other organisations. An organisation that is already closed stays closed, and its primary owner can still reopen it, when this is switched off again. | `false` |
+| `kerberoshub.api.redactionPlans.enabled` | Redaction plans: the redaction editor saves and submits a list of regions, each with its own style and frame range, and keeps a draft per video. Sets `REDACTION_PLANS_ENABLED` on hub-api, which then accepts redaction edits of type `regions`, stores their plan and serves the plan and draft routes, and `FEATURE_REDACTION_PLANS_ENABLED` on the frontend. Needs Hub API and frontend images with redaction plans, and a `hub-pipeline-redaction` worker newer than v1.2.15 rendering this deployment's jobs: an older worker finds no regions in such a job and stores an unchanged copy of the video as a completed redaction. While it is off, hub-api refuses `regions` edits and the editor works on detector tracks only. | `false` |
 | `kerberoshub.api.mediaProxy.enabled` | Serve media through hub-api (`/media/proxy`) instead of handing out Vault/storage URLs, hiding the storage endpoint from clients. | `false` |
 | `kerberoshub.api.mediaProxy.publicUrl` | Public hub-api base URL used in proxied media URLs. Defaults to `{schema}://{url}`. | `""` |
 | `kerberoshub.api.mediaProxy.key` | Key used to encrypt proxied media URLs (`openssl rand -hex 32`). Defaults to a key derived from `jwtSecret`. | `""` |
