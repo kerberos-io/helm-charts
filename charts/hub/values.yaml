@@ -650,15 +650,16 @@ kerberoshub:
         drop: ["ALL"]
       seccompProfile:
         type: RuntimeDefault
-    # Keep these entries when adding custom branding/translation mounts.
-    volumes:
-      - name: frontend-tmp
-        emptyDir:
-          medium: Memory
-          sizeLimit: 16Mi
-    volumeMounts:
-      - name: frontend-tmp
-        mountPath: /tmp
+    # The hardened image writes its generated runtime configuration and nginx's
+    # temp files to /tmp. The chart always mounts a memory-backed emptyDir there
+    # (volume name frontend-tmp); you never have to list it yourself, and the
+    # custom branding/translation mounts further down only add to it.
+    tmp:
+      sizeLimit: 16Mi
+    # Extra volumes and mounts for this deployment (custom css, favicons,
+    # translations). See the "Custom layout" section below for the mount paths.
+    volumes: []
+    volumeMounts: []
     topologySpreadConstraints: [] # Optional pod topology spread constraints (empty = none).
     # Set to false to skip rendering the hub-frontend Service (e.g. when an
     # external/shared Service is managed elsewhere).
@@ -709,7 +710,14 @@ kerberoshub:
     logo: "custom"
     # Custom layout: override css, favicons and translations (i18n)
     # By providing a style.css file in the custom folder this file will override
-    # any css styling. Favicons are mounted into the favicon folder.
+    # any css styling. Favicons are mounted into the favicons folder.
+    # The image runs as UID 65532 without a shell, so the files must be readable
+    # by that UID (chmod a+rX) and must be written to the volume from outside the
+    # frontend pod (a ConfigMap, or a helper pod mounting the same PVC).
+    # Mounting a directory replaces everything the image ships there: when you
+    # mount assets/custom, include icons.js, auth-icons.js and logo-sidebar.png
+    # (copy them from custom-layout/) next to your style.css, or mount only
+    # style.css with subPath.
     #
     # Translations (i18n): for each language the served strings are
     #   deepMerge(assets/i18n/<lang>.json, assets/i18n-custom/<lang>.json)
@@ -731,10 +739,13 @@ kerberoshub:
     #volumeMounts:
     #  - name: custom-layout
     #    mountPath: /usr/share/nginx/html/assets/custom
+    #    readOnly: true
     #  - name: custom-favicon
-    #    mountPath: /usr/share/nginx/html/assets/favicon
+    #    mountPath: /usr/share/nginx/html/assets/favicons
+    #    readOnly: true
     #  - name: custom-i18n
     #    mountPath: /usr/share/nginx/html/assets/i18n-custom
+    #    readOnly: true
     #volumes:
     #  - name: custom-layout
     #    persistentVolumeClaim:

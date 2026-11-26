@@ -83,20 +83,25 @@ kerberoshub:
                 drop: ["ALL"]
             seccompProfile:
                 type: RuntimeDefault
-        volumes:
-            - name: frontend-tmp
-              emptyDir:
-                  medium: Memory
-                  sizeLimit: 16Mi
-        volumeMounts:
-            - name: frontend-tmp
-              mountPath: /tmp
+        tmp:
+            sizeLimit: 16Mi
 ```
 
-Merge the temporary volume into any existing branding/translation mounts rather
-than replacing them. Custom files must be readable by UID `65532`; mount them
-read-only. Only `/tmp` needs writes for generated public runtime configuration
-and nginx's PID/temp files. The web root stays read-only. Health checks can use
+Since chart `0.210.0` the chart itself renders the writable `/tmp` (a
+memory-backed emptyDir named `frontend-tmp`, sized by
+`kerberoshub.frontend.tmp.sizeLimit`) for both frontends. Custom
+branding/translation entries in `kerberoshub.frontend.volumes` and
+`volumeMounts` are added next to it, so a values file that lists only the
+custom mounts no longer drops `/tmp` and crashes the pod at startup. Values
+files that still list the `frontend-tmp` entries themselves, or that mount
+their own volume at `/tmp`, keep working: the built-in entries are then
+skipped.
+
+Custom files must be readable by UID `65532`; mount them read-only and write
+them to the volume from outside the frontend pod (a ConfigMap, or a helper pod
+on the same PVC), since the image has no shell or `tar` for `kubectl cp`. Only
+`/tmp` needs writes for generated public runtime configuration and nginx's
+PID/temp files. The web root stays read-only. Health checks can use
 `GET /healthz` on the named `http` container port. These settings apply to both
 the primary and demo frontends, which share the frontend image tag. Update the
 live Argo CD Application's chart pin as well as its values: an image-only

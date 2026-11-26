@@ -89,10 +89,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kerberoshub.frontend.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "hub.frontend.volumes" . | trim | nindent 8 }}
       {{- with .Values.kerberoshub.frontend.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
@@ -112,10 +110,8 @@ spec:
         ports:
         - containerPort: {{ .Values.kerberoshub.frontend.containerPort | default 8080 }}
           name: http
-        {{- with .Values.kerberoshub.frontend.volumeMounts}}
         volumeMounts:
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+          {{- include "hub.frontend.volumeMounts" . | trim | nindent 8 }}
         env:
         - name: SSO_DOMAINS
           # get the domain attribute from the list of sso domains

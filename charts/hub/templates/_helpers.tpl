@@ -199,3 +199,45 @@ Usage, as the last line of the container's env list:
 {{ toYaml . | indent 8 }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+hub-frontend scratch volume.
+The hardened hub-frontend image runs with a read-only root filesystem and
+writes its generated runtime configuration (/tmp/frontend-env.js) and nginx's
+PID/temp files to /tmp, so every frontend pod needs a writable /tmp. The chart
+always renders a memory-backed emptyDir for it, so custom branding or
+translation mounts in kerberoshub.frontend.volumes / volumeMounts only add to
+the pod and can never drop it (Helm replaces lists, it does not merge them).
+Deployments that still list the old frontend-tmp entries themselves, or mount
+their own volume at /tmp, keep those: the built-in entries are skipped.
+*/}}
+{{- define "hub.frontend.hasTmpMount" -}}
+{{- range .Values.kerberoshub.frontend.volumeMounts }}{{ if eq .mountPath "/tmp" }}true{{ end }}{{ end }}
+{{- end -}}
+
+{{- define "hub.frontend.hasTmpVolume" -}}
+{{- range .Values.kerberoshub.frontend.volumes }}{{ if eq .name "frontend-tmp" }}true{{ end }}{{ end }}
+{{- end -}}
+
+{{- define "hub.frontend.volumes" -}}
+{{- $tmp := .Values.kerberoshub.frontend.tmp | default dict }}
+{{- if not (or (include "hub.frontend.hasTmpMount" .) (include "hub.frontend.hasTmpVolume" .)) }}
+- name: frontend-tmp
+  emptyDir:
+    medium: Memory
+    sizeLimit: {{ $tmp.sizeLimit | default "16Mi" }}
+{{- end }}
+{{- with .Values.kerberoshub.frontend.volumes }}
+{{ toYaml . }}
+{{- end }}
+{{- end -}}
+
+{{- define "hub.frontend.volumeMounts" -}}
+{{- if not (include "hub.frontend.hasTmpMount" .) }}
+- name: frontend-tmp
+  mountPath: /tmp
+{{- end }}
+{{- with .Values.kerberoshub.frontend.volumeMounts }}
+{{ toYaml . }}
+{{- end }}
+{{- end -}}
