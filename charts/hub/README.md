@@ -1729,8 +1729,12 @@ schemas/
   declaration and dead-letter settings. `mqtt` adds topic, QoS, retain and
   client ID, and needs a forwarder worker with the MQTT provider. Both share
   host, port, TLS, credentials, completion mode and retries. The
-  provider-specific settings use `when`. Deployment-global workflows keep
-  their deployment bindings. No output fields are declared.
+  provider-specific settings use `when`. "Sign in to the broker"
+  (`authentication`, default on) can be turned off for brokers that allow
+  anonymous clients: username and password are then hidden and not stored
+  (see [Forwarder without credentials](#forwarder-without-credentials)).
+  Deployment-global workflows keep their deployment bindings. No output
+  fields are declared.
 - [Custom pose example](examples/workflow-contracts/pose.yaml): hypothetical
   worker, demonstrating presentation, settings (`params`), a file catalog, inline
   choices and a numeric field.
@@ -1834,9 +1838,9 @@ The forwarder contract follows the same rule: the forwarder becomes authorable
 wherever its worker queue is configured. Replace or omit the bundled contract to
 prevent that.
 
-Its nine required custom-workflow settings are `broker`,
+Its required custom-workflow settings are `broker`,
 `mode`, `host`, `port` (whole number, 1-65535), `queue`, `vhost`, `tls`,
-`username` and `password`. The contract defaults `broker` to `rabbitmq`, `mode`
+and, while `authentication` is on, `username` and `password`. The contract defaults `broker` to `rabbitmq`, `mode`
 to `delivered` and `tls` to `true`; those values are stored on save. Destination
 and credentials must be supplied before enabling a custom workflow. The password is a secret:
 the API masks it on reads and the engine includes it only in worker dispatches.
@@ -1854,6 +1858,23 @@ environment-backed worker); the external service supplies its own Hub token.
 Custom invocations carry the run's inputs and results, not deployment-specific
 field mappings. TLS certificate and queue declaration policies are not node
 settings.
+
+#### Forwarder without credentials
+
+Since chart `0.210.0` the bundled forwarder contract has a boolean
+`authentication` ("Sign in to the broker", default `true`); `username` and
+`password` apply only while it is on (`when: {param: authentication, in:
+[true]}`). With it off, MQTT connects without a username or password and
+RabbitMQ signs in with SASL ANONYMOUS, which needs RabbitMQ 4.0 or later with
+anonymous login enabled.
+
+**Upgrade order:** the forwarder worker that serves the editor's queue must
+accept the setting (uug-ai/hub-workflows-forwarder#16) **before** this chart
+version is deployed. hub-api stores the default on every saved forwarder node,
+and older workers refuse unknown settings permanently, so new runs would fail.
+hub-api with uug-ai/hub-api#912 accepts nodes without credentials; older APIs
+still require them. Keep the previous contract (your own
+`workflowConfiguration` ConfigMap) until both are deployed.
 
 Deploy the engine that stamps the top-level `forwarderDestinationMode`
 (`deployment` or `custom`) before the enforcing worker. Missing or invalid mode
